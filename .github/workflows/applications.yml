@@ -10,6 +10,7 @@ on:
         type: choice
         options:
           - quartz-controls
+          - quartz-paired-controls
           - realworld-integration
 
 permissions:
@@ -50,7 +51,7 @@ jobs:
           node-version: '20'
           package-manager-cache: false
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
-        if: ${{ inputs.suite == 'quartz-controls' }}
+        if: ${{ inputs.suite == 'quartz-controls' || inputs.suite == 'quartz-paired-controls' }}
         with:
           distribution: temurin
           java-version: '21.0.13+9'
@@ -64,7 +65,7 @@ jobs:
       - name: Prepare pinned application without source patches
         timeout-minutes: 6
         run: |
-          if [[ "$STUDY_SUITE" == quartz-controls ]]; then
+          if [[ "$STUDY_SUITE" == quartz-controls || "$STUDY_SUITE" == quartz-paired-controls ]]; then
             python scripts/ci/prepare_quartz.py --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" --report "$CI_ARTIFACT_DIR/quartz-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
           else
             python scripts/ci/prepare_realworld.py --runtime "$STUDY_RUNTIME/realworld" --node-tools "$RUNNER_TEMP/study-node-tools" --report "$CI_ARTIFACT_DIR/realworld-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"

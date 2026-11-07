@@ -13,6 +13,15 @@ import {digest,registryFromBytes,selectCases,REGISTRY_SHA256} from './quartz_gen
 const here=dirname(fileURLToPath(import.meta.url));
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 export const childExitedCleanly=exit=>exit?.code===0&&!exit.signal&&!exit.exit_unconfirmed&&!exit.spawn_error;
+export function orderedCases(registry,mode='controls',order){
+  if(order===undefined)return selectCases(registry,mode);
+  assert.equal(mode,'controls','Explicit ordering is allowed only for ordinary controls');
+  assert.equal(order?.schema_version,1);assert.equal(order?.scope,'quartz_route_controls');assert.equal(order?.registry_sha256,REGISTRY_SHA256);
+  const controls=selectCases(registry,'controls'),ids=order.case_ids;
+  assert.ok(Array.isArray(ids)&&ids.length===4&&new Set(ids).size===4,'Order must contain all four unique controls exactly once');
+  const byId=new Map(controls.map(c=>[c.case_id,c]));assert.ok(ids.every(id=>typeof id==='string'&&byId.has(id)),'Order contains an unregistered or boundary case');
+  return ids.map(id=>byId.get(id));
+}
 export async function portFree(port){return new Promise(resolve=>{const server=net.createServer();server.once('error',()=>resolve(false));server.listen(port,'127.0.0.1',()=>server.close(()=>resolve(true)));});}
 export async function stopOwned(child,grace=5000){
   if(!child||!child.pid||child.exitCode!==null||child.signalCode!==null)return {ok:true,already_exited:true};
@@ -36,20 +45,24 @@ async function runtimeFiles(runtime){
   return {showcase:jars[0].file,loadPath:jars.slice(1).map(x=>x.file),jars};
 }
 async function main(){
-  const {values:v}=parseArgs({options:{help:{type:'boolean'},runtime:{type:'string'},java:{type:'string'},node:{type:'string'},python:{type:'string',default:'python3'},registry:{type:'string'},output:{type:'string'},mode:{type:'string',default:'controls'},port:{type:'string',default:'19965'},'playwright-module':{type:'string'},'chrome-executable':{type:'string'},'case-timeout-ms':{type:'string',default:'120000'},'validation-interrupt-at':{type:'string'}}});
-  if(v.help){console.log('node run_quartz_registry.mjs --runtime DIR --java JAVA --registry FILE --output NEW_DIR [--mode controls|all] [--node NODE] [--playwright-module MODULE] [--chrome-executable BROWSER] [--port 19965] [--case-timeout-ms 120000]\nDefaults to only four valid controls. Verifies pinned jars/registry, restarts the native RAM-store server per case, captures evidence, and cleans up owned processes. Linux/macOS Java21; no JRE architecture assumption.');return;}
+  const {values:v}=parseArgs({options:{help:{type:'boolean'},runtime:{type:'string'},java:{type:'string'},node:{type:'string'},python:{type:'string',default:'python3'},registry:{type:'string'},output:{type:'string'},mode:{type:'string',default:'controls'},port:{type:'string',default:'19965'},'playwright-module':{type:'string'},'chrome-executable':{type:'string'},'case-timeout-ms':{type:'string',default:'120000'},'case-order-file':{type:'string'},'validation-interrupt-at':{type:'string'}}});
+  if(v.help){console.log('node run_quartz_registry.mjs --runtime DIR --java JAVA --registry FILE --output NEW_DIR [--mode controls|all] [--node NODE] [--playwright-module MODULE] [--chrome-executable BROWSER] [--port 19965] [--case-timeout-ms 120000] [--case-order-file FILE]\nDefaults to only four valid controls. Explicit ordering is controls-only and requires all four registered control IDs once. Verifies pinned jars/registry, restarts the native RAM-store server per case, captures evidence, and cleans up owned processes. Linux/macOS Java21; no JRE architecture assumption.');return;}
   for(const k of ['runtime','java','registry','output'])assert.ok(v[k],'Missing --'+k);
   if(v['validation-interrupt-at'])assert.ok(v.mode==='controls'&&['before-browser','after-browser'].includes(v['validation-interrupt-at']),'Validation interruption is available only for controls');
   const port=Number(v.port),timeout=Number(v['case-timeout-ms']);assert.ok(Number.isInteger(port)&&port>=1024&&port<=65535);assert.ok(Number.isInteger(timeout)&&timeout>=10000);
   const runtime=resolve(v.runtime),output=resolve(v.output),registryPath=resolve(v.registry);assert.ok(!existsSync(output),'Choose a new output directory; failed attempts are preserved.');
   const disk=await statfs(runtime);assert.ok(disk.bavail*disk.bsize>400*1024**2,'Free disk must exceed 400 MiB');
-  const registry=registryFromBytes(await readFile(registryPath)),cases=selectCases(registry,v.mode),files=await runtimeFiles(runtime);assert.ok(await portFree(port),'Application port is already occupied');
+  const orderBytes=v['case-order-file']?await readFile(resolve(v['case-order-file'])):undefined;
+  const registry=registryFromBytes(await readFile(registryPath)),cases=orderedCases(registry,v.mode,orderBytes?JSON.parse(orderBytes):undefined),files=await runtimeFiles(runtime);assert.ok(await portFree(port),'Application port is already occupied');
   await mkdir(output,{recursive:true});
   await writeFile(join(output,'executed-runner.mjs'),await readFile(fileURLToPath(import.meta.url)));await writeFile(join(output,'executed-adapter.mjs'),await readFile(join(here,'quartz_generated_case.mjs')));await writeFile(join(output,'executed-registry.json'),await readFile(registryPath));
   for(const file of ['quartz_browser_cleanup.py','realworld_case_worker.py'])await writeFile(join(output,'executed-'+file),await readFile(join(here,file)));
+  if(orderBytes)await writeFile(join(output,'executed-case-order.json'),orderBytes);
   const summary={schema_version:1,kind:'quartz_generated_registry_run',started_at:new Date().toISOString(),mode:v.mode,registry_sha256:REGISTRY_SHA256,registry_manifest_sha256:registry.manifest_sha256,
     adapter_sha256:digest(await readFile(join(here,'quartz_generated_case.mjs'))),runner_sha256:digest(await readFile(fileURLToPath(import.meta.url))),platform:process.platform,node_version:process.version,
     runtime:{java:v.java,node:v.node??process.execPath,python:v.python,host:'127.0.0.1',port,jvm_timezone:'Europe/Rome',heap_mb:256,artifacts:files.jars},validation_interrupt_at:v['validation-interrupt-at']??null,cleanup_helper_sha256:digest(await readFile(join(here,'realworld_case_worker.py'))),case_count:cases.length,cases:[],
+    effective_options:{runtime,java:v.java,node:v.node??process.execPath,python:v.python,registry:registryPath,output,mode:v.mode,port,case_timeout_ms:timeout,playwright_module:v['playwright-module']??'playwright',chrome_executable:v['chrome-executable']??null,validation_interrupt_at:v['validation-interrupt-at']??null,case_order_file:v['case-order-file']?resolve(v['case-order-file']):null},
+    ordering:{source:orderBytes?'case_order_file':'registry_order',case_ids:cases.map(c=>c.case_id),order_file_sha256:orderBytes?digest(orderBytes):null},
     native_unit_suite_executed:false,application_source_modified:false,freeze_complete:false,defect_adjudication:'not_performed'};
   let interrupted=false,currentJava,currentNode;
   const signalHandler=s=>{interrupted=true;summary.interruption=s;currentNode?.kill('SIGTERM');currentJava?.kill('SIGTERM');};

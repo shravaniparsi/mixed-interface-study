@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "evaluation_preparation_snapshot",
-  "recorded_at_utc": "2026-11-07T08:04:23.557975+00:00",
+  "recorded_at_utc": "2026-11-07T08:33:39.993359+00:00",
   "primary_freeze_complete": false,
   "execution_authorized_by_snapshot": false,
   "workflow_templates": 8,
@@ -12,9 +12,9 @@
     "finite_catalog_and_source_conflicts": "registered_existing_variants_only",
     "declared_candidate_pair_index": "registered_not_implemented_equivalence",
     "quartz_component_attribution": "implemented_source_pinned_control_validation",
-    "realworld_component_attribution": "pending",
-    "petclinic_component_attribution": "pending",
-    "paired_replay_and_reduction": "not_yet_implemented_as_one_campaign",
+    "realworld_component_attribution": "implemented_source_qualified_retrospective_extraction_capture_gaps_retained",
+    "petclinic_component_attribution": "implemented_source_qualified_retrospective_extraction_runtime_gaps_retained",
+    "paired_replay_and_reduction": "quartz_control_wrapper_implemented_hosted_validation_pending; multiworkflow_primary_campaign_pending",
     "primary_environment_and_execution_qualification": "partial",
     "primary_freeze": "incomplete",
     "timed_selector_evaluation": "not_ready"
@@ -23,8 +23,8 @@
     {
       "id": "F-ATTRIBUTION",
       "scope": "paired_diagnostic_primary",
-      "issue": "RealWorld and PetClinic need source-qualified component reducers and a distinction between application observations, missing/censored checks and harness failures. Quartz component partition exists, but does not compute paired detection overlap.",
-      "close_with": "Validate reducers on preserved controls/failures and synthetic attribution edge cases; implement pair-level validity and signal overlap separately from defect adjudication."
+      "issue": "Source-qualified component extraction now exists for RealWorld, PetClinic and Quartz. Four historical RealWorld capture-error records remain incomplete. Cross-workflow paired validity and observation-overlap integration remain pending.",
+      "close_with": "Repair future capture shutdown, preserve historical incompletes, and connect qualified branch components to the validated paired campaign without assigning shared probes to a single observation channel."
     },
     {
       "id": "F-PARITY",
@@ -42,7 +42,8 @@
       "id": "F-PAIR-CAMPAIGN",
       "scope": "paired_diagnostic_primary",
       "issue": "A declared input-pair inventory is not an executable independently reset paired campaign. Corresponding prefix-state equality, schedule, stop/resume and repeat rules need enforcement.",
-      "close_with": "Implement and validate the registered pair schedule and paired-state reducer on ordinary controls, preserving all failed attempts."
+      "close_with": "Implement and validate the registered pair schedule and paired-state reducer on ordinary controls, preserving all failed attempts.",
+      "implementation_progress": "Quartz controls-only wrapper implemented with fixed two-pair order and explicit equivalence checks; hosted validation pending. Boundary and multiworkflow campaign scope still pending."
     },
     {
       "id": "F-PRIMARY-RUNTIME",
@@ -58,9 +59,9 @@
     }
   ],
   "artifact_sha256": {
-    ".github/workflows/applications.yml": "f0437b55e1a28c1c1dba9eee2b05ca169adf04c8adbb880db5230adfb473d0a7",
+    ".github/workflows/applications.yml": "1eafeccd54b96ec497a87ddeb563c8ba109665a230acefd9e9fc46d0b915b83e",
     ".github/workflows/unit.yml": "ac3505984cee234897e652ae736ba637339562b994946df1d31aca14638f413e",
-    "manifests/multiworkflow-eligibility-v1.json": "ed93c164cdb7596d8601843d14f030dcf566f7228c173f0d510ab16408d166f5",
+    "manifests/multiworkflow-eligibility-v1.json": "3f1659620c4f448ae907b73b8c5be68b9eea081f7f5319234b07b03a3982621c",
     "manifests/paired-candidate-inventory-v1.json": "c508eda2f3da7086706d4c60804de82e765e250d5d8dc0b8d4d72bdd39a5ac55",
     "manifests/petclinic-candidates-v1.json": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
     "manifests/petclinic-reproducibility.json": "645e9224955d699f50a5d07c8d674f5c3414c54d1fb3c27db5e30b4ee1ec299b",
@@ -79,6 +80,7 @@
     "manifests/realworld.json": "d9dbb329acb753f5c14ca681f14a60f7e10df57b259bdce4f3b2a11e07b26e37",
     "protocol/ci-portability-v1.md": "33188421f3bb33b8684afc0ae72c27296df1a03a3d0274a61c4d99c2aa6823a0",
     "protocol/multiworkflow-freeze-gates-v1.md": "83474ff687a65d19bd42cd6909004d99d62ebbfbb534de0747895e8ff3eec1aa",
+    "protocol/paired-control-validation-v1.md": "a2673cbf953bf1dda4df415b1276c9dd0dc5d4815016b96b1a5ca995620455f9",
     "protocol/paired-oracle-analysis-v1.md": "3159ae6a0373d79ab77e7844a31c4e08133c98794942c0806ce42e7f035d5afc",
     "protocol/pilot-v0.2.md": "e9b53b1beefb8da0f49e9c7d46f859bc9d13a4b8d5c0b05e31c6c79d9b8c093f",
     "protocol/runtime-integration-v1.md": "5dc7cad14b3d1130ff0ade716c7527bf9e2328136bba15449e91e24fb2db1d9a",
@@ -88,24 +90,31 @@
     "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
     "scripts/ci/prepare_quartz.py": "a92655b1c1b13b176a72ad48db5df4dd7d7e1861e6849d1f1613b284ff3d0423",
     "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
-    "scripts/ci/run_applications.sh": "7b1b7284e1748ab8dbc17ec62fec847d7289f48937bf005cb97619cb138c82d5",
+    "scripts/ci/run_applications.sh": "070fe1d4e8fb614ea6e2b1cba8a11aace1b211eaf506169ed7acad046cfc184f",
     "scripts/petclinic_boundary_slice.mjs": "ca662bb1750b47c6c1b0ca8d9895f9199413fd99feef9de1d44b59622223c625",
-    "scripts/prepare_evaluation.py": "7f3bc5496d0b47990cc6f1c9c08337a5ce5150f881553c0d3fd0716aa167ba10",
+    "scripts/prepare_evaluation.py": "d90d09fde58709b2426c8f2f6b2b1efe8df1514d0121f76fc7e300f2e59c5151",
     "scripts/quartz_browser_cleanup.py": "8a9d628037c4a4cc7bf17ba3f047898a61663c5b0601c2e59b83d6af35905013",
     "scripts/quartz_generated_case.mjs": "3efc3c794f774428285908d226c814af421360d79dfa9b7e67c6aec0ff22ce0e",
     "scripts/realworld_boundary_case.mjs": "bf0407de703d30a425dce3cfde3c218ee8096f7747e75e8ecd57f27e12b144d5",
     "scripts/realworld_case_worker.py": "a0333661f5e3357be5c70aa26288cfb555f7e1f9410e6f145fca219b71e904b7",
     "scripts/realworld_generated_case.mjs": "c3a0ef4806fd0f245a7cd783568c4286ea1462648d1f1224f9495777d847c7f1",
     "scripts/run_generated_integration.py": "1091e37787ab83d532a79a5c0d2396df8fd48f8925843f309aceb652d5074bd3",
-    "scripts/run_quartz_registry.mjs": "aee2f1fd8376d17141827d45d800fcf182ac69691a724ae73bd02a8e26e1c165",
+    "scripts/run_quartz_pairs.py": "dc7464e93ea1c619e01b0b2f8b3bc47c8ff52d91cb73aa16befde310d68710ae",
+    "scripts/run_quartz_registry.mjs": "9f247f9050dc915353b67ce6af0367fc0bf2b6278324756cca879fb093a1f55d",
     "scripts/run_realworld_boundaries.py": "839ef98ccf04315d537dbe3292a8a3afbd19f07f81330a8db91e1a04c8ddaac5",
+    "scripts/summarize_petclinic_oracle_components.py": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9",
     "scripts/summarize_quartz_oracle_components.py": "f484be485167daabc77827fcf89f1f15e8585f275e310759b103f7eb3ed169d6",
+    "scripts/summarize_realworld_oracle_components.py": "848e935e62aa2a777397dacc007035b81dbb6a11b0a3ad3803e6b82271f0de73",
     "src/mixed_interface/evaluation.py": "70294bffcffc8dbd9d1f411956c553757663d5d70ce403dfab7be483945be6c9",
     "src/mixed_interface/registry.py": "09790725cdc1546e150433454a2d3a5e007eef4205162c6da186aa1062999bd0",
     "src/mixed_interface/runtime.py": "8d20a56e265294da50185870b5eff0f5dfa8db90fa40afc58b882104ab20878f",
     "src/mixed_interface/selection.py": "7cd16e8847fb5a2fcd48a1b2687419b21882b29d74bb551280cfd156c25f8f21",
+    "tests/quartz_generated_case.test.mjs": "015b01fc2710e0bac319713872296b0caf174419aac2333fe6d170a54fd0f3c2",
     "tests/test_evaluation.py": "d636e6d4720765c5b5a926148d4b87ee52900b4ee39f08dec02ba0487017f726",
-    "tests/test_quartz_oracle_components.py": "3ba41368ec25a78c2335df123104bc66056f5fee906e8766fa8795436fc80d7e"
+    "tests/test_petclinic_oracle_components.py": "7afa8567bc7c8baa2f1d69c1bdc45d0085d85e92507cf676114fd92f1f2941ef",
+    "tests/test_quartz_oracle_components.py": "3ba41368ec25a78c2335df123104bc66056f5fee906e8766fa8795436fc80d7e",
+    "tests/test_quartz_pairs.py": "85a98232841ed3d82be7501a53c8843a40212373690fb40365c7a20958ea4844",
+    "tests/test_realworld_oracle_components.py": "35ef55da2429ddd04ad1c3b705db8e1308251987caf46f5388b70a2079c05d46"
   },
   "scope": "A dated reproducible preparation snapshot. It cannot be relabelled as a completed primary freeze or used to dispatch unexecuted boundaries."
 }

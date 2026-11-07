@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {registryFromBytes,selectCases,bindConsumer,expectedProducer,expectedForm,decodeNativeEntries,allowedRequest,JOB_PATH} from '../scripts/quartz_generated_case.mjs';
-import {stopOwned,childExitedCleanly} from '../scripts/run_quartz_registry.mjs';
+import {stopOwned,childExitedCleanly,orderedCases} from '../scripts/run_quartz_registry.mjs';
 
 const stored={jobKeyDTO:{group:'RESEARCH',name:'pilot-job'},jobClassName:'actual.ReturnedClass',description:null,durable:true,requestsRecovery:true,
   jobDataMap:{' padded ':{nested:[7,true,null]},'':'blank key',key:'first',' key ':'second'},triggerKeys:[]};
@@ -41,6 +41,15 @@ test('pinned corpus defaults to only four controls; all is explicit',async()=>{
   assert.equal(selectCases(registry).length,4);assert.deepEqual(new Set(selectCases(registry).map(c=>c.operations.map(o=>o.interface).join('/'))),new Set(['ui/ui','api/ui','ui/api','api/api']));
   assert.equal(selectCases(registry,'all').length,44);assert.throws(()=>selectCases(registry,'invalid'));
   assert.throws(()=>registryFromBytes(Buffer.concat([bytes,Buffer.from('\n')])),/Registry bytes differ/);
+});
+test('explicit order permits all four ordinary controls exactly once and rejects boundaries',async()=>{
+  const registry=registryFromBytes(await readFile(new URL('../manifests/quartz-job-generated-pool-v2.json',import.meta.url)));
+  const controls=selectCases(registry),order={schema_version:1,scope:'quartz_route_controls',registry_sha256:'fd575f01818659c1efde48514392b8cba8b06812f3e385049314edfcae58d2e0',case_ids:controls.map(c=>c.case_id).reverse()};
+  assert.deepEqual(orderedCases(registry,'controls',order).map(c=>c.case_id),order.case_ids);
+  assert.throws(()=>orderedCases(registry,'all',order),/only for ordinary controls/);
+  for(const ids of [order.case_ids.slice(1),[...order.case_ids,order.case_ids[0]],[order.case_ids[0],...order.case_ids.slice(0,3)],[...order.case_ids.slice(0,3),registry.cases.find(c=>c.intervention!=='route_only').case_id]])assert.throws(()=>orderedCases(registry,'controls',{...order,case_ids:ids}));
+  assert.throws(()=>orderedCases(registry,'controls',{...order,registry_sha256:'changed'}));
+  assert.throws(()=>orderedCases(registry,'controls',{...order,scope:'boundary'}));
 });
 test('owned process cleanup handles graceful and forced exits without killing other processes',async()=>{
   for(const ignore of [false,true]){
