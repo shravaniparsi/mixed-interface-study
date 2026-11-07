@@ -1,0 +1,5232 @@
+{
+  "application_executions_added": 0,
+  "case_count": 12,
+  "cases": [
+    {
+      "accepted_prefix": true,
+      "backend_pid": 3304,
+      "binding_audit": {
+        "bound_intended_request": {
+          "address": "2 Pilot Lane",
+          "city": "Testville",
+          "firstName": "Alice",
+          "id": 11,
+          "lastName": "Research",
+          "telephone": "5550100001"
+        },
+        "continuation_request": {
+          "address": "2 Pilot Lane",
+          "city": "Testville",
+          "firstName": "Alice",
+          "id": 11,
+          "lastName": "Research",
+          "telephone": "5550100001"
+        },
+        "owner_id": 11,
+        "pet_id": null,
+        "producer_request": {
+          "address": "1 Pilot Lane",
+          "city": "Testville",
+          "firstName": "Alice",
+          "lastName": "Research",
+          "telephone": "5550100001"
+        },
+        "target_id": 11
+      },
+      "candidate_id": "owner_telephone_10",
+      "case_id": "owner_telephone_10-api_semantic",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "id": "assigned_payload_matches_bound_intent",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_update_status_204",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/owners/11",
+                  "payload": {
+                    "address": "2 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "id": 11,
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                },
+                "observed": {
+                  "method": "PUT",
+                  "path": "/owners/11",
+                  "payload": {
+                    "address": "2 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "id": 11,
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                }
+              },
+              "id": "integrity:continuation_edit_command",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "accepted_input_values_preserved",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "address": "1 Pilot Lane",
+                "city": "Testville",
+                "firstName": "Alice",
+                "id": 11,
+                "lastName": "Research",
+                "pets": [],
+                "telephone": "5550100001"
+              },
+              "response_class": "accepted_201",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "shared_before_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_response_status_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:returned_target_id_valid",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 5,
+                "native_requests": 0,
+                "rejection_state": null
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3304,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "target_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "returned_relationship_bindings",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "id": "shared_target_read_200",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "id": 11,
+                  "lastName": "Research",
+                  "telephone": "5550100001"
+                },
+                "observed": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "id": 11,
+                  "lastName": "Research",
+                  "telephone": "5550100001"
+                }
+              },
+              "id": "integrity:loaded_target_binding",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "id": "target_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "graph_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "complete_graph_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": "11cf474c3699b183cb0e39581777a546b7ae0fce7899af09b22b339ea4a015ea",
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 1
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-api",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "owner_address_edit",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": true,
+      "backend_pid": 3355,
+      "binding_audit": {
+        "bound_intended_request": {
+          "address": "2 Pilot Lane",
+          "city": "Testville",
+          "firstName": "Alice",
+          "id": 11,
+          "lastName": "Research",
+          "telephone": "5550100001"
+        },
+        "continuation_request": {
+          "address": "2 Pilot Lane",
+          "city": "Testville",
+          "firstName": "Alice",
+          "id": 11,
+          "lastName": "Research",
+          "telephone": "5550100001"
+        },
+        "owner_id": 11,
+        "pet_id": null,
+        "producer_request": {
+          "address": "1 Pilot Lane",
+          "city": "Testville",
+          "firstName": "Alice",
+          "lastName": "Research",
+          "telephone": "5550100001"
+        },
+        "target_id": 11
+      },
+      "candidate_id": "owner_telephone_10",
+      "case_id": "owner_telephone_10-fresh_ui",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "id": "native_target_load_matches_bound_state",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_loaded_fields_match_projection",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "detail": {
+                "disabled": false
+              },
+              "id": "native_submit_enabled",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_payload_matches_bound_intent",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_update_status_204",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "id": 11,
+                  "lastName": "Research",
+                  "pets": [],
+                  "telephone": "5550100001"
+                },
+                "observed": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "id": 11,
+                  "lastName": "Research",
+                  "pets": [],
+                  "telephone": "5550100001"
+                }
+              },
+              "id": "integrity:native_loaded_target",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "lastName": "Research",
+                  "telephone": "5550100001"
+                },
+                "observed": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "lastName": "Research",
+                  "telephone": "5550100001"
+                }
+              },
+              "id": "integrity:native_loaded_fields",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/owners/11",
+                  "payload": {
+                    "address": "2 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "id": 11,
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                },
+                "observed": {
+                  "method": "PUT",
+                  "path": "/owners/11",
+                  "payload": {
+                    "address": "2 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "id": 11,
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                }
+              },
+              "id": "integrity:continuation_edit_command",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "aggregate_status": "continuation_passed",
+              "disabled": false,
+              "id": "native_submission_state"
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "accepted_input_values_preserved",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "address": "1 Pilot Lane",
+                "city": "Testville",
+                "firstName": "Alice",
+                "id": 11,
+                "lastName": "Research",
+                "pets": [],
+                "telephone": "5550100001"
+              },
+              "response_class": "accepted_201",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "shared_before_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_response_status_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "firstName": "Alice",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:returned_target_id_valid",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 1,
+                "guards": 7,
+                "native_requests": 3,
+                "rejection_state": null
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3355,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "target_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "returned_relationship_bindings",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "id": "shared_target_read_200",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "id": 11,
+                  "lastName": "Research",
+                  "telephone": "5550100001"
+                },
+                "observed": {
+                  "address": "1 Pilot Lane",
+                  "city": "Testville",
+                  "firstName": "Alice",
+                  "id": 11,
+                  "lastName": "Research",
+                  "telephone": "5550100001"
+                }
+              },
+              "id": "integrity:loaded_target_binding",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "id": "target_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "graph_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "complete_graph_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": "11cf474c3699b183cb0e39581777a546b7ae0fce7899af09b22b339ea4a015ea",
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 1
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 5
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 7
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 8
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-ui",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "owner_address_edit",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": true,
+      "backend_pid": 3428,
+      "binding_audit": {
+        "bound_intended_request": {
+          "birthDate": "2024-01-10",
+          "id": 14,
+          "name": "Renamedpet",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        },
+        "continuation_request": {
+          "birthDate": "2024-01-10",
+          "id": 14,
+          "name": "Renamedpet",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        },
+        "owner_id": 11,
+        "pet_id": 14,
+        "producer_request": {
+          "birthDate": "2024-01-10",
+          "name": "Pilotpet",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        },
+        "target_id": 14
+      },
+      "candidate_id": "pet_valid",
+      "case_id": "pet_valid-api_semantic",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "id": "assigned_payload_matches_bound_intent",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_update_status_204",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/pets/14",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "id": 14,
+                    "name": "Renamedpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "PUT",
+                  "path": "/pets/14",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "id": 14,
+                    "name": "Renamedpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                }
+              },
+              "id": "integrity:continuation_edit_command",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "accepted_input_values_preserved",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "birthDate": "2024-01-10",
+                "id": 14,
+                "name": "Pilotpet",
+                "ownerId": 11,
+                "type": {
+                  "id": 1,
+                  "name": "cat"
+                },
+                "visits": []
+              },
+              "response_class": "accepted_201",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "linked_visit_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "shared_before_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_response_status_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "name": "Pilotpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "name": "Pilotpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:returned_target_id_valid",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 8,
+                "native_requests": 0,
+                "rejection_state": null
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3428,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "target_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "returned_relationship_bindings",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "id": "shared_target_read_200",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "retrospective_state_observation",
+              "id": "shared_bound_owner_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  }
+                },
+                "observed": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  }
+                }
+              },
+              "id": "integrity:loaded_target_binding",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:returned_pet_owner",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:bound_owner_read_status",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:bound_owner_identity",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "id": "target_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "graph_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "complete_graph_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": "8a9be2c2c6bf579c3d199cd3d80fa716a24e749a91a3e202a924aa3600ec0111",
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 2
+          },
+          {
+            "reason": "shared_binding_read_accounted_in_extension",
+            "trace_index": 7
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-api",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "pet_rename",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": true,
+      "backend_pid": 3478,
+      "binding_audit": {
+        "bound_intended_request": {
+          "birthDate": "2024-01-10",
+          "id": 14,
+          "name": "Renamedpet",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        },
+        "continuation_request": {
+          "birthDate": "2024-01-10",
+          "id": 14,
+          "name": "Renamedpet",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        },
+        "owner_id": 11,
+        "pet_id": 14,
+        "producer_request": {
+          "birthDate": "2024-01-10",
+          "name": "Pilotpet",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        },
+        "target_id": 14
+      },
+      "candidate_id": "pet_valid",
+      "case_id": "pet_valid-fresh_ui",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "id": "native_target_load_matches_bound_state",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_bound_owner_load",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_type_choice_matches_bound_type",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_loaded_fields_match_projection",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "detail": {
+                "disabled": false
+              },
+              "id": "native_submit_enabled",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_payload_matches_bound_intent",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_update_status_204",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  },
+                  "visits": [
+                    {
+                      "date": "2026-11-06",
+                      "description": "Pilot routine check",
+                      "id": 5,
+                      "petId": 14
+                    }
+                  ]
+                },
+                "observed": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  },
+                  "visits": [
+                    {
+                      "date": "2026-11-06",
+                      "description": "Pilot routine check",
+                      "id": 5,
+                      "petId": 14
+                    }
+                  ]
+                }
+              },
+              "id": "integrity:native_loaded_target",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:native_owner_status",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:native_owner_binding",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "birthDate": "2024/01/10",
+                  "name": "Pilotpet",
+                  "owner_name": "Alice Research",
+                  "typeId": "1"
+                },
+                "observed": {
+                  "birthDate": "2024/01/10",
+                  "name": "Pilotpet",
+                  "owner_name": "Alice Research",
+                  "typeId": "1"
+                }
+              },
+              "id": "integrity:native_loaded_fields",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/pets/14",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "id": 14,
+                    "name": "Renamedpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "PUT",
+                  "path": "/pets/14",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "id": 14,
+                    "name": "Renamedpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                }
+              },
+              "id": "integrity:continuation_edit_command",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "aggregate_status": "continuation_passed",
+              "disabled": false,
+              "id": "native_submission_state"
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "accepted_input_values_preserved",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "birthDate": "2024-01-10",
+                "id": 14,
+                "name": "Pilotpet",
+                "ownerId": 11,
+                "type": {
+                  "id": 1,
+                  "name": "cat"
+                },
+                "visits": []
+              },
+              "response_class": "accepted_201",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "linked_visit_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "shared_before_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_response_status_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "name": "Pilotpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "name": "Pilotpet",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:returned_target_id_valid",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 1,
+                "guards": 12,
+                "native_requests": 5,
+                "rejection_state": null
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3478,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "target_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "returned_relationship_bindings",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "id": "shared_target_read_200",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "retrospective_state_observation",
+              "id": "shared_bound_owner_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  }
+                },
+                "observed": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  }
+                }
+              },
+              "id": "integrity:loaded_target_binding",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:returned_pet_owner",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:bound_owner_read_status",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:bound_owner_identity",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "id": "target_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "graph_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "complete_graph_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": "8a9be2c2c6bf579c3d199cd3d80fa716a24e749a91a3e202a924aa3600ec0111",
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 2
+          },
+          {
+            "reason": "shared_binding_read_accounted_in_extension",
+            "trace_index": 7
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 8
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 9
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 10
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 14
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 15
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-ui",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "pet_rename",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": true,
+      "backend_pid": 3549,
+      "binding_audit": {
+        "bound_intended_request": {
+          "date": "2026-11-07",
+          "description": "Pilot routine check",
+          "id": 5,
+          "pet": {
+            "birthDate": "2024-01-10",
+            "id": 14,
+            "name": "Pilotpet",
+            "ownerId": 11,
+            "type": {
+              "id": 1,
+              "name": "cat"
+            },
+            "visits": [
+              {
+                "date": "2026-11-06",
+                "description": "Pilot routine check",
+                "id": 5,
+                "petId": 14
+              }
+            ]
+          }
+        },
+        "continuation_request": {
+          "date": "2026-11-07",
+          "description": "Pilot routine check",
+          "id": 5,
+          "pet": {
+            "birthDate": "2024-01-10",
+            "id": 14,
+            "name": "Pilotpet",
+            "ownerId": 11,
+            "type": {
+              "id": 1,
+              "name": "cat"
+            },
+            "visits": [
+              {
+                "date": "2026-11-06",
+                "description": "Pilot routine check",
+                "id": 5,
+                "petId": 14
+              }
+            ]
+          }
+        },
+        "owner_id": 11,
+        "pet_id": 14,
+        "producer_request": {
+          "date": "2026-11-06",
+          "description": "Pilot routine check"
+        },
+        "target_id": 5
+      },
+      "candidate_id": "visit_valid",
+      "case_id": "visit_valid-api_semantic",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "id": "assigned_payload_matches_bound_intent",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_update_status_204",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/visits/5",
+                  "payload": {
+                    "date": "2026-11-07",
+                    "description": "Pilot routine check",
+                    "id": 5,
+                    "pet": {
+                      "birthDate": "2024-01-10",
+                      "id": 14,
+                      "name": "Pilotpet",
+                      "ownerId": 11,
+                      "type": {
+                        "id": 1,
+                        "name": "cat"
+                      },
+                      "visits": [
+                        {
+                          "date": "2026-11-06",
+                          "description": "Pilot routine check",
+                          "id": 5,
+                          "petId": 14
+                        }
+                      ]
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "PUT",
+                  "path": "/visits/5",
+                  "payload": {
+                    "date": "2026-11-07",
+                    "description": "Pilot routine check",
+                    "id": 5,
+                    "pet": {
+                      "birthDate": "2024-01-10",
+                      "id": 14,
+                      "name": "Pilotpet",
+                      "ownerId": 11,
+                      "type": {
+                        "id": 1,
+                        "name": "cat"
+                      },
+                      "visits": [
+                        {
+                          "date": "2026-11-06",
+                          "description": "Pilot routine check",
+                          "id": 5,
+                          "petId": 14
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "id": "integrity:continuation_edit_command",
+              "origin_component": "assigned_api_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "accepted_input_values_preserved",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "date": "2026-11-06",
+                "description": "Pilot routine check",
+                "id": 5,
+                "petId": 14
+              },
+              "response_class": "accepted_201",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pet_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "shared_before_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_response_status_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "date": "2026-11-06",
+                    "description": "Pilot routine check"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "date": "2026-11-06",
+                    "description": "Pilot routine check"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:returned_target_id_valid",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 11,
+                "native_requests": 0,
+                "rejection_state": null
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3549,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "target_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "returned_relationship_bindings",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "id": "shared_target_read_200",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "retrospective_state_observation",
+              "id": "shared_bound_pet_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "retrospective_state_observation",
+              "id": "shared_bound_owner_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "date": "2026-11-06",
+                  "description": "Pilot routine check",
+                  "id": 5,
+                  "petId": 14
+                },
+                "observed": {
+                  "date": "2026-11-06",
+                  "description": "Pilot routine check",
+                  "id": 5,
+                  "petId": 14
+                }
+              },
+              "id": "integrity:loaded_target_binding",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 14,
+                "observed": 14
+              },
+              "id": "integrity:returned_visit_parent",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:bound_pet_read_status",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 14,
+                "observed": 14
+              },
+              "id": "integrity:bound_pet_identity",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:returned_pet_owner",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:bound_owner_read_status",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:bound_owner_identity",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "id": "target_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "graph_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "complete_graph_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": "1b03a63cdd806a8930e5471a10a9a2599bd7c21b582adf6f28e530a1eed98fb1",
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 3
+          },
+          {
+            "reason": "shared_binding_read_accounted_in_extension",
+            "trace_index": 8
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-api",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "visit_reschedule",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": true,
+      "backend_pid": 3598,
+      "binding_audit": {
+        "bound_intended_request": {
+          "date": "2026-11-07",
+          "description": "Pilot routine check",
+          "id": 5,
+          "pet": {
+            "birthDate": "2024-01-10",
+            "id": 14,
+            "name": "Pilotpet",
+            "ownerId": 11,
+            "type": {
+              "id": 1,
+              "name": "cat"
+            },
+            "visits": [
+              {
+                "date": "2026-11-06",
+                "description": "Pilot routine check",
+                "id": 5,
+                "petId": 14
+              }
+            ]
+          }
+        },
+        "continuation_request": {
+          "date": "2026-11-07",
+          "description": "Pilot routine check",
+          "id": 5,
+          "pet": {
+            "birthDate": "2024-01-10",
+            "id": 14,
+            "name": "Pilotpet",
+            "ownerId": 11,
+            "type": {
+              "id": 1,
+              "name": "cat"
+            },
+            "visits": [
+              {
+                "date": "2026-11-06",
+                "description": "Pilot routine check",
+                "id": 5,
+                "petId": 14
+              }
+            ]
+          }
+        },
+        "owner_id": 11,
+        "pet_id": 14,
+        "producer_request": {
+          "date": "2026-11-06",
+          "description": "Pilot routine check"
+        },
+        "target_id": 5
+      },
+      "candidate_id": "visit_valid",
+      "case_id": "visit_valid-fresh_ui",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "id": "native_target_load_matches_bound_state",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_bound_owner_load",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_bound_pet_load",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "native_loaded_fields_match_projection",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "detail": {
+                "disabled": false
+              },
+              "id": "native_submit_enabled",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_payload_matches_bound_intent",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_update_status_204",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "date": "2026-11-06",
+                  "description": "Pilot routine check",
+                  "id": 5,
+                  "petId": 14
+                },
+                "observed": {
+                  "date": "2026-11-06",
+                  "description": "Pilot routine check",
+                  "id": 5,
+                  "petId": 14
+                }
+              },
+              "id": "integrity:native_loaded_target",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:native_owner_status",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:native_owner_binding",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:native_pet_status",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  },
+                  "visits": [
+                    {
+                      "date": "2026-11-06",
+                      "description": "Pilot routine check",
+                      "id": 5,
+                      "petId": 14
+                    }
+                  ]
+                },
+                "observed": {
+                  "birthDate": "2024-01-10",
+                  "id": 14,
+                  "name": "Pilotpet",
+                  "ownerId": 11,
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  },
+                  "visits": [
+                    {
+                      "date": "2026-11-06",
+                      "description": "Pilot routine check",
+                      "id": 5,
+                      "petId": 14
+                    }
+                  ]
+                }
+              },
+              "id": "integrity:native_pet_binding",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "date": "2026/11/06",
+                  "description": "Pilot routine check"
+                },
+                "observed": {
+                  "date": "2026/11/06",
+                  "description": "Pilot routine check"
+                }
+              },
+              "id": "integrity:native_loaded_fields",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/visits/5",
+                  "payload": {
+                    "date": "2026-11-07",
+                    "description": "Pilot routine check",
+                    "id": 5,
+                    "pet": {
+                      "birthDate": "2024-01-10",
+                      "id": 14,
+                      "name": "Pilotpet",
+                      "ownerId": 11,
+                      "type": {
+                        "id": 1,
+                        "name": "cat"
+                      },
+                      "visits": [
+                        {
+                          "date": "2026-11-06",
+                          "description": "Pilot routine check",
+                          "id": 5,
+                          "petId": 14
+                        }
+                      ]
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "PUT",
+                  "path": "/visits/5",
+                  "payload": {
+                    "date": "2026-11-07",
+                    "description": "Pilot routine check",
+                    "id": 5,
+                    "pet": {
+                      "birthDate": "2024-01-10",
+                      "id": 14,
+                      "name": "Pilotpet",
+                      "ownerId": 11,
+                      "type": {
+                        "id": 1,
+                        "name": "cat"
+                      },
+                      "visits": [
+                        {
+                          "date": "2026-11-06",
+                          "description": "Pilot routine check",
+                          "id": 5,
+                          "petId": 14
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "id": "integrity:continuation_edit_command",
+              "origin_component": "assigned_native_continuation",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "aggregate_status": "continuation_passed",
+              "disabled": false,
+              "id": "native_submission_state"
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "accepted_input_values_preserved",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "date": "2026-11-06",
+                "description": "Pilot routine check",
+                "id": 5,
+                "petId": 14
+              },
+              "response_class": "accepted_201",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pet_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "shared_before_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "assigned_response_status_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "date": "2026-11-06",
+                    "description": "Pilot routine check"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "date": "2026-11-06",
+                    "description": "Pilot routine check"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:returned_target_id_valid",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 1,
+                "guards": 17,
+                "native_requests": 5,
+                "rejection_state": null
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3598,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "target_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "returned_relationship_bindings",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "id": "shared_target_read_200",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "retrospective_state_observation",
+              "id": "shared_bound_pet_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "retrospective_state_observation",
+              "id": "shared_bound_owner_read_matches_prefix_graph",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "date": "2026-11-06",
+                  "description": "Pilot routine check",
+                  "id": 5,
+                  "petId": 14
+                },
+                "observed": {
+                  "date": "2026-11-06",
+                  "description": "Pilot routine check",
+                  "id": 5,
+                  "petId": 14
+                }
+              },
+              "id": "integrity:loaded_target_binding",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 14,
+                "observed": 14
+              },
+              "id": "integrity:returned_visit_parent",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:bound_pet_read_status",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 14,
+                "observed": 14
+              },
+              "id": "integrity:bound_pet_identity",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:returned_pet_owner",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 200,
+                "observed": 200
+              },
+              "id": "integrity:bound_owner_read_status",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": 11,
+                "observed": 11
+              },
+              "id": "integrity:bound_owner_identity",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "id": "target_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "graph_readback_status_200",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "final_target_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "complete_graph_preservation",
+              "origin_component": "shared_post_continuation_api_readback",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": "1b03a63cdd806a8930e5471a10a9a2599bd7c21b582adf6f28e530a1eed98fb1",
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "b691702c72195bab73912481843d0b78aeeeca07d3b2c9fdadd604a08c4747b6",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 3
+          },
+          {
+            "reason": "shared_binding_read_accounted_in_extension",
+            "trace_index": 7
+          },
+          {
+            "reason": "shared_binding_read_accounted_in_extension",
+            "trace_index": 8
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 9
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 10
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 12
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 15
+          },
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 16
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-ui",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "visit_reschedule",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": false,
+      "backend_pid": 3669,
+      "binding_audit": {
+        "continuation_request": null,
+        "producer_request": {
+          "address": "1 Pilot Lane",
+          "city": "Testville",
+          "lastName": "Research",
+          "telephone": "5550100001"
+        }
+      },
+      "candidate_id": "owner_omit_firstName",
+      "case_id": "owner_omit_firstName-api_semantic",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "detail": "The request contains invalid or missing parameters",
+                "instance": "/petclinic/api/owners",
+                "schemaValidationErrors": [
+                  {
+                    "defaultMessage": "must not be null",
+                    "field": "firstName",
+                    "message": "Field 'firstName' must not be null (rejected value: null)",
+                    "rejectedValue": "null"
+                  }
+                ],
+                "status": 400,
+                "timestamp": "2026-11-07T18:55:03.208230894Z",
+                "title": "MethodArgumentNotValidException",
+                "type": "http://127.0.0.1:9966/petclinic/api/owners"
+              },
+              "response_class": "client_rejection",
+              "status": 400
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 2,
+                "native_requests": 0,
+                "rejection_state": "unchanged"
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3669,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "failed_owner_create_graph_unchanged",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "detail": {
+                "projection": "owner/pet/visit API graph after valid setup"
+              },
+              "id": "pre_candidate_graph_unchanged_after_rejection",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": null,
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 1
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-api",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "owner_address_edit",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": false,
+      "backend_pid": 3723,
+      "binding_audit": {
+        "continuation_request": null,
+        "producer_request": {
+          "address": "1 Pilot Lane",
+          "city": "Testville",
+          "lastName": "Research",
+          "telephone": "5550100001"
+        }
+      },
+      "candidate_id": "owner_omit_firstName",
+      "case_id": "owner_omit_firstName-fresh_ui",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "detail": "The request contains invalid or missing parameters",
+                "instance": "/petclinic/api/owners",
+                "schemaValidationErrors": [
+                  {
+                    "defaultMessage": "must not be null",
+                    "field": "firstName",
+                    "message": "Field 'firstName' must not be null (rejected value: null)",
+                    "rejectedValue": "null"
+                  }
+                ],
+                "status": 400,
+                "timestamp": "2026-11-07T18:55:13.625367855Z",
+                "title": "MethodArgumentNotValidException",
+                "type": "http://127.0.0.1:9966/petclinic/api/owners"
+              },
+              "response_class": "client_rejection",
+              "status": 400
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners",
+                  "payload": {
+                    "address": "1 Pilot Lane",
+                    "city": "Testville",
+                    "lastName": "Research",
+                    "telephone": "5550100001"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 2,
+                "native_requests": 0,
+                "rejection_state": "unchanged"
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3723,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "id": "failed_owner_create_graph_unchanged",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "state_observation",
+              "detail": {
+                "projection": "owner/pet/visit API graph after valid setup"
+              },
+              "id": "pre_candidate_graph_unchanged_after_rejection",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": null,
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 1
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-ui",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "owner_address_edit",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": false,
+      "backend_pid": 3772,
+      "binding_audit": {
+        "continuation_request": null,
+        "producer_request": {
+          "birthDate": "2024-01-10",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        }
+      },
+      "candidate_id": "pet_omit_name",
+      "case_id": "pet_omit_name-api_semantic",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "detail": "The request contains invalid or missing parameters",
+                "instance": "/petclinic/api/owners/11/pets",
+                "schemaValidationErrors": [
+                  {
+                    "defaultMessage": "must not be null",
+                    "field": "name",
+                    "message": "Field 'name' must not be null (rejected value: null)",
+                    "rejectedValue": "null"
+                  }
+                ],
+                "status": 400,
+                "timestamp": "2026-11-07T18:55:23.738460610Z",
+                "title": "MethodArgumentNotValidException",
+                "type": "http://127.0.0.1:9966/petclinic/api/owners/11/pets"
+              },
+              "response_class": "client_rejection",
+              "status": 400
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 2,
+                "native_requests": 0,
+                "rejection_state": "unchanged"
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3772,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "analysis_role": "state_observation",
+              "detail": {
+                "projection": "owner/pet/visit API graph after valid setup"
+              },
+              "id": "pre_candidate_graph_unchanged_after_rejection",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": null,
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 2
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-api",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "pet_rename",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": false,
+      "backend_pid": 3822,
+      "binding_audit": {
+        "continuation_request": null,
+        "producer_request": {
+          "birthDate": "2024-01-10",
+          "type": {
+            "id": 1,
+            "name": "cat"
+          }
+        }
+      },
+      "candidate_id": "pet_omit_name",
+      "case_id": "pet_omit_name-fresh_ui",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "detail": "The request contains invalid or missing parameters",
+                "instance": "/petclinic/api/owners/11/pets",
+                "schemaValidationErrors": [
+                  {
+                    "defaultMessage": "must not be null",
+                    "field": "name",
+                    "message": "Field 'name' must not be null (rejected value: null)",
+                    "rejectedValue": "null"
+                  }
+                ],
+                "status": 400,
+                "timestamp": "2026-11-07T18:55:33.840530167Z",
+                "title": "MethodArgumentNotValidException",
+                "type": "http://127.0.0.1:9966/petclinic/api/owners/11/pets"
+              },
+              "response_class": "client_rejection",
+              "status": 400
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets",
+                  "payload": {
+                    "birthDate": "2024-01-10",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 2,
+                "native_requests": 0,
+                "rejection_state": "unchanged"
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3822,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "analysis_role": "state_observation",
+              "detail": {
+                "projection": "owner/pet/visit API graph after valid setup"
+              },
+              "id": "pre_candidate_graph_unchanged_after_rejection",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": null,
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "d6e1d72b9c266680037ee60d39757911a6c56029e7d127f82c50018c3a289c8d",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 2
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-ui",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "pet_rename",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": false,
+      "backend_pid": 3871,
+      "binding_audit": {
+        "continuation_request": null,
+        "producer_request": {
+          "description": "Pilot routine check"
+        }
+      },
+      "candidate_id": "visit_omit_date",
+      "case_id": "visit_omit_date-api_semantic",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "detail": "The request contains invalid or missing parameters",
+                "instance": "/petclinic/api/owners/11/pets/14/visits",
+                "schemaValidationErrors": [
+                  {
+                    "defaultMessage": "must not be null",
+                    "field": "date",
+                    "message": "Field 'date' must not be null (rejected value: null)",
+                    "rejectedValue": "null"
+                  }
+                ],
+                "status": 400,
+                "timestamp": "2026-11-07T18:55:44.121222969Z",
+                "title": "MethodArgumentNotValidException",
+                "type": "http://127.0.0.1:9966/petclinic/api/owners/11/pets/14/visits"
+              },
+              "response_class": "client_rejection",
+              "status": 400
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pet_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "description": "Pilot routine check"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "description": "Pilot routine check"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 2,
+                "native_requests": 0,
+                "rejection_state": "unchanged"
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3871,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "analysis_role": "state_observation",
+              "detail": {
+                "projection": "owner/pet/visit API graph after valid setup"
+              },
+              "id": "pre_candidate_graph_unchanged_after_rejection",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "11ef502bcbc506add9a783089692493815761eb2e12394dd5e37fb5cb6fe3015",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": null,
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "11ef502bcbc506add9a783089692493815761eb2e12394dd5e37fb5cb6fe3015",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 3
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-api",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "visit_reschedule",
+      "unavailable_evidence": []
+    },
+    {
+      "accepted_prefix": false,
+      "backend_pid": 3921,
+      "binding_audit": {
+        "continuation_request": null,
+        "producer_request": {
+          "description": "Pilot routine check"
+        }
+      },
+      "candidate_id": "visit_omit_date",
+      "case_id": "visit_omit_date-fresh_ui",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "id": "prefix_not_server_error",
+              "origin_component": "immediate_response",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "candidate_http_response",
+              "interpretation": "A 5xx response is not a clean validation rejection.",
+              "response": {
+                "detail": "The request contains invalid or missing parameters",
+                "instance": "/petclinic/api/owners/11/pets/14/visits",
+                "schemaValidationErrors": [
+                  {
+                    "defaultMessage": "must not be null",
+                    "field": "date",
+                    "message": "Field 'date' must not be null (rejected value: null)",
+                    "rejectedValue": "null"
+                  }
+                ],
+                "status": 400,
+                "timestamp": "2026-11-07T18:55:54.767610399Z",
+                "title": "MethodArgumentNotValidException",
+                "type": "http://127.0.0.1:9966/petclinic/api/owners/11/pets/14/visits"
+              },
+              "response_class": "client_rejection",
+              "status": 400
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "integrity": {
+          "checks": [
+            {
+              "id": "registered_candidate_identity",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "recorded_actor",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "reset_response_200",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "initial_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pinned_initial_graph",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "registered_prefix_payload",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_response_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "owner_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "pet_setup",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "prefix_resource_binding",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "setup_operation_bundle",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_state_hash",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "id": "post_prefix_graph_record",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_source_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": true,
+                "observed": true
+              },
+              "id": "integrity:pre_candidate_state_readable",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "description": "Pilot routine check"
+                  }
+                },
+                "observed": {
+                  "method": "POST",
+                  "path": "/owners/11/pets/14/visits",
+                  "payload": {
+                    "description": "Pilot routine check"
+                  }
+                }
+              },
+              "id": "integrity:candidate_prefix_command",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "capture_contexts": 0,
+                "guards": 2,
+                "native_requests": 0,
+                "rejection_state": "unchanged"
+              },
+              "id": "native_capture_complete",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            },
+            {
+              "analysis_role": "comparability_guard",
+              "detail": {
+                "confirmed": true,
+                "owned": true,
+                "pid": 3921,
+                "signal": "SIGTERM"
+              },
+              "id": "owned_backend_exit_confirmed",
+              "origin_component": "integrity",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "analysis_role": "state_observation",
+              "detail": {
+                "projection": "owner/pet/visit API graph after valid setup"
+              },
+              "id": "pre_candidate_graph_unchanged_after_rejection",
+              "origin_component": "prefix_state_reads",
+              "passed": true,
+              "scope": "recorded_integrity_adapter_predicate"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "id": "post_prefix_graph_read",
+              "recorded_graph_sha256": "11ef502bcbc506add9a783089692493815761eb2e12394dd5e37fb5cb6fe3015",
+              "status": 200
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Shared direct API target/graph readback; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_rejected"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "final_state_sha256": null,
+      "historical_status": "development_only",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "interpretation": "Source-qualified engineering controls; shared pre-continuation GETs are not API-exclusive observations. No defect adjudication.",
+      "policy_unresolved": false,
+      "post_prefix_state_sha256": "11ef502bcbc506add9a783089692493815761eb2e12394dd5e37fb5cb6fe3015",
+      "projection": {
+        "kind": "finite_legacy_trace_view_with_separate_new_evidence_checks",
+        "omitted_from_legacy_view": [
+          {
+            "reason": "accounted_in_capture_or_pre_candidate_snapshot_extension",
+            "trace_index": 3
+          }
+        ],
+        "original_trace_changed": false,
+        "visit_api_binding_read_phase_projected_to": "continuation_read"
+      },
+      "route": "api-ui",
+      "source_version": "petclinic_integrity_controls_631a667",
+      "template": "visit_reschedule",
+      "unavailable_evidence": []
+    }
+  ],
+  "dependency_sha256": {
+    "integrity_validator": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "legacy_reducer": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9"
+  },
+  "input_file_sha256": {
+    "observations/owner_omit_firstName-api_semantic.json": "6314e42ebf6ea098b3f4c9684c6a2331bbacbdcdf9ee57edca364203d761c2c1",
+    "observations/owner_omit_firstName-fresh_ui.json": "c5ac5c3a936cca3c805950021005d7af6edda473581e23f181956a89e40ec518",
+    "observations/owner_telephone_10-api_semantic.json": "eb75ad6574934ad284618aab200aac4c0dd7686112824e5053fa6a295b8458e7",
+    "observations/owner_telephone_10-fresh_ui.json": "433690c8bb94c731520ae90bb5ac2b468871e9106101b482db6ca7be2a4c5196",
+    "observations/pet_omit_name-api_semantic.json": "63fb11c12a65e9fabfd0ab12bd53e39ae874028098758cf94be0c9e023966361",
+    "observations/pet_omit_name-fresh_ui.json": "4eaf1081f6340afbbb2dea1a2a8e1aa922806808184a0c740d35e15898714c30",
+    "observations/pet_valid-api_semantic.json": "7cf7cbd1bc24f36ebc5e9d2e1524bcbf1559d4805c230aa5d743e30f79a7178f",
+    "observations/pet_valid-fresh_ui.json": "56bf2af7f7d1e1dd77ebdfab3b51709272e7ed9a59aebdcc3f0eb6e2751c3868",
+    "observations/visit_omit_date-api_semantic.json": "c5cdf1da0ab5a5f6365ff0b0075047f61446bafa23dbfbdc2e59852c69cdb39e",
+    "observations/visit_omit_date-fresh_ui.json": "54f2560a22d58e95d0f449a1ac0c916b4b581a592fb7f585a392fceffbd9270b",
+    "observations/visit_valid-api_semantic.json": "598766bd1ea352fb1c6cb6b07178ce6c6b2556def84499c86fede0be0a2defaf",
+    "observations/visit_valid-fresh_ui.json": "762644d2f6172e69106c392735d2a43fd04c59d34e6ae62aaa9d0fe3195d1f7d"
+  },
+  "kind": "petclinic_integrity_component_observations",
+  "primary_freeze_complete": false,
+  "reducer_sha256": "b275004631c141530aa92470bd21dfb1dcd052a9de28172af9a39f8c1b98af20",
+  "scope": "twelve_previously_examined_hosted_integrity_control_branches",
+  "source_plan_sha256": "b57633df502f0a6d9d08e88f751fb7d5aae9e5b2dc1d5e589e7547aca3fc59f4",
+  "source_runner_sha256": "c7b2215f57e0ca1e67cc799acfbd027f37489c0f3bbc2217406629bed3d750b7",
+  "status": "complete_observations"
+}

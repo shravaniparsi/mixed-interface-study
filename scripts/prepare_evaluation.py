@@ -28,6 +28,16 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/build_control_analysis.py',
+    'scripts/summarize_petclinic_integrity_components.py',
+    'src/mixed_interface/attribution.py',
+    'tests/test_attribution.py',
+    'tests/test_petclinic_integrity_components.py',
+    'manifests/component-attribution-v1.json',
+    'manifests/unified-control-inputs-v1.json',
+    'protocol/unified-control-analysis-v1.md',
+    'results/unified-controls-20261107/analysis.json',
+    'results/unified-controls-20261107/petclinic-components.json',
     "manifests/petclinic-execution-integrity.json",
     "results/petclinic-integrity-ci-20261107/verification.json",
     "results/petclinic-integrity-ci-20261107/petclinic-integrity-validation.json",

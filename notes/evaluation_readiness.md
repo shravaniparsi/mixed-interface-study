@@ -1,3 +1,7 @@
+# Current unified control analysis
+
+Retrospective analysis now combines 38 hosted control branches across three applications: 18 declared pairs and two unpaired controls. Eleven accepted pairs have no assigned-check mismatches; seven rejected-prefix pairs receive no continuation comparison. All eight comparability gates pass for the relevant control pairs. This is engineering validation, not independent defect-detection evidence. See [the unified analysis note](unified_control_analysis.md). Remaining work is interruption/cleanup and timing qualification, fixed normalization rules, primary freeze and prospective boundary execution. Earlier checkpoints below retain their historical scope.
+
 # Current PetClinic integrity step
 
 PetClinic hosted controls passed at `631a667`: twelve branches, 72 integrity guards, six unchanged rejected-state graphs, thirteen matched native request/response pairs and twelve confirmed backend exits. All 235 harness tests and the pinned applications’ 248 backend and 88 frontend tests passed. See `notes/petclinic_execution_integrity.md`. Next: new-source component integration and unified paired analysis; browser interruption/cleanup and timing qualification remain open. The primary freeze remains incomplete.

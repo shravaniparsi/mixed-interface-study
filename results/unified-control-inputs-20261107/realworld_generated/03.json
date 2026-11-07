@@ -1,0 +1,442 @@
+{
+  "schema_version": 1,
+  "case_id": "realworld-article-create-body-edit-v1::payload-mutation::a10846da9ef94ee01fd6e26d",
+  "route": [
+    "api",
+    "ui"
+  ],
+  "status": "completed",
+  "trace": [
+    {
+      "sequence": 1,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 1,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/users/login",
+      "payload": {
+        "user": {
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 1,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/users/login",
+      "status": 200,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 2,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 4,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 2,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [],
+        "articlesCount": 0
+      }
+    },
+    {
+      "sequence": 5,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 3,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user"
+    },
+    {
+      "sequence": 6,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 3,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 4,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 8,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 4,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [],
+        "articlesCount": 0
+      }
+    },
+    {
+      "sequence": 9,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 5,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags"
+    },
+    {
+      "sequence": 10,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 5,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "data": {
+        "tags": []
+      }
+    },
+    {
+      "sequence": 11,
+      "phase": "producer",
+      "type": "request",
+      "request_id": 6,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "body": "",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 12,
+      "phase": "producer",
+      "type": "response",
+      "request_id": 6,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 422,
+      "data": {
+        "errors": {
+          "body": [
+            "can't be blank"
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 13,
+      "phase": "oracle",
+      "type": "request",
+      "request_id": 7,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 14,
+      "phase": "oracle",
+      "type": "response",
+      "request_id": 7,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [],
+        "articlesCount": 0
+      }
+    },
+    {
+      "sequence": 15,
+      "phase": "oracle",
+      "type": "request",
+      "request_id": 8,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user"
+    },
+    {
+      "sequence": 16,
+      "phase": "oracle",
+      "type": "response",
+      "request_id": 8,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 17,
+      "phase": "oracle",
+      "type": "request",
+      "request_id": 9,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 18,
+      "phase": "oracle",
+      "type": "response",
+      "request_id": 9,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [],
+        "articlesCount": 0
+      }
+    },
+    {
+      "sequence": 19,
+      "phase": "oracle",
+      "type": "request",
+      "request_id": 10,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags"
+    },
+    {
+      "sequence": 20,
+      "phase": "oracle",
+      "type": "response",
+      "request_id": 10,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "data": {
+        "tags": []
+      }
+    }
+  ],
+  "checks": [],
+  "coverage": {
+    "reached_operations": [
+      "create_article"
+    ],
+    "data_consumed": false,
+    "state_consumed": false
+  },
+  "capture_integrity": {
+    "version": 1,
+    "helper_sha256": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "complete": true,
+    "contexts": []
+  },
+  "integrity": {
+    "version": 1,
+    "helper_sha256": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "guards": [
+      {
+        "name": "pre_state_readable",
+        "stage": "setup",
+        "source": "shared_api",
+        "expected": true,
+        "observed": true,
+        "passed": true
+      },
+      {
+        "name": "submitted_command",
+        "stage": "prefix",
+        "source": "api",
+        "expected": {
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "body": "",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        "observed": {
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "body": "",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        "passed": true
+      }
+    ],
+    "before": {
+      "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+      "readable": true,
+      "reads": [
+        {
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": null,
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          },
+          "response_sequence": 6
+        },
+        {
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [],
+            "articlesCount": 0
+          },
+          "response_sequence": 8
+        },
+        {
+          "path": "/api/tags",
+          "status": 200,
+          "data": {
+            "tags": []
+          },
+          "response_sequence": 10
+        }
+      ],
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null
+        },
+        "articles": [],
+        "tags": []
+      }
+    },
+    "rejection": {
+      "status": "unchanged",
+      "after": {
+        "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+        "readable": true,
+        "reads": [
+          {
+            "path": "/api/user",
+            "status": 200,
+            "data": {
+              "user": {
+                "email": "pilot@example.com",
+                "bio": null,
+                "image": null,
+                "username": "pilotresearch",
+                "token": "[REDACTED]"
+              }
+            },
+            "response_sequence": 16
+          },
+          {
+            "path": "/api/articles?author=pilotresearch",
+            "status": 200,
+            "data": {
+              "articles": [],
+              "articlesCount": 0
+            },
+            "response_sequence": 18
+          },
+          {
+            "path": "/api/tags",
+            "status": 200,
+            "data": {
+              "tags": []
+            },
+            "response_sequence": 20
+          }
+        ],
+        "data": {
+          "user": {
+            "username": "pilotresearch",
+            "email": "pilot@example.com",
+            "bio": null,
+            "image": null
+          },
+          "articles": [],
+          "tags": []
+        }
+      }
+    }
+  },
+  "prefix_status": 422,
+  "failed_prefix_followup": {
+    "status": 200,
+    "data": {
+      "articles": [],
+      "articlesCount": 0
+    }
+  },
+  "application_outcome": "prefix_rejected",
+  "finished_at": "2026-11-07T18:28:47.064Z"
+}
