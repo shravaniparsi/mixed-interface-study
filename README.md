@@ -18,7 +18,9 @@ These are exploratory development results. Server errors, unresolved whitespace 
 
 The 18-case generated RealWorld pool now executes through a measured-budget controller. A complete integration batch includes 18 validations, eight cost-calibration controls and nine sessions on a common 20.696-second budget. Across sessions, 105 workers started, 96 completed in budget and nine were interrupted; no late feedback was credited. Earlier incomplete attempts are retained. This is execution/accounting verification, not selector-effectiveness evidence.
 
-Quartz Manager passed one stored-job workflow on all four UI/API routes, with equal complete initial and final state hashes. Its prospective 44-case v2 pool includes accepted-state, normalization, rejection and unresolved key-policy strata; those candidates are unexecuted and need an adapter before primary evaluation.
+Quartz Manager's generated-case adapter now passes one stored-job workflow on all four UI/API routes locally and on GitHub Actions, with equal complete initial and final state hashes within each run. Its 44-case v2 pool contains four route controls and 40 boundary candidates; the boundary candidates remain unexecuted and the primary corpus freeze is pending. Local interruption probes also verified cleanup before and after browser launch.
+
+Hosted CI passed 75 Python harness tests, six CI bootstrap/context tests and eight Node adapter tests. A fresh Linux RealWorld integration completed 18 validations, eight calibration controls and nine sessions on its own 28.960-second budget. All 131 resets and browser cleanup records were confirmed. Linux and Mac timings remain separate. [Cloud execution and evidence](notes/cloud_execution.md) · [CI run provenance](manifests/github-execution.json)
 
 [Detailed integration report](notes/runtime_integration.md) · [Quartz control](manifests/quartz-transfer-control.json) · [Next evaluation gates](protocol/multiworkflow-freeze-gates-v1.md)
 
@@ -31,7 +33,7 @@ Quartz Manager passed one stored-job workflow on all four UI/API routes, with eq
 
 These initial runs used two workflow templates, not ten independent samples. They established execution feasibility before the boundary batch above. They are not included in its 86-branch count.
 
-Native application suites passed: RealWorld backend **92**, frontend **58**; PetClinic backend **248**, frontend **88**. The research harness suite passed **75 tests**, covering selectors, registries, generated-pool consistency, runtime accounting and owned-process cleanup. These counts describe separate suites and are not study sample sizes. No paid API or hosting usage occurred.
+Native application suites previously passed locally: RealWorld backend **92**, frontend **58**; PetClinic backend **248**, frontend **88**. The research harness suite passed **75 tests**, covering selectors, registries, generated-pool consistency, runtime accounting and owned-process cleanup. These counts describe separate suites and are not study sample sizes. The hosted jobs did not rerun those native application unit suites. No paid model API calls were made; GitHub's actual charge and remaining included allowance have not been checked.
 
 - [RealWorld accepted pilot](results/realworld-20261107T021931Z/summary.json)
 - [PetClinic accepted pilot](results/petclinic-owner-pilot/paired-summary.json)
@@ -78,6 +80,6 @@ RealWorld substitutes `psycopg2-binary==2.9.10` for the upstream `psycopg2==2.9.
 
 ## Next work
 
-Seven development templates and one third-application control are mapped. Next, implement and validate the Quartz v2 adapter, complete the multiworkflow eligibility/constraint ledger, and freeze the paired-oracle corpus before inspecting its unexecuted boundary outcomes. Compare native UI continuation with competent API-semantic follow-up checks first. A larger pool with multiple dependency structures is required for primary selector-effectiveness evaluation. Historical, injected and previously examined faults remain separate. Magento remains an unevaluated candidate; Quartz control feasibility is established.
+Seven development templates and one third-application control are mapped. The Quartz v2 adapter and hosted execution are validated for ordinary controls. Next, complete the multiworkflow eligibility/constraint ledger and freeze the paired-oracle corpus before inspecting its unexecuted boundary outcomes. Compare native UI continuation with competent API-semantic follow-up checks first. A larger pool with multiple dependency structures is required for primary selector-effectiveness evaluation. Historical, injected and previously examined faults remain separate. Magento remains an unevaluated candidate; Quartz control feasibility is established.
 
 The earlier manuscript and submission-plan DOCX files are planning drafts. The v0.2 protocol amendment in this repository records current experimental decisions. Current development results are in notes/development_findings.md. A Q1-level method contribution remains to be established.
