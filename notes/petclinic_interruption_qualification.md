@@ -1,0 +1,11 @@
+# PetClinic hosted interruption qualification
+
+[Application run 42408826873](https://github.com/shravaniparsi/mixed-interface-study/actions/runs/42408826873) passed at executing commit `51e03e509bd44cbfd498dafdca11141a359075b1`. [Unit run 42408812412](https://github.com/shravaniparsi/mixed-interface-study/actions/runs/42408812412) passed 220 Python, six bootstrap and 47 Node checks, 273 total.
+
+The checkpoint was reached 39.237 seconds after qualification began: the first positive API control had completed, Chromium was alive and the next JVM was listening. The observer sent SIGTERM to the actual PetClinic CI wrapper, which exited with code 143 after 0.537 seconds. Its runner and frontend cleanup records were retained. No live observed descendants remained and ports 9966 and 19766 were closed. No emergency cleanup was required.
+
+A new wrapper invocation then ran all twelve registered integrity branches from fresh resets. Six positives and six known rejections passed, including 72 integrity guards and thirteen matched native request/response observations. Cleanup again left no live observed descendants or application listeners. The observer recorded thirteen descendant identities across the interrupted phase and 29 across the fresh phase; these are cumulative process identities, not simultaneous live-process counts or research samples. The complete qualification took 221.313 seconds.
+
+Independent artifact validation checked the executing source hashes, both cleanup records and all twelve raw fresh-control observations using the existing integrity validator. Compact evidence and source snapshots are retained under `results/petclinic-interruption-ci-20261107`; the qualification manifest hashes every retained input. Reproduce at the executing sources with `python scripts/validate_petclinic_interruption.py results/petclinic-interruption-ci-20261107`.
+
+Qualification applies to one declared SIGTERM checkpoint and descendants actually observed by the Linux process monitor. It does not establish behavior at every interruption phase, include unobserved escaped processes, or calibrate selector costs. The observed durations describe this qualification run. Normalization consistency, timing/cost scope and remaining cross-workflow qualification still precede the primary freeze. Forty Quartz mutation branches remain unexecuted.

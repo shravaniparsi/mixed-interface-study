@@ -1,0 +1,64 @@
+{
+  "source_commit": "51e03e509bd44cbfd498dafdca11141a359075b1",
+  "created_at_utc": "2026-11-07T20:01:38.005923+00:00",
+  "source_sha256": {
+    "scripts/petclinic_boundary_slice.mjs": "c7b2215f57e0ca1e67cc799acfbd027f37489c0f3bbc2217406629bed3d750b7",
+    "scripts/petclinic_integrity.mjs": "60d5f484a3f4939753bf68d5a581a220dd727681beda8cc2989cb18969df6bc1",
+    "scripts/petclinic_response_capture.mjs": "db710ed6d36aac38405b4cc746d5e0ee1c95a54e76e7d2860477f5c24f7d5868",
+    "scripts/petclinic_cleanup.mjs": "a30e5b89c813b67b37e537b0b4c1aac3caa3892d13ff14dad547d3780be01e3c",
+    "scripts/validate_petclinic_integrity.py": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "scripts/summarize_petclinic_oracle_components.py": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9",
+    "scripts/ci/run_petclinic_integrity.py": "34ee10d50c6931db4bfb7b3c16e13a60ac716a7e49cfccd312f648439d5ca0a4",
+    "scripts/ci/prepare_petclinic.py": "a118d07e548f6464a3c541b15bcd957b9567ede3b1043e9a5f66aad5b02fd051",
+    "scripts/ci/run_applications.sh": "1e2f578d737537760789d643d1b40c37aed1145c0e7e79c6292182c96946d26c",
+    ".github/workflows/applications.yml": "5a638c2a7c0d2e6eb3a0bc08d6ea18d8e88cfd8fb4c63f8a0792d9a62d374f9c",
+    "protocol/petclinic-integrity-validation-v1.md": "e6b4b416c2c1cff58f73751c5de064d9423dba4540922657ac9fcd6cfddfd5d3",
+    "manifests/petclinic-candidates-v1.json": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
+    "manifests/petclinic-integrity-controls-v1.json": "06704f9ca2748e4dcfe12dd568d545a9ca56c0de9d762e6e142352a622add019",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0"
+  },
+  "environment_sha256": {
+    "petclinic-bootstrap.json": "26be6d5e7689bde8ce1420d58f09a3f7f50c1792e288c05bb521603e5881f235",
+    "runtime-versions.json": "05aa702ac1a8872d196ffe827258d11d57a2ad5a678283c4587ca7245cf45718",
+    "browser.json": "62b0aecfb63570b07063206f6626d74e788a3eea21d05ca215fd87f5eb529c02"
+  },
+  "selection": {
+    "kind": "petclinic_integrity_engineering_controls",
+    "primary_freeze_complete": false,
+    "new_boundary_cases_executed": 0,
+    "cases": [
+      {
+        "id": "owner_telephone_10",
+        "prefix_status": 201
+      },
+      {
+        "id": "pet_valid",
+        "prefix_status": 201
+      },
+      {
+        "id": "visit_valid",
+        "prefix_status": 201
+      },
+      {
+        "id": "owner_omit_firstName",
+        "prefix_status": 400
+      },
+      {
+        "id": "pet_omit_name",
+        "prefix_status": 400
+      },
+      {
+        "id": "visit_omit_date",
+        "prefix_status": 400
+      }
+    ],
+    "oracles": [
+      "api_semantic",
+      "fresh_ui"
+    ],
+    "branches": 12,
+    "scope": "Three known positive and three known rejection candidates, once per independently reset continuation branch. No new boundaries."
+  },
+  "outer_timeout_s": 480,
+  "repeat_policy": "No resume, retry or merge; fresh output and complete attempt only."
+}

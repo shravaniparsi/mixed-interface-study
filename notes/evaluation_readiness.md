@@ -1,3 +1,7 @@
+# Current hosted interruption qualification
+
+PetClinic passed the real-browser/backend SIGTERM qualification in hosted run 42408826873: 0.537 seconds to wrapper exit, no live observed descendants or open application ports, no rescue actions, then twelve fresh controls and 72 integrity guards passed. All 273 harness tests passed in hosted unit CI. See [the qualification note](petclinic_interruption_qualification.md). Remaining gates include normalization consistency, timing/cost scope and wider interruption coverage; the primary freeze remains incomplete. Earlier checkpoints below retain their historical scope.
+
 # Current interruption supervision step
 
 PetClinic CI interruption now reaches bounded cleanup and preserves launcher-exit evidence. Nine new supervisor tests include real subprocesses and external SIGTERM through the actual wrapper with fixture applications. Full browser/backend interruption followed by a fresh application control remains required; timing and normalization gates remain open. See [the supervision note](interruption_supervision.md).
