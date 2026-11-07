@@ -1,3 +1,7 @@
+# Current interruption supervision step
+
+PetClinic CI interruption now reaches bounded cleanup and preserves launcher-exit evidence. Nine new supervisor tests include real subprocesses and external SIGTERM through the actual wrapper with fixture applications. Full browser/backend interruption followed by a fresh application control remains required; timing and normalization gates remain open. See [the supervision note](interruption_supervision.md).
+
 # Current unified control analysis
 
 Retrospective analysis now combines 38 hosted control branches across three applications: 18 declared pairs and two unpaired controls. Eleven accepted pairs have no assigned-check mismatches; seven rejected-prefix pairs receive no continuation comparison. All eight comparability gates pass for the relevant control pairs. This is engineering validation, not independent defect-detection evidence. See [the unified analysis note](unified_control_analysis.md). Remaining work is interruption/cleanup and timing qualification, fixed normalization rules, primary freeze and prospective boundary execution. Earlier checkpoints below retain their historical scope.
