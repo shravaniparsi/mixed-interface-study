@@ -1,0 +1,1069 @@
+{
+  "case_count": 4,
+  "cases": [
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "native_form_loaded",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "native_form_loaded",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "consumer_actual_payload",
+                "observed": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "consumer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "environment_reset_cleanup": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T17:39:17.712Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T17:39:17.712Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "ui",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "producer_actual_payload",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "producer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "ui-ui",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "native_form_loaded",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "native_form_loaded",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "consumer_actual_payload",
+                "observed": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "consumer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "environment_reset_cleanup": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T17:39:21.486Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T17:39:21.486Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "api",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "api-ui",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "environment_reset_cleanup": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T17:39:28.129Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T17:39:28.129Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "ui",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "producer_actual_payload",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "producer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "ui-api",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "environment_reset_cleanup": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T17:39:30.905Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T17:39:30.905Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "api",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "api-api",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    }
+  ],
+  "component_status_counts": {
+    "assigned_api_continuation": {
+      "no_check_mismatch_observed": 2,
+      "not_assigned": 2
+    },
+    "assigned_native_continuation": {
+      "no_check_mismatch_observed": 2,
+      "not_assigned": 2
+    },
+    "environment_reset_cleanup": {
+      "not_reached_or_not_applicable": 4
+    },
+    "immediate_response": {
+      "no_check_mismatch_observed": 4
+    },
+    "prefix_state_reads": {
+      "not_reached_or_not_applicable": 4
+    },
+    "producer_native_controls": {
+      "no_check_mismatch_observed": 2,
+      "not_reached_or_not_applicable": 2
+    },
+    "shared_final_native_read": {
+      "no_check_mismatch_observed": 4
+    },
+    "shared_post_continuation_api_readback": {
+      "no_check_mismatch_observed": 4
+    },
+    "unresolved_policy": {
+      "not_applicable": 4
+    }
+  },
+  "family": "generated",
+  "input_artifact_sha256": {
+    "original-pool.json": "e30df6147de81937de728f743607b250755f3b6438d9f1518d0898272b121acc",
+    "sources/__init__.py": "a4b624491c38b95ff4c0b045cc0a4343d32a7da93b43146c53381560d0da373d",
+    "sources/evaluation.py": "70294bffcffc8dbd9d1f411956c553757663d5d70ce403dfab7be483945be6c9",
+    "sources/realworld_case_worker.py": "a0333661f5e3357be5c70aa26288cfb555f7e1f9410e6f145fca219b71e904b7",
+    "sources/realworld_generated_case.mjs": "0c1883dcbd8eaa383111f814c00c1c7f942fa25c472b380d9983792028701172",
+    "sources/registry.py": "09790725cdc1546e150433454a2d3a5e007eef4205162c6da186aa1062999bd0",
+    "sources/response_capture.mjs": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "sources/run_generated_integration.py": "d5cddec069aae12229ace9a716f0006cedd474be437d25a69350647864fa7a9e",
+    "sources/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "sources/runtime-integration-v1.md": "5dc7cad14b3d1130ff0ade716c7527bf9e2328136bba15449e91e24fb2db1d9a",
+    "sources/runtime.py": "8d20a56e265294da50185870b5eff0f5dfa8db90fa40afc58b882104ab20878f",
+    "sources/selection.py": "7cd16e8847fb5a2fcd48a1b2687419b21882b29d74bb551280cfd156c25f8f21",
+    "validation/0001-f44b6746d662/cleanup.json": "1622b0a48fcf6f125a8eb1eb3c26a2ded49878459ed35f20ed86fbcc4d9a3988",
+    "validation/0001-f44b6746d662/generated-case.json": "17ce659426f7f95ad69c366f6fc82b21cafacbc177a4c0749e0e02e4132ec72c",
+    "validation/0001-f44b6746d662/observation.json": "7b417562d419afc9c89aa4d709b472005aa29daba00cfabf0aa666fb9d918f98",
+    "validation/0001-f44b6746d662/parent-browser-cleanup.json": "f7279007d0dfa4f134ac60f3001f172ce829b777991fe79d127af485bac5fcbf",
+    "validation/0001-f44b6746d662/reset.json": "bb18af7235cb09511c32ff3f5f42e5f84cc7cbf689054402a09d4e6bdd5c9b60",
+    "validation/0002-870791978797/cleanup.json": "70a45eda5be46e1a44a8942157e0a5025143de705649a6bca49c309f7903a061",
+    "validation/0002-870791978797/generated-case.json": "65de9836570457ed07d6e850939ea2740320329c747210632b8aa2029d674970",
+    "validation/0002-870791978797/observation.json": "31d2399cf2f5c56edef14df5c93c53ab04572600e7f13bbdf5fca3ed6ce436ba",
+    "validation/0002-870791978797/parent-browser-cleanup.json": "e03376f76efed9a14c3de68034780170c3c228e96da43e27dea2388aa6ad0c25",
+    "validation/0002-870791978797/reset.json": "bb18af7235cb09511c32ff3f5f42e5f84cc7cbf689054402a09d4e6bdd5c9b60",
+    "validation/0003-3872e4115533/cleanup.json": "761168c6192530a49b4bf385a614115490173858d6287cd3ada313de2417c609",
+    "validation/0003-3872e4115533/generated-case.json": "d02588a9970435800a3389a4aa909bef42804237f7e608850dca637287005aa6",
+    "validation/0003-3872e4115533/observation.json": "0d4b303bba0c2c656ad1baec77a61288b37e4d91595056b079b49ea7e0344d89",
+    "validation/0003-3872e4115533/parent-browser-cleanup.json": "f79523690c18e660900e373a77da2638d89b90269a6d58c1a461a507adae0e1b",
+    "validation/0003-3872e4115533/reset.json": "bb18af7235cb09511c32ff3f5f42e5f84cc7cbf689054402a09d4e6bdd5c9b60",
+    "validation/0004-cb8089fefb1a/cleanup.json": "c7c8bad5179b68e030fdbcd3cdb971b82a0506cc04246cef52a3c8c3fd2fb438",
+    "validation/0004-cb8089fefb1a/generated-case.json": "cdbf378ee4d192f206ca10efb548e27b337b3061ab85932a4608420884a91a09",
+    "validation/0004-cb8089fefb1a/observation.json": "4a4ddd43683cefcef146b69dfc9a2e231b590933e716c4752a1439c00a2b2208",
+    "validation/0004-cb8089fefb1a/parent-browser-cleanup.json": "da14e1c82ca202c964712643a2e9fb3cb414ddb8114662cd2ca86003650f1194",
+    "validation/0004-cb8089fefb1a/reset.json": "bb18af7235cb09511c32ff3f5f42e5f84cc7cbf689054402a09d4e6bdd5c9b60"
+  },
+  "input_directory": "/home/runner/work/_temp/study-runtime/realworld-execution/generated-integration-20261107T173909Z-6vqwkaj1/evidence",
+  "input_summary_sha256": "a49742e243d12e253b0749c94913a6225c41578559a01c2db8f0c0246686c27e",
+  "kind": "realworld_component_observations",
+  "limitations": [
+    "Source-pinned extraction, not an independent application-oracle re-execution or primary freeze.",
+    "Legacy traces have no independent recorded trace hash or verified parent cleanup record; reset hashes are recorded assertions, not retained database rehashes.",
+    "Generated extraction covers validation only; calibration, timed sessions and interruption attempts are not silently pooled.",
+    "Shared API readback retains action-interface metadata; supplementary native UI checks never become API-semantic detection.",
+    "Native action timeouts/assertions lack sufficient control-state evidence to distinguish blocked application from harness error; remain unclassified.",
+    "Declared implementation expectations are source controls, not independent defect truth; unresolved acceptance policy does not erase other HTTP/state observations.",
+    "No pair equality, human adjudication, root-cause grouping, prevalence or efficacy is computed."
+  ],
+  "reducer_sha256": "30adfb8ce7f7a35de33553a8aa154b8e494e54d7d88ef824bb09dc5caafd7ede",
+  "registry_sha256": "e30df6147de81937de728f743607b250755f3b6438d9f1518d0898272b121acc",
+  "run_issues": [],
+  "schema_version": 1,
+  "scope": "validation_only",
+  "source_adapter_sha256": "0c1883dcbd8eaa383111f814c00c1c7f942fa25c472b380d9983792028701172",
+  "status": "complete_observations"
+}
