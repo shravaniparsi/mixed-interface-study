@@ -44,6 +44,8 @@ jobs:
         run: python -m unittest discover -s tests -v 2>&1 | tee "$CI_ARTIFACT_DIR/python-tests.log"
       - name: Bootstrap helper tests
         run: python -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"
+      - name: Verify evaluation preparation provenance
+        run: python scripts/prepare_evaluation.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/evaluation-preparation.log"
       - name: Pure Node adapter tests
         run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
       - name: Syntax checks
