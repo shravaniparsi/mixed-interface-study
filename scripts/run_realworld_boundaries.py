@@ -22,6 +22,7 @@ def main():
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--candidate',action='append',help='Explicit subset for reproduction; does not alter the registered pool.')
     parser.add_argument('--repetitions',type=int,default=1)
+    parser.add_argument('--output-root',type=Path,help='Evidence parent directory; defaults to the project results directory.')
     args=parser.parse_args()
     assert args.repetitions>=1
     project=Path(__file__).resolve().parents[1]
@@ -37,7 +38,7 @@ def main():
             if sock.connect_ex(('127.0.0.1',port))==0: raise RuntimeError('Occupied port '+str(port))
     runtime=Path(tempfile.mkdtemp(prefix='boundary-routes-',dir=args.runtime_root))
     database=runtime/'active.sqlite3';snapshot=runtime/'fixture.sqlite3'
-    output=project/'results'/dt.datetime.now(dt.timezone.utc).strftime('realworld-boundaries-%Y%m%dT%H%M%SZ')
+    output=(args.output_root or project/'results')/dt.datetime.now(dt.timezone.utc).strftime('realworld-boundaries-%Y%m%dT%H%M%SZ')
     output.mkdir(exist_ok=False)
     env=dict(os.environ,DEBUG='True',DATABASE_URL='file:'+str(database),TZ='UTC',PYTHONDONTWRITEBYTECODE='1')
     report={'kind':'exploratory_boundary_and_continuation_pilot','status':'running','started_at':dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -49,7 +50,7 @@ def main():
             'comparison':'Descriptive paired replay, fixed order; no selector or equal-time comparison.',
             'normalization':'Generated slugs remain in raw traces and must resolve within each branch; slug text is excluded only from cross-branch business-state equality.',
             'branches':[],'additional_cash_usd':0}
-    for source in [Path(__file__),script,Path(__file__).with_name('run_realworld_pilot.py')]:
+    for source in [Path(__file__),script,Path(__file__).with_name('run_realworld_pilot.py'),Path(__file__).with_name('response_capture.mjs')]:
         shutil.copyfile(source,output/source.name);report['source_sha256'][source.name]=sha(source)
     shutil.copyfile(args.registry,output/'registered-candidates.json')
     backend=frontend_process=None;handles=[]

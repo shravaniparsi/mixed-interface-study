@@ -20,6 +20,12 @@ LEGACY_ADAPTERS = {
     'bf0407de703d30a425dce3cfde3c218ee8096f7747e75e8ecd57f27e12b144d5',
 }
 GENERATED_ADAPTER = 'c3a0ef4806fd0f245a7cd783568c4286ea1462648d1f1224f9495777d847c7f1'
+CAPTURE_HELPER = 'e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be'
+CAPTURE_LEGACY_ADAPTER = 'b991ca9652e6e09c0b8836bcbc57d0966eb54072b036a06ac60058daddbbde3b'
+CAPTURE_GENERATED_ADAPTER = '0c1883dcbd8eaa383111f814c00c1c7f942fa25c472b380d9983792028701172'
+CAPTURE_ADAPTERS = {CAPTURE_LEGACY_ADAPTER, CAPTURE_GENERATED_ADAPTER}
+LEGACY_ADAPTERS.add(CAPTURE_LEGACY_ADAPTER)
+GENERATED_ADAPTERS = {GENERATED_ADAPTER, CAPTURE_GENERATED_ADAPTER}
 LEGACY_REGISTRIES = {
     'dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2',
     '05545a7ee5682348d111518ff40656dc4ae203cf95752018c496bfd54046eb66',
@@ -87,6 +93,66 @@ def user_state(value):
     return {k: value.get(k) for k in ('username', 'email', 'bio', 'image')} if isinstance(value, dict) else None
 
 
+def capture_integrity_issues(result, *, required=False):
+    """Check request-to-body accounting for the revised capture source only."""
+    capture = result.get('capture_integrity')
+    if capture is None:
+        return ['missing_capture_integrity'] if required else []
+    if not isinstance(capture, dict):
+        return ['malformed_capture_integrity']
+    issues = []
+
+    def guard(ok, label):
+        if not ok:
+            issues.append(label)
+
+    guard(capture.get('version') == 1 and capture.get('helper_sha256') == CAPTURE_HELPER,
+          'unsupported_capture_helper')
+    guard(capture.get('complete') is True, 'capture_integrity_failed')
+    contexts = capture.get('contexts')
+    trace = result.get('trace')
+    if not isinstance(contexts, list) or not isinstance(trace, list):
+        return issues + ['malformed_capture_contexts_or_trace']
+    context_ids, requests, responses = set(), {}, {}
+    for event in trace:
+        if not isinstance(event, dict):
+            issues.append('malformed_capture_event')
+            continue
+        is_request = event.get('type') == 'ui_request' or (event.get('type') == 'request' and event.get('source') == 'ui')
+        is_response = event.get('type') == 'ui_response' or (event.get('type') == 'response' and event.get('source') == 'ui')
+        if is_request or is_response:
+            keys = ('capture_request_id', 'context_id', 'method', 'path', 'request_phase')
+            if any(not isinstance(event.get(k), str) or not event[k] for k in keys):
+                issues.append('missing_capture_request_metadata')
+                continue
+            destination = requests if is_request else responses
+            identifier = event['capture_request_id']
+            guard(identifier not in destination, 'duplicate_capture_request_or_response')
+            destination[identifier] = {k: event[k] for k in keys}
+        if event.get('type') == 'capture_error':
+            issues.append('capture_error_recorded')
+    guard(requests == responses, 'capture_request_response_accounting_mismatch')
+    for context in contexts:
+        if not isinstance(context, dict) or not isinstance(context.get('context_id'), str):
+            issues.append('malformed_capture_context')
+            continue
+        cid = context['context_id']
+        guard(cid not in context_ids, 'duplicate_capture_context')
+        context_ids.add(cid)
+        guard(context.get('complete') is True and context.get('timed_out') is False
+              and context.get('outstanding') == [] and context.get('failures') == 0,
+              'capture_context_incomplete')
+        count = sum(r['context_id'] == cid for r in requests.values())
+        guard(type(context.get('admitted')) is int and type(context.get('completed')) is int
+              and context['admitted'] == context['completed'] == count,
+              'capture_context_count_mismatch')
+        drains = [e for e in trace if isinstance(e, dict) and e.get('type') == 'capture_drain' and e.get('context_id') == cid]
+        guard(len(drains) == 1 and all(drains[0].get(k) == v for k, v in context.items()),
+              'capture_drain_record_mismatch')
+    guard(all(r['context_id'] in context_ids for r in requests.values()), 'unclosed_capture_context')
+    return sorted(set(issues))
+
+
 def reduce_case(result, run, registered, *, family='legacy', fixture=None, provenance_issues=()):
     """Extract one case after the loader qualifies immutable source/registry bytes.
 
@@ -95,7 +161,7 @@ def reduce_case(result, run, registered, *, family='legacy', fixture=None, prove
     Existing booleans are retained with check details; independently recomputed
     input/binding consistency guards do not constitute an application re-test.
     """
-    issues = list(provenance_issues)
+    issues = list(provenance_issues) + capture_integrity_issues(result)
     parts = {name: {'checks': [], 'failed_check_ids': [], 'observations': []} for name in COMPONENTS}
     expected_checks = set()
     generated = family == 'generated'
@@ -478,8 +544,10 @@ def summarize_run(directory):
         issues.append('unsupported_or_changed_registry_bytes')
     source_dir = Path('sources') if generated else Path()
     source_hash = summary.get('source_sha256', {}).get(adapter)
-    if source_hash not in ({GENERATED_ADAPTER} if generated else LEGACY_ADAPTERS):
+    if source_hash not in (GENERATED_ADAPTERS if generated else LEGACY_ADAPTERS):
         issues.append('unsupported_adapter_hash')
+    if source_hash in CAPTURE_ADAPTERS and summary.get('source_sha256', {}).get('response_capture.mjs') != CAPTURE_HELPER:
+        issues.append('missing_or_unsupported_capture_helper_source')
     for name, expected in summary.get('source_sha256', {}).items():
         try:
             data = read(source_dir / name)
@@ -495,7 +563,9 @@ def summarize_run(directory):
     cases = {c[key]: c for c in registry['cases']}
     entries = summary.get('validation' if generated else 'branches', [])
     if generated:
-        wanted = set(cases)
+        wanted = {cid for cid, case in cases.items() if case['intervention'] == 'route_only'} if summary.get('phase') == 'controls' else set(cases)
+        if summary.get('phase') == 'controls' and source_hash not in CAPTURE_ADAPTERS:
+            issues.append('unsupported_control_subset_source')
         identifiers = [x.get('case_id') for x in entries]
     else:
         subset = summary.get('candidate_subset') or list(cases)
@@ -531,7 +601,10 @@ def summarize_run(directory):
                     own_issues.append('legacy_branch_identity_mismatch')
                 if not summary.get('fixture_sha256') or entry.get('reset_sha256') != summary['fixture_sha256']:
                     own_issues.append('reset_hash_mismatch')
-            loaded.append((json.loads(raw), entry, registered, own_issues))
+            result = json.loads(raw)
+            if source_hash in CAPTURE_ADAPTERS:
+                own_issues.extend(capture_integrity_issues(result, required=True))
+            loaded.append((result, entry, registered, own_issues))
         except (OSError, ValueError, KeyError, TypeError) as error:
             issues.append('unreadable_case_evidence:' + str(entry.get('case_id')) + ':' + type(error).__name__)
     observations = [reduce_case(result, entry, registered, family=family, fixture=fixture,

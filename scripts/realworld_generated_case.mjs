@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Executes exactly the two declared operations; shared oracle observations are separate.
 import assert from 'node:assert/strict';
+import {createResponseCapture} from './response_capture.mjs';
 import {createRequire} from 'node:module';
 import {readFile,writeFile,rename} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -12,7 +13,8 @@ const producer=c.operations[0],consumer=c.operations[1],input=producer.input.art
 const API='http://127.0.0.1:18765',UI='http://127.0.0.1:18766';
 const credentials={email:'pilot@example.com',password:'Pilot-Research-123!'};
 const result={schema_version:1,case_id:c.case_id,route:[producer.interface,consumer.interface],status:'running',trace:[],checks:[],coverage:{reached_operations:[],data_consumed:false,state_consumed:false}};
-let phase='setup',token,browser,server,context,page,requestCounter=0;const pending=new Set();
+let phase='setup',token,browser,server,context,page,capture,contextCounter=0,requestCounter=0;
+result.capture_integrity={version:1,helper_sha256:createHash('sha256').update(await readFile(new URL('./response_capture.mjs',import.meta.url))).digest('hex'),complete:true,contexts:[]};
 const secrets=new Set([credentials.password]);
 function clean(x,k=''){
   if(/token|password|authorization|cookie/i.test(k))return '[REDACTED]';
@@ -34,8 +36,20 @@ function match(r,method,path){return r.request().method()===method&&new URL(r.ur
 function state(a){return {title:a.title,description:a.description,body:a.body,tagList:[...new Set(a.tagList)].sort(),author:a.author.username};}
 function check(name,passed,detail={}){result.checks.push({name,passed,...clean(detail)});return passed;}
 function equal(a,b){return isDeepStrictEqual(a,b);}
+async function closeCapturedContext(reason){
+  if(!context)return;
+  const closing=context,ownedCapture=capture;context=null;capture=null;
+  try{
+    assert.ok(ownedCapture,'Context has no capture owner');
+    const record=await ownedCapture.sealAndDrain({timeoutMs:5000});
+    result.capture_integrity.contexts.push({...record,reason});
+    result.capture_integrity.complete=result.capture_integrity.complete&&record.complete;
+    event('capture_drain',{...record,reason});
+    assert.ok(record.complete,'Incomplete API response capture');
+  }finally{await closing.close();}
+}
 async function loginUi(){
-  if(context){await Promise.allSettled([...pending]);await context.close();}
+  await closeCapturedContext('context_replacement');
   if(!server){
     const require=createRequire(import.meta.url);const {chromium}=require(process.env.PLAYWRIGHT_MODULE_PATH||'playwright');
     const marker='--codex-study-case='+createHash('sha256').update(c.case_id+process.pid).digest('hex').slice(0,20);
@@ -51,12 +65,14 @@ async function loginUi(){
   await context.route('**/*',r=>{const u=new URL(r.request().url());if(u.protocol==='http:'&&u.hostname==='127.0.0.1'&&['18765','18766'].includes(u.port))return r.continue();event('blocked_external_resource',{url:u.toString()});return r.abort();});
   if(context.routeWebSocket)await context.routeWebSocket('**/*',s=>s.close());
   page=await context.newPage();page.on('pageerror',e=>event('page_error',{message:e.message}));
-  page.on('request',r=>{const path=new URL(r.url()).pathname;
-    if(phase==='producer'&&r.method()==='POST'&&path==='/api/articles')result.coverage.reached_operations.push(producer.operation_id);
-    if(phase==='consumer'&&r.method()==='GET'&&path.startsWith('/api/articles/')&&!result.coverage.reached_operations.includes(consumer.operation_id))result.coverage.reached_operations.push(consumer.operation_id);
-  });
-  page.on('response',r=>{if(!new URL(r.url()).pathname.startsWith('/api/'))return;
-    const capture=(async()=>{try{event('ui_response',{method:r.request().method(),path:new URL(r.url()).pathname,status:r.status(),data:await data(r)});}catch(e){event('capture_error',{message:e.message});}})();pending.add(capture);capture.finally(()=>pending.delete(capture));});
+  capture=createResponseCapture({page,contextId:'page-'+(++contextCounter),getPhase:()=>phase,readResponse:data,
+    onRequest:(meta,r)=>{
+      event('ui_request',{...meta,payload:r.postData()?parsed(r.postData()):null});
+      if(meta.request_phase==='producer'&&meta.method==='POST'&&meta.path==='/api/articles')result.coverage.reached_operations.push(producer.operation_id);
+      if(meta.request_phase==='consumer'&&meta.method==='GET'&&meta.path.startsWith('/api/articles/')&&!result.coverage.reached_operations.includes(consumer.operation_id))result.coverage.reached_operations.push(consumer.operation_id);
+    },
+    onResponse:(meta,r,value)=>event('ui_response',{...meta,status:r.status(),data:value}),
+    onError:detail=>event('capture_error',detail)});
   await page.goto(UI+'/#/login');await page.getByLabel('Email',{exact:true}).fill(credentials.email);await page.getByLabel('Password',{exact:true}).fill(credentials.password);
   const rp=page.waitForResponse(r=>match(r,'POST','/api/users/login'));await page.getByRole('button',{name:'Sign in',exact:true}).click();const r=await rp;
   assert.equal(r.status(),200);assert.equal((await r.json()).user.username,'pilotresearch');await page.waitForURL(u=>u.hash==='#/'||u.hash==='');
@@ -127,7 +143,8 @@ async function main(){
 }
 try{await main();result.status='completed';}catch(e){result.status='adapter_error';result.error={phase,name:e.name,message:e.message};}
 finally{
-  await Promise.allSettled([...pending]);if(browser)await browser.close().catch(()=>{});if(server)await server.close().catch(()=>{});
+  try{await closeCapturedContext('final_shutdown');}catch(e){result.capture_integrity.complete=false;result.status='adapter_error';result.error??={phase,name:e.name,message:e.message};}
+  if(browser)await browser.close().catch(()=>{});if(server)await server.close().catch(()=>{});
   result.finished_at=new Date().toISOString();await writeFile(options.output,JSON.stringify(clean(result),null,2)+'\n');
   process.exitCode=result.status==='completed'?0:1;
 }

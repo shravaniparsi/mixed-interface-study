@@ -1,0 +1,11 @@
+# RealWorld response-capture repair
+
+Both active RealWorld adapters now track each native API request from admission through response-body completion. The previous implementation waited for a snapshot of pending body reads while response listeners remained active. A response arriving after that snapshot could be interrupted by context replacement or final browser closure. The four historical capture errors remain incomplete; their records have not been edited.
+
+The shared helper owns capture separately for each page. During shutdown it drains admitted requests, including requests arriving while work remains, with a five-second deadline. Once the pending set is empty it detaches listeners synchronously, then the adapter closes the context. Each request carries an identifier, context, method, path and admission phase. A failed request, body read or drain invalidates capture and the adapter result. Late callbacks from a closed scope cannot append observations to a later context.
+
+Nine pure Node tests exercise late responses, additional requests during drain, phase changes, failed reads, network failures, stuck requests, late callbacks and listener ownership. The component reducer verifies request/response accounting and context-drain records for the revised source versions. Historical source hashes remain supported with their original evidence requirements. The executing runners archive the helper alongside the adapter; generated workers receive the same helper file.
+
+[The prospective control protocol](../protocol/realworld-capture-validation-v1.md) specifies four generated route controls and ten legacy control branches across the four existing RealWorld workflows, once each. This includes the previously incomplete native profile control under the repaired adapter. No calibration, timed selector sessions or new boundary candidates are included. A pre-dispatch plan captures code, registry and runtime metadata; post-run checks must qualify every branch before the repair is marked hosted-validated.
+
+Hosted validation is pending. The [repair manifest](../manifests/realworld-capture-repair.json) records the source versions and validation status. Passing this engineering check would not establish diagnostic advantage, legacy owned-process cleanup, complete payload/state guards or the primary study freeze.

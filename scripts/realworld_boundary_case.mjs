@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // One registered prefix and one continuation, after an orchestrator-owned reset.
 import assert from 'node:assert/strict';
+import {createResponseCapture} from './response_capture.mjs';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {readFile,writeFile} from 'node:fs/promises';
@@ -16,9 +17,10 @@ const email='pilot@example.com', password='Pilot-Research-123!';
 const result={schema_version:1,candidate_id:spec.candidate_id,workflow:spec.workflow,
   prefix_interface:spec.prefix_interface,continuation_interface:branch,expectation:spec.expectation,
   started_at:new Date().toISOString(),execution_status:'running',oracle_revision:2,trace:[],checks:[],observations:{ui_continuation_started:false,api_continuation_started:false}};
-let phase='setup',token,browser,context,page,currentUser;
+let phase='setup',token,browser,context,page,currentUser,capture,contextCounter=0;
+result.capture_integrity={version:1,helper_sha256:createHash('sha256').update(await readFile(new URL('./response_capture.mjs',import.meta.url))).digest('hex'),complete:true,contexts:[]};
 const secrets=new Set([password]);
-const pending=new Set();
+
 function clean(x,key=''){
   if(/token|password|authorization|cookie/i.test(key))return '[REDACTED]';
   if(Array.isArray(x))return x.map(v=>clean(v));
@@ -47,8 +49,20 @@ function expectedArticle(original,changes){
   return {title:changes.title??original.title,description:changes.description??original.description,
     body:changes.body??original.body,tagList:changes.tagList??original.tagList??[],author:'pilotresearch'};
 }
+async function closeCapturedContext(reason){
+  if(!context)return;
+  const closing=context,ownedCapture=capture;context=null;capture=null;
+  try{
+    assert.ok(ownedCapture,'Context has no capture owner');
+    const record=await ownedCapture.sealAndDrain({timeoutMs:5000});
+    result.capture_integrity.contexts.push({...record,reason});
+    result.capture_integrity.complete=result.capture_integrity.complete&&record.complete;
+    event('capture_drain',{...record,reason});
+    assert.ok(record.complete,'Incomplete API response capture');
+  }finally{await closing.close();}
+}
 async function freshLogin(){
-  if(context){await Promise.allSettled([...pending]);await context.close();}
+  await closeCapturedContext('context_replacement');
   if(!browser){const require=createRequire(import.meta.url);const {chromium}=require(process.env.PLAYWRIGHT_MODULE_PATH||'playwright');
     browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',args:['--disable-background-networking','--disable-component-update','--disable-sync','--no-first-run']});
     result.browser_version=browser.version();}
@@ -61,12 +75,10 @@ async function freshLogin(){
   });
   if(context.routeWebSocket)await context.routeWebSocket('**/*',s=>s.close());
   page=await context.newPage();
-  page.on('request',r=>{if(new URL(r.url()).pathname.startsWith('/api/'))event('request',{source:'ui',method:r.method(),path:new URL(r.url()).pathname,payload:r.postData()?body(r.postData()):null});});
-  page.on('response',r=>{
-    if(!new URL(r.url()).pathname.startsWith('/api/'))return;
-    const p=(async()=>{try{const data=await responseData(r);event('response',{source:'ui',method:r.request().method(),path:new URL(r.url()).pathname,status:r.status(),data});}catch(e){event('capture_error',{message:e.message});}})();
-    pending.add(p);p.finally(()=>pending.delete(p));
-  });
+  capture=createResponseCapture({page,contextId:'page-'+(++contextCounter),getPhase:()=>phase,readResponse:responseData,
+    onRequest:(meta,r)=>event('request',{source:'ui',...meta,payload:r.postData()?body(r.postData()):null}),
+    onResponse:(meta,r,value)=>event('response',{source:'ui',...meta,status:r.status(),data:value}),
+    onError:detail=>event('capture_error',detail)});
   page.on('pageerror',e=>event('page_error',{message:e.message}));
   await page.goto(UI+'/#/login');
   await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Password',{exact:true}).fill(password);
@@ -234,7 +246,7 @@ async function run(){
 try{await run();result.execution_status='completed';}
 catch(e){result.execution_status='runner_or_unadjudicated_error';result.error={phase,name:e.name,message:e.message};}
 finally{
-  await Promise.allSettled([...pending]);if(browser)await browser.close();
+  try{try{await closeCapturedContext('final_shutdown');}finally{if(browser)await browser.close();}}catch(e){result.capture_integrity.complete=false;result.execution_status='runner_or_unadjudicated_error';result.error??={phase,name:e.name,message:e.message};}
   result.completed_at=new Date().toISOString();
   await writeFile(opts.output,JSON.stringify(clean(result),null,2)+'\n');
   process.stdout.write(JSON.stringify({candidate_id:spec.candidate_id,branch,status:result.execution_status,observations:result.observations.continuation_outcome,error:result.error})+'\n');

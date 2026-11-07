@@ -287,18 +287,86 @@ class AttributionTests(unittest.TestCase):
             self.assertFalse(reduce_fixture(data)['execution_evidence_complete'])
 
 
+def attach_capture(result):
+    """Add synthetic request-lifetime evidence; never experimental observations."""
+    count = 0
+    active = {}
+    for event in result['trace']:
+        if event.get('source') != 'ui':
+            continue
+        key = (event.get('method'), event.get('path'))
+        if event['type'] == 'request':
+            count += 1
+            active[key] = {'capture_request_id': f'page-1:{count}', 'context_id': 'page-1',
+                           'request_phase': 'synthetic'}
+            event.update(active[key])
+        elif event['type'] == 'response':
+            event.update(active.pop(key))
+    assert not active
+    contexts = []
+    if count:
+        context = dict(context_id='page-1', admitted=count, completed=count, failures=0,
+                       timed_out=False, outstanding=[], complete=True, reason='final_shutdown')
+        contexts.append(context)
+        result['trace'].append(dict(sequence=len(result['trace']) + 1, type='capture_drain', **context))
+    result['capture_integrity'] = dict(version=1, helper_sha256=reducer.CAPTURE_HELPER, complete=True, contexts=contexts)
+    return result
+
+
+class CaptureIntegrityTests(unittest.TestCase):
+    def test_current_adapter_and_helper_source_pins(self):
+        for name, expected in [('response_capture.mjs', reducer.CAPTURE_HELPER),
+                               ('realworld_boundary_case.mjs', reducer.CAPTURE_LEGACY_ADAPTER),
+                               ('realworld_generated_case.mjs', reducer.CAPTURE_GENERATED_ADAPTER)]:
+            self.assertEqual(reducer.sha((PROJECT/'scripts'/name).read_bytes()), expected)
+
+    def test_matched_request_response_and_drain_accounting(self):
+        for consumer in ('api', 'ui'):
+            result = attach_capture(positive(consumer=consumer)[0])
+            self.assertEqual(reducer.capture_integrity_issues(result, required=True), [])
+
+    def test_missing_capture_is_legacy_optional_but_revised_source_requires_it(self):
+        self.assertEqual(reducer.capture_integrity_issues({}), [])
+        self.assertIn('missing_capture_integrity', reducer.capture_integrity_issues({}, required=True))
+
+    def test_missing_or_mismatched_response_metadata_is_incomplete(self):
+        for mode in ('missing', 'phase', 'duplicate'):
+            result = attach_capture(positive(consumer='ui')[0])
+            response = next(x for x in result['trace'] if x.get('source') == 'ui' and x['type'] == 'response')
+            if mode == 'missing': result['trace'].remove(response)
+            elif mode == 'phase': response['request_phase'] = 'other'
+            else: result['trace'].append(copy.deepcopy(response))
+            self.assertTrue(reducer.capture_integrity_issues(result, required=True), mode)
+
+    def test_failed_timeout_or_tampered_counts_cannot_qualify(self):
+        for key, value in [('complete', False), ('failures', 1), ('timed_out', True), ('completed', 999), ('outstanding', [{}])]:
+            result = attach_capture(positive(consumer='ui')[0])
+            result['capture_integrity']['contexts'][0][key] = value
+            self.assertTrue(reducer.capture_integrity_issues(result, required=True), key)
+
+    def test_unknown_helper_and_unclosed_context_are_incomplete(self):
+        result = attach_capture(positive(consumer='ui')[0])
+        result['capture_integrity']['helper_sha256'] = 'f' * 64
+        self.assertIn('unsupported_capture_helper', reducer.capture_integrity_issues(result))
+        result['capture_integrity']['contexts'] = []
+        self.assertIn('unclosed_capture_context', reducer.capture_integrity_issues(result))
+
+
 class FileProvenanceTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory(prefix='realworld-component-test-');self.addCleanup(self.temp.cleanup)
         self.path=Path(self.temp.name)
         shutil.copyfile(PROJECT/'scripts/realworld_boundary_case.mjs',self.path/'realworld_boundary_case.mjs')
+        shutil.copyfile(PROJECT/'scripts/response_capture.mjs',self.path/'response_capture.mjs')
         shutil.copyfile(PROJECT/'manifests/realworld-boundary-registry-v1.json',self.path/'registered-candidates.json')
         self.summary={'status':'completed','finished_at':'synthetic-unit-fixture','kind':'exploratory_boundary_and_continuation_pilot',
                       'registry_sha256':reducer.sha((self.path/'registered-candidates.json').read_bytes()),
-                      'source_sha256':{'realworld_boundary_case.mjs':reducer.sha((self.path/'realworld_boundary_case.mjs').read_bytes())},
+                      'source_sha256':{'realworld_boundary_case.mjs':reducer.sha((self.path/'realworld_boundary_case.mjs').read_bytes()),
+                                       'response_capture.mjs':reducer.CAPTURE_HELPER},
                       'candidate_subset':['article-valid'],'repetitions_per_branch':1,'fixture_sha256':'a'*64,'branches':[]}
         for consumer in ('api','ui'):
             result,run,case,fixture=positive(consumer=consumer)
+            attach_capture(result)
             run.update(evidence=run['case_id']+'.json',reset_sha256='a'*64)
             (self.path/run['evidence']).write_text(json.dumps(result))
             self.summary['branches'].append(run)
@@ -333,6 +401,12 @@ class FileProvenanceTests(unittest.TestCase):
         out=reducer.summarize_run(self.path)
         self.assertEqual(out['status'],'incomplete_or_invalid_evidence')
         self.assertTrue(any('unreadable_case_evidence' in x for x in out['run_issues']))
+
+    def test_repaired_source_cannot_qualify_without_its_archived_helper(self):
+        (self.path/'response_capture.mjs').unlink()
+        out = reducer.summarize_run(self.path)
+        self.assertEqual(out['status'], 'incomplete_or_invalid_evidence')
+        self.assertIn('missing_executed_source:response_capture.mjs', out['run_issues'])
 
 
 if __name__=='__main__':
