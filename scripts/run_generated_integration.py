@@ -30,7 +30,7 @@ def object_sha(data):return hashlib.sha256(json.dumps(data,sort_keys=True,separa
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for key in ['subject','python','node','runtime-root']:parser.add_argument('--'+key,type=Path,required=True)
-    parser.add_argument('--phase',choices=['deadline-smoke','controls','validation','all'],default='all')
+    parser.add_argument('--phase',choices=['deadline-smoke','controls','integrity-controls','validation','all'],default='all')
     parser.add_argument('--calibration-gate',type=Path,help='Wait for this task-owned marker before timings, so other controlled study processes have stopped.')
     args=parser.parse_args();subject=args.subject.resolve();frontend=subject/'fronts/vue3-realworld-example-app'
     def interrupted(signum,frame):raise KeyboardInterrupt('controller interrupted')
@@ -46,7 +46,7 @@ def main():
     root=Path(tempfile.mkdtemp(prefix=run_id+'-',dir=args.runtime_root));evidence=root/'evidence';evidence.mkdir()
     output=PROJECT/'results'/run_id;database=root/'active.sqlite3';fixture=root/'fixture.sqlite3'
     (evidence/'original-pool.json').write_text(registry.to_json())
-    source_paths=[Path(__file__),Path(__file__).with_name('realworld_generated_case.mjs'),Path(__file__).with_name('response_capture.mjs'),Path(__file__).with_name('realworld_case_worker.py'),Path(__file__).with_name('run_realworld_pilot.py')]
+    source_paths=[Path(__file__),Path(__file__).with_name('realworld_generated_case.mjs'),Path(__file__).with_name('response_capture.mjs'),Path(__file__).with_name('realworld_integrity.mjs'),Path(__file__).with_name('realworld_case_worker.py'),Path(__file__).with_name('run_realworld_pilot.py')]
     source_paths.append(PROJECT/'protocol/runtime-integration-v1.md')
     source_paths+=list((PROJECT/'src/mixed_interface').glob('*.py'))
     hashes={}
@@ -55,6 +55,7 @@ def main():
     case_runner=root/'realworld_generated_case.mjs';worker=root/'realworld_case_worker.py'
     shutil.copyfile(Path(__file__).with_name(case_runner.name),case_runner);shutil.copyfile(Path(__file__).with_name(worker.name),worker)
     shutil.copyfile(Path(__file__).with_name('response_capture.mjs'),root/'response_capture.mjs')
+    shutil.copyfile(Path(__file__).with_name('realworld_integrity.mjs'),root/'realworld_integrity.mjs')
     report={'kind':'development_runtime_integration','run_id':run_id,'status':'running','phase':args.phase,'source_sha256':hashes,
             'protocol_sha256':sha(PROJECT/'protocol/runtime-integration-v1.md'),'original_pool_sha256':sha(evidence/'original-pool.json'),
             'validation':[],'calibration':[],'sessions':[],'cash_usd':0,'cleanup_reserve_s':1.0,
@@ -141,6 +142,10 @@ def main():
             assert follow.status=='completed' and follow.outcome=='passed','Fresh reset/control failed after forced timeout'
         validation_cases=(() if args.phase=='deadline-smoke' else tuple(c for c in registry.cases if c.intervention=='route_only') if args.phase=='controls' else registry.cases)
         if args.phase=='controls':assert len(validation_cases)==4
+        if args.phase=='integrity-controls':
+            selected_ids=[c['case_id'] for c in json.loads((PROJECT/'manifests/realworld-integrity-controls-v1.json').read_text())['generated_cases']]
+            validation_cases=tuple(c for c in registry.cases if c.case_id in selected_ids)
+            assert len(validation_cases)==6 and [c.case_id for c in validation_cases]==selected_ids
         for case in validation_cases:
             started=time.monotonic();r=execute(case,75,'validation');entry={'case_id':case.case_id,'route':[o.interface for o in case.operations],'status':r.status,'outcome':r.outcome,'seconds':time.monotonic()-started,'details':r.details}
             report['validation'].append(entry);dump(evidence/'summary.json',report);print(json.dumps({'phase':'validation',**entry}),flush=True)

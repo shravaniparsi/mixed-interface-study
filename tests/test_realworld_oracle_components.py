@@ -316,8 +316,9 @@ def attach_capture(result):
 class CaptureIntegrityTests(unittest.TestCase):
     def test_current_adapter_and_helper_source_pins(self):
         for name, expected in [('response_capture.mjs', reducer.CAPTURE_HELPER),
-                               ('realworld_boundary_case.mjs', reducer.CAPTURE_LEGACY_ADAPTER),
-                               ('realworld_generated_case.mjs', reducer.CAPTURE_GENERATED_ADAPTER)]:
+                               ('realworld_integrity.mjs', reducer.INTEGRITY_HELPER),
+                               ('realworld_boundary_case.mjs', reducer.INTEGRITY_LEGACY_ADAPTER),
+                               ('realworld_generated_case.mjs', reducer.INTEGRITY_GENERATED_ADAPTER)]:
             self.assertEqual(reducer.sha((PROJECT/'scripts'/name).read_bytes()), expected)
 
     def test_matched_request_response_and_drain_accounting(self):
@@ -356,7 +357,7 @@ class FileProvenanceTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory(prefix='realworld-component-test-');self.addCleanup(self.temp.cleanup)
         self.path=Path(self.temp.name)
-        shutil.copyfile(PROJECT/'scripts/realworld_boundary_case.mjs',self.path/'realworld_boundary_case.mjs')
+        shutil.copyfile(PROJECT/'tests/fixtures/realworld_capture_adapter.mjs',self.path/'realworld_boundary_case.mjs')
         shutil.copyfile(PROJECT/'scripts/response_capture.mjs',self.path/'response_capture.mjs')
         shutil.copyfile(PROJECT/'manifests/realworld-boundary-registry-v1.json',self.path/'registered-candidates.json')
         self.summary={'status':'completed','finished_at':'synthetic-unit-fixture','kind':'exploratory_boundary_and_continuation_pilot',

@@ -2,6 +2,7 @@
 // One registered prefix and one continuation, after an orchestrator-owned reset.
 import assert from 'node:assert/strict';
 import {createResponseCapture} from './response_capture.mjs';
+import {command,audit,enforce,profileBundle,profileForm,articleIdentity,commentIdentity,commentPath,snapshot,rejectionState} from './realworld_integrity.mjs';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {readFile,writeFile} from 'node:fs/promises';
@@ -19,7 +20,9 @@ const result={schema_version:1,candidate_id:spec.candidate_id,workflow:spec.work
   started_at:new Date().toISOString(),execution_status:'running',oracle_revision:2,trace:[],checks:[],observations:{ui_continuation_started:false,api_continuation_started:false}};
 let phase='setup',token,browser,context,page,currentUser,capture,contextCounter=0;
 result.capture_integrity={version:1,helper_sha256:createHash('sha256').update(await readFile(new URL('./response_capture.mjs',import.meta.url))).digest('hex'),complete:true,contexts:[]};
+result.integrity={version:1,helper_sha256:createHash('sha256').update(await readFile(new URL('./realworld_integrity.mjs',import.meta.url))).digest('hex'),guards:[],before:null,rejection:null};
 const secrets=new Set([password]);
+function guarded(name,expected,observed,source,stage=phase){const record=audit(name,stage,source,expected,observed);result.integrity.guards.push(record);enforce(record);return record;}
 
 function clean(x,key=''){
   if(/token|password|authorization|cookie/i.test(key))return '[REDACTED]';
@@ -31,12 +34,13 @@ function clean(x,key=''){
 function event(type,data={}){result.trace.push({sequence:result.trace.length+1,phase,type,...clean(data)});}
 function body(text){try{return JSON.parse(text);}catch{return {non_json:true,bytes:Buffer.byteLength(text),sha256:createHash('sha256').update(text).digest('hex')};}}
 async function responseData(response){const data=body(await response.text());if(data?.user?.token)secrets.add(data.user.token);return data;}
-async function api(method,path,payload){
+async function api(method,path,payload,source='api'){
   assert.ok(path.startsWith('/api/'));
-  event('request',{source:'api',method,path,payload});
+  if(source==='api'&&['prefix','continuation'].includes(phase)&&['POST','PUT','DELETE'].includes(method))guarded('submitted_command',command(method,path,payload),command(method,path,payload===undefined?null:JSON.parse(JSON.stringify(payload))),'api');
+  event('request',{source,method,path,payload});
   const response=await fetch(API+path,{method,headers:{'content-type':'application/json',...(token?{authorization:`Token ${token}`}:{})},body:payload===undefined?undefined:JSON.stringify(payload),redirect:'manual',signal:AbortSignal.timeout(12000)});
-  const data=await responseData(response);event('response',{source:'api',method,path,status:response.status,data});
-  return {status:response.status,data};
+  const data=await responseData(response);event('response',{source,method,path,status:response.status,data});
+  return {status:response.status,data,response_sequence:result.trace.length};
 }
 function match(response,method,path){return response.request().method()===method&&new URL(response.url()).pathname===path;}
 function check(name,passed,details={}){result.checks.push({name,passed,...clean(details)});return passed;}
@@ -88,22 +92,32 @@ async function freshLogin(){
   assert.equal(d.user.email,email,'same actor email');currentUser=d.user;
   await page.waitForURL(u=>u.hash==='#/'||u.hash==='');
 }
-async function uiRequest(method,path,action){const p=page.waitForResponse(r=>match(r,method,path));await action();const r=await p;return {status:r.status(),data:await responseData(r)};}
+async function uiRequest(method,path,action,expectedPayload=null){
+  const p=page.waitForResponse(r=>r.request().method()===method&&new URL(r.url()).origin===API&&new URL(r.url()).pathname.startsWith('/api/'));
+  await action();const r=await p;const actual=r.request().postData()?JSON.parse(r.request().postData()):null;
+  guarded('submitted_command',command(method,path,expectedPayload),command(r.request().method(),new URL(r.url()).pathname,actual),'ui');
+  return {status:r.status(),data:await responseData(r)};
+}
 async function articlePage(slug,edit=false){
   const p=page.waitForResponse(r=>match(r,'GET',`/api/articles/${slug}`));
   await page.goto(UI+`/#/article/${encodeURIComponent(slug)}${edit?'/edit':''}`);
   const r=await p;return {status:r.status(),data:await responseData(r)};
 }
-async function settingsEdit(bio){
+async function settingsEdit(bio,boundUser){
   await page.goto(UI+'/#/settings');
+  const form={};for(const [key,label]of[['username','Username'],['email','Email'],['bio','Bio'],['image','Avatar picture url']])form[key]=await page.getByLabel(label,{exact:true}).inputValue();
+  form.new_credential_blank=(await page.getByLabel('New password',{exact:true}).inputValue())==='';
+  guarded('settings_form_bound',profileForm(boundUser),form,'ui');
   await page.getByLabel('Bio',{exact:true}).fill(bio);
-  return uiRequest('PUT','/api/user',()=>page.getByRole('button',{name:'Update Settings',exact:true}).click());
+  return uiRequest('PUT','/api/user',()=>page.getByRole('button',{name:'Update Settings',exact:true}).click(),profileBundle(boundUser,bio));
 }
 async function run(){
   const auth=await api('POST','/api/users/login',{user:{email,password}});assert.equal(auth.status,200);
   assert.equal(auth.data.user.email,email);token=auth.data.user.token;
   const baseline=await api('GET','/api/user');assert.equal(baseline.status,200);assert.equal(baseline.data.user.username,'pilotresearch');
   result.actor={email,stable_fixture_username:'pilotresearch'};
+  result.integrity.before=await snapshot((method,path)=>api(method,path,undefined,'state_probe'));
+  guarded('pre_state_readable',true,result.integrity.before.readable,'shared_api','setup');
   phase='prefix';
   let prefix,target;
   if(spec.workflow==='article-update-comment'){
@@ -114,15 +128,15 @@ async function run(){
     if(spec.workflow==='comment-create-delete'){
       const loaded=await articlePage(fixture.base.slug);assert.equal(loaded.status,200);
       await page.getByLabel('Write comment',{exact:true}).fill(spec.prefix_payload.body);
-      prefix=await uiRequest('POST',`/api/articles/${fixture.base.slug}/comments`,()=>page.getByRole('button',{name:'Submit',exact:true}).click());
-    }else if(spec.workflow==='profile-update-edit')prefix=await settingsEdit(spec.prefix_payload.bio);
+      prefix=await uiRequest('POST',`/api/articles/${fixture.base.slug}/comments`,()=>page.getByRole('button',{name:'Submit',exact:true}).click(),{comment:spec.prefix_payload});
+    }else if(spec.workflow==='profile-update-edit')prefix=await settingsEdit(spec.prefix_payload.bio,baseline.data.user);
     else if(spec.workflow==='article-update-comment'){
       const loaded=await articlePage(target.slug,true);assert.equal(loaded.status,200);
       await page.waitForFunction(v=>document.querySelector('textarea[aria-label="Body"]')?.value===v,target.body);
       assert.equal(await page.getByLabel('Title',{exact:true}).inputValue(),spec.prefix_payload.title);
       assert.equal(await page.getByLabel('Description',{exact:true}).inputValue(),spec.prefix_payload.description);
       await page.getByLabel('Body',{exact:true}).fill(spec.prefix_payload.body);
-      prefix=await uiRequest('PUT',`/api/articles/${target.slug}`,()=>page.getByRole('button',{name:'Publish Article',exact:true}).click());
+      prefix=await uiRequest('PUT',`/api/articles/${target.slug}`,()=>page.getByRole('button',{name:'Publish Article',exact:true}).click(),{article:spec.prefix_payload});
     }
     else throw new Error('Unimplemented native producer');
   }else if(spec.workflow==='article-create-edit')prefix=await api('POST','/api/articles',{article:spec.prefix_payload});
@@ -145,7 +159,10 @@ async function run(){
       : spec.workflow==='comment-create-delete'
         ? follow.status===200&&follow.data.comments.length===0
         : follow.status===200&&follow.data.articlesCount===3;
-    check('failed_prefix_observable_state_unchanged',unchanged,{scope:spec.workflow==='article-create-edit'?'article count and readable list only':'user fields or comment membership'});
+    const after=await snapshot((method,path)=>api(method,path,undefined,'state_probe'));
+    result.integrity.rejection={status:rejectionState(result.integrity.before,after),after};
+    // Retain the older, narrower predicate as a separately scoped observation.
+    check('failed_prefix_observable_state_unchanged',unchanged,{scope:'legacy narrow predicate; full observable-state comparison is integrity.rejection'});
     return;
   }
   result.observations.prefix_outcome='accepted';
@@ -170,13 +187,14 @@ async function run(){
     result.observations.consumer_read_status=before.status;
     if(before.status!==200){result.observations.continuation_outcome='returned_reference_not_resolvable';return;}
     check('consumer_loaded_prefix_fields',JSON.stringify(articleState(before.data.article))===JSON.stringify(articleState(a)));
+    guarded('loaded_article_binding',articleIdentity(a),articleIdentity(before.data.article),branch);
     if(spec.workflow==='article-create-edit'){
       const updated={title:a.title,description:a.description,body:'Body after meaningful continuation.',tagList:a.tagList};
       if(branch==='api')continued=await api('PUT',`/api/articles/${a.slug}`,{article:updated});
       else{
         await page.waitForFunction(v=>document.querySelector('textarea[aria-label="Body"]')?.value===v,a.body);
         await page.getByLabel('Body',{exact:true}).fill(updated.body);
-        continued=await uiRequest('PUT',`/api/articles/${a.slug}`,()=>page.getByRole('button',{name:'Publish Article',exact:true}).click());
+        continued=await uiRequest('PUT',`/api/articles/${a.slug}`,()=>page.getByRole('button',{name:'Publish Article',exact:true}).click(),{article:updated});
       }
       result.observations.continuation_write_status=continued.status;
       if(continued.status!==200){result.observations.continuation_outcome='write_failed';return;}
@@ -188,11 +206,13 @@ async function run(){
       if(branch==='api')continued=await api('POST',`/api/articles/${a.slug}/comments`,{comment:{body:commentBody}});
       else{
         await page.getByLabel('Write comment',{exact:true}).fill(commentBody);
-        continued=await uiRequest('POST',`/api/articles/${a.slug}/comments`,()=>page.getByRole('button',{name:'Submit',exact:true}).click());
+        continued=await uiRequest('POST',`/api/articles/${a.slug}/comments`,()=>page.getByRole('button',{name:'Submit',exact:true}).click(),{comment:{body:commentBody}});
       }
       result.observations.continuation_write_status=continued.status;
       const final=await api('GET',`/api/articles/${a.slug}/comments`);
       check('comment_relationship_persisted',continued.status===201&&final.status===200&&final.data.comments.length===1&&final.data.comments[0].body===commentBody);
+      const returned=continued.data.comment;guarded('created_comment_identity_valid',true,Number.isSafeInteger(returned?.id)&&returned.id>0&&returned.body===commentBody&&returned.author?.username==='pilotresearch',branch,'shared_readback');
+      guarded('created_comment_parent_binding',[commentIdentity(returned)],final.data.comments.filter(x=>x.id===returned.id).map(commentIdentity),branch,'shared_readback');
       const parent=await api('GET',`/api/articles/${a.slug}`);
       check('parent_article_preserved',parent.status===200&&equal(articleState(parent.data.article),articleState(before.data.article)));
       result.observations.parent_after=articleState(parent.data.article);
@@ -207,9 +227,10 @@ async function run(){
       await articlePage(fixture.base.slug);const r=await rp;before={status:r.status(),data:await responseData(r)};
     }
     check('comment_loaded_in_parent',before.status===200&&before.data.comments.some(x=>x.id===c.id&&x.body===c.body));
-    const path=`/api/articles/${fixture.base.slug}/comments/${c.id}`;
+    guarded('loaded_comment_binding',[commentIdentity(c)],before.data.comments.filter(x=>x.id===c.id).map(commentIdentity),branch);
+    const path=commentPath(fixture.base.slug,c.id);
     if(branch==='api')continued=await api('DELETE',path);
-    else continued=await uiRequest('DELETE',path,()=>page.getByRole('button',{name:'Delete comment',exact:true}).press('Enter'));
+    else {guarded('singleton_delete_target',1,before.data.comments.length,'ui');await page.getByRole('button',{name:'Delete comment',exact:true}).waitFor();guarded('unique_native_delete_control',1,await page.getByRole('button',{name:'Delete comment',exact:true}).count(),'ui');continued=await uiRequest('DELETE',path,()=>page.getByRole('button',{name:'Delete comment',exact:true}).press('Enter'));}
     result.observations.continuation_write_status=continued.status;
     const final=await api('GET',`/api/articles/${fixture.base.slug}/comments`);
     check('deletion_persisted',continued.status===204&&final.status===200&&final.data.comments.length===0);
@@ -228,7 +249,7 @@ async function run(){
     const bio='Bio after meaningful continuation.';
     if(branch==='ui'){
       await freshLogin();check('fresh_ui_principal_matches',JSON.stringify(userState(currentUser))===JSON.stringify(userState(user.data.user)));
-      result.observations.ui_continuation_started=true;continued=await settingsEdit(bio);
+      result.observations.ui_continuation_started=true;continued=await settingsEdit(bio,user.data.user);
     }else{
       const payload={username:user.data.user.username,email:user.data.user.email,bio};
       if(user.data.user.image!==null)payload.image=user.data.user.image;

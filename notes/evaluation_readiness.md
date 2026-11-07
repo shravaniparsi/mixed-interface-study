@@ -1,3 +1,7 @@
+# Current execution integrity step
+
+RealWorld submitted-command, returned-resource and rejected-prefix observable-state guards are implemented. Local checks pass; hosted validation is pending under `protocol/realworld-integrity-validation-v1.md`. The suite includes 14 positive controls and 8 previously examined rejection branches. Earlier statements about missing guards describe historical executing adapters; they remain applicable to those records. This change does not complete PetClinic guards, cross-workflow pairing, cleanup qualification or the primary freeze.
+
 # Evaluation preparation
 
 Update: source-qualified RealWorld/PetClinic extraction is implemented, qualifying 140 of 144 archived records and retaining four RealWorld capture-error records as incomplete. The Quartz controls-only paired wrapper passed hosted validation: two valid pairs and four branches with matching actor/state/payload evidence and confirmed cleanup. See [the extraction report](oracle_extraction.md) for current evidence; the original preparation checkpoint below remains historical.

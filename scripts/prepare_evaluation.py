@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "scripts/realworld_integrity.mjs", "tests/realworld_integrity.test.mjs",
+    "tests/test_realworld_integrity.py", "tests/fixtures/realworld_capture_adapter.mjs",
+    "scripts/validate_realworld_integrity.py", "protocol/realworld-integrity-validation-v1.md",
+    "manifests/realworld-integrity-controls-v1.json",
     *SOURCES.values(),
     "manifests/multiworkflow-eligibility-v1.json",
     "manifests/paired-candidate-inventory-v1.json",

@@ -2,6 +2,7 @@
 // Executes exactly the two declared operations; shared oracle observations are separate.
 import assert from 'node:assert/strict';
 import {createResponseCapture} from './response_capture.mjs';
+import {command,audit,enforce,articleIdentity,snapshot,rejectionState} from './realworld_integrity.mjs';
 import {createRequire} from 'node:module';
 import {readFile,writeFile,rename} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -15,7 +16,9 @@ const credentials={email:'pilot@example.com',password:'Pilot-Research-123!'};
 const result={schema_version:1,case_id:c.case_id,route:[producer.interface,consumer.interface],status:'running',trace:[],checks:[],coverage:{reached_operations:[],data_consumed:false,state_consumed:false}};
 let phase='setup',token,browser,server,context,page,capture,contextCounter=0,requestCounter=0;
 result.capture_integrity={version:1,helper_sha256:createHash('sha256').update(await readFile(new URL('./response_capture.mjs',import.meta.url))).digest('hex'),complete:true,contexts:[]};
+result.integrity={version:1,helper_sha256:createHash('sha256').update(await readFile(new URL('./realworld_integrity.mjs',import.meta.url))).digest('hex'),guards:[],before:null,rejection:null};
 const secrets=new Set([credentials.password]);
+function guarded(name,expected,observed,source,stage=phase){stage=stage==='producer'?'prefix':stage==='consumer'?'continuation':stage;const record=audit(name,stage,source,expected,observed);result.integrity.guards.push(record);enforce(record);return record;}
 function clean(x,k=''){
   if(/token|password|authorization|cookie/i.test(k))return '[REDACTED]';
   if(Array.isArray(x))return x.map(v=>clean(v));
@@ -25,12 +28,13 @@ function clean(x,k=''){
 function event(type,data={}){result.trace.push({sequence:result.trace.length+1,phase,type,...clean(data)});}
 function parsed(text){try{return JSON.parse(text);}catch{return {non_json:true,characters:text.length,sha256:createHash('sha256').update(text).digest('hex')};}}
 async function data(r){const d=parsed(await r.text());if(d?.user?.token)secrets.add(d.user.token);return d;}
-async function api(method,path,payload){
+async function api(method,path,payload,source='api'){
   if(phase==='producer'&&method==='POST'&&path==='/api/articles')result.coverage.reached_operations.push(producer.operation_id);
   if(phase==='consumer'&&method==='GET'&&path.startsWith('/api/articles/'))result.coverage.reached_operations.push(consumer.operation_id);
-  const request_id=++requestCounter;event('request',{request_id,source:'api',method,path,payload});
+  if(source==='api'&&['producer','consumer'].includes(phase)&&['POST','PUT','DELETE'].includes(method))guarded('submitted_command',command(method,path,payload),command(method,path,payload===undefined?null:JSON.parse(JSON.stringify(payload))),'api');
+  const request_id=++requestCounter;event('request',{request_id,source,method,path,payload});
   const r=await fetch(API+path,{method,headers:{'content-type':'application/json',...(token?{authorization:`Token ${token}`}:{})},body:payload===undefined?undefined:JSON.stringify(payload),redirect:'manual',signal:AbortSignal.timeout(15000)});
-  const d=await data(r);event('response',{request_id,source:'api',method,path,status:r.status,data:d});return {status:r.status,data:d,request_id};
+  const d=await data(r);event('response',{request_id,source,method,path,status:r.status,data:d});return {status:r.status,data:d,request_id,response_sequence:result.trace.length};
 }
 function match(r,method,path){return r.request().method()===method&&new URL(r.url()).pathname===path;}
 function state(a){return {title:a.title,description:a.description,body:a.body,tagList:[...new Set(a.tagList)].sort(),author:a.author.username};}
@@ -78,16 +82,19 @@ async function loginUi(){
   assert.equal(r.status(),200);assert.equal((await r.json()).user.username,'pilotresearch');await page.waitForURL(u=>u.hash==='#/'||u.hash==='');
 }
 async function uiWrite(method,path,action,expected){
-  const rp=page.waitForResponse(r=>match(r,method,path));await action();const r=await rp;
+  const rp=page.waitForResponse(r=>r.request().method()===method&&new URL(r.url()).origin===API&&new URL(r.url()).pathname.startsWith('/api/'));await action();const r=await rp;
   const payload=JSON.parse(r.request().postData());const submitted=payload.article;
   const payloadMatches=check(phase+'_actual_payload',equal(submitted,expected),{expected,observed:submitted});
   event('declared_ui_request',{method,path,payload});
+  guarded('submitted_command',command(method,path,{article:expected}),command(r.request().method(),new URL(r.url()).pathname,payload),'ui');
   assert.ok(payloadMatches,phase+' actual UI payload differs from declared resolved input');
   return {status:r.status(),data:await data(r),payload_matches:equal(submitted,expected)};
 }
 async function main(){
   const auth=await api('POST','/api/users/login',{user:credentials});assert.equal(auth.status,200);assert.equal(auth.data.user.username,'pilotresearch');token=auth.data.user.token;
   const initial=await api('GET','/api/articles?author=pilotresearch');assert.equal(initial.status,200);assert.equal(initial.data.articlesCount,0);
+  result.integrity.before=await snapshot((method,path)=>api(method,path,undefined,'state_probe'));
+  guarded('pre_state_readable',true,result.integrity.before.readable,'shared_api','setup');
   phase='producer';
   let created;
   if(producer.interface==='api')created=await api('POST','/api/articles',producer.input);
@@ -100,6 +107,8 @@ async function main(){
   result.prefix_status=created.status;
   if(created.status!==201){
     phase='oracle';const follow=await api('GET','/api/articles?author=pilotresearch');result.failed_prefix_followup={status:follow.status,data:follow.data};
+    const after=await snapshot((method,path)=>api(method,path,undefined,'state_probe'));
+    result.integrity.rejection={status:rejectionState(result.integrity.before,after),after};
     result.application_outcome=created.status>=500?'prefix_server_error':'prefix_rejected';return;
   }
   const a=created.data.article;result.accepted_producer=state(a);result.resource_reference=a.slug;
@@ -119,6 +128,7 @@ async function main(){
   }
   if(loaded.status!==200){result.application_outcome='consumer_read_failed';return;}
   const stateLoaded=check('consumer_loaded_state',equal(state(loaded.data.article),expected));
+  guarded('loaded_article_binding',articleIdentity(a),articleIdentity(loaded.data.article),consumer.interface);
   if(consumer.interface==='api'){
     edited=await api('PUT',`/api/articles/${a.slug}`,{article:edit});result.coverage.state_consumed=stateLoaded;
   }else{

@@ -13,7 +13,7 @@ from summarize_realworld_oracle_components import summarize_run, capture_integri
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_IDS = ['article-valid', 'comment-body-valid', 'profile-bio-valid',
               'article-update-unique-partial', 'comment-native-control', 'profile-native-control']
-SOURCES = ['scripts/response_capture.mjs', 'scripts/realworld_generated_case.mjs',
+SOURCES = ['scripts/realworld_integrity.mjs', 'scripts/response_capture.mjs', 'scripts/realworld_generated_case.mjs',
            'scripts/realworld_boundary_case.mjs', 'scripts/run_generated_integration.py',
            'scripts/run_realworld_boundaries.py', 'scripts/realworld_case_worker.py',
            'scripts/run_realworld_pilot.py', 'scripts/validate_realworld_capture.py',

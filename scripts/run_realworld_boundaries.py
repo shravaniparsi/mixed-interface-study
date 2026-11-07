@@ -50,7 +50,7 @@ def main():
             'comparison':'Descriptive paired replay, fixed order; no selector or equal-time comparison.',
             'normalization':'Generated slugs remain in raw traces and must resolve within each branch; slug text is excluded only from cross-branch business-state equality.',
             'branches':[],'additional_cash_usd':0}
-    for source in [Path(__file__),script,Path(__file__).with_name('run_realworld_pilot.py'),Path(__file__).with_name('response_capture.mjs')]:
+    for source in [Path(__file__),script,Path(__file__).with_name('run_realworld_pilot.py'),Path(__file__).with_name('response_capture.mjs'),Path(__file__).with_name('realworld_integrity.mjs')]:
         shutil.copyfile(source,output/source.name);report['source_sha256'][source.name]=sha(source)
     shutil.copyfile(args.registry,output/'registered-candidates.json')
     backend=frontend_process=None;handles=[]

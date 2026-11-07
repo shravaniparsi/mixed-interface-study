@@ -26,6 +26,13 @@ CAPTURE_GENERATED_ADAPTER = '0c1883dcbd8eaa383111f814c00c1c7f942fa25c472b380d998
 CAPTURE_ADAPTERS = {CAPTURE_LEGACY_ADAPTER, CAPTURE_GENERATED_ADAPTER}
 LEGACY_ADAPTERS.add(CAPTURE_LEGACY_ADAPTER)
 GENERATED_ADAPTERS = {GENERATED_ADAPTER, CAPTURE_GENERATED_ADAPTER}
+INTEGRITY_HELPER = '52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566'
+INTEGRITY_LEGACY_ADAPTER = '7331f0c7dac48527cb57ee9aa0bff5d3e17af425217cd486ae847637d016797c'
+INTEGRITY_GENERATED_ADAPTER = '6f6e988f0748770cff2775ed3b36096cbb864b9a2b274babfb61ac8e5aa40172'
+INTEGRITY_ADAPTERS = {INTEGRITY_LEGACY_ADAPTER, INTEGRITY_GENERATED_ADAPTER}
+CAPTURE_ADAPTERS.update(INTEGRITY_ADAPTERS)
+LEGACY_ADAPTERS.add(INTEGRITY_LEGACY_ADAPTER)
+GENERATED_ADAPTERS.add(INTEGRITY_GENERATED_ADAPTER)
 LEGACY_REGISTRIES = {
     'dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2',
     '05545a7ee5682348d111518ff40656dc4ae203cf95752018c496bfd54046eb66',
@@ -153,6 +160,198 @@ def capture_integrity_issues(result, *, required=False):
     return sorted(set(issues))
 
 
+def strict_json_equal(a, b):
+    if isinstance(a, bool) or isinstance(b, bool):
+        return type(a) is type(b) and a == b
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(strict_json_equal(a[k], b[k]) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(strict_json_equal(x, y) for x, y in zip(a, b))
+    return type(a) is type(b) and a == b
+
+
+def project_integrity_snapshot(reads):
+    def at(path):
+        matches = [r for r in reads if r.get('path') == path]
+        if len(matches) != 1 or matches[0].get('status') != 200:
+            raise ValueError('Unreadable or duplicate snapshot probe')
+        return matches[0]['data']
+    raw = at('/api/user')['user']
+    user = {k: raw[k] for k in ('username', 'email', 'bio', 'image')}
+    collection = at('/api/articles?author=pilotresearch')
+    tags = at('/api/tags')['tags']
+    if not isinstance(tags, list) or any(not isinstance(t, str) for t in tags):
+        raise ValueError('Invalid tag collection')
+    if type(collection.get('articlesCount')) is not int or collection['articlesCount'] != len(collection['articles']):
+        raise ValueError('Incomplete article collection')
+    articles, identities = [], set()
+    js_key = lambda s: s.encode('utf-16-be', 'surrogatepass')
+    for article in collection['articles']:
+        slug = article['slug']
+        if not isinstance(slug, str) or not slug or slug in identities:
+            raise ValueError('Invalid or duplicate article identity')
+        identities.add(slug)
+        tags = article['tagList']
+        if not isinstance(tags, list) or any(not isinstance(t, str) for t in tags):
+            raise ValueError('Invalid tags')
+        comments = at('/api/articles/' + quote(slug, safe="~()*!.'-") + '/comments')['comments']
+        ids = [c['id'] for c in comments]
+        if any(type(i) is not int or not 0 < i <= 9007199254740991 for i in ids) or len(ids) != len(set(ids)):
+            raise ValueError('Invalid or duplicate comment identity')
+        articles.append({'article': {**article, 'tagList': sorted(set(tags), key=js_key)},
+                         'comments': sorted(comments, key=lambda c: c['id'])})
+    if len(reads) != 3 + len(articles):
+        raise ValueError('Unexpected snapshot probes')
+    return {'user': user, 'articles': sorted(articles, key=lambda a: js_key(a['article']['slug'])), 'tags': sorted(set(at('/api/tags')['tags']), key=js_key)}
+
+
+def execution_integrity_issues(result, *, required=False):
+    record = result.get('integrity')
+    if record is None:
+        return ['missing_execution_integrity'] if required else []
+    if not isinstance(record, dict) or record.get('version') != 1 or record.get('helper_sha256') != INTEGRITY_HELPER:
+        return ['unsupported_execution_integrity']
+    issues = []
+    trace = result.get('trace', [])
+
+    def inspect_snapshot(value, label):
+        if not isinstance(value, dict) or not isinstance(value.get('reads'), list):
+            issues.append('missing_snapshot:' + label)
+            return
+        for read in value['reads']:
+            event = next((e for e in trace if e.get('sequence') == read.get('response_sequence')), {})
+            if (event.get('type'), event.get('source'), event.get('method'), event.get('path'), event.get('status')) != (
+                    'response', 'state_probe', 'GET', read.get('path'), read.get('status')) or event.get('data') != read.get('data'):
+                issues.append('snapshot_probe_not_backed_by_trace:' + label)
+        if value.get('readable') is True:
+            try:
+                if not strict_json_equal(project_integrity_snapshot(value['reads']), value.get('data')):
+                    issues.append('snapshot_projection_mismatch:' + label)
+            except (ValueError, KeyError, TypeError, AttributeError):
+                issues.append('invalid_readable_snapshot:' + label)
+        elif value.get('readable') is not False:
+            issues.append('missing_snapshot_readability:' + label)
+
+    inspect_snapshot(record.get('before'), 'before')
+    if (record.get('before') or {}).get('readable') is not True:
+        issues.append('pre_candidate_state_unreadable')
+    generated = 'application_outcome' in result or 'case_id' in result
+    producer, consumer = result.get('route', [result.get('prefix_interface'), result.get('continuation_interface')])
+    workflow = 'article-create-edit' if generated else result.get('workflow')
+    observation = result if generated else result.get('observations', {})
+    status = observation.get('prefix_status')
+    accepted = type(status) is int and (status == 201 if generated else 200 <= status < 300)
+    required_guards = {('pre_state_readable', 'setup', 'shared_api'), ('submitted_command', 'prefix', producer)}
+    outcome = result.get('application_outcome') if generated else observation.get('continuation_outcome')
+    if accepted and outcome in ('passed', 'state_mismatch'):
+        required_guards.add(('submitted_command', 'continuation', consumer))
+        if workflow.startswith('article-'):
+            required_guards.add(('loaded_article_binding', 'continuation', consumer))
+        if workflow == 'article-update-comment':
+            required_guards.update((name, 'shared_readback', consumer) for name in ('created_comment_identity_valid', 'created_comment_parent_binding'))
+        if workflow == 'comment-create-delete':
+            required_guards.add(('loaded_comment_binding', 'continuation', consumer))
+            if consumer == 'ui':
+                required_guards.update((name, 'continuation', 'ui') for name in ('singleton_delete_target', 'unique_native_delete_control'))
+        if workflow == 'profile-update-edit' and consumer == 'ui':
+            required_guards.add(('settings_form_bound', 'continuation', 'ui'))
+    if workflow == 'profile-update-edit' and producer == 'ui':
+        required_guards.add(('settings_form_bound', 'prefix', 'ui'))
+    guards = record.get('guards')
+    if not isinstance(guards, list):
+        return issues + ['missing_execution_guards']
+    found = set()
+    allowed = {'pre_state_readable', 'submitted_command', 'loaded_article_binding', 'loaded_comment_binding',
+               'created_comment_identity_valid', 'created_comment_parent_binding', 'settings_form_bound',
+               'singleton_delete_target', 'unique_native_delete_control'}
+
+    def response_events(source, method, path, stage):
+        phases = {'prefix', 'producer'} if stage == 'prefix' else {'continuation', 'consumer'}
+        return [e for e in trace if
+                (e.get('type') == 'ui_response' if generated and source == 'ui' else
+                 e.get('type') == 'response' and e.get('source') == source)
+                and e.get('method') == method and e.get('path') == path
+                and (e.get('request_phase') if source == 'ui' else e.get('phase')) in phases]
+
+    prefix_commands = [g for g in guards if g.get('name') == 'submitted_command' and g.get('stage') == 'prefix']
+    prefix_command = prefix_commands[0].get('observed', {}) if prefix_commands else {}
+    prefix_events = response_events(producer, prefix_command.get('method'), prefix_command.get('path'), 'prefix')
+    prefix_data = prefix_events[0].get('data', {}) if prefix_events else {}
+    comment_identity = lambda c: {k: c.get(k) for k in ('id', 'body')} | {'author': c.get('author', {}).get('username')}
+
+    def bound_guard_values(name, stage):
+        if name == 'pre_state_readable':
+            return True, (record.get('before') or {}).get('readable')
+        if name == 'settings_form_bound':
+            user = record['before']['data']['user'] if stage == 'prefix' else result['prefix_state']
+            return {'username': user['username'], 'email': user['email'], 'bio': user['bio'] if user['bio'] is not None else '',
+                    'image': user['image'] if user['image'] is not None else '', 'new_credential_blank': True}, None
+        if name == 'loaded_article_binding':
+            article = prefix_data['article']
+            path = '/api/articles/' + quote(article['slug'], safe="~()*!.'-")
+            loaded = response_events(consumer, 'GET', path, 'continuation')[0]['data']['article']
+            return article_state(article, generated=True, slug=True), article_state(loaded, generated=True, slug=True)
+        if name in ('loaded_comment_binding', 'singleton_delete_target'):
+            returned = prefix_data['comment']
+            loaded = response_events(consumer, 'GET', prefix_command['path'], 'continuation')[0]['data']['comments']
+            if name == 'singleton_delete_target':
+                return 1, len(loaded)
+            return [comment_identity(returned)], [comment_identity(c) for c in loaded if c['id'] == returned['id']]
+        if name in ('created_comment_identity_valid', 'created_comment_parent_binding'):
+            path = '/api/articles/' + quote(prefix_data['article']['slug'], safe="~()*!.'-") + '/comments'
+            returned = response_events(consumer, 'POST', path, 'continuation')[0]['data']['comment']
+            if name == 'created_comment_identity_valid':
+                return True, (type(returned.get('id')) is int and 0 < returned['id'] <= 9007199254740991
+                              and returned.get('body') == COMMENT_BODY and returned.get('author', {}).get('username') == 'pilotresearch')
+            loaded = response_events('api', 'GET', path, 'continuation')[-1]['data']['comments']
+            return [comment_identity(returned)], [comment_identity(c) for c in loaded if c['id'] == returned['id']]
+        return None
+
+    for guard in guards:
+        key = (guard.get('name'), guard.get('stage'), guard.get('source'))
+        if key in found or key[0] not in allowed or 'expected' not in guard or 'observed' not in guard:
+            issues.append('duplicate_or_unknown_execution_guard')
+            continue
+        found.add(key)
+        calculated = strict_json_equal(guard['expected'], guard['observed'])
+        if type(guard.get('passed')) is not bool or guard['passed'] is not calculated:
+            issues.append('execution_guard_verdict_mismatch:' + key[0])
+        if not calculated:
+            issues.append('operation_not_comparable:' + key[0])
+        try:
+            bound = bound_guard_values(key[0], key[1])
+            if bound and (not strict_json_equal(guard['expected'], bound[0]) or
+                          bound[1] is not None and not strict_json_equal(guard['observed'], bound[1])):
+                issues.append('execution_guard_binding_not_supported:' + key[0])
+        except (KeyError, ValueError, TypeError, IndexError, AttributeError):
+            issues.append('missing_execution_guard_binding_evidence:' + key[0])
+        if key[0] == 'submitted_command':
+            actual = guard['observed']
+            kinds = ('ui_request',) if generated and key[2] == 'ui' else ('request',)
+            candidates = [e for e in trace if e.get('type') in kinds and
+                          (generated and key[2] == 'ui' or e.get('source') == key[2])]
+            if not any((e.get('method'), e.get('path'), e.get('payload')) ==
+                       (actual.get('method'), actual.get('path'), actual.get('payload')) for e in candidates):
+                issues.append('submitted_command_not_backed_by_trace')
+    if required_guards - found:
+        issues.append('missing_required_execution_guards:' + ','.join('/'.join(x) for x in sorted(required_guards - found)))
+    rejection = record.get('rejection')
+    if not accepted and type(status) is int:
+        if not isinstance(rejection, dict):
+            issues.append('missing_rejected_state_comparison')
+        else:
+            inspect_snapshot(rejection.get('after'), 'after')
+            before, after = record.get('before'), rejection.get('after')
+            calculated = ('unobserved' if not before or not after else 'unreadable'
+                          if not before.get('readable') or not after.get('readable') else 'unchanged'
+                          if strict_json_equal(before.get('data'), after.get('data')) else 'changed')
+            if rejection.get('status') != calculated:
+                issues.append('rejected_state_classification_mismatch')
+    elif rejection is not None:
+        issues.append('rejection_state_on_accepted_prefix')
+    return sorted(set(issues))
+
+
 def reduce_case(result, run, registered, *, family='legacy', fixture=None, provenance_issues=()):
     """Extract one case after the loader qualifies immutable source/registry bytes.
 
@@ -161,7 +360,7 @@ def reduce_case(result, run, registered, *, family='legacy', fixture=None, prove
     Existing booleans are retained with check details; independently recomputed
     input/binding consistency guards do not constitute an application re-test.
     """
-    issues = list(provenance_issues) + capture_integrity_issues(result)
+    issues = list(provenance_issues) + capture_integrity_issues(result) + execution_integrity_issues(result)
     parts = {name: {'checks': [], 'failed_check_ids': [], 'observations': []} for name in COMPONENTS}
     expected_checks = set()
     generated = family == 'generated'
@@ -489,6 +688,24 @@ def reduce_case(result, run, registered, *, family='legacy', fixture=None, prove
             issues.append('unclassified_native_payload_discrepancy:' + check_name)
     parts['shared_post_continuation_api_readback']['assigned_action_interface'] = consumer if accepted else None
     parts['shared_post_continuation_api_readback']['observation_mechanism'] = 'Direct API readback after assigned action; not native-only detection.'
+    integrity = result.get('integrity')
+    if isinstance(integrity, dict):
+        for item in integrity.get('guards', []):
+            component = ('environment_reset_cleanup' if item.get('stage') == 'setup' else
+                         'shared_post_continuation_api_readback' if item.get('stage') == 'shared_readback' else
+                         assigned if item.get('stage') == 'continuation' else
+                         'producer_native_controls' if item.get('source') == 'ui' else 'immediate_response')
+            add(component, 'integrity:' + item.get('name', 'unknown'), item.get('passed'), item,
+                'execution_comparability_observation_not_adjudicated_defect')
+        rejection = integrity.get('rejection')
+        if isinstance(rejection, dict):
+            value = rejection.get('status')
+            parts['prefix_state_reads']['observations'].append({'id': 'full_observable_rejection_state', 'classification': value,
+                'before': integrity.get('before'), 'after': rejection.get('after')})
+            if value in ('unchanged', 'changed'):
+                add('prefix_state_reads', 'full_observable_rejection_state_unchanged', value == 'unchanged',
+                    {'classification': value}, 'bounded_api_visible_state_not_database_atomicity')
+            parts['prefix_state_reads']['limitations'] = ['Snapshot covers current-user public fields, all listed own articles, global tag membership and their comments; excludes auth tokens and unobserved database state.']
     issues = sorted(set(issues))
     for name, part in parts.items():
         observed = bool(part['checks'] or part['observations'])
@@ -548,6 +765,8 @@ def summarize_run(directory):
         issues.append('unsupported_adapter_hash')
     if source_hash in CAPTURE_ADAPTERS and summary.get('source_sha256', {}).get('response_capture.mjs') != CAPTURE_HELPER:
         issues.append('missing_or_unsupported_capture_helper_source')
+    if source_hash in INTEGRITY_ADAPTERS and summary.get('source_sha256', {}).get('realworld_integrity.mjs') != INTEGRITY_HELPER:
+        issues.append('missing_or_unsupported_execution_integrity_source')
     for name, expected in summary.get('source_sha256', {}).items():
         try:
             data = read(source_dir / name)
@@ -566,6 +785,10 @@ def summarize_run(directory):
         wanted = {cid for cid, case in cases.items() if case['intervention'] == 'route_only'} if summary.get('phase') == 'controls' else set(cases)
         if summary.get('phase') == 'controls' and source_hash not in CAPTURE_ADAPTERS:
             issues.append('unsupported_control_subset_source')
+        if summary.get('phase') == 'integrity-controls':
+            wanted = {cid for cid, case in cases.items() if case['intervention'] == 'route_only' or case['operations'][0]['input']['article'].get('body') == ''}
+            if source_hash not in INTEGRITY_ADAPTERS or len(wanted) != 6:
+                issues.append('unsupported_integrity_control_subset')
         identifiers = [x.get('case_id') for x in entries]
     else:
         subset = summary.get('candidate_subset') or list(cases)
@@ -604,6 +827,8 @@ def summarize_run(directory):
             result = json.loads(raw)
             if source_hash in CAPTURE_ADAPTERS:
                 own_issues.extend(capture_integrity_issues(result, required=True))
+            if source_hash in INTEGRITY_ADAPTERS:
+                own_issues.extend(execution_integrity_issues(result, required=True))
             loaded.append((result, entry, registered, own_issues))
         except (OSError, ValueError, KeyError, TypeError) as error:
             issues.append('unreadable_case_evidence:' + str(entry.get('case_id')) + ':' + type(error).__name__)

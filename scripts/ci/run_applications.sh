@@ -38,6 +38,24 @@ case "$STUDY_SUITE" in
       --candidate article-update-unique-partial --candidate comment-native-control --candidate profile-native-control
     python scripts/validate_realworld_capture.py --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
     ;;
+  realworld-integrity-controls)
+    mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-legacy-controls"
+    python scripts/validate_realworld_integrity.py --prepare --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
+    timeout --signal=TERM --kill-after=20s 180s python scripts/run_generated_integration.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" --phase integrity-controls
+    timeout --signal=TERM --kill-after=20s 240s python scripts/run_realworld_boundaries.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" \
+      --registry manifests/realworld-boundary-registry-v1.json \
+      --output-root "$CI_ARTIFACT_DIR/realworld-legacy-controls" \
+      --candidate article-valid --candidate comment-body-valid --candidate profile-bio-valid \
+      --candidate article-update-unique-partial --candidate comment-native-control --candidate profile-native-control \
+      --candidate article-body-omitted --candidate comment-body-omitted --candidate profile-username-empty
+    python scripts/validate_realworld_integrity.py --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
+    ;;
   realworld-integration)
     mkdir -p "$STUDY_RUNTIME/realworld-execution"
     timeout --signal=TERM --kill-after=20s 480s python scripts/run_generated_integration.py \
