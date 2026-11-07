@@ -1,6 +1,6 @@
 # Evaluation preparation
 
-Update: source-qualified RealWorld/PetClinic extraction is implemented, qualifying 140 of 144 archived records and retaining four RealWorld capture-error records as incomplete. A Quartz controls-only paired wrapper is implemented. See [the extraction report](oracle_extraction.md) for the current evidence; the original preparation checkpoint below remains historical.
+Update: source-qualified RealWorld/PetClinic extraction is implemented, qualifying 140 of 144 archived records and retaining four RealWorld capture-error records as incomplete. The Quartz controls-only paired wrapper passed hosted validation: two valid pairs and four branches with matching actor/state/payload evidence and confirmed cleanup. See [the extraction report](oracle_extraction.md) for current evidence; the original preparation checkpoint below remains historical.
 
 The eligibility ledger now accounts for all eight existing workflow templates across three applications. All eight are retained. Their versions, actors, reset procedures, operation bundles, returned-resource bindings, preservation rules, constraint variants, source conflicts and exclusions are recorded in [the detailed ledger](../manifests/multiworkflow-eligibility-v1.json). Retention means that a workflow remains in the research inventory; execution readiness is recorded separately.
 
@@ -39,6 +39,6 @@ Validation passed 106 Python harness tests, six CI bootstrap/context tests and e
 
 The [dated preparation snapshot](../manifests/evaluation-preparation-v1.json) hashes the corpus, ledger, protocol, analysis code, adapters and relevant CI configuration. CI verifies the required artifact set and exact contents. A removed hash entry, changed source file or altered pair inventory fails verification. This is a preparation snapshot; **the primary evaluation freeze is not complete**.
 
-Next, repair future RealWorld capture shutdown, add the executing adapters’ missing payload/binding and rejection-state guards, and validate/extend the independently reset paired campaign on ordinary controls. Freeze effective commands, environment, ordering and repeat behavior before running unexecuted boundaries. Timed selector evaluation additionally needs the common multiworkflow runtime and cost/deadline validation; that is a later gate.
+Next, repair future RealWorld capture shutdown, add the executing adapters’ missing payload/binding and rejection-state guards, and extend the independently reset paired campaign beyond the validated Quartz controls. Freeze effective commands, environment, ordering and repeat behavior before running unexecuted boundaries. Timed selector evaluation additionally needs the common multiworkflow runtime and cost/deadline validation; that is a later gate.
 
 Disputed policy and root-cause adjudication remain separate from these engineering tasks. Unknown policy can remain an explicit result category. Human agreement or maintainer confirmation will not be claimed from agent review.

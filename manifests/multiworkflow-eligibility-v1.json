@@ -19,7 +19,7 @@
     "quartz_component_attribution": "implemented_source_pinned_control_validation",
     "realworld_component_attribution": "implemented_source_qualified_retrospective_extraction_capture_gaps_retained",
     "petclinic_component_attribution": "implemented_source_qualified_retrospective_extraction_runtime_gaps_retained",
-    "paired_replay_and_reduction": "quartz_control_wrapper_implemented_hosted_validation_pending; multiworkflow_primary_campaign_pending",
+    "paired_replay_and_reduction": "quartz_ordinary_control_pairs_hosted_validated; boundary_and_multiworkflow_primary_campaign_pending",
     "primary_environment_and_execution_qualification": "partial",
     "primary_freeze": "incomplete",
     "timed_selector_evaluation": "not_ready"
@@ -48,7 +48,7 @@
       "scope": "paired_diagnostic_primary",
       "issue": "A declared input-pair inventory is not an executable independently reset paired campaign. Corresponding prefix-state equality, schedule, stop/resume and repeat rules need enforcement.",
       "close_with": "Implement and validate the registered pair schedule and paired-state reducer on ordinary controls, preserving all failed attempts.",
-      "implementation_progress": "Quartz controls-only wrapper implemented with fixed two-pair order and explicit equivalence checks; hosted validation pending. Boundary and multiworkflow campaign scope still pending."
+      "implementation_progress": "Quartz controls-only wrapper passed hosted run 42356532879: two pairs, four fresh JVM branches, all state/actor/payload comparability checks and cleanup confirmed. Boundary and multiworkflow campaign scope still pending."
     },
     {
       "id": "F-PRIMARY-RUNTIME",
@@ -67,7 +67,7 @@
   "workflows": [
     {
       "workflow_id": "realworld.article_create_body_edit",
-      "title": "Article creation → meaningful body edit",
+      "title": "Article creation \u2192 meaningful body edit",
       "eligibility": {
         "decision": "retain",
         "reason": "A created article supplies both an opaque slug and editable state to a meaningful second operation implemented by both interfaces. Retention means an eligible development template, not primary-evaluation readiness."
@@ -840,7 +840,7 @@
     },
     {
       "workflow_id": "realworld.article_update_comment_create",
-      "title": "Article update → comment creation using returned article identity",
+      "title": "Article update \u2192 comment creation using returned article identity",
       "eligibility": {
         "decision": "retain",
         "reason": "An existing article update supplies the returned parent slug and preserved state needed to create a related comment; partial and full update bundles must remain separate producer variants. Retention means an eligible development template, not primary-evaluation readiness."
@@ -1306,7 +1306,7 @@
     },
     {
       "workflow_id": "realworld.comment_create_delete",
-      "title": "Comment creation → deletion from its parent article",
+      "title": "Comment creation \u2192 deletion from its parent article",
       "eligibility": {
         "decision": "retain",
         "reason": "A created comment supplies a concrete id and parent membership needed for meaningful deletion by the same author through API or native controls. Retention means an eligible development template, not primary-evaluation readiness."
@@ -1622,7 +1622,7 @@
         }
       ],
       "exclusions": [
-        "Deletion by article owner of another user’s comment, cross-parent comment ids, multi-comment selection, concurrent deletion, unauthenticated access, and live-session identity changes.",
+        "Deletion by article owner of another user\u2019s comment, cross-parent comment ids, multi-comment selection, concurrent deletion, unauthenticated access, and live-session identity changes.",
         "No claim that API/UI deletion capabilities are equal outside the same-author fixture."
       ],
       "prior_exposure": {
@@ -1718,7 +1718,7 @@
     },
     {
       "workflow_id": "realworld.profile_update_settings_edit",
-      "title": "Profile update → meaningful bio edit through settings",
+      "title": "Profile update \u2192 meaningful bio edit through settings",
       "eligibility": {
         "decision": "retain",
         "reason": "Accepted account state is reused by the same principal to change bio while preserving username/email/image; nullable fields and identity changes make the continuation nontrivial within a tightly scoped bundle. Retention means an eligible development template, not primary-evaluation readiness."
@@ -2270,7 +2270,7 @@
         }
       },
       "resource_bindings": [
-        "POST owner.id → GET/PUT target path and native edit route; never infer id11 from fixture.",
+        "POST owner.id \u2192 GET/PUT target path and native edit route; never infer id11 from fixture.",
         "Owner update id and unchanged firstName/lastName/city/telephone from fresh target GET; native form from its own fresh GET."
       ],
       "preservation_obligations": [
@@ -2290,7 +2290,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml#L1991-L2063",
           "local_evidence": "results/petclinic-source-evidence/openapi.yml",
           "sha256": "178aa089f8f5068160aa6de147958fe094eba1f67c07607cc152f491237cbe00",
-          "rule": "Required nonempty firstName/lastName/address/city/telephone; firstName Unicode letters with up to two separators from space/apostrophe/hyphen, lastName also optional trailing period; telephone 1–20 digits; id/pets readOnly."
+          "rule": "Required nonempty firstName/lastName/address/city/telephone; firstName Unicode letters with up to two separators from space/apostrophe/hyphen, lastName also optional trailing period; telephone 1\u201320 digits; id/pets readOnly."
         },
         {
           "source_id": "pc-owner-update-contract",
@@ -2332,7 +2332,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/model/Owner.java#L38-L53",
           "local_evidence": "results/petclinic-source-evidence/Owner.java",
           "sha256": "aea940b18936717aeead07fc1769131ade48d10f3ee4d2cf5df511902ac0c773",
-          "rule": "address/city/telephone NotEmpty; telephone exactly 10 digits. This is stricter than OpenAPI 1–20, while whitespace satisfies NotEmpty."
+          "rule": "address/city/telephone NotEmpty; telephone exactly 10 digits. This is stricter than OpenAPI 1\u201320, while whitespace satisfies NotEmpty."
         },
         {
           "source_id": "pc-owner-native-form",
@@ -2346,7 +2346,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/owners/owner-form.ts#L16-L38",
           "local_evidence": "results/petclinic-source-evidence/owner-form.ts",
           "sha256": "66bb9f1218b3f65b972c87e8641cfd98ca4189d221a43f3978fb7cf4c5fe69f0",
-          "rule": "Names required, length 1–30 and ASCII letters only. Address/city required and notBlank; telephone exactly 10 digits."
+          "rule": "Names required, length 1\u201330 and ASCII letters only. Address/city required and notBlank; telephone exactly 10 digits."
         },
         {
           "source_id": "pc-notblank",
@@ -2824,7 +2824,7 @@
         }
       },
       "resource_bindings": [
-        "Returned owner.id → pet creation parent; returned pet.id → linked visit creation parent and continuation path.",
+        "Returned owner.id \u2192 pet creation parent; returned pet.id \u2192 linked visit creation parent and continuation path.",
         "Fresh pet GET supplies unchanged birthDate/type; native type string id resolves to the fetched type object.",
         "Keep pet.ownerId, linked visit.id/petId and owner.pets identity membership."
       ],
@@ -2846,7 +2846,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml#L2154-L2210",
           "local_evidence": "results/petclinic-source-evidence/openapi.yml",
           "sha256": "178aa089f8f5068160aa6de147958fe094eba1f67c07607cc152f491237cbe00",
-          "rule": "Required name/birthDate/type; name length1–30; birthDate date plus PetAgeValidation extension (no age boundary registered). Pet.id/ownerId/visits are readOnly."
+          "rule": "Required name/birthDate/type; name length1\u201330; birthDate date plus PetAgeValidation extension (no age boundary registered). Pet.id/ownerId/visits are readOnly."
         },
         {
           "source_id": "pc-pet-entity",
@@ -2888,7 +2888,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/pets/pet-form.ts#L4-L22",
           "local_evidence": "results/petclinic-source-evidence/pet-form.ts",
           "sha256": "86a586f57ca6c24743d5820b92bcafd9ee508254ce8565c333660363189b5581",
-          "rule": "Name required 1–30, first character ASCII letter/digit; date required; native type selector holds string id."
+          "rule": "Name required 1\u201330, first character ASCII letter/digit; date required; native type selector holds string id."
         },
         {
           "source_id": "pc-pet-native-binding",
@@ -3245,8 +3245,8 @@
         }
       },
       "resource_bindings": [
-        "Returned owner.id → pet creation parent; returned pet.id → visit creation parent; returned visit.id → continuation route.",
-        "Native visit.petId → pet read, then pet.ownerId → owner read; loaded pet object is serialized in native PUT. API comparator currently obtains that object from setup pet.id.",
+        "Returned owner.id \u2192 pet creation parent; returned pet.id \u2192 visit creation parent; returned visit.id \u2192 continuation route.",
+        "Native visit.petId \u2192 pet read, then pet.ownerId \u2192 owner read; loaded pet object is serialized in native PUT. API comparator currently obtains that object from setup pet.id.",
         "Preserve visit.petId and owner/pet/visit graph memberships; do not treat Visit.petId as OpenAPI readOnly."
       ],
       "preservation_obligations": [
@@ -3267,7 +3267,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml#L2264-L2309",
           "local_evidence": "results/petclinic-source-evidence/openapi.yml",
           "sha256": "178aa089f8f5068160aa6de147958fe094eba1f67c07607cc152f491237cbe00",
-          "rule": "Required date and description length1–255. Visit.id is readOnly; Visit.petId is REQUIRED but is NOT marked readOnly."
+          "rule": "Required date and description length1\u2013255. Visit.id is readOnly; Visit.petId is REQUIRED but is NOT marked readOnly."
         },
         {
           "source_id": "pc-visit-update-contract",
@@ -3323,7 +3323,7 @@
           "url": "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/visits/visit-form.ts#L14-L20",
           "local_evidence": "results/petclinic-source-evidence/visit-form.ts",
           "sha256": "0c7ec30e9be0f1998b258bc2b670f88596c49d53d4db930b64602c011d8aed1a",
-          "rule": "Date/description required, description notBlank and length1–255."
+          "rule": "Date/description required, description notBlank and length1\u2013255."
         },
         {
           "source_id": "pc-notblank",
@@ -3449,7 +3449,7 @@
         ]
       },
       "normalization_rules": [
-        "Native date input/output projection YYYY/MM/DD ↔ wire YYYY-MM-DD is declared by VisitsModule and component serialization. Assert exact calendar date; no locale-dependent slash-date guessing.",
+        "Native date input/output projection YYYY/MM/DD \u2194 wire YYYY-MM-DD is declared by VisitsModule and component serialization. Assert exact calendar date; no locale-dependent slash-date guessing.",
         "Preserve description bytes including a single space. The notBlank validator blocks rather than normalizes whitespace.",
         "Native PUT includes id and pet object beyond editable VisitFields; API comparator deliberately mirrors that observed payload."
       ],
@@ -4286,11 +4286,11 @@
               "supported": false,
               "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
             },
-            "literal": "Café 東京 🌱",
+            "literal": "Caf\u00e9 \u6771\u4eac \ud83c\udf31",
             "semantics": {
               "producer_field": "description",
-              "expected_persisted": "Café 東京 🌱",
-              "expected_native_loaded": "Café 東京 🌱",
+              "expected_persisted": "Caf\u00e9 \u6771\u4eac \ud83c\udf31",
+              "expected_native_loaded": "Caf\u00e9 \u6771\u4eac \ud83c\udf31",
               "consumer": "Description is deliberately replaced by the fixed meaningful edit. A raw null-to-empty UI display projection is documented, not silently applied to other fields.",
               "supplementary_source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L408"
             }
@@ -5303,7 +5303,8 @@
           "Same-actor controls with meaningful read/edit/readback and actual native payloads",
           "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/quartz-controls/summary.json",
           "scripts/summarize_quartz_oracle_components.py",
-          "tests/test_quartz_oracle_components.py"
+          "tests/test_quartz_oracle_components.py",
+          "manifests/quartz-paired-control-validation.json"
         ],
         "missing": [
           "Q-PHASE-ATTRIBUTION",
@@ -5329,7 +5330,8 @@
         "evidence": [
           "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/quartz-controls/summary.json",
           "manifests/quartz-generated-adapter-validation.json",
-          "tests/quartz_generated_case.test.mjs"
+          "tests/quartz_generated_case.test.mjs",
+          "manifests/quartz-paired-control-validation.json"
         ],
         "missing": [
           "Predeclared boundary campaign interpretation/options/order/replay, not additional boundary trials",
@@ -5344,7 +5346,7 @@
           "after_case_deadline": "SIGTERM then SIGKILL after 7000 ms; exit confirmation bounded at 1000 ms; teardown recorded outside case deadline.",
           "worker_validation_interrupt_grace_ms": 1500,
           "external_orchestrator_signal": "Stops children but waits for the active case hard-stop escalation; prompt cancellation not validated.",
-          "order": "Exact registry order; no seed/randomization or selector scheduling.",
+          "order": "Default standalone order follows the registry; the paired-control wrapper supplies the frozen API/API, API/UI, UI/UI, UI/API case-order file. Boundary pairing remains unfrozen.",
           "interruption_status": "Expired, signalled, nonzero or unconfirmed child cannot pass even if a result file exists.",
           "case_total_cost": "Parent elapsed_ms includes startup through parent teardown; nested adapter phase costs must not be double counted.",
           "failure_handling": "Infrastructure/interruption statuses stop the run; completed source mismatches/policy-unknown observations do not.",
@@ -5370,16 +5372,22 @@
         "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/runtime-versions.json",
         "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/browser.json",
         "scripts/summarize_quartz_oracle_components.py",
-        "tests/test_quartz_oracle_components.py"
+        "tests/test_quartz_oracle_components.py",
+        "manifests/quartz-paired-control-validation.json"
       ],
       "source_workflow_id": "quartz-stored-job-create-description-edit-v2",
       "application": "quartz",
       "primary_freeze_complete": false,
       "paired_control_runtime": {
-        "status": "implemented_hosted_validation_pending",
+        "status": "hosted_controls_validated",
         "source": "scripts/run_quartz_pairs.py",
         "protocol": "protocol/paired-control-validation-v1.md",
-        "boundary_scope": false
+        "boundary_scope": false,
+        "evidence_manifest": "manifests/quartz-paired-control-validation.json",
+        "run": 42356532879,
+        "valid_pairs": 2,
+        "confirmed_case_cleanups": 4,
+        "actual_deadline_path_validated": false
       }
     }
   ],
@@ -5443,7 +5451,7 @@
         "owner_telephone_9",
         "owner_telephone_11"
       ],
-      "issue": "OpenAPI permits1–20 digits, entity/frontend require exactly10. Observed500 must not be called a clean contract-validation rejection; fixture eight-digit failure remains excluded setup history.",
+      "issue": "OpenAPI permits1\u201320 digits, entity/frontend require exactly10. Observed500 must not be called a clean contract-validation rejection; fixture eight-digit failure remains excluded setup history.",
       "application": "petclinic"
     },
     {
@@ -5474,7 +5482,7 @@
       "id": "Q-PHASE-ATTRIBUTION",
       "scope": "paired_diagnostic_freeze",
       "owner": "autonomous_implementation_and_review",
-      "status": "component_reducer_implemented_pair_integration_pending",
+      "status": "ordinary_control_pair_components_validated_boundary_interpretation_pending",
       "finding": "Every accepted route, including API/API, runs a fresh native UI read at adapter line 210. Its required check and any browser error contribute to the same case status as API semantic checks. A top-level API-route pass/fail is therefore a combined oracle outcome. Unknown-policy status also does not erase other failed required checks retained in the evidence.",
       "required_action": "Review and freeze the component reducer as part of an explicit paired reduction: pair comparability, incomplete/error handling, overlap definitions and replay rules. The reducer itself supplies observations only and does not close the paired-diagnostic freeze gate.",
       "evidence": [
@@ -5484,33 +5492,36 @@
         "scripts/quartz_generated_case.mjs:214",
         "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/quartz-controls/004-api-api/result.json",
         "scripts/summarize_quartz_oracle_components.py",
-        "tests/test_quartz_oracle_components.py"
+        "tests/test_quartz_oracle_components.py",
+        "manifests/quartz-paired-control-validation.json"
       ],
-      "progress": "Read-only component reducer is implemented against the exact archived adapter hash. It separates immediate/prefix observations, assigned continuation, shared API readback, shared final native read, environment and per-check policy scope. Unit and hosted-control checks cover attribution; a paired reducer and frozen interpretation/replay rules are still pending.",
+      "progress": "Source-pinned component extraction is integrated into the two-pair ordinary-control wrapper. Hosted run 42356532879 verified complete observations and pair comparability. Interpretation and overlap accounting for boundary/rejected/incomplete pairs remain pending.",
       "application": "quartz",
       "implementation": "scripts/summarize_quartz_oracle_components.py",
-      "scope_note": "Existing source-pinned checks can be partitioned; final pair validity, detection overlap and censored partial executions remain separate pending capabilities."
+      "scope_note": "Ordinary control pair validity is established only for the saved four-branch attempt. Boundary detection overlap and censored partial executions remain separate pending capabilities."
     },
     {
       "id": "Q-PAIR-REPLAY",
       "scope": "paired_diagnostic_freeze",
       "owner": "autonomous_implementation_and_review",
-      "status": "open",
+      "status": "ordinary_controls_validated_boundary_campaign_open",
       "finding": "The registry has 20 exact API-prefix mutation pairs and two producer-interface control pairs; each case gets a fresh JVM. Runner order follows registry order, but no paired reduction enforces corresponding accepted producer states or records a frozen failure-repeat schedule. Global equal_initial_state_hashes is recorded; --mode all completion does not require it to be true.",
       "required_action": "Freeze pair IDs, exact prefix identity and initial-state comparability rules, declared normalization for comparing persisted prefixes, fixed order, stop/resume handling, and repeats with nearest valid controls. Incomparable initial states, differing prefix outcomes or incomplete pairs must remain explicit rather than being assigned to detection overlap.",
       "evidence": [
         "manifests/quartz-job-generated-pool-v2.json",
         "scripts/run_quartz_registry.mjs:58",
         "scripts/run_quartz_registry.mjs:103",
-        "scripts/run_quartz_registry.mjs:105"
+        "scripts/run_quartz_registry.mjs:105",
+        "manifests/quartz-paired-control-validation.json"
       ],
-      "application": "quartz"
+      "application": "quartz",
+      "progress": "Protocol paired-control-validation-v1.md and hosted run 42356532879 validate exact control pair IDs, corresponding raw states and actor/input/payload parity, saved ordering, and no-resume/no-merge handling. No failure-repeat campaign or boundary pairing has run."
     },
     {
       "id": "Q-COST-ENVIRONMENT",
       "scope": "paired_diagnostic_freeze_and_later_timed_evaluation",
       "owner": "autonomous_implementation_and_review",
-      "status": "open",
+      "status": "ordinary_control_environment_frozen_boundary_and_timing_scope_open",
       "finding": "Per-case elapsed time includes startup through parent teardown. Adapter buckets exist, but UI authentication is inside producer/continuation/final_read; final_read combines API checks, UI read and screenshot; checkpoints are not a separate evidence bucket. Shared artifact verification/download/setup is outside per-case totals. The manifest cost 1.0 is explicitly unmeasured. Standalone summary records paths/platform/Node/jar hashes, but not actual Java/Python/Playwright/OS versions or effective case-timeout flag; hosted CI sidecars record actual versions.",
       "required_action": "Freeze and capture the effective command/options, environment sidecars, named cost boundaries and shared setup. Either disclose the existing combined buckets accurately or instrument the requested decomposition before timing comparisons. Do not use 1.0 as an empirical Quartz cost or treat control time as boundary calibration.",
       "evidence": [
@@ -5520,9 +5531,11 @@
         "scripts/quartz_generated_case.mjs:85",
         "manifests/quartz-job-generation-v2.json",
         "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/runtime-versions.json",
-        "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/browser.json"
+        "results/ci-runs/42351328794/application-quartz-controls-42351328794-1/study-artifacts/browser.json",
+        "manifests/quartz-paired-control-validation.json"
       ],
-      "application": "quartz"
+      "application": "quartz",
+      "progress": "The paired-control plan freezes effective options, Node/browser/environment sidecars and 12 runtime jar hashes before dispatch; hosted run 42356532879 matches them. Recorded 59.318-second control execution is not boundary calibration or a timing comparison. Combined phase buckets are unchanged."
     },
     {
       "id": "Q-DEADLINE-VALIDATION",
@@ -5572,6 +5585,6 @@
   "pair_inventory": "manifests/paired-candidate-inventory-v1.json",
   "preparation_snapshot": "manifests/evaluation-preparation-v1.json",
   "new_boundary_execution_performed": false,
-  "updated_at_utc": "2026-11-07T08:32:36.651939+00:00",
+  "updated_at_utc": "2026-11-07T08:47:43.886942+00:00",
   "component_extraction_evidence": "results/oracle-extraction-20261107/summary.json"
 }
