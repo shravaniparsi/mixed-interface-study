@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "scripts/ci/run_petclinic_interruption.py", "tests/test_petclinic_interruption.py",
+    "protocol/petclinic-interruption-v1.md",
     "scripts/ci/owned_process_scope.py", "tests/test_owned_process_scope.py",
     'scripts/build_control_analysis.py',
     'scripts/summarize_petclinic_integrity_components.py',

@@ -1,0 +1,11 @@
+# PetClinic hosted interruption qualification v1
+
+This controls-only qualification tests SIGTERM at one declared lifecycle checkpoint. It does not execute mutation candidates, calibrate selector costs or complete the primary freeze. Preserve every attempt, including failures and emergency cleanup.
+
+Use the pinned PetClinic bootstrap, browser and language runtime from the existing integrity suite. Launch the existing integrity wrapper with a new output directory. Observe Linux process identities using PID plus procfs start ticks and establish ownership through descendant relationships while the wrapper is alive. Track previously observed descendants after reparenting. Never signal a process whose current identity differs from the recorded identity.
+
+Wait at most 180 seconds for a completed positive API control, live descendant Chromium processes, a live descendant JVM and an open backend port. This is entry into the subsequent native-control lifecycle, not evidence that a particular form action has occurred. Record the observed processes before sending SIGTERM to the wrapper. Require wrapper exit code 143 within 18 seconds, retained runner/frontend cleanup records, and no live observed descendants within four additional seconds. Zombies are reported in process observations but do not count as running processes. Require ports 9966 and 19766 to be closed.
+
+Only after these checks pass, launch the complete twelve-branch integrity control selection in a new output directory. Require successful validation within 300 seconds, retained cleanup records, no live observed descendants and both ports closed. The shell caps the whole qualification at 520 seconds with a 20-second hard-kill allowance. The outer workflow supplies a further nine-minute execution boundary. Report phase durations as qualification diagnostics, not calibrated execution costs.
+
+Any missing checkpoint, unexpected exit code, process survivor, open port, incomplete evidence or failed fresh control fails qualification. Record any identity-checked emergency cleanup separately; it cannot turn failure into success. The observer covers descendants actually seen during this run. It does not prove behavior at other interruption phases or enumerate processes that escaped ancestry observation before the first scan.
