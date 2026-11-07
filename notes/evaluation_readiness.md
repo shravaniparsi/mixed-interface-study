@@ -1,3 +1,7 @@
+# Current PetClinic integrity step
+
+PetClinic hosted controls passed at `631a667`: twelve branches, 72 integrity guards, six unchanged rejected-state graphs, thirteen matched native request/response pairs and twelve confirmed backend exits. All 235 harness tests and the pinned applications’ 248 backend and 88 frontend tests passed. See `notes/petclinic_execution_integrity.md`. Next: new-source component integration and unified paired analysis; browser interruption/cleanup and timing qualification remain open. The primary freeze remains incomplete.
+
 # Current execution integrity step
 
 RealWorld execution integrity guards passed the complete hosted suite at `27aa09f`: 22 branches (14 positive controls and 8 known rejections), 80 guards, 73 business checks and no capture errors. Hosted unit checks passed 208 tests. See `notes/realworld_execution_integrity.md` for protocol, failed-attempt handling and scope. Earlier missing-guard statements describe historical adapters. PetClinic guards, broader paired evaluation, cleanup qualification and the primary freeze remain incomplete.
