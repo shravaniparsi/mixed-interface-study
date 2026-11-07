@@ -1,0 +1,189 @@
+Quartz prospective mixed candidate registration, v2
+
+Files
+manifests/quartz-job-generation-v2.json
+manifests/quartz-job-generated-pool-v2.json
+
+Status and relationship to v1
+This is a separately versioned, source-only catalog. No Quartz boundary input,
+generated candidate, selection strategy, server or browser was executed for
+this preparation. No known issues were searched. The generic generator and
+method code remain unchanged. v1 remains the rejection/control stratum; its
+comparison wording correction did not change its cases or the successful
+positive control's actual full-state hash evidence.
+
+v2 is not frozen. A Quartz registry executor, validation of the declared
+bindings, protocol review and unresolved-policy handling are still required.
+The existing fixed positive-control script does not execute either registry.
+The four earlier ordinary controls are separate evidence, not executions of
+the generated v2 controls or mutants.
+
+Finite catalog
+The pool has 44 cases and 40 explicit UI-producer mutation exclusions:
+- Four complete valid route controls: UI/UI, API/UI, UI/API, API/API.
+- Eight accepted-value transformations paired with both consumers: 16 cases.
+- Four normalization transformations paired with both consumers: 8 cases.
+- Five inherited rejection transformations paired with both consumers: 10 cases.
+- Three unresolved map-key policy transformations paired with both consumers:
+  6 cases.
+
+Each case changes at most one producer DTO property. durable remains true and
+the path identity remains RESEARCH/pilot-job. The consumer changes description
+only, preserving bound producer fields. The complete set is generated with
+max_substitutions=2, max_mutations=1 and max_cases=44, without outcome-based
+selection or truncation.
+
+One explicit representative is registered for each requested new category:
+1. requestsRecovery=true.
+2. Description omission.
+3. Description null.
+4. Description empty string.
+5. Description Unicode literal: Café 東京 🌱.
+6. JobDataMap ordinary string: {"sample":"ordinary value"}.
+7. JobDataMap number: {"sample":7}.
+8. JobDataMap boolean: {"sample":true}.
+9. JobDataMap null value: {"sample":null}.
+10. JobDataMap nested JSON:
+    {"sample":{"child":[1,true,null,{"leaf":"text"}]}}.
+11. JobDataMap property omission.
+12. JobDataMap property null.
+13. Surrounding-whitespace key: {" padded ":"value"}.
+14. Blank key: {"   ":"value"}.
+15. Post-trim collision: {"key":"first"," key ":"second"}.
+
+The five retained jobClass probes are omission, null, empty string, three spaces
+and the ineligible java.lang.String class. They retain their v1 source-based
+rejection expectations. Ordinary typed values accompany normalization and key
+probes; this is not a catalog selected only for suspected discrepancies. One
+representative bounds effort and does not establish exhaustive type, Unicode,
+numeric-boundary or equivalence-class coverage.
+
+Source evidence and expectation categories
+The source links and exact file hashes are recorded in the manifest at release
+71bc29df2a98490b436094666249b3a2a1207cc4 (Quartz Manager 5.0.1).
+
+ScheduledJobInputDTO.java lines 16-28 declare required nonblank jobClass,
+optional String description, primitive boolean flags and nullable Map<String, ?>.
+JobService.java lines 132-160 pass the recovery flag, conditionally copy a
+non-null description/map and return stored fields. The requestsRecovery=true
+variant concerns stored metadata, not recovery behavior or job execution.
+
+manager.component.ts lines 408-450 load the stored job and submit the complete
+command. Lines 1323-1354 preserve raw map keys and classify null, number,
+boolean, object/array JSON and string values into typed entries. Lines 1371-1395
+serialize those typed values. The small finite numbers, valid JSON and ordinary
+strings registered here have source-based acceptance expectations; no broader
+coercion or numeric precision claim is made.
+
+Official Quartz 2.5.2 source confirms default normalization:
+https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.5.2/quartz-2.5.2-sources.jar
+Source archive: 562263 bytes.
+SHA256: a11d97381e5fc7c2c7879d3b21a0d30eb0e0edac5bd9239747696f5d7a774dca
+JobBuilder.java lines 63-68 and 100-116 keep the default description null,
+initialize an empty map and construct the JobDetail. JobDetailImpl.java lines
+325-329 return an empty map when unset. JobDataMap.java lines 90-98 copy the
+provided map. These are static source observations, not runtime results.
+
+Thus omitted/null description is expected to persist as null and load into the
+native text input as an empty string, through description || ''. The requested
+continuation then replaces that field. Omitted/null jobDataMap is expected to
+persist as {}, load as zero typed entries and remain {} on resubmission. A null
+map value inside {"sample":null} is distinct from a null map property.
+
+All accepted/rejection expectations use implementation_control, not independent
+defect truth. The three map-key probes use unknown/unresolved. No HTTP rejection
+status, business policy or observed behavior is invented.
+
+Unresolved key-policy stratum
+Native serialization at lines 1357-1368 trims each key, rejects a blank result
+and rejects duplicate keys after trimming. The backend layer copies the map
+without declaring those same key rules. Static behavior therefore predicts
+that a surrounded key may change on native resubmission, while blank and
+post-trim-colliding keys may block submission. These are source hypotheses.
+
+The intended cross-interface key policy remains unresolved. These probes are
+not pre-labeled defects, and an observed UI block or key change must not become
+a binary conformance failure without independent policy adjudication. Retain
+actual raw keys, producer persistence, UI messages, requests and final state.
+Do not trim keys or collapse the two distinct collision keys inside the oracle.
+The collision input uses distinct raw JSON members; it is not malformed JSON
+with duplicate member names.
+
+Native UI exclusions and generator limitations
+The unchanged v1 generator emits API payload mutations only. Consequently all
+40 UI-producer combinations are explicitly excluded, for distinct reasons:
+- Ordinary true/empty/Unicode/typed-map literals have plausible native control
+  representations. Their exclusion is an adapter limitation, not inherent UI
+  impossibility.
+- Native submission sends a complete typed command. No exact omission/null
+  action is declared; empty controls are not equated with omitted or null JSON.
+- Raw whitespace, blank and post-trim-colliding keys can be typed into a UI
+  entry, but native serialization trims or rejects them. It does not submit the
+  exact raw API map. DOM changes and request interception are not UI mappings.
+- Required-class exclusions retain the pinned select's eligible-value limits.
+
+Map cases use the existing enum operator to replace the complete jobDataMap
+property with one explicit JSON object. No dynamic key, nested-key mutation,
+random generation, static API enum or new generic operator is introduced.
+Path keys, multiple simultaneous mutations, actual duplicate JSON members,
+large/exceptional numbers, broad Unicode exploration, execution, triggers,
+recovery and persistence modes remain outside this finite catalog.
+
+Bindings, typed reads and comparison scope
+The generator stores oracle metadata but does not implement or validate its
+runtime bindings. A future adapter must bind returned jobKeyDTO group/name to
+the update URL; map response jobClassName to request jobClass; and retain
+returned durable, requestsRecovery and jobDataMap. It must not restore baseline
+values over accepted mutated producer state. A native consumer must inspect
+loaded typed entries before editing description. An unexpected class cannot
+be repaired by choosing the baseline class.
+
+For ordinary accepted/normalization cases, compare declared producer values,
+the documented UI display projection and preserved non-edited fields after
+continuation. Preserve JSON scalar types, strings, raw keys and array order;
+object-member ordering is immaterial. Normalization is stage-specific: null
+description projects to an empty UI input, and omitted/null map becomes stored
+{}. Other values and key-policy observations are not silently normalized.
+
+Only the listed business fields and environment checks are compared. Scheduler
+name, instanceId, quartzVersion, clustered, threadPoolClass, threadPoolSize and
+runningSince remain outside this prospective declared comparison. This is
+distinct from the earlier successful control's actual complete-state hashes.
+
+Rejected creation stops continuation but still requires a stored-state read;
+HTTP rejection alone is not proof of rollback. Generated or skipped consumers
+earn no dependency coverage. Same-route variants retain the existing method's
+same dependency/route targets; no payload-variant objective or fault label is
+added to the selector. The cost 1.0 remains an unmeasured schema placeholder.
+
+Execution prerequisites
+Fresh RAM-store reset per complete case; identical admin/ROLE_ADMIN actor;
+matching pinned native artifacts and declared classpath; the documented JVM
+timezone; fixed durable job; STOPPED scheduler; zero triggers and executions.
+No test may start/resume the scheduler or execute a job. Adapter validation and
+protocol review remain outstanding before any freeze or candidate execution.
+
+Offline consistency checks
+The unchanged generator parsed the v2 manifest and reproduced the saved pool
+byte for byte. Checks confirmed all 44 cases and 40 exclusions; all four valid
+route controls; exactly one changed producer property per mutant; API-only
+mutation routes; durable=true; unchanged consumer templates; 24 accept, 10 reject
+and 6 unknown mutant expectations; unchanged method code and unchanged v1.
+These checks did not execute application behavior.
+
+Canonical generator manifest SHA256:
+1097c0e87056fe0d6fb91a19c0d19a5e53a2c27d2b2c1673920475365101b084
+Generated pool file SHA256:
+fd575f01818659c1efde48514392b8cba8b06812f3e385049314edfcae58d2e0
+
+Offline regeneration from outputs/mixed-interface-study:
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 - <<'PY'
+import json
+from pathlib import Path
+from mixed_interface import generate_registry
+m = Path('manifests/quartz-job-generation-v2.json')
+r = generate_registry(json.loads(m.read_text()))
+assert r.to_json() == Path('manifests/quartz-job-generated-pool-v2.json').read_text()
+print(len(r.cases), len(r.exclusions))
+PY

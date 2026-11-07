@@ -1,0 +1,129 @@
+Quartz v2 generated-case adapter
+
+New implementation
+scripts/quartz_generated_case.mjs
+scripts/run_quartz_registry.mjs
+scripts/quartz_browser_cleanup.py
+tests/quartz_generated_case.test.mjs
+
+Scope
+The runner consumes the exact registered v2 pool, with its SHA256 checked before
+execution. Its default mode selects only the four valid route controls. The
+40 boundary cases have not been executed. --mode all is an explicit future
+invocation, subject to the remaining protocol and adapter review gates.
+Application source, candidate content and generic selection/generation code
+are unchanged. Existing positive-control and runtime-preparation scripts are
+unchanged. A passing control is not validation of every mutant path.
+
+Portable invocation from the study root
+node scripts/run_quartz_registry.mjs \
+  --runtime /absolute/path/to/pinned-runtime \
+  --java /absolute/path/to/java \
+  --registry manifests/quartz-job-generated-pool-v2.json \
+  --output results/NEW-QUARTZ-RUN \
+  --mode controls \
+  --playwright-module /absolute/path/to/node_modules/playwright
+
+Optional flags: --chrome-executable /path/to/Chrome-or-Chromium; --node /path/to/node;
+--python /path/to/python3; --port 19965; --case-timeout-ms 120000.
+Without --chrome-executable, Playwright's installed Chromium is used. Node20+,
+Java21, Python3 and the locked published jars are required. No macOS-specific
+JRE path is assumed. The loopback application listener and Playwright control
+server are bound to 127.0.0.1. Output directories must be new.
+
+Every case gets an independent native JVM/RAM store, including both consumer
+routes for a mutated prefix. API and UI use native login as the same admin with
+ROLE_ADMIN. Before writing, the adapter records the complete initial scheduler,
+job and trigger responses, verifies the empty store, STOPPED scheduler and zero
+executions, and captures its full state hash. It never starts/resumes a scheduler,
+creates a trigger or invokes job execution. The mutation allowlist contains only
+native login and the registered stored-job POST/PUT path.
+
+Binding and native UI checks
+The accepted producer response supplies group/name, class, recovery flag and
+map. A fresh API read must match that response before continuation; inconsistency
+is recorded instead of selecting a convenient version. Returned jobClassName
+becomes request jobClass. Unexpected identity or missing binding data is not
+repaired with a baseline value. The consumer changes description only.
+
+Native UI creation/editing uses ordinary controls. The adapter records loaded
+form fields and raw typed map entries, decodes their scalar/JSON values without
+trimming keys, and compares native submitted JSON to the bound intended command.
+Null description has only the declared empty-text display projection. Omitted
+or null map input has only its declared stored {} normalization. Browser field
+validation and actual HTTP rejection are recorded separately. No generated UI
+mutation mapping is invented.
+
+For unresolved key-policy cases, raw keys and differences remain observations.
+No automatic trim, duplicate collapse, policy verdict or defect label is applied.
+Declared accepted-value checks still record other field mismatches. Rejected
+producer cases stop continuation and record post-request state; an HTTP rejection
+does not itself prove rollback. 5xx rejection responses remain explicitly visible.
+
+Evidence and outcomes
+Each case directory contains result.json, run.json, native server and adapter
+logs, browser ownership metadata, and screenshots when reached. The result keeps
+actual sanitized requests/responses, actor observations, complete initial state,
+stored producer state, bindings, raw UI entries, actual final state, required
+checks, unresolved-policy observations, errors and phase costs. Authentication
+tokens and credentials are not included in traces. Prefix acceptance, reached
+continuation, blocked/completed/interrupted status and observed field consumption
+are separate. Consumption observations are not selector feedback or adjudicated
+defects. Nonzero/signalled/unconfirmed child exits cannot be converted into a
+pass by a previously saved result file.
+
+The run directory copies the executed adapter, runner, registry, cleanup wrapper
+and shared cleanup helper. Summary hashes identify code and corpus. Complete
+initial state hashes are compared across the independent controls; final business
+checks follow the narrower field scope declared by the registry. Recording a
+complete final response/hash does not broaden that prospective oracle scope.
+
+Owned-process cleanup
+Before launching Chromium, the adapter atomically writes a unique ownership
+marker with pid:null. The same exact marker is passed as a Chromium argument.
+After launch, metadata receives the PID. A kill during the launch-to-PID window
+therefore still leaves a discoverable ownership marker.
+
+Parent teardown first confirms the case launcher has exited, with bounded TERM
+and KILL waits. It then invokes the existing realworld_case_worker.cleanup_browser
+through the new wrapper. That shared helper checks exact markers, process start
+identity and observed descendants, revalidates before signals, and requires two
+fresh empty scans. A missing IPC/PID message is never treated as proof of cleanup.
+Browser process groups are not signalled using an unverified PID. Cleanup failure
+or an unreleased application port prevents a passing run. Cleanup reports and
+their persisted ownership snapshots remain evidence.
+
+Validation controls
+Eight Node20 tests cover identity/state binding without baseline repair, raw map
+key preservation and typed values, source normalizations, exact registry/default
+controls, mutation allowlists, graceful/forced owned child termination and the
+nonzero-child-exit guard. The shared browser cleanup's 19 tests also passed.
+
+The two explicit diagnostic flags below pause the first valid control at a known
+ownership checkpoint, then have the orchestrator interrupt that case worker:
+--validation-interrupt-at before-browser
+--validation-interrupt-at after-browser
+They require controls mode and retain interrupted evidence with nonzero exit.
+They test worker interruption and cleanup, not prompt external cancellation of
+the orchestrator itself. They are not boundary cases or timing comparisons.
+
+Attempt history
+results/quartz-generated-controls-attempt1: all four route controls passed under
+the first adapter version. That attempt is retained, but its browser-PID fallback
+did not cover the launch ownership gap found during review. It does not establish
+the corrected cleanup behavior.
+The before-browser and after-browser interruption evidence and the subsequent
+fresh four-control replay document validation of the corrected implementation.
+Native upstream unit suites were not run. Study freeze and boundary evaluation
+remain incomplete; no selector-effectiveness or defect-prevalence claim follows.
+
+Completed validation
+The corrected runner passed all four registered controls under Node20.19.6 in
+results/quartz-generated-controls-attempt2. Every run had matching complete
+initial-state hashes, one job POST/201 and PUT/200, passing native payload/read
+checks, STOPPED scheduler, zero triggers/executions, a released application port
+and two fresh empty browser-ownership scans. Both interruption probes retained
+interrupted status, performed zero job writes and confirmed cleanup. The fresh
+four-control run after both probes confirms reset viability. See
+manifests/quartz-generated-adapter-validation.json for compact evidence and code
+hashes. All task-owned application services are stopped.

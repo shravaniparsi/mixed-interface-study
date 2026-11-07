@@ -1,0 +1,89 @@
+{
+  "subject": "petclinic",
+  "status": "development_slice_completed",
+  "recorded_at_utc": "2026-11-07T05:51:33.763276+00:00",
+  "backend_commit": "5180cc9bd0163393c4e628bedc1bc4c27cfaab1b",
+  "frontend_commit": "fba8956cbdd04e09973f81eb39379955a825bfc3",
+  "registry": "manifests/petclinic-candidates-v1.json",
+  "registry_sha256": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
+  "workflow_templates": 3,
+  "additional_templates": [
+    "pet_rename",
+    "visit_reschedule"
+  ],
+  "primary_development_sweep": {
+    "candidates": 18,
+    "branches": 36,
+    "repetitions_per_candidate_oracle": 1,
+    "valid_control_pairs": 3,
+    "prefix_rejected_pairs": 12,
+    "api_pass_ui_blocked_pairs": 3,
+    "result": "manifests/petclinic-boundary-v1-observations.json"
+  },
+  "diagnostic_replay": {
+    "candidates": 3,
+    "branches": 6,
+    "all_three_observations_repeated": true,
+    "result": "manifests/petclinic-boundary-replay-v1-observations.json",
+    "selection_plan": "manifests/petclinic-boundary-replay-plan.json"
+  },
+  "excluded_setup_attempt": {
+    "branches": 6,
+    "reason": "Visit date entered in a format inconsistent with the native module; runner corrected, application unchanged.",
+    "result_directory": "results/petclinic-boundary-attempt1",
+    "adjustment": "manifests/petclinic-boundary-runner-adjustment.json"
+  },
+  "counts_interpretation": "18 unique input variants across 3 templates; 42 completed main/diagnostic branches, plus 6 excluded setup branches. Repetitions and symptoms are not independent faults. No prevalence or discovery-rate denominator is inferred.",
+  "adjudication": {
+    "known_compatibility_issue_cases": [
+      "owner_first_name_hyphen"
+    ],
+    "novel_discovery_claim": false,
+    "prior_reports": [
+      "https://github.com/spring-petclinic/spring-petclinic-angular/issues/233",
+      "https://github.com/spring-petclinic/spring-petclinic-angular/issues/241"
+    ],
+    "prior_report_check": "Parent investigator verified prior upstream reports with the GitHub connector; no maintainer confirmation of these exact traces is claimed.",
+    "policy_ambiguous_cases": [
+      "owner_city_whitespace",
+      "visit_description_whitespace"
+    ],
+    "ambiguous_cases_counted_as_confirmed_defects": false,
+    "source_only_ai_review": "manifests/petclinic-source-adjudication.json",
+    "human_review_of_this_reproduction_completed": false
+  },
+  "equivalence_checks": {
+    "all_primary_initial_graphs_equal": true,
+    "all_primary_post_prefix_graphs_equal": true,
+    "all_replay_initial_and_post_prefix_graphs_equal": true,
+    "all_three_valid_controls_have_equal_edit_payloads_and_final_graphs": true,
+    "fresh_ui_get_observed_for_all_reachable_ui_branches": true,
+    "same_intended_edit_in_api_comparator": true
+  },
+  "cost": {
+    "main_branch_wall_seconds_including_process_reset": 243.554,
+    "main_backend_start_seconds": 220.372,
+    "scope": "Development runtime only. Shared browser startup, frontend setup and source-mapping/adjudication effort are not included in this branch total. Not an equal-budget method comparison.",
+    "cash_spent_usd": 0
+  },
+  "runner": "scripts/petclinic_boundary_slice.mjs",
+  "runner_sha256": "ca662bb1750b47c6c1b0ca8d9895f9199413fd99feef9de1d44b59622223c625",
+  "report_runner": "scripts/petclinic_boundary_report.py",
+  "source_evidence": "results/petclinic-source-evidence/source-manifest.json",
+  "hyphenated_name_evidence": "manifests/petclinic-hyphenated-name-evidence.json",
+  "instructions": "notes/petclinic_boundary_slice.txt",
+  "services_stopped": true,
+  "application_source_modified": false,
+  "new_installations": false,
+  "native_test_suites_rerun": false,
+  "native_baseline_tests": {
+    "backend": 248,
+    "frontend": 88
+  },
+  "limits": [
+    "Development candidates selected from inspected native rules, not held-out faults.",
+    "No generic schema-validation engine or selector budget experiment was executed in this slice.",
+    "One known issue is reproduced; whitespace mismatches remain policy-ambiguous.",
+    "No natural-fault prevalence, agent behavior, method efficiency or Q1 suitability claim follows from these counts."
+  ]
+}

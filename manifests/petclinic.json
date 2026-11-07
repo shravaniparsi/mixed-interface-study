@@ -1,0 +1,105 @@
+{
+  "subject_id": "petclinic",
+  "status": "native_baselines_and_three_control_templates_passed_development_slice_completed",
+  "recorded_date": "2026-11-06",
+  "backend": {
+    "repository": "https://github.com/spring-petclinic/spring-petclinic-rest",
+    "commit": "5180cc9bd0163393c4e628bedc1bc4c27cfaab1b",
+    "commit_recorded_before_disk_pressure": true,
+    "version": "4.0.2",
+    "spring_boot": "4.1.2",
+    "researcher_changed_application_source": false,
+    "path": "/Users/shravaniparsi/Documents/Codex/2026-11-06/m/work/subjects/petclinic-rest",
+    "jar_sha256": "26f35f880229dfcae06a796574a930236361a9403c69355aa3efea9cce77fb65",
+    "jar_path": "/Users/shravaniparsi/Documents/Codex/2026-11-06/m/work/subjects/petclinic-rest/target/spring-petclinic-rest-4.0.2.jar",
+    "jdk": "17.0.2",
+    "jdk_path": "/Library/Java/JavaVirtualMachines/jdk-17.0.2.jdk/Contents/Home",
+    "maven": "3.10.0",
+    "native_command": "JAVA_HOME=<JDK17> MAVEN_USER_HOME=<workspace>/work/runtime/petclinic-maven ./mvnw -B -Dmaven.repo.local=<workspace>/work/runtime/petclinic-maven/repository verify",
+    "native_result": {
+      "exit_code": 0,
+      "suites": 19,
+      "tests": 248,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "upstream_coverage_thresholds_passed": true,
+      "maven_total_seconds": 44.18
+    },
+    "log_path": "/Users/shravaniparsi/Documents/Codex/2026-11-06/m/work/logs/petclinic-native-verify.log",
+    "configuration": {
+      "database": "H2 in-memory",
+      "profiles": [
+        "h2",
+        "spring-data-jpa"
+      ],
+      "reset": "restart process; native schema/sample data reloaded",
+      "security_enabled": false,
+      "actor": "anonymous native default",
+      "port": 9966,
+      "context_path": "/petclinic/"
+    },
+    "api_smoke": {
+      "status": "passed",
+      "request_count": 8,
+      "result": "petclinic-api-smoke.json",
+      "scope": "API only"
+    },
+    "reset_check": {
+      "status": "passed",
+      "result": "petclinic-reset-check.json",
+      "initial_owners": 10,
+      "exact_owners_graph_restored": true
+    },
+    "server_running": false,
+    "pilot_fixture_adjustment": {
+      "classification": "setup fixture issue; excluded from defect counts and main-study results",
+      "first_attempt": "petclinic-api-smoke-attempt1.json",
+      "issue": "Initial 8-digit telephone satisfied the OpenAPI length/pattern but failed the runtime entity constraint requiring exactly 10 digits; persistence returned HTTP 500.",
+      "action": "Changed only the smoke fixture to 10 digits; preserved the failed attempt; no application validation changed."
+    },
+    "archived_native_log": "results/petclinic-native/backend-verify.log"
+  },
+  "frontend": {
+    "repository": "https://github.com/spring-petclinic/spring-petclinic-angular",
+    "commit": "fba8956cbdd04e09973f81eb39379955a825bfc3",
+    "path": "/private/tmp/codex-petclinic-pilot-20261106-m/angular",
+    "node_required": "24.x",
+    "angular": "22.2.3",
+    "install": "npm ci --no-audit --no-fund with workspace npm cache",
+    "install_result": "passed after retry in temporary workspace following disk cleanup",
+    "partial_node_modules_and_cache_removed": true,
+    "api_base_url": "http://localhost:9966/petclinic/api/",
+    "paired_ui_api_compatibility": "Owner create then meaningful UI edit passed for UI/UI and API/UI; one repetition per route.",
+    "node": "24.19.0",
+    "initial_install_result": "failed ENOSPC in Documents checkout; partial packages/cache removed",
+    "native_command": "npm run test:ci",
+    "native_result": {
+      "status": "passed",
+      "tests": 88,
+      "test_files": 29,
+      "vitest": "5.0.5",
+      "reported_seconds": 10.35
+    },
+    "native_log": "results/petclinic-owner-pilot/frontend-native-tests.log",
+    "paired_pilot_manifest": "manifests/petclinic-ui-pilot.json",
+    "researcher_changed_application_source": false,
+    "server_running": false
+  },
+  "environment": {
+    "maven_download_cache_removed_after_success": true,
+    "git_recheck": "later rev-parse failed reading packed-refs with Operation timed out under disk pressure; earlier pinned commits retained",
+    "resolved_setup_history": "Initial ENOSPC and later Documents file-read timeouts; retried unchanged pinned frontend in private tmp after authorized cleanup. Native tests and both paired routes then passed.",
+    "successful_frontend_npm_cache_removed": true
+  },
+  "limitations": [
+    "The 248 backend and 88 frontend native baseline tests are not study samples.",
+    "The original two-route pilot remains recorded separately. The later development sweep covers 18 candidate variants across 3 templates with independent API/UI continuation resets.",
+    "The name-pattern mismatch reproduces a previously reported compatibility issue; it is not a new discovery. Two whitespace discrepancies remain policy-ambiguous.",
+    "The development slice does not establish prevalence, held-out transfer, method efficiency or selector benefit."
+  ],
+  "cash_spent_usd": 0,
+  "paired_pilot_manifest": "manifests/petclinic-ui-pilot.json",
+  "reproduction_notes": "notes/petclinic_ui_setup.txt",
+  "latest_development_slice": "manifests/petclinic-boundary-slice.json"
+}

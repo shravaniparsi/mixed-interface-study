@@ -1,0 +1,156 @@
+{
+  "subject": "petclinic",
+  "case_id": "owner_first_name_hyphen",
+  "classification": "Reproduced previously reported API-contract-valid UI continuation blocker",
+  "independent_human_adjudication": false,
+  "ai_source_review": "manifests/petclinic-source-adjudication.json",
+  "minimal_pair": "Compared with owner_telephone_10, only firstName changes from Alice to Anne-Marie; all other intended inputs and the address-edit operation are equal.",
+  "independent_contract_evidence": [
+    {
+      "source": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml#L1991",
+      "fact": "OwnerFields firstName explicitly permits Unicode letters separated by a single space, apostrophe or hyphen, up to two separators."
+    },
+    {
+      "source": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml#L277",
+      "fact": "The owner update endpoint accepts the same OwnerFields schema."
+    },
+    {
+      "source": "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/model/Person.java#L31",
+      "fact": "Persistent firstName requires nonempty content and adds no narrower alphabetic-only rule."
+    },
+    {
+      "source": "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/owners/owner-form.ts#L15",
+      "fact": "Native add/edit owner schema restricts firstName to ^[a-zA-Z]*$."
+    }
+  ],
+  "observed_effect": "The equivalent API address change succeeds and preserves Anne-Marie. A fresh native UI loads Anne-Marie but disables Update Owner after the address change, leaving the persisted address unchanged.",
+  "domain_interpretation": "The accepted state conforms to the API name contract. This does not establish backend-invalid state; maintainer/human review of intended cross-interface compatibility remains outstanding.",
+  "runs": [
+    {
+      "directory": "results/petclinic-boundary-v1",
+      "api_result": "results/petclinic-boundary-v1/owner_first_name_hyphen-api_semantic.json",
+      "ui_result": "results/petclinic-boundary-v1/owner_first_name_hyphen-fresh_ui.json",
+      "api_result_sha256": "1acb557e5bb48650f5b8a1f6442a8912914d4b9927077813cf035728becb26b7",
+      "ui_result_sha256": "0df68be654e9dfc174409883846bfddf0b5fbb708d1bcfeadf2144d011d7dc47",
+      "screenshot": "results/petclinic-boundary-v1/owner_first_name_hyphen-fresh_ui.png",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "post_prefix_state_sha256": "9ff0b12644a2d7d0dd5b0d4dd3e778565b01c9631844b5b20ccf286b582e8cc5",
+      "api_final_state_sha256": "7e0307dca75a160d8546c7ac4b38b16c2ec7b6e78c1a3e0b47dd0bd45ad7c463",
+      "ui_final_state_sha256": "9ff0b12644a2d7d0dd5b0d4dd3e778565b01c9631844b5b20ccf286b582e8cc5",
+      "prefix_http_status": 201,
+      "api_edit_http_status": 204,
+      "fresh_ui_read_observed": true,
+      "ui_validation": {
+        "submit_disabled": true,
+        "loaded_fields": {
+          "firstName": "Anne-Marie",
+          "lastName": "Research",
+          "address": "1 Pilot Lane",
+          "city": "Testville",
+          "telephone": "5550100001"
+        },
+        "intended_change": {
+          "address": "2 Pilot Lane"
+        },
+        "visible_validation_messages": [],
+        "message_evidence": "Extracted from recorded full visible page text; the loaded name remains untouched, and the native template renders field errors only after the field is dirty. No error message was visible.",
+        "visible_page_text": " HOME\n OWNERS \n VETERINARIANS \n PET TYPES\n SPECIALTIES\nEdit Owner\nFirst Name\nLast Name\nAddress\nCity\nTelephone\nBack\nUpdate Owner"
+      },
+      "api_before": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001",
+        "pets": [],
+        "id": 11
+      },
+      "api_after": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "2 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001",
+        "pets": [],
+        "id": 11
+      },
+      "ui_persisted_after": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001",
+        "pets": [],
+        "id": 11
+      },
+      "ui_put_request_count": 0
+    },
+    {
+      "directory": "results/petclinic-boundary-replay-v1",
+      "api_result": "results/petclinic-boundary-replay-v1/owner_first_name_hyphen-api_semantic.json",
+      "ui_result": "results/petclinic-boundary-replay-v1/owner_first_name_hyphen-fresh_ui.json",
+      "api_result_sha256": "364300a93f30c1a877ed400ab9fb676587e75713658fa2bb72c0b6906d3b2c59",
+      "ui_result_sha256": "9b5cb7bfb8c46d02816650b8eceda7b998525c7c9e7793b37141320c162b7444",
+      "screenshot": "results/petclinic-boundary-replay-v1/owner_first_name_hyphen-fresh_ui.png",
+      "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+      "post_prefix_state_sha256": "9ff0b12644a2d7d0dd5b0d4dd3e778565b01c9631844b5b20ccf286b582e8cc5",
+      "api_final_state_sha256": "7e0307dca75a160d8546c7ac4b38b16c2ec7b6e78c1a3e0b47dd0bd45ad7c463",
+      "ui_final_state_sha256": "9ff0b12644a2d7d0dd5b0d4dd3e778565b01c9631844b5b20ccf286b582e8cc5",
+      "prefix_http_status": 201,
+      "api_edit_http_status": 204,
+      "fresh_ui_read_observed": true,
+      "ui_validation": {
+        "submit_disabled": true,
+        "loaded_fields": {
+          "firstName": "Anne-Marie",
+          "lastName": "Research",
+          "address": "1 Pilot Lane",
+          "city": "Testville",
+          "telephone": "5550100001"
+        },
+        "intended_change": {
+          "address": "2 Pilot Lane"
+        },
+        "visible_validation_messages": [],
+        "message_evidence": "Extracted from recorded full visible page text; the loaded name remains untouched, and the native template renders field errors only after the field is dirty. No error message was visible.",
+        "visible_page_text": " HOME\n OWNERS \n VETERINARIANS \n PET TYPES\n SPECIALTIES\nEdit Owner\nFirst Name\nLast Name\nAddress\nCity\nTelephone\nBack\nUpdate Owner"
+      },
+      "api_before": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001",
+        "pets": [],
+        "id": 11
+      },
+      "api_after": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "2 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001",
+        "pets": [],
+        "id": 11
+      },
+      "ui_persisted_after": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001",
+        "pets": [],
+        "id": 11
+      },
+      "ui_put_request_count": 0
+    }
+  ],
+  "recorded_at_utc": "2026-11-07T05:50:11.575766+00:00",
+  "novel_discovery_claim": false,
+  "prior_reports": [
+    "https://github.com/spring-petclinic/spring-petclinic-angular/issues/233",
+    "https://github.com/spring-petclinic/spring-petclinic-angular/issues/241"
+  ],
+  "prior_report_verification": "Parent investigator checked the upstream reports using the GitHub connector. This reproduction is not newly discovered.",
+  "upstream_confirmation_of_this_reproduction": false
+}

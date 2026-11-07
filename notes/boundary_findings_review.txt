@@ -1,0 +1,60 @@
+Independent bounded evidence review
+
+Reviewed the accepted RealWorld pool (realworld-boundaries-20261107T054749Z),
+the diagnostic replay (realworld-boundaries-20261107T055116Z), PetClinic hyphen
+manifest and original/replay traces, the Alice control, the replay screenshot,
+and prior-issue-screening.json. No application execution or source modification.
+This is AI-assisted investigator review, not human or maintainer confirmation.
+
+RealWorld: investigator-reproduced returned-identifier defect is supported.
+The full pool has 50 completed branches with equal reset hashes; its collision
+case shows a successful body-only PUT, the original slug still resolving to the
+updated article, and the returned replacement slug resolving to 404 through both
+the custom API comparator and actual native UI requests. Diagnostic replay
+repeats this result twice per consumer from independent resets. For example,
+original duplicate-fixture-title-e7aa794a remains readable with the new body,
+whereas returned duplicate-fixture-title-3067b54b gives API GET 404. The fresh UI
+counterpart independently emits its own GET and gets 404. All 12 diagnostic
+control branches (duplicate full payload, unique partial payload, and native UI
+full payload, each with two consumers and two repetitions) pass readback/comment
+and parent-preservation checks. This matches the inspected save/update_fields
+mechanism and the locally documented support for partial updates.
+
+Limits: this was source-guided reproduction, not demonstrated automated discovery.
+The executed API semantic comparator detects the same defect. It supplies no
+incremental-UI detection win and no evidence about RESTler or other unexecuted
+tools. Empty issue searches for slug/partial do not establish novelty. Describe
+the defect as investigator-reproduced, with prior-report status not established.
+
+PetClinic: one reproduced, previously reported API-contract-valid UI continuation
+blocker is supported. The four raw hyphen result hashes match the evidence
+manifest. Both runs have matching initial-state hashes and identical post-prefix
+graphs across independently reset branches. API create returns 201; the custom
+API GET/PUT/GET address edit returns 204 and preserves Anne-Marie plus other
+fields. Fresh UI GET returns the same owner, the screenshot visibly shows address
+2 Pilot Lane, Update Owner is recorded disabled, no UI PUT occurs, and persisted
+state equals the post-prefix graph. The Alice control succeeds through both
+consumers in the original pool. API specification explicitly permits the hyphen;
+the native form's narrower name pattern explains the blockage.
+
+Use: "The custom API semantic checks passed, while native UI continuation exposed
+an inability to perform the same address edit." This establishes an additional
+observation for this case, not API-testing superiority or a general miss rate.
+Prior-issue-screening records upstream issues 233 and 241 from October 27, before
+the pilot; count this as one known compatibility case, not two faults or a new
+discovery. The issues are labeled enhancement, and neither their existence nor
+this AI review establishes maintainer acceptance of this exact reproduction as
+a bug. Whitespace city/visit cases remain requirement-ambiguous discrepancies.
+
+Additional reporting issue: four full-pool branches have a failed
+failed_prefix_observable_state_unchanged check: article-title-151 and
+profile-username-length61, each API/UI. Their prefix and followup both return
+500. The summary's not_executed_prefix_unsuccessful label is true but insufficient;
+do not group these with clean 422 rejections or say all checks passed. Record them
+as API-visible failures with unreadable followup state, pending separate diagnosis.
+
+Overall: evidence supports two concrete development cases with different oracle
+behavior, one known UI compatibility blocker and one shared identifier defect.
+It does not yet support prevalence, held-out effectiveness, selector superiority,
+equal-time advantage, or agent-specific claims. Preserve v1/v2/diagnostic provenance
+and count faults separately from branches and repeated observations.

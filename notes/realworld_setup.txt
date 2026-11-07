@@ -1,0 +1,30 @@
+REALWORLD SETUP AND REPRODUCTION
+
+Backend: https://github.com/c4ffein/realworld-django-ninja
+Commit: 87dd078c883a046f5ff20269df2fb004d8b5f83f
+Native frontend submodule: fronts/vue3-realworld-example-app
+Frontend: https://github.com/mutoe/vue3-realworld-example-app
+Commit: b14ba5011cf9cc97babfcd7ca99dcfbb058862e7
+
+Executed environment: macOS arm64, Python3.12.14, Node20.19.6, pnpm8.15.9, Google Chrome156.0.8078.80. Playwright1.62.1 came from the existing bundled runtime. No new browser binary or Cypress binary was downloaded.
+
+1. Clone and checkout the backend revision. Initialize the frontend submodule and verify its revision. Create an isolated Python3.12 virtual environment.
+2. Install manifests/realworld-python-lock.txt using that environment's pip. This is the resolved lock from the executed macOS environment. The upstream psycopg2==2.9.6 source package required absent pg_config; psycopg2-binary==2.9.10 was substituted because the application imports psycopg2 even for SQLite. Application code was not edited. PostgreSQL behavior was not tested.
+3. In the frontend directory, run pnpm8.15.9 with Node20.19.6 explicitly on PATH:
+   CYPRESS_INSTALL_BINARY=0 pnpm install --frozen-lockfile --ignore-scripts
+   The execution used a task-local pnpm store; that store was removed after installation to reclaim disk. node_modules was retained.
+4. Build from the frontend directory:
+   VITE_API_HOST=http://127.0.0.1:18765 node node_modules/vite/bin/vite.js build
+5. Validate upstream code if reproducing environment setup:
+   Backend directory: TZ=UTC DEBUG=True /path/to/venv/bin/python manage.py test apps
+   Frontend directory: TZ=UTC node node_modules/vitest/vitest.mjs run
+   Outcomes:92 backend tests and58 frontend tests passed. Full frontend Cypress E2E was not executed.
+6. Run scripts/run_realworld_pilot.py as shown in README. It creates new database files under the supplied runtime root using the application's supported file: DATABASE_URL and DEBUG=True SQLite configuration. It binds fixed loopback ports18765/18766, creates a synthetic user through the native API, and stops processes before snapshot copying. Two repetitions run all four route combinations. All final reads use a fresh native page request.
+
+Operational checkout for this session:
+/private/tmp/codex-mixed-interface-20261106-m/realworld-django-ninja
+Operational venv:
+/private/tmp/codex-mixed-interface-20261106-m/venv
+These paths are local working material, not archival locations; temp content may be cleared. Code, logs, pins, lock and instructions in outputs/mixed-interface-study are the durable deliverables. The pilot runner accepts paths, so the same operational locations are not required.
+
+Native logs are in results/realworld-native. frontend-tests.log records an unsuccessful single-fork test invocation; frontend-tests-native.log records one date expectation failing in the host timezone. The native test command with TZ=UTC passed58/58 without source changes. These setup failures are not classified as mixed-interface defects. frontend-build.log records the successful build. Native command durations and per-case pilot times are setup observations, not controlled performance comparisons.

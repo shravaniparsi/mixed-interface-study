@@ -1,0 +1,66 @@
+PetClinic development slice: independent API and fresh-UI continuations
+Recorded 6 November 2026 Pacific time / 7 November UTC
+
+Outcome
+The 18 registered candidates produced 36 independently reset branches across three workflow templates. All initial and post-prefix owner graphs matched within each API/UI pair. Owner address edit, pet rename with a linked visit, and visit rescheduling all passed as valid controls. The three controls used equal PUT payloads and reached equal final graphs through both interfaces.
+Twelve cases stopped in the common API prefix: all ten required-field omissions returned HTTP 400, and nine- and eleven-digit telephone inputs returned HTTP 500. Neither continuation was reachable in those cases. These are prefix rejection controls, not evidence of added UI-oracle value.
+Three API edits succeeded while native UI edits were blocked: a hyphenated first name, whitespace city, and whitespace visit description. Each was replayed in a separate diagnostic run, producing the same observation under independent resets. The diagnostic replay contains six branches and does not add new templates or root causes.
+
+Interpretation
+The hyphenated-name case reproduces a previously reported compatibility issue, not a newly discovered defect. Prior upstream reports were found in https://github.com/spring-petclinic/spring-petclinic-angular/issues/233 and https://github.com/spring-petclinic/spring-petclinic-angular/issues/241. No maintainer confirmation of these particular traces is claimed.
+The API contract explicitly allows Anne-Marie and uses the same OwnerFields schema for creation and editing. Native UI name validation allows only ASCII letters. Both the accepted API state and the API address update are legal under the inspected API contract. A fresh UI reads all five fields correctly but disables Update Owner when only the address is changed. Persisted address remains unchanged in the blocked branch. The untouched name field has no visible error message; its invalid state prevents submission. A screenshot, loaded values, disabled state, full visible page text, PUT count and readback are available in manifests/petclinic-hyphenated-name-evidence.json.
+Whitespace city and description satisfy broad backend length/nonempty constraints but fail the UI notBlank rule. The inspected sources do not establish which layer expresses the intended domain policy. These remain policy discrepancies and are excluded from confirmed domain-defect counts.
+Source-only review by another AI agent is recorded separately from human or maintainer adjudication. It is not an independent human rater study. The development data establish one reproduced known compatibility issue and two unresolved policy discrepancies; they establish neither prevalence nor a new fault-discovery rate.
+
+Inputs and mappings registered before execution
+manifests/petclinic-candidates-v1.json
+SHA256: 2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693
+The registry contains exact payloads, source-backed requirements, pre-execution expectations, logical operation mapping and omission/boundary classes. Source snapshots and hashes are under results/petclinic-source-evidence/.
+Backend commit: 5180cc9bd0163393c4e628bedc1bc4c27cfaab1b
+Frontend commit: fba8956cbdd04e09973f81eb39379955a825bfc3
+No application source was modified. The tested backend jar retains SHA256 26f35f880229dfcae06a796574a930236361a9403c69355aa3efea9cce77fb65.
+
+Workflow semantics
+Owner: API creates the candidate owner; continuation changes address to 2 Pilot Lane while preserving every other owner field.
+Pet: API creates a valid owner, the candidate pet and a linked valid visit; continuation renames the pet to Renamedpet while preserving birth date, type, owner and visit relationships.
+Visit: API creates a valid owner and pet, then the candidate visit; continuation changes date from 2026-11-06 to 2026-11-07 while preserving description and owner/pet relationships.
+For each candidate, the runner starts a fresh H2 backend, executes the common prefix and API continuation, stops that process, and independently repeats the prefix for a fresh browser-context UI continuation. The two continuations never run sequentially on one evolving record. API continuation executes the actual mapped PUT and reads the entity and entire owner graph back; it is not merely a status check. UI continuation observes a new native GET, verifies loaded values, enters a real change, and checks persisted state and relationships. A disabled native submit button is recorded without bypassing validation.
+
+Portable reproduction
+Prerequisites and pinned build/native-test commands are in notes/petclinic_ui_setup.txt. Use the existing pinned jar and frontend if available; this slice installed nothing. Observed runtimes were Node 24.19.0, JDK 17.0.2, Playwright 1.62.1 and Chrome 156.0.8078.80. The runner limits backend heap to 256 MB and uses ports 9966 and 19766 on loopback.
+Set these paths for the reproducing machine:
+export PETCLINIC_ARTIFACTS="/absolute/path/to/mixed-interface-study"
+export PETCLINIC_WORKDIR="/absolute/path/to/petclinic-runtime"
+export PETCLINIC_JAVA="/absolute/path/to/jdk-17.0.2/bin/java"
+export PETCLINIC_PLAYWRIGHT_MODULE="/absolute/path/to/playwright"
+export PETCLINIC_CHROME_EXECUTABLE="/absolute/path/to/chrome"
+
+Start the unchanged frontend in its own terminal, with Node 24 on PATH:
+cd "$PETCLINIC_WORKDIR/angular"
+node node_modules/@angular/cli/bin/ng.js serve --host 127.0.0.1 --port 19766
+
+Run the main sweep from any directory. The output directory must be new. Do not start a separate backend: this runner owns its backend process and resets it for every branch.
+node "$PETCLINIC_ARTIFACTS/scripts/petclinic_boundary_slice.mjs" --registry "$PETCLINIC_ARTIFACTS/manifests/petclinic-candidates-v1.json" --output "$PETCLINIC_WORKDIR/new-boundary-sweep" --jar "$PETCLINIC_WORKDIR/petclinic.jar" --java "$PETCLINIC_JAVA" --playwright-module "$PETCLINIC_PLAYWRIGHT_MODULE" --chrome-executable "$PETCLINIC_CHROME_EXECUTABLE" --cases owner_telephone_10,pet_valid,visit_valid,owner_telephone_9,owner_telephone_11,owner_omit_firstName,owner_omit_lastName,owner_omit_address,owner_omit_city,owner_omit_telephone,owner_city_whitespace,owner_first_name_hyphen,pet_omit_name,pet_omit_birthDate,pet_omit_type,visit_omit_date,visit_omit_description,visit_description_whitespace
+
+Replay the three source-selected discrepancy candidates independently:
+node "$PETCLINIC_ARTIFACTS/scripts/petclinic_boundary_slice.mjs" --registry "$PETCLINIC_ARTIFACTS/manifests/petclinic-candidates-v1.json" --output "$PETCLINIC_WORKDIR/new-boundary-replay" --jar "$PETCLINIC_WORKDIR/petclinic.jar" --java "$PETCLINIC_JAVA" --playwright-module "$PETCLINIC_PLAYWRIGHT_MODULE" --chrome-executable "$PETCLINIC_CHROME_EXECUTABLE" --cases owner_city_whitespace,owner_first_name_hyphen,visit_description_whitespace
+
+Generate an offline observational report:
+python3 "$PETCLINIC_ARTIFACTS/scripts/petclinic_boundary_report.py" --results "$PETCLINIC_WORKDIR/new-boundary-sweep" --output "$PETCLINIC_WORKDIR/new-boundary-observations.json"
+
+The report assigns observational categories only. It does not automatically label a mismatch a defect. Stop the frontend with Ctrl-C in its own terminal after reproduction. The runner stops every backend it starts. Both services from the recorded run are stopped.
+
+Evidence and counts
+Current summary: manifests/petclinic-boundary-slice.json
+Main sweep: results/petclinic-boundary-v1/ and manifests/petclinic-boundary-v1-observations.json
+Diagnostic replay: results/petclinic-boundary-replay-v1/ and manifests/petclinic-boundary-replay-v1-observations.json
+Compact known-issue evidence: manifests/petclinic-hyphenated-name-evidence.json
+Each raw branch includes requests/responses, initial and post-prefix state hashes, full graphs, readback, and final graph hashes when a continuation was reachable. A rejected prefix has no continuation-final hash; its post-prefix graph records the terminal observed state. Each run directory preserves the exact executed runner and candidate registry, plus runner/registry/jar hashes in summary.json. Screenshots are included for every reached UI continuation.
+The main sweep contains 36 branches and the diagnostic replay six: 42 completed development/diagnostic branches for 18 unique input variants. The earlier setup attempt is six additional excluded branches, not six extra samples. None of these branch counts is a fault-yield denominator.
+
+Preserved runner correction
+The first visit positive control used a locale-style date string while the native VisitsModule specifies YYYY/MM/DD. It persisted the wrong intended date, and readback caught the mismatch. That run stopped; its six branches and original runner are preserved under results/petclinic-boundary-attempt1/. Only the runner was corrected to enter 2026/11/07 and assert the loaded/edited format. The complete 18-case sweep was then rerun. This setup issue is excluded from application-failure claims. See manifests/petclinic-boundary-runner-adjustment.json.
+
+Cost and remaining scope
+Main branch wall time totaled 243.554 seconds, including 220.372 seconds of backend startup. This excludes shared browser startup, frontend setup and expert mapping/adjudication effort and is not an efficiency comparison. No external API/compute charges were incurred ($0). Existing native baselines remain 248 backend tests and 88 frontend tests; they were not rerun in this slice.
+No held-out application evaluation, injected faults, generic schema-validation engine, agent experiment, selector comparison or enforced method budget was run. Human/maintainer review of the intended cross-interface contract remains useful, and any next experiment should keep known issues, ambiguous policies and newly discovered defects separate.

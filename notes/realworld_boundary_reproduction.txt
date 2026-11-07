@@ -1,0 +1,24 @@
+REALWORLD BOUNDARY AND RETURNED-REFERENCE REPRODUCTION
+
+Prerequisites are unchanged from realworld_setup.txt. Use the pinned source and built frontend, Python environment, Node20, Playwright1.62.1 and Chrome. Bind loopback ports18765/18766 only. Existing databases are not used; every run creates its own fixture.
+
+Main source-guided pool:
+PLAYWRIGHT_MODULE_PATH=/absolute/path/to/node_modules/playwright python3 scripts/run_realworld_boundaries.py --subject /path/to/realworld-django-ninja --python /path/to/venv/bin/python --node /path/to/node20 --runtime-root /path/to/task-runtime --registry manifests/realworld-boundary-registry-v1.json
+
+Known-failure diagnostic and controls:
+PLAYWRIGHT_MODULE_PATH=/absolute/path/to/node_modules/playwright python3 scripts/run_realworld_boundaries.py --subject /path/to/realworld-django-ninja --python /path/to/venv/bin/python --node /path/to/node20 --runtime-root /path/to/task-runtime --registry manifests/realworld-duplicate-diagnostics-v1.json --repetitions 2
+
+The diagnostic registry was prepared after observing the failure and is labelled accordingly. It contains the partial duplicate-title update, full-field duplicate-title API update, partial unique-title update and native full-field duplicate-title update. Each executes independent API and UI continuations. Generated slugs are allowed to change; returned identifiers must resolve to the updated resource.
+
+Accepted main run: results/realworld-boundaries-20261107T054749Z
+Diagnostic: results/realworld-boundaries-20261107T055116Z
+Earlier narrower-oracle run: results/realworld-boundaries-20261107T054339Z
+All directories contain source snapshots and registered inputs. Current script adds native producer control support after the main run; the main run's exact script remains in its output directory.
+
+Minimal causal sequence for the reference defect:
+1. Authenticate a synthetic actor and create two articles with the same title. Their slugs differ because the second title collides.
+2. Let S be the second article's slug. PUT /api/articles/S with only {article:{body:"Updated body before comment."}}.
+3. Record HTTP200 and returned slug R. GET /api/articles/R returns404; GET /api/articles/S returns200 with the updated body.
+4. Compare full-field PUT on the duplicate, body-only PUT on a unique title, and actual native UI editing of the duplicate. Consume each response's returned slug; do not require slug immutability.
+
+No application patch was applied. The findings are investigator-reproduced, not maintainer-confirmed or proven previously unknown. The main runner assumes exact registered representations; before adding explicit-null partial updates or multiple/repeated tags, extend expected-state handling and normalization. The current pool does not exercise those unsupported combinations.

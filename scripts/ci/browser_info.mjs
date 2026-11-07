@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createReadStream, existsSync, readFileSync, writeFileSync} from 'node:fs';
+import {dirname, join} from 'node:path';
+import {createRequire} from 'node:module';
+import {spawnSync} from 'node:child_process';
+import {parseArgs} from 'node:util';
+
+const {values}=parseArgs({options:{output:{type:'string'}}});
+assert.ok(values.output);
+const modulePath=process.env.PLAYWRIGHT_MODULE_PATH;
+assert.ok(modulePath);
+const require=createRequire(join(modulePath,'package.json'));
+assert.equal(require('./package.json').version,'1.62.1');
+const {chromium}=require(modulePath);
+const executable=chromium.executablePath();
+assert.ok(existsSync(executable),'Pinned Chromium executable was not installed');
+const browsers=JSON.parse(readFileSync(join(dirname(require.resolve('playwright-core/package.json')),'browsers.json')));
+const declared=browsers.browsers.find(item=>item.name==='chromium');
+assert.equal(declared.revision,'1234');
+assert.equal(declared.browserVersion,'151.0.7922.34');
+const actual=spawnSync(executable,['--version'],{encoding:'utf8',timeout:10000});
+assert.equal(actual.status,0,actual.stderr);
+assert.ok(actual.stdout.includes(declared.browserVersion),'Installed Chromium version differs from the pinned release');
+const digest=createHash('sha256');
+for await(const chunk of createReadStream(executable))digest.update(chunk);
+writeFileSync(values.output,JSON.stringify({playwright:'1.62.1',declared,actual_version:actual.stdout.trim(),executable,executable_sha256:digest.digest('hex'),source:'https://github.com/microsoft/playwright/blob/26a9e470a7b3c7822084b09fb7f13902c5f37b51/packages/playwright-core/browsers.json'},null,2)+'\n');
+process.stdout.write(executable+'\n');

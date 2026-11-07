@@ -1,0 +1,64 @@
+Offline registry usage: RealWorld article creation followed by body editing
+
+Manifest: manifests/realworld-article-generation-v1.json
+Generated artifact: manifests/realworld-article-generated-pool-v1.json
+Input source: manifests/realworld-boundary-registry-v1.json
+
+This integration converts seven explicitly registered API input mutations into
+an immutable generator pool. It reads candidate definitions and provenance, not
+execution results. It does not discover constraints or defects automatically.
+The existing browser boundary batch does not consume the generated pool.
+
+The pool contains 18 cases: four route-only controls (UI/UI, UI/API, API/UI,
+API/API), plus seven API-producer mutations paired with both consumer routes.
+The seven mutations are omitted, null, empty and three-space article body;
+omitted tagList; and title literals of 150 and 151 characters. Fourteen
+UI-producer mutation combinations are explicitly excluded. Omission/null have
+no declared native form mapping. Other UI exclusions reflect the v1 API-only
+mutation adapter; they do not establish that the UI cannot represent the value.
+
+The body whitespace transformation uses kind=enum for a single enumerated
+literal. This is a finite catalog choice, not an API enum constraint. The
+title-length expectations remain unknown/unresolved. Expectation provenance
+distinguishes public contract requirements from implementation controls; it is
+not given to the selector as defect labels.
+
+Both operations contain full article bundles. The second input is a template:
+the runtime executor binds the resource slug and unchanged title, description
+and tagList from the accepted producer output before editing. It must not
+overwrite a mutated title or normalized omitted-tag result with baseline
+template values. Its body becomes 'Body after meaningful continuation.'
+The declarative oracle records those bindings and the intended checks. The
+generator neither resolves them nor executes them. Producer rejection stops
+the continuation and does not establish dependency coverage.
+
+The shared cost of 1.0 seconds is an UNMEASURED PLACEHOLDER required by the
+selector's positive-cost type. It is not a duration estimate. No timing or
+strategy-performance conclusion can use it. Same-route payload cases share
+the existing selector's dependency and route targets. Those targets count only
+after explicit observed feedback; pool generation establishes no coverage.
+
+From outputs/mixed-interface-study, regenerate the artifact without running
+the application:
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 - <<'PY'
+import json
+from pathlib import Path
+from mixed_interface import generate_registry
+manifest = Path('manifests/realworld-article-generation-v1.json')
+registry = generate_registry(json.loads(manifest.read_text()))
+Path('manifests/realworld-article-generated-pool-v1.json').write_text(registry.to_json())
+print(len(registry.cases), len(registry.exclusions))
+PY
+
+Run only this manifest's offline consistency checks:
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -p test_realworld_registry.py
+
+The checks require every generated mutant producer payload and expectation to
+match its registered source case exactly, verify all four control routes,
+check the seven-by-two mutation pairing, verify the source-file hash, retain
+unresolved title probes and cost status, and reproduce the saved pool byte for
+byte. They check artifact consistency, not application behavior.
+
+Runtime update, 7 November UTC: scripts/run_generated_integration.py now executes this exact generated pool. It verifies canonical frozen-pool equality, resolves accepted output bindings, captures native submitted payloads and explicit dependency consumption, and uses a separately calibrated effective cost pool. The immutable source pool retains its unmeasured 1.0 placeholder. See notes/runtime_integration.md for the accepted run and preserved unsuccessful attempts. The older boundary batch described above remains a separate explicit registry.

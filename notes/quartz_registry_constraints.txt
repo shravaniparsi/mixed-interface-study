@@ -1,0 +1,151 @@
+Quartz prospective candidate registration, v1
+
+Files
+manifests/quartz-job-generation-v1.json
+manifests/quartz-job-generated-pool-v1.json
+
+Status
+Source-only registration after the four ordinary native positive controls.
+No boundary candidate, malformed job request, selector run or application was
+executed for this subtask. No known issues were searched. Existing method code
+was unchanged; its SHA256 values are recorded inside the manifest. Earlier
+startup/authentication diagnostics remain disclosed in the control record.
+This preparation is not a held-out method result.
+
+v1 is a rejection/control stratum. All ten mutant cases are expected to reject
+at creation; its four valid controls do not make it a primary evaluation of
+an oracle for accepted states. A separately registered accepted-value v2
+stratum is still required before study freeze. No v2 was built in this step.
+
+Fixed workflow
+Create the durable stored job RESEARCH.pilot-job using the native SampleJob
+class, description 'Description before continuation.', requestsRecovery=false
+and jobDataMap={}. Read that stored job and change only its description to
+'Description after meaningful continuation.'. The command body is flat JSON;
+group/name belong to the resource URL, not the body DTO. No trigger or scheduler
+operation is part of this workflow.
+
+Generated pool
+14 cases: four route-only controls, plus five single API-producer mutations
+paired with UI and API consumers. All ten corresponding UI-producer mutation
+combinations have explicit exclusion records. The full pool is returned with
+max_substitutions=2, max_mutations=1 and max_cases=14; no truncation or selection
+by outcomes occurs.
+
+Declared jobClass variants
+- Omitted property: omit operator; expected rejection.
+- JSON null: null operator; expected rejection.
+- Empty string: empty operator; expected rejection.
+- Three ASCII spaces: enum operator for that explicit literal; expected rejection.
+- java.lang.String: enum operator for an ineligible class; expected rejection.
+
+The first four expectations follow ScheduledJobInputDTO.java lines 17-18
+(@NotBlank) together with JobController.java lines 72-76 (@Valid request body).
+The fifth follows JobService.java lines 64-76 and 118-122: only discovered
+subclasses of AbstractQuartzManagerJob are eligible, and a missing match throws
+ClassNotFoundException. java.lang.String is not an eligible job subclass.
+All expectations are categorized implementation_control, with pinned source
+links. They are source expectations, not observed outcomes or independent
+defect labels. Exact HTTP rejection status is deliberately unspecified and must
+be recorded, including whether a future response is 4xx or 5xx.
+
+The generic enum operator means a finite explicitly listed literal here. It
+does not mean the API declares spaces or java.lang.String as legal enum values.
+
+Native UI representation
+The class field is a required select whose options come from eligible class
+names (manager.component.html line 363). Submission always assigns jobClass
+from that control (manager.component.ts lines 445-450). There is no declared
+ordinary action for omitting the property, sending null or selecting a value
+outside the offered options. DOM modification and intercepted request rewriting
+are not native UI representations. The unchanged v1 generator also supports
+only API payload mutations. These restrictions do not apply to the four valid
+route controls, which retain native UI support.
+
+Bindings required before execution
+The generator stores the following declarations but does not execute or validate
+them as an adapter. A future Quartz registry executor is still required:
+- Bind returned jobKeyDTO.group and jobKeyDTO.name to the consumer URL.
+- Map returned jobClassName to the consumer request's jobClass field.
+- Preserve returned durable, requestsRecovery and jobDataMap.
+- Replace only description with the requested edit text.
+- For a native UI consumer, verify loaded values before editing. If an accepted
+  producer class has no UI option, record that inability without substituting
+  the valid baseline class.
+
+The consumer input embedded in each generated case is a template. It must not
+overwrite a producer-mutated or normalized field with the original valid value.
+A rejected producer stops the continuation. Its response and post-request state
+must still be read; a rejection is not automatically a rollback guarantee.
+No dependency or route coverage is earned merely by generating or attempting a
+case, or by skipping its consumer. The current fixed positive-control script
+does not accept this registry and must not be used to imply candidate execution.
+Cases on the same route share the existing two dependency targets and their
+route obligations. The registration does not add a separate payload-variant
+coverage objective or teach the selector which expected rejection to prefer.
+
+Concrete schema limits and unregistered fields
+- URL path parameters are outside v1's object-property payload operators.
+  Group/name defaults, trimming, empty segments, encoding and duplicate keys
+  are not encoded as fake JSON body properties. They remain fixed.
+- Dynamic eligibility discovery is not implemented in the generator. This
+  registration pins the standalone classpath and uses a source-backed class
+  control and an unambiguously ineligible Java class.
+- Oracle output bindings are opaque metadata, not validated executable schema.
+  Safe execution requires an adapter that implements the declarations above.
+- Description, durable, requestsRecovery and jobDataMap variants are outside
+  this single required-class slice. Some omission/null or literal variants could
+  be represented by generic operators; their exclusion is a stated finite scope
+  choice, not a generator limitation or a claim of UI impossibility.
+- No description length limit was invented: the DTO declares a String without
+  @NotBlank or @Size. Primitive boolean coercion/defaults, non-durable storage
+  semantics, nested map value types, path collisions, multi-field combinations,
+  triggers and job execution need separate source-backed registrations if ever
+  included. None were probed here.
+
+Oracle and deployment conditions
+Use a fresh RAM-store process for each complete case and the same native
+admin/ROLE_ADMIN actor on both interfaces. Retain the official matching 5.0.1
+artifacts, declared dependency classpath and Europe/Rome JVM timezone from the
+completed control. Require STOPPED scheduler, zero triggers and zero executions
+before and after. Accepted continuation requires fresh native UI and API reads
+and preservation of every non-edited field and resource identity.
+
+The prospective comparison covers only the business fields and environment
+checks enumerated in the manifest, with JSON object-key order normalized. It
+does not compare every scheduler field: name, instanceId, quartzVersion,
+clustered, threadPoolClass, threadPoolSize and runningSince are outside the
+declared candidate comparison. The prior sentence claiming no scheduler fields
+were omitted was incorrect and has been narrowed. This is a registration
+wording correction; the successful positive control actually hashed full
+returned state, and that separate evidence and claim remain unchanged.
+
+The cost value 1.0 is an UNMEASURED schema placeholder. It is not a duration,
+budget estimate or evidence for cost-aware selection. Positive-control timing
+has not been repurposed as mutation timing.
+
+Offline verification completed
+The unchanged generator parsed the manifest and reproduced the saved pool byte
+for byte. Checks confirmed four distinct route controls, ten API-only mutant
+cases, ten explicit UI exclusions, the exact five payload variants, unchanged
+non-jobClass producer fields, fixed consumer templates and unchanged method
+file hashes. These checks establish registration consistency, not application
+behavior. No server or browser was started.
+
+Canonical generator manifest SHA256:
+aa8487023506057389aa4cc4097f8ade4b62d2e22144fed3a98972075c62c048
+Generated pool file SHA256:
+e05237df380588558c794f21c9a7b13dcdef1a719bc74d2d32d3208919931864
+
+Offline regeneration from outputs/mixed-interface-study:
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 - <<'PY'
+import json
+from pathlib import Path
+from mixed_interface import generate_registry
+manifest = Path('manifests/quartz-job-generation-v1.json')
+registry = generate_registry(json.loads(manifest.read_text()))
+saved = Path('manifests/quartz-job-generated-pool-v1.json')
+assert saved.read_text() == registry.to_json()
+print(len(registry.cases), len(registry.exclusions))
+PY

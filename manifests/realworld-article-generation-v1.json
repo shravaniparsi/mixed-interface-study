@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "manifest_id": "realworld-article-create-body-edit-v1",
+  "operations": [
+    {
+      "operation_id": "create_article",
+      "interfaces": [
+        "ui",
+        "api"
+      ],
+      "reference_interface": "ui",
+      "input": {
+        "article": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        }
+      }
+    },
+    {
+      "operation_id": "edit_article_body",
+      "interfaces": [
+        "ui",
+        "api"
+      ],
+      "reference_interface": "ui",
+      "input": {
+        "article": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body after meaningful continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        }
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "producer": "create_article",
+      "consumer": "edit_article_body",
+      "field_or_state": "article.slug",
+      "kind": "data",
+      "evidence": {
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/api.py#L137",
+        "statement": "Article creation returns article.slug; update resolves the same resource through the returned slug path parameter. Native editor fetches and submits using route.params.slug."
+      }
+    },
+    {
+      "producer": "create_article",
+      "consumer": "edit_article_body",
+      "field_or_state": "article.editable_state",
+      "kind": "state",
+      "evidence": {
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/pages/EditArticle.vue#L120",
+        "statement": "The editor loads title, description, body and tagList, then submits the full form. Body editing preserves title, description and tagList from the accepted producer output."
+      }
+    }
+  ],
+  "reference_expectation": {
+    "outcome": "accept",
+    "category": "implementation_control",
+    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+    "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+  },
+  "constraints": [
+    {
+      "constraint_id": "create-article-body",
+      "operation_id": "create_article",
+      "input_path": [
+        "article",
+        "body"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "article-body-omitted",
+          "kind": "omit",
+          "expectation": {
+            "outcome": "reject",
+            "category": "contract",
+            "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+            "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "omit_json_property"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field."
+            }
+          }
+        },
+        {
+          "transformation_id": "article-body-null",
+          "kind": "null",
+          "expectation": {
+            "outcome": "reject",
+            "category": "contract",
+            "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+            "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON null value is declared. This API input is not assumed equivalent to clearing a UI field."
+            }
+          },
+          "value": null
+        },
+        {
+          "transformation_id": "article-body-empty",
+          "kind": "empty",
+          "expectation": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+            "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility."
+            }
+          },
+          "value": ""
+        },
+        {
+          "transformation_id": "article-body-whitespace",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+            "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility."
+            }
+          },
+          "value": "   "
+        }
+      ]
+    },
+    {
+      "constraint_id": "create-article-taglist",
+      "operation_id": "create_article",
+      "input_path": [
+        "article",
+        "tagList"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "article-tags-omitted",
+          "kind": "omit",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+            "statement": "Omitted optional tagList is explicitly tested as valid."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "omit_json_property"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "constraint_id": "create-article-title",
+      "operation_id": "create_article",
+      "input_path": [
+        "article",
+        "title"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "article-title-150",
+          "kind": "boundary",
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+            "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility."
+            }
+          },
+          "value": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+        },
+        {
+          "transformation_id": "article-title-151",
+          "kind": "boundary",
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+            "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility."
+            }
+          },
+          "value": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+        }
+      ]
+    }
+  ],
+  "bounds": {
+    "max_substitutions": 2,
+    "max_mutations": 1,
+    "max_cases": 18
+  },
+  "cost_estimate": {
+    "seconds": 1.0,
+    "source": "UNMEASURED PLACEHOLDER: uniform positive scalar required by the prototype selector; not a measured duration or runtime prediction. Replace with prospectively calibrated costs before any cost-aware comparison.",
+    "includes": [
+      "reset",
+      "operations",
+      "oracle"
+    ]
+  },
+  "oracle": {
+    "status": "declarative_adapter_contract_not_executed",
+    "runner_integration": "The existing browser boundary batch does not consume this generated pool. Its case definitions supplied the explicit input variants only.",
+    "source_registry": {
+      "path": "manifests/realworld-boundary-registry-v1.json",
+      "sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+      "registered_before_execution": true,
+      "selection_basis": "Declared source-case inputs and expectations only; no execution results or defect labels used.",
+      "route_only_producer_source_case": "article-valid",
+      "mutation_source_case_ids": [
+        "article-body-omitted",
+        "article-body-null",
+        "article-body-empty",
+        "article-body-whitespace",
+        "article-tags-omitted",
+        "article-title-150",
+        "article-title-151"
+      ],
+      "excluded_source_cases": {
+        "article-title-whitespace": "Outside this explicitly requested seven-mutation integration subset; no result-based exclusion."
+      }
+    },
+    "pinned_sources": {
+      "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+      "frontend_commit": "b14ba5011cf9cc97babfcd7ca99dcfbb058862e7",
+      "request_contract": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+      "create_update_schemas": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+      "title_model_limit": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+      "optional_tags_control": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+      "native_editor": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/pages/EditArticle.vue#L120"
+    },
+    "interpretation": {
+      "expectation_categories": "contract denotes a public request requirement; implementation_control denotes source-level behavior; unresolved denotes a probe without a declared verdict. These categories are retained from the registered cases.",
+      "title_boundaries": "The 150 and 151 character literals probe the declared model limit. Both remain unknown/unresolved; no request maxLength or predetermined defect is inferred.",
+      "whitespace_kind": "enum means one explicitly enumerated three-space literal in this finite generator catalog; it does not assert the article body has an API enum constraint.",
+      "reference_route": "UI/UI is only the zero-substitution generation reference. It supplies no inferred rules or defect labels."
+    },
+    "operation_mapping": {
+      "create_article": {
+        "api_method": "POST",
+        "api_path": "/api/articles",
+        "ui_path": "/#/article/create",
+        "body_envelope": "article"
+      },
+      "edit_article_body": {
+        "api_method": "PUT",
+        "api_path_template": "/api/articles/{bound_slug}",
+        "ui_path_template": "/#/article/{bound_slug}/edit",
+        "body_envelope": "article"
+      }
+    },
+    "input_semantics": "Operation inputs are templates. A future adapter must resolve the output bindings below before executing the consumer; it must not submit baseline template values over producer-mutated or normalized fields.",
+    "output_bindings": [
+      {
+        "source_operation": "create_article",
+        "source_path": [
+          "article",
+          "slug"
+        ],
+        "target_operation": "edit_article_body",
+        "target": "resource_path_parameter",
+        "target_name": "bound_slug",
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_article",
+        "source_path": [
+          "article",
+          "title"
+        ],
+        "target_operation": "edit_article_body",
+        "target": "input",
+        "target_path": [
+          "article",
+          "title"
+        ],
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_article",
+        "source_path": [
+          "article",
+          "description"
+        ],
+        "target_operation": "edit_article_body",
+        "target": "input",
+        "target_path": [
+          "article",
+          "description"
+        ],
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_article",
+        "source_path": [
+          "article",
+          "tagList"
+        ],
+        "target_operation": "edit_article_body",
+        "target": "input",
+        "target_path": [
+          "article",
+          "tagList"
+        ],
+        "required_before_execution": true
+      }
+    ],
+    "meaningful_edit": {
+      "operation_id": "edit_article_body",
+      "input_path": [
+        "article",
+        "body"
+      ],
+      "value": "Body after meaningful continuation."
+    },
+    "execution_conditions": [
+      "Restore the same synthetic actor fixture independently before each complete case; authenticate UI and API as that same actor.",
+      "Record producer rejection separately and do not execute or credit a consumer dependency when creation did not succeed.",
+      "For an accepted producer, retain the actual response and verify the resource exists before continuing; bind the returned slug without guessing it from the title.",
+      "Use the accepted producer output to bind title, description and tagList; preserve normalized omitted-tag output. For a native UI edit, verify loaded fields against those bindings, then change only body.",
+      "After editing, verify persisted title, description and tagList equal the bound values and body equals the requested new body; treat tagList as an unordered set.",
+      "Verify the authenticated owner and resource count against the reset fixture. Perform a fresh native UI GET and confirm the updated body is readable.",
+      "Only explicitly observed producer-to-consumer field/state consumption may be submitted as selector coverage; declared targets and attempted calls do not establish exercised edges."
+    ],
+    "business_state_comparison": {
+      "fields": [
+        "title",
+        "description",
+        "body",
+        "tagList",
+        "author.username"
+      ],
+      "tagList": "unordered set",
+      "slug": "runtime identity binding; not a cross-route business-equality field",
+      "ignored": [
+        "createdAt",
+        "updatedAt",
+        "favoritesCount",
+        "favorited"
+      ]
+    },
+    "cost_status": "unmeasured_uniform_placeholder"
+  }
+}

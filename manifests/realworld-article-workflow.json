@@ -1,0 +1,81 @@
+{
+  "workflow_id": "realworld-article-create-body-edit-v1",
+  "status": "pilot_eligible_four_routes_passed",
+  "subject": "realworld-django-ninja-vue3",
+  "actor": "pilotresearch, synthetic authenticated actor for UI and API",
+  "initial_state": "registered synthetic user with zero articles; identical offline SQLite snapshot within each run",
+  "inputs": {
+    "title": "Pilot workflow article",
+    "description": "Paired UI and API workflow control",
+    "body": "Pilot body before the meaningful edit.",
+    "tagList": [
+      "pilot"
+    ]
+  },
+  "edit": {
+    "body": "Pilot body after a meaningful edit."
+  },
+  "operation_map": [
+    {
+      "logical_operation": "create article",
+      "ui": "/#/article/create; fill Title, Description, Body, Tags; blur Tags to add; Publish Article",
+      "api": {
+        "method": "POST",
+        "path": "/api/articles",
+        "body_envelope": "article"
+      },
+      "expected_status": 201,
+      "produces": [
+        "article.slug",
+        "title",
+        "description",
+        "body",
+        "tagList",
+        "author.username"
+      ]
+    },
+    {
+      "logical_operation": "edit article body",
+      "ui": "/#/article/{slug}/edit; load existing values; change Body; Publish Article",
+      "api": {
+        "method": "PUT",
+        "path": "/api/articles/{slug}",
+        "body_envelope": "article",
+        "bundle": "body and all unchanged editable fields, matching native UI"
+      },
+      "expected_status": 200,
+      "consumes": [
+        "article.slug",
+        "existing editable fields"
+      ]
+    }
+  ],
+  "oracle": [
+    "same username from native UI and API authentication",
+    "zero actor articles before creation",
+    "persisted exact creation state",
+    "persisted exact edited state",
+    "fresh native UI GET after reload returns edited state",
+    "edited body rendered in native UI",
+    "exactly one actor-owned article"
+  ],
+  "normalization": {
+    "tagList": "unordered set",
+    "not_compared": [
+      "createdAt",
+      "updatedAt",
+      "favoritesCount",
+      "favorited"
+    ],
+    "slug": "bound and consumed as actual resource identity, not used as cross-route business equality criterion"
+  },
+  "routes_executed": [
+    "UI/UI",
+    "API/UI",
+    "UI/API",
+    "API/API"
+  ],
+  "repetitions_per_route": 2,
+  "evaluation_status": "one positive control; no mutations or generator comparison",
+  "evidence": "results/realworld-20261107T021931Z/summary.json"
+}

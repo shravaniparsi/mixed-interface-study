@@ -1,0 +1,51 @@
+INDEPENDENT VERIFICATION OF THREE NOVELTY SOURCE CLAIMS
+Checked 6 November 2026 by a separate skeptical verifier. Input: novelty_search.txt. No benchmark was executed and no plan or manuscript was edited.
+
+1. RESTLER ACTIVE PROPERTY CHECKERS — CONFIRMED WITH SCOPE LIMITS
+
+Claim: Active API follow-up tests and persistent-state/property checks predate our proposed method.
+Primary source: Atlidakis, Godefroid and Polishchuk, Checking Security Properties of Cloud Service REST APIs, ICST 2020 Industry Track, DOI 10.1109/ICST46399.2020.00046.
+Paper: https://patricegodefroid.github.io/public_psfiles/icst2020.pdf
+Official metadata: https://conf.researchr.org/details/icst-2020/icst-2020-Industry/1/Checking-Security-Properties-of-Cloud-Service-REST-APIs
+Read: introduction, Sections III-A and III-B, Figures 1–4, efficiency discussion.
+Exact supporting excerpt, introduction: “generates new API requests to test specific rule violations”.
+Confirmed: four checkers cover use-after-free, resource leaks, resource hierarchy and user namespaces. The leak checker probes state after failed creation. The algorithms select subsequent requests using produced/consumed object types and prune redundant checks.
+Constraint: the inspected checkers operate on API requests. They do not establish equivalence between a native UI action and an API route. Dependency-derived follow-up requests alone are therefore also established, not merely hand-written suffix checks.
+Rejected extension: describing generic continuation testing or consumer-based follow-up selection as new.
+
+2. CONSTRUCTED HTTP SEMANTIC SEQUENCES — CONFIRMED AS A PREPRINT METHOD
+
+Primary source: Omur Sahin and Andrea Arcuri, Validating HTTP Semantics in REST APIs With Constructed Call Sequence Scenarios, arXiv:2608.16239v1, 17 August 2026.
+Text: https://arxiv.org/html/2608.16239v1
+Version record: https://arxiv.org/abs/2608.16239
+Read: abstract, Sections 3.2, 4.1–4.3 and Table 2.
+Exact supporting excerpt, abstract: “a new phase is executed”.
+Confirmed: the EvoMaster extension constructs additional HTTP sequences from existing tests for nine semantic oracles. Section 3.2 compares GET observations around failed PUT/PATCH operations, handling status-specific credentials, resource binding and response nondeterminism. The evaluation includes 36 WFD APIs and quartz-manager.
+Constraints: verified as an August 2026 preprint, not a verified journal publication. HTTP-rule interpretations belong to these authors; this check did not independently validate every RFC interpretation. The side-effect-after-failed-modification oracle was implemented but found no such natural faults in the reported WFD experiment. Neither its inclusion nor Quartz's inclusion establishes a detected Quartz defect. The inspected method does not validate native UI/API substitution.
+Rejected extensions: all nine oracle classes found natural defects; all included applications had detected defects.
+
+3. DEFECTS4REST — CONFIRMED DATASET NUMBERS, RESTRICTED EXECUTABILITY
+
+Primary paper: Rahil Mehta, Pushpak Katkhede and Manish Motwani, Defects4REST, ICSE 2026, DOI 10.1145/3744916.3787787.
+https://mmotwani.com/publications/publication_sources/Mehta26icse.pdf
+Read: abstract, introduction, Section 3, Table 2 and artifact description.
+Exact supporting excerpt, abstract: “607 REST API defects from 50 projects”. Table 2's PetClinic count is “9/9”, with columns defined as manually verified / LLM-classified.
+Confirmed: 51 candidate projects were examined; 50 contributed verified defects (stf has zero). Nine spring-petclinic-rest records are in the mined/classified data. The paper distinguishes a runnable v1.0 subset of 110 defects across 12 projects from the 607-record collection.
+Constraints: defect-record existence does not establish UI compatibility, reproducibility in our environment, or mixed-interface relevance. Known historical faults must remain separate from newly discovered and injected faults. The 30-case tool evaluation is a separate sampled subset, not evidence of all 607 defects' detectability.
+
+ARTIFACT CROSS-CHECK OF PETCLINIC — CONFIRMED NINE RECORDS, NOT NINE READY REPRODUCTIONS
+
+Runnable repository README: https://github.com/ANSWER-OSU/Defects4REST/blob/main/README.md
+Checked tree SHA 265db1165e54b01a0698af0fd28d345169a5449f; complete, 416 entries. PetClinic is absent from its 12 supported projects and there are no petclinic paths.
+
+The paper links a separate replication package. Its CSV contains exactly nine data records, parsed with quoted multiline fields preserved:
+https://github.com/ANSWER-OSU/Defects4REST-ReplicationPackage/blob/main/RQ1/issue_classification/result_classified_issues/spring-petclinic-rest/rest_api_issues.csv
+Issue IDs: 165, 61, 9, 17, 86, 220, 102, 145, 130.
+Replication-package tree SHA: 60ae979efe1fca20b7553bed6ea9b4b55bc28e71; complete, 12447 entries. It includes associated mined XML records. The CSV's prediction fields are classification outputs; Table 2 provides the authors' manual-validation count.
+Rejected extension: Defects4REST v1.0 offers nine turnkey PetClinic defect environments. Their reproduction and historical frontend pairing remain unverified. The nine records are screening candidates, not nine validated mixed-interface tests.
+
+RESOLUTION SUMMARY
+
+Three proposed core source pairings confirmed within the stated scopes. Four broader extensions rejected: novelty of generic follow-up testing, all nine semantic classes yielding natural faults, every included API yielding a defect, and turnkey PetClinic reproductions. No core source rejected for nonexistence or metadata. Experimental applicability remains untested. APIDocX and LoBREST were outside this verification assignment and must not be relabelled independently confirmed from this log.
+
+Design implication: isolate native UI/API workflow preservation from established API semantic checks and dependency-derived follow-up requests. Use the historical PetClinic records only after explicit eligibility and reproduction checks. These verified sources narrow the candidate contribution; they do not establish exhaustive prior-art coverage or disprove every possible mixed-interface contribution.

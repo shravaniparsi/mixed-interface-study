@@ -1,0 +1,74 @@
+PetClinic paired pilot: reproduction notes
+Recorded run: 6 November 2026 America/Los_Angeles (7 November UTC)
+
+Observed result
+One owner-create/edit template ran once through UI/UI and once through API/UI. Both passed. Their initial graph, creation POST payload, created entity and final entity matched. Initial graph SHA256: b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a.
+The reference route ran 02:12:37.540–02:12:49.274 UTC; the mixed route ran 02:13:25.766–02:13:29.163 UTC. A full backend restart reset H2 between routes. Each route used a new browser and context. No external browser requests or page errors were recorded.
+No defect, prevalence estimate, repeated-run stability result, mutation result or generator advantage follows from this pilot.
+
+Pinned sources and observed tools
+Backend: https://github.com/spring-petclinic/spring-petclinic-rest at 5180cc9bd0163393c4e628bedc1bc4c27cfaab1b; version 4.0.2, Spring Boot 4.1.2.
+Frontend: https://github.com/spring-petclinic/spring-petclinic-angular at fba8956cbdd04e09973f81eb39379955a825bfc3; Angular 22.2.3.
+JDK 17.0.2; Maven wrapper 3.10.0; Node 24.19.0; Vitest 5.0.5; Playwright 1.62.1; Google Chrome 156.0.8078.80.
+Native backend verify passed 248 tests in 19 suites with no failures, errors or skips and passed upstream coverage checks. Native frontend test:ci passed 88 tests in 29 files. These upstream totals establish baseline health, not the study sample size.
+
+Prepare a new reproduction directory
+The commands below are instructions, not a record of a second run. Set the four environment variables to directories on the reproducing machine. PETCLINIC_ARTIFACTS is the directory containing these notes, manifests and scripts. Put Node 24.19.0 on PATH, and point PETCLINIC_JDK at the JDK 17.0.2 installation. No global package installation is required.
+
+export PETCLINIC_ARTIFACTS="/absolute/path/to/mixed-interface-study"
+export PETCLINIC_WORKDIR="/absolute/path/to/new-petclinic-runtime"
+export PETCLINIC_JDK="/absolute/path/to/jdk-17.0.2"
+export PETCLINIC_PLAYWRIGHT_MODULE="/absolute/path/to/playwright"
+mkdir -p "$PETCLINIC_WORKDIR"
+git clone https://github.com/spring-petclinic/spring-petclinic-rest.git "$PETCLINIC_WORKDIR/backend"
+git -C "$PETCLINIC_WORKDIR/backend" checkout --detach 5180cc9bd0163393c4e628bedc1bc4c27cfaab1b
+git clone https://github.com/spring-petclinic/spring-petclinic-angular.git "$PETCLINIC_WORKDIR/frontend"
+git -C "$PETCLINIC_WORKDIR/frontend" checkout --detach fba8956cbdd04e09973f81eb39379955a825bfc3
+
+Playwright must already be available at the configured module path, or be resolvable as the package name playwright from the runner. For a new reproduction environment, a project-local installation of playwright@1.62.1 is sufficient; use the installed Chrome browser rather than downloading another browser. The recorded pilot used the existing bundled package and existing Chrome. For an explicit browser path set PETCLINIC_CHROME_EXECUTABLE; without it the runner selects Playwright's Chrome channel. Different browser/runtime versions must be recorded as a different reproduction environment.
+
+Build and run native checks
+cd "$PETCLINIC_WORKDIR/backend"
+JAVA_HOME="$PETCLINIC_JDK" MAVEN_USER_HOME="$PETCLINIC_WORKDIR/maven" ./mvnw -B -Dmaven.repo.local="$PETCLINIC_WORKDIR/maven/repository" verify
+cd "$PETCLINIC_WORKDIR/frontend"
+npm ci --no-audit --no-fund --cache "$PETCLINIC_WORKDIR/npm-cache"
+npm run test:ci
+
+The recorded jar was 69 MB with SHA256 26f35f880229dfcae06a796574a930236361a9403c69355aa3efea9cce77fb65. A rebuilt jar may differ in packaging metadata; record its own hash. Do not modify application rules to obtain a passing fixture.
+
+Start servers in separate terminals
+Backend, foreground:
+"$PETCLINIC_JDK/bin/java" -jar "$PETCLINIC_WORKDIR/backend/target/spring-petclinic-rest-4.0.2.jar" --server.address=127.0.0.1 --spring.jpa.show-sql=false
+
+Frontend, foreground:
+cd "$PETCLINIC_WORKDIR/frontend"
+node node_modules/@angular/cli/bin/ng.js serve --host 127.0.0.1 --port 19766
+
+The native backend uses H2/spring-data-jpa, an in-memory seeded database, port 9966 and /petclinic context. Native security is disabled; both routes use the anonymous actor. The unchanged frontend expects http://localhost:9966/petclinic/api/. This API endpoint must remain compatible with the frontend environment; changing the runner's --api option alone does not reconfigure Angular. Wait until the backend health endpoint http://127.0.0.1:9966/petclinic/actuator/health reports UP and the frontend reports readiness.
+
+Run the paired routes
+node "$PETCLINIC_ARTIFACTS/scripts/petclinic_route_smoke.mjs" ui --output "$PETCLINIC_WORKDIR/results/paired" --playwright-module "$PETCLINIC_PLAYWRIGHT_MODULE"
+
+Stop only this backend using Ctrl-C in its terminal. Restart the identical backend command above, leaving the frontend running. Wait for health UP, then run:
+node "$PETCLINIC_ARTIFACTS/scripts/petclinic_route_smoke.mjs" api --output "$PETCLINIC_WORKDIR/results/paired" --playwright-module "$PETCLINIC_PLAYWRIGHT_MODULE"
+
+The browser runner checks for ten initial owners and records a canonical full owner-graph hash. It accepts --frontend, --api, --output, --playwright-module and --chrome-executable, with PETCLINIC_* environment alternatives listed by --help. Only loopback HTTP endpoints are accepted; browser requests outside the allowed loopback ports are blocked. It does not start or reset servers. Use a new output directory for each repetition; existing route files are rejected.
+
+Compare ui-route.json and api-route.json: both status values must be passed, and initial_state_sha256, created and final_state must be equal. For the creation payload, parse the UI trace POST request JSON and compare it with the direct API POST request object. Both recorded pilot payloads included id:null and the same five editable fields. Keep both raw traces even when a comparison fails. Stop both owned servers after the run.
+
+Optional API-only setup/reset reproduction
+Restart the backend to fresh H2 before this independent smoke sequence:
+python3 "$PETCLINIC_ARTIFACTS/scripts/petclinic_api_smoke.py" --output "$PETCLINIC_WORKDIR/results/api-smoke.json"
+
+Restart the backend again, wait for health UP, and verify restoration:
+python3 "$PETCLINIC_ARTIFACTS/scripts/petclinic_verify_reset.py" --baseline "$PETCLINIC_WORKDIR/results/api-smoke.json" --output "$PETCLINIC_WORKDIR/results/reset-check.json"
+
+Both Python scripts accept --base-url or PETCLINIC_BASE_URL, require explicit output paths, reject existing output files, disable redirects and environment proxies, and use the standard library. The API smoke uses the original visit date 2026-11-06 by default; --visit-date can be recorded explicitly for a different fixture. The reset runner reads the successful smoke's initial hash; it does not perform the restart itself.
+
+Fixture issue retained separately
+The first setup attempt used an eight-digit telephone. The OpenAPI length/pattern allowed it, but persistence failed against the runtime entity constraint requiring exactly ten digits (HTTP 500). Only the fixture was changed to ten digits. The earlier failed file remains manifests/petclinic-api-smoke-attempt1.json and is classified as a setup/fixture issue, not a discovered mixed-interface defect or a main-study result.
+
+Artifact provenance
+results/petclinic-owner-pilot/executed_route_smoke.mjs is the exact original browser script that generated the recorded evidence. Its SHA256 is e8eeef23ac8ffed279c8904af2c07fc273deceba6d473621f6c617af87f6975d. The exact original API and reset scripts are archived alongside it. These archived originals retain machine-specific paths as run provenance.
+The scripts/ versions were subsequently parameterized for reproduction and statically checked with Node syntax checking, Python AST parsing and all three --help commands. They have not been rerun against services since that refactor. Their hashes and exact executed-original hashes are in manifests/petclinic-reproducibility.json. The added Python smoke seed assertion and output/error handling are runner changes, not application changes.
+The recorded frontend runtime was /private/tmp/codex-petclinic-pilot-20261106-m/angular. The successful node_modules remains, but its download cache was removed to recover disk headroom. Temporary runtime storage must be recreated if cleared. Logs, route JSON and screenshots have been copied into results/petclinic-owner-pilot. Both servers are stopped, and no application source was modified.

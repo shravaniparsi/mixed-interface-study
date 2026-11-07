@@ -1,0 +1,96 @@
+FOCUSED NOVELTY CHECK: MIXED UI/API WORKFLOW TESTING
+Search and access date: 6 November 2026
+Authoring status: working research note, not a systematic review or manuscript text.
+
+Scope
+Read work/literature_evidence.md and work/protocol_design.md. The existing six-paper set covers ViewPoints (ISSTA 2012), Managing Data Constraints (ICSE 2020), APIcarv (ICSE 2023), RESTler (ICSE 2019), differential REST regression testing (ISSTA 2020), and WebArena (ICLR 2024). This pass sought close additions concerning active semantic checks, GUI-derived API tests, business dependencies, and independent defect datasets. Five primary sources were inspected below. Search results are not an exhaustive inventory.
+
+Evidence discipline
+The claim-source-verification skill was read. This agent proposed these additions and inspected their primary text. A separate skeptical verifier has not yet checked these newly proposed claim/source pairs. Therefore their status is PRIMARY TEXT INSPECTED; INDEPENDENT CHECK PENDING, not final CONFIRMED. Publication records and author claims are distinguished from independently reproduced results. Negative scope statements describe the inspected methods only; they do not establish absence of prior work.
+
+Queries run
+1. REST API testing semantic bugs checkers resource hierarchy 2024 2025 2026
+2. "UI" "API" "differential testing" workflow
+3. "RESTler" "Checking Security Properties" checker use after free
+4. "cross-interface" testing agents API UI 2026
+5. "Checking Security Properties of Cloud Service REST APIs" paper pdf
+6. "RESTlogic" "pdf"
+7. "Validating HTTP Semantics in REST APIs With Constructed Call Sequence Scenarios"
+8. "RESTlogic" cloud APIs paper author
+9. "cross-interface" "API" "testing" correctness
+
+ADDITION 1: ACTIVE RESTLER PROPERTY CHECKERS
+Vaggelis Atlidakis, Patrice Godefroid, Marina Polishchuk. Checking Security Properties of Cloud Service REST APIs. ICST 2020. DOI: 10.1109/ICST46399.2020.00046.
+Primary text: https://patricegodefroid.github.io/public_psfiles/icst2020.pdf
+Conference record: https://conf.researchr.org/details/icst-2020/icst-2020-Industry/1/Checking-Security-Properties-of-Cloud-Service-REST-APIs
+Inspected: abstract/introduction; Section III checker definitions, active versus passive checking, and efficiency discussion.
+Supporting quotation, introduction: "In other words, each checker actively tries to break its rule in addition to monitoring for any rule violation."
+Supported: Four rules address use-after-free, resource leaks, resource hierarchy, and user namespaces. Checkers generate extra API requests to expose violations, including persistent side effects after a failed creation, and reduce redundant checks.
+Boundary: This establishes follow-up state/property checks beyond HTTP 500 detection. The inspected rules do not compare native browser and API implementations of the same logical action.
+Implication: Our generic continuation concept is not new. Give competing selectors the same active oracle, and distinguish UI continuation compatibility from established API semantic checks.
+
+ADDITION 2: CONSTRUCTED HTTP-SEMANTIC SEQUENCES
+Omur Sahin, Andrea Arcuri. Validating HTTP Semantics in REST APIs With Constructed Call Sequence Scenarios. arXiv:2608.16239v1, 17 August 2026. Preprint; peer-reviewed publication not verified.
+Primary text: https://arxiv.org/html/2608.16239v1
+Version record: https://arxiv.org/abs/2608.16239
+Inspected: abstract, Section 3.2, Section 4.1, empirical tables and discussion.
+Supporting quotation, abstract: "We extended the state-of-the-art fuzzer EvoMaster with 9 new oracles to detect HTTP semantics-level faults."
+Supported: Generated tests seed an additional phase that constructs HTTP call sequences for semantic checks. One rule compares GET results before and after a failed PUT/PATCH, with handling for credentials, identifiers and nondeterministic fields. The evaluation includes 36 WFD APIs and Quartz Manager.
+Boundary: These are the authors' HTTP-rule interpretations, not proof that every conceivable API obeys them. The inspected approach does not establish native UI/API substitutability.
+Implication: Appending semantic checks to existing sequences is established. An API-only semantic continuation comparator would help isolate the incremental value of UI continuations.
+
+ADDITION 3: APIDOCX
+Zonglin Li, Xu Zhao, Yan Cao, Yazhe Li, Yihong Zhang. A REST API Fuzz Testing Framework Based on GUI Interaction and Specification Completion. Computers, Materials & Continua 86(3), article 95, 2026. Published 12 January 2026. DOI: 10.32604/cmc.2025.071511.
+Primary text: https://www.techscience.com/cmc/v86n3/65438/html
+Inspected: abstract, Sections 2.2, 3, 5.2.3, conclusion.
+Supporting quotation, Section 3: "We present APIDocX (API Documentation Extension), a fuzz testing framework targeting REST APIs that integrates GUI interaction and specification completion techniques."
+Supported: A crawler simulates GUI interactions, captures API parameters, generalizes them across endpoints using enhanced Jaccard similarity, and enriches OpenAPI documents for fuzzing. Its fault description includes unexpected business-flow errors as well as 500 responses.
+Boundary: Do not describe its oracle as exclusively 500-based. The inspected workflow uses GUI traffic as an input source, without demonstrating paired UI/API suffix compatibility testing. Reproducibility was not tested; data are offered on request.
+Implication: GUI-derived API inputs or specification enrichment cannot carry our novelty claim. Differentiate the cross-interface execution and observation relation.
+
+ADDITION 4: LOBREST
+Ding Yang, Ruixiang Qian, Zhao Wei, Zhenyu Chen, Chunrong Fang. Log-based, Business-aware REST API Testing. arXiv:2604.08007v1, 9 April 2026. Preprint; peer-reviewed publication not verified.
+Primary text: https://arxiv.org/html/2604.08007v1
+Version record: https://arxiv.org/abs/2604.08007
+Inspected: abstract, approach overview, Sections 5.1.3 and 5.1.4.
+Supporting quotation, Section 5.1.3: "Bug detection is indicated by 5XX status codes observed during testing."
+Supported: Historical request logs are sliced for locality, augmented with missing operations, completed for missing resources, and used for business-aware fuzzing. The authors motivate business constraints absent from OpenAPI. Their evaluation defines bugs through 5XX responses. Log preparation includes participant interaction for prescribed durations.
+Boundary: This is not a demonstrated native UI/API state-equivalence oracle. The study's human log-generation procedure should not be assumed affordable under our constraints. Ignore the preprint's placeholder ACM ISBN when recording metadata.
+Implication: Logs and business-sensitive dependencies are established ingredients. Measure our annotation/seed acquisition effort instead of treating it as free.
+
+ADDITION 5: DEFECTS4REST
+Rahil Mehta, Pushpak Katkhede, Manish Motwani. Defects4REST: A Benchmark of Real-World Defects to Enable Controlled Testing and Debugging Studies for REST APIs. ICSE 2026. DOI: 10.1145/3744916.3787787.
+Primary paper: https://mmotwani.com/publications/publication_sources/Mehta26icse.pdf
+Artifact repository: https://github.com/ANSWER-OSU/Defects4REST
+Inspected: abstract, mining/classification method, project table, evaluation overview. Repository identity checked; no benchmark execution.
+Supporting quotation, abstract: "Each defect is linked to an issue report, the developer-modified versions of the patched files, and the corresponding commit messages."
+Supported: The paper reports 607 REST API defects across 50 projects, with issue/revision/patch artifacts. The project table includes nine spring-petclinic-rest defects. A smaller sample is used for tool evaluation.
+Boundary: These are not automatically 607 executable mixed-interface cases. UI pairing, historical version compatibility, defect reproduction and relevance must be established per case.
+Implication: Screen historical defects for an independently sourced validation subset. Keep known historical faults separate from newly discovered natural faults and our injected faults; count screening and reproduction effort.
+
+SYNTHESIS AND DESIGN CONSEQUENCES (RESEARCH JUDGMENT)
+The current route-sensitive greedy coverage/cost selector is a plausible prototype, but adding interface labels to ordinary dependency-coverage obligations is not yet a strong methodological novelty claim. This search does not establish that the complete proposed combination is already published; equally, it does not establish priority for it.
+
+The narrower contribution worth testing is a paired, evidence-grounded contract: when UI and API routes implement the same logical action for the same actor and lifecycle state, does substituting one route preserve the ability to complete subsequent native workflows? The contract must specify observable differences allowed by design. Payload mutants should be analyzed separately from semantically equivalent route substitutions.
+
+A stronger method contribution would derive the relevant downstream compatibility obligations or continuations from captured dependencies, rather than rely entirely on hand-authored suffix lists. Its benefit and setup cost must then be measured. This is a research direction, not a claim already supported by our pilot.
+
+Recommended comparisons:
+1. Isolate selection: route-sensitive guidance versus generic producer-consumer dependency guidance and random selection, with identical candidate pools, full oracles, reset policy and budget accounting.
+2. Isolate observation: UI-plus-API continuation checks versus applicable API-only semantic continuation checks on a fixed candidate set. Attribute an advantage to the oracle if that is what the experiment shows.
+3. Seek a pilot case where ordinary API dependencies and applicable API semantic checks pass but the paired native UI continuation fails. Also exercise the reverse route. Absence of such a case is informative and must not be hidden behind injected faults.
+4. Report annotation time, UI/API mapping effort, nondeterminism handling, and candidate exclusions. A low token bill alone does not establish low research cost.
+5. Screen Defects4REST cases before expanding handcrafted faults. Avoid selecting only historical bugs already tailored to the proposed checker.
+
+CLAIMS REJECTED OR RESTRICTED IN THIS PASS
+- REJECTED: Following an API operation with requests to reveal latent invalid state is new. Active property checkers predate this work.
+- REJECTED: Learning useful API input information from GUI interactions is new. APIcarv and APIDocX overlap directly.
+- REJECTED: Request logs and business dependencies omitted by OpenAPI are new research ingredients. LoBREST overlaps directly.
+- REJECTED: Defects4REST supplies hundreds of ready-made mixed UI/API benchmarks. That suitability has not been established.
+- RESTRICTED: No previous work tests this precise contract. At most say the inspected methods target different contracts; do not claim exhaustive absence.
+- RESTRICTED: Route-sensitive guidance is superior. This is an experimental hypothesis, not a literature finding.
+
+SCREENING NOTES
+RESTlogic (CMC 2024, DOI 10.32604/cmc.2023.047051) and AutoRestTest were surfaced but not included in the five-source deep-read set. Their exact methods remain follow-up reading, not verified support in this log. Commercial blogs, Wikipedia and discussion posts were not used for technical claims. An apparent later reproduction of ICST 2020 text was not used as an authoritative source; the original authors' paper was preferred. No conclusion about misconduct is drawn.
+
+Pass totals: 5 new primary-source candidates inspected; 0 independently confirmed by a separate verifier in this pass; 4 broad overclaims rejected; 2 claims restricted. Next action is independent claim/source checking before these additions enter manuscript prose, alongside the executable feasibility pilots.

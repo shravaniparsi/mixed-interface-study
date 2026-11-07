@@ -1,0 +1,133 @@
+#!/usr/bin/env node
+// Executes exactly the two declared operations; shared oracle observations are separate.
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {readFile,writeFile,rename} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
+const options={};for(let i=2;i<process.argv.length;i+=2)options[process.argv[i].slice(2)]=process.argv[i+1];
+const c=JSON.parse(await readFile(options.case,'utf8'));
+assert.deepEqual(c.operations.map(o=>o.operation_id),['create_article','edit_article_body']);
+const producer=c.operations[0],consumer=c.operations[1],input=producer.input.article;
+const API='http://127.0.0.1:18765',UI='http://127.0.0.1:18766';
+const credentials={email:'pilot@example.com',password:'Pilot-Research-123!'};
+const result={schema_version:1,case_id:c.case_id,route:[producer.interface,consumer.interface],status:'running',trace:[],checks:[],coverage:{reached_operations:[],data_consumed:false,state_consumed:false}};
+let phase='setup',token,browser,server,context,page,requestCounter=0;const pending=new Set();
+const secrets=new Set([credentials.password]);
+function clean(x,k=''){
+  if(/token|password|authorization|cookie/i.test(k))return '[REDACTED]';
+  if(Array.isArray(x))return x.map(v=>clean(v));
+  if(x&&typeof x==='object')return Object.fromEntries(Object.entries(x).map(([k,v])=>[k,clean(v,k)]));
+  if(typeof x==='string')for(const s of secrets)x=x.split(s).join('[REDACTED]');return x;
+}
+function event(type,data={}){result.trace.push({sequence:result.trace.length+1,phase,type,...clean(data)});}
+function parsed(text){try{return JSON.parse(text);}catch{return {non_json:true,characters:text.length,sha256:createHash('sha256').update(text).digest('hex')};}}
+async function data(r){const d=parsed(await r.text());if(d?.user?.token)secrets.add(d.user.token);return d;}
+async function api(method,path,payload){
+  if(phase==='producer'&&method==='POST'&&path==='/api/articles')result.coverage.reached_operations.push(producer.operation_id);
+  if(phase==='consumer'&&method==='GET'&&path.startsWith('/api/articles/'))result.coverage.reached_operations.push(consumer.operation_id);
+  const request_id=++requestCounter;event('request',{request_id,source:'api',method,path,payload});
+  const r=await fetch(API+path,{method,headers:{'content-type':'application/json',...(token?{authorization:`Token ${token}`}:{})},body:payload===undefined?undefined:JSON.stringify(payload),redirect:'manual',signal:AbortSignal.timeout(15000)});
+  const d=await data(r);event('response',{request_id,source:'api',method,path,status:r.status,data:d});return {status:r.status,data:d,request_id};
+}
+function match(r,method,path){return r.request().method()===method&&new URL(r.url()).pathname===path;}
+function state(a){return {title:a.title,description:a.description,body:a.body,tagList:[...new Set(a.tagList)].sort(),author:a.author.username};}
+function check(name,passed,detail={}){result.checks.push({name,passed,...clean(detail)});return passed;}
+function equal(a,b){return isDeepStrictEqual(a,b);}
+async function loginUi(){
+  if(context){await Promise.allSettled([...pending]);await context.close();}
+  if(!server){
+    const require=createRequire(import.meta.url);const {chromium}=require(process.env.PLAYWRIGHT_MODULE_PATH||'playwright');
+    const marker='--codex-study-case='+createHash('sha256').update(c.case_id+process.pid).digest('hex').slice(0,20);
+    // Persist ownership before launch so deadline cleanup can find a browser even
+    // when launchServer has not returned its PID. Keep this record after close.
+    async function persistOwner(pid){const tmp=options['browser-pid']+'.tmp';await writeFile(tmp,JSON.stringify({pid,marker}));await rename(tmp,options['browser-pid']);}
+    await persistOwner(null);
+    server=await chromium.launchServer({host:'127.0.0.1',headless:true,executablePath:process.env.CHROME_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',args:[marker,'--disable-background-networking','--disable-component-update','--disable-sync','--no-first-run']});
+    await persistOwner(server.process().pid);
+    browser=await chromium.connect(server.wsEndpoint());result.browser_version=browser.version();
+  }
+  context=await browser.newContext({viewport:{width:1280,height:900},timezoneId:'UTC',locale:'en-US',serviceWorkers:'block'});context.setDefaultTimeout(15000);
+  await context.route('**/*',r=>{const u=new URL(r.request().url());if(u.protocol==='http:'&&u.hostname==='127.0.0.1'&&['18765','18766'].includes(u.port))return r.continue();event('blocked_external_resource',{url:u.toString()});return r.abort();});
+  if(context.routeWebSocket)await context.routeWebSocket('**/*',s=>s.close());
+  page=await context.newPage();page.on('pageerror',e=>event('page_error',{message:e.message}));
+  page.on('request',r=>{const path=new URL(r.url()).pathname;
+    if(phase==='producer'&&r.method()==='POST'&&path==='/api/articles')result.coverage.reached_operations.push(producer.operation_id);
+    if(phase==='consumer'&&r.method()==='GET'&&path.startsWith('/api/articles/')&&!result.coverage.reached_operations.includes(consumer.operation_id))result.coverage.reached_operations.push(consumer.operation_id);
+  });
+  page.on('response',r=>{if(!new URL(r.url()).pathname.startsWith('/api/'))return;
+    const capture=(async()=>{try{event('ui_response',{method:r.request().method(),path:new URL(r.url()).pathname,status:r.status(),data:await data(r)});}catch(e){event('capture_error',{message:e.message});}})();pending.add(capture);capture.finally(()=>pending.delete(capture));});
+  await page.goto(UI+'/#/login');await page.getByLabel('Email',{exact:true}).fill(credentials.email);await page.getByLabel('Password',{exact:true}).fill(credentials.password);
+  const rp=page.waitForResponse(r=>match(r,'POST','/api/users/login'));await page.getByRole('button',{name:'Sign in',exact:true}).click();const r=await rp;
+  assert.equal(r.status(),200);assert.equal((await r.json()).user.username,'pilotresearch');await page.waitForURL(u=>u.hash==='#/'||u.hash==='');
+}
+async function uiWrite(method,path,action,expected){
+  const rp=page.waitForResponse(r=>match(r,method,path));await action();const r=await rp;
+  const payload=JSON.parse(r.request().postData());const submitted=payload.article;
+  const payloadMatches=check(phase+'_actual_payload',equal(submitted,expected),{expected,observed:submitted});
+  event('declared_ui_request',{method,path,payload});
+  assert.ok(payloadMatches,phase+' actual UI payload differs from declared resolved input');
+  return {status:r.status(),data:await data(r),payload_matches:equal(submitted,expected)};
+}
+async function main(){
+  const auth=await api('POST','/api/users/login',{user:credentials});assert.equal(auth.status,200);assert.equal(auth.data.user.username,'pilotresearch');token=auth.data.user.token;
+  const initial=await api('GET','/api/articles?author=pilotresearch');assert.equal(initial.status,200);assert.equal(initial.data.articlesCount,0);
+  phase='producer';
+  let created;
+  if(producer.interface==='api')created=await api('POST','/api/articles',producer.input);
+  else{
+    await loginUi();await page.goto(UI+'/#/article/create');
+    for(const [label,key]of[['Title','title'],['Description','description'],['Body','body']])await page.getByLabel(label,{exact:true}).fill(input[key]);
+    for(const tag of input.tagList){await page.getByLabel('Tags',{exact:true}).fill(tag);await page.getByLabel('Title',{exact:true}).click();await page.locator('.tag-list .tag-pill').filter({hasText:tag}).waitFor();}
+    created=await uiWrite('POST','/api/articles',()=>page.getByRole('button',{name:'Publish Article',exact:true}).click(),input);
+  }
+  result.prefix_status=created.status;
+  if(created.status!==201){
+    phase='oracle';const follow=await api('GET','/api/articles?author=pilotresearch');result.failed_prefix_followup={status:follow.status,data:follow.data};
+    result.application_outcome=created.status>=500?'prefix_server_error':'prefix_rejected';return;
+  }
+  const a=created.data.article;result.accepted_producer=state(a);result.resource_reference=a.slug;
+  const expected={title:input.title,description:input.description,body:input.body,tagList:[...new Set(input.tagList||[])].sort(),author:'pilotresearch'};
+  check('producer_fields',equal(state(a),expected));
+  if(!a.slug){result.application_outcome='empty_reference';return;}
+  const edit={title:a.title,description:a.description,body:consumer.input.article.body,tagList:a.tagList};
+  result.resolved_consumer_input={article:edit};
+  phase='consumer';
+  let loaded,edited;
+  if(consumer.interface==='api'){
+    loaded=await api('GET',`/api/articles/${encodeURIComponent(a.slug)}`);
+    result.coverage.data_consumed=true;event('consumed_dependency',{field:'article.slug',interface:'api',via:'declared_consumer_GET',reference:a.slug,status:loaded.status});
+  }else{
+    await loginUi();const rp=page.waitForResponse(r=>match(r,'GET',`/api/articles/${a.slug}`));await page.goto(UI+`/#/article/${encodeURIComponent(a.slug)}/edit`);const r=await rp;loaded={status:r.status(),data:await data(r)};
+    result.coverage.data_consumed=true;event('consumed_dependency',{field:'article.slug',interface:'ui',via:'native_editor_GET',reference:a.slug,status:loaded.status});
+  }
+  if(loaded.status!==200){result.application_outcome='consumer_read_failed';return;}
+  const stateLoaded=check('consumer_loaded_state',equal(state(loaded.data.article),expected));
+  if(consumer.interface==='api'){
+    edited=await api('PUT',`/api/articles/${a.slug}`,{article:edit});result.coverage.state_consumed=stateLoaded;
+  }else{
+    await page.waitForFunction(v=>document.querySelector('textarea[aria-label="Body"]')?.value===v,a.body);
+    const form={title:await page.getByLabel('Title',{exact:true}).inputValue(),description:await page.getByLabel('Description',{exact:true}).inputValue(),body:await page.getByLabel('Body',{exact:true}).inputValue()};
+    const formLoaded=check('native_form_loaded',form.title===a.title&&form.description===a.description&&form.body===a.body,{observed:form});
+    await page.getByLabel('Body',{exact:true}).fill(edit.body);
+    edited=await uiWrite('PUT',`/api/articles/${a.slug}`,()=>page.getByRole('button',{name:'Publish Article',exact:true}).click(),edit);
+    result.coverage.state_consumed=stateLoaded&&formLoaded&&edited.payload_matches;
+  }
+  if(result.coverage.state_consumed)event('consumed_dependency',{field:'article.editable_state',interface:consumer.interface,via:'declared_consumer_PUT',bound_payload:edit});
+  result.consumer_status=edited.status;if(edited.status!==200){result.application_outcome='consumer_write_failed';return;}
+  phase='oracle';const slug=edited.data.article.slug;const final=await api('GET',`/api/articles/${encodeURIComponent(slug)}`);
+  check('persisted_business_state',final.status===200&&equal(state(final.data.article),{...expected,body:edit.body}));
+  // Shared fresh native read is deliberately outside declared coverage.
+  await loginUi();const fresh=page.waitForResponse(r=>match(r,'GET',`/api/articles/${slug}`));await page.goto(UI+`/#/article/${encodeURIComponent(slug)}`);const r=await fresh;const rendered=await data(r);
+  check('shared_ui_read',r.status()===200&&equal(state(rendered.article),{...expected,body:edit.body}));
+  await page.waitForFunction(value=>document.querySelector('#article-content')?.textContent?.replace(/\s+/g,' ').trim()===value,edit.body);
+  check('shared_ui_render',(await page.locator('#article-content').innerText()).trim()===edit.body);
+  const count=await api('GET','/api/articles?author=pilotresearch');check('one_article',count.status===200&&count.data.articlesCount===1);
+  result.final_state=state(final.data.article);result.application_outcome=result.checks.every(x=>x.passed)?'passed':'state_mismatch';
+}
+try{await main();result.status='completed';}catch(e){result.status='adapter_error';result.error={phase,name:e.name,message:e.message};}
+finally{
+  await Promise.allSettled([...pending]);if(browser)await browser.close().catch(()=>{});if(server)await server.close().catch(()=>{});
+  result.finished_at=new Date().toISOString();await writeFile(options.output,JSON.stringify(clean(result),null,2)+'\n');
+  process.exitCode=result.status==='completed'?0:1;
+}

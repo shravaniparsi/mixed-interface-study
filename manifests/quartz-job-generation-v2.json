@@ -1,0 +1,1110 @@
+{
+  "schema_version": 1,
+  "manifest_id": "quartz-stored-job-create-description-edit-v2",
+  "operations": [
+    {
+      "operation_id": "create_stored_job",
+      "interfaces": [
+        "ui",
+        "api"
+      ],
+      "reference_interface": "ui",
+      "input": {
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description before continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {}
+      }
+    },
+    {
+      "operation_id": "edit_job_description",
+      "interfaces": [
+        "ui",
+        "api"
+      ],
+      "reference_interface": "ui",
+      "input": {
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {}
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "producer": "create_stored_job",
+      "consumer": "edit_job_description",
+      "field_or_state": "job.jobKeyDTO",
+      "kind": "data",
+      "evidence": {
+        "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L408",
+        "statement": "The native editor copies group and name from the stored jobKeyDTO. JobService updates the same group/name URL. The response key must be bound to the consumer resource path; it is not part of ScheduledJobInputDTO."
+      }
+    },
+    {
+      "producer": "create_stored_job",
+      "consumer": "edit_job_description",
+      "field_or_state": "job.editable_state",
+      "kind": "state",
+      "evidence": {
+        "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L408",
+        "statement": "The native editor loads class, description, durable, requestsRecovery and jobDataMap from the stored job; submission sends a complete command. The consumer changes description while preserving the accepted producer class and other fields."
+      }
+    }
+  ],
+  "reference_expectation": {
+    "outcome": "accept",
+    "category": "implementation_control",
+    "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L91",
+    "statement": "The fixed complete command uses the native SampleJob subclass, a nonblank class name, durable=true, requestsRecovery=false and an empty data map. Create stores the job and update replaces that same stored key with the changed description. This is the original ordinary positive-control workload; UI/UI is the generation reference, not a normative source of validation rules."
+  },
+  "constraints": [
+    {
+      "constraint_id": "create-job-class",
+      "operation_id": "create_stored_job",
+      "input_path": [
+        "jobClass"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "job-class-omitted",
+          "kind": "omit",
+          "expectation": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L17",
+            "statement": "ScheduledJobInputDTO.jobClass has @NotBlank, and JobController.createJob validates the request with @Valid. The declared expectation is rejection of an absent, null, empty or whitespace-only jobClass. This is a source-level validation expectation, not an observed candidate outcome or independent defect label."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "omit_json_property"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The native submit code always assigns command.jobClass from the required class select. Omitting this JSON property has no declared native UI action; clearing a form control is not equivalent to property omission."
+            }
+          }
+        },
+        {
+          "transformation_id": "job-class-null",
+          "kind": "null",
+          "expectation": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L17",
+            "statement": "ScheduledJobInputDTO.jobClass has @NotBlank, and JobController.createJob validates the request with @Valid. The declared expectation is rejection of an absent, null, empty or whitespace-only jobClass. This is a source-level validation expectation, not an observed candidate outcome or independent defect label."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The native class select offers eligible class-name strings and the submit code sends its selected value. No normal native action assigning JSON null is declared; null is not equated with an empty selection."
+            }
+          },
+          "value": null
+        },
+        {
+          "transformation_id": "job-class-empty",
+          "kind": "empty",
+          "expectation": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L17",
+            "statement": "ScheduledJobInputDTO.jobClass has @NotBlank, and JobController.createJob validates the request with @Valid. The declared expectation is rejection of an absent, null, empty or whitespace-only jobClass. This is a source-level validation expectation, not an observed candidate outcome or independent defect label."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The native stored-job class control is a required select populated only by eligible job-class names; the submit code sends its selected value. This exact literal has no ordinary native control action in the pinned standalone UI. v1 also does not implement UI mutation adapters; DOM or request tampering is not treated as a UI representation."
+            }
+          },
+          "value": ""
+        },
+        {
+          "transformation_id": "job-class-whitespace",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L17",
+            "statement": "ScheduledJobInputDTO.jobClass has @NotBlank, and JobController.createJob validates the request with @Valid. The declared expectation is rejection of an absent, null, empty or whitespace-only jobClass. This is a source-level validation expectation, not an observed candidate outcome or independent defect label."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The native stored-job class control is a required select populated only by eligible job-class names; the submit code sends its selected value. This exact literal has no ordinary native control action in the pinned standalone UI. v1 also does not implement UI mutation adapters; DOM or request tampering is not treated as a UI representation."
+            }
+          },
+          "value": "   "
+        },
+        {
+          "transformation_id": "job-class-ineligible",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L118",
+            "statement": "JobService.getEligibleJobClass matches the supplied name against discovered subclasses of AbstractQuartzManagerJob and throws ClassNotFoundException when absent. java.lang.String is not such a subclass. The expected outcome is rejection before storing a job; no specific HTTP status is predicted."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The native stored-job class control is a required select populated only by eligible job-class names; the submit code sends its selected value. This exact literal has no ordinary native control action in the pinned standalone UI. v1 also does not implement UI mutation adapters; DOM or request tampering is not treated as a UI representation."
+            }
+          },
+          "value": "java.lang.String"
+        }
+      ]
+    },
+    {
+      "constraint_id": "create-job-recovery",
+      "operation_id": "create_stored_job",
+      "input_path": [
+        "requestsRecovery"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "job-recovery-true",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO declares a boolean requestsRecovery; JobService passes it to JobBuilder.requestRecovery and returns jobDetail.requestsRecovery. The native editor loads that boolean and serializes its checkbox. true changes stored metadata only; no job execution is required."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": true
+        }
+      ]
+    },
+    {
+      "constraint_id": "create-job-description",
+      "operation_id": "create_stored_job",
+      "input_path": [
+        "description"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "job-description-omitted",
+          "kind": "omit",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "description is an unconstrained optional String in the DTO. JobService only calls withDescription for non-null values. Quartz JobBuilder keeps its default description null, copies it into JobDetail, and the response returns it. Native openEditJobWizard projects a null description to an empty text input before the requested edit."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "omit_json_property"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native submission sends a complete typed command. No ordinary native action for this exact omitted property or JSON null is declared; clearing a field or leaving an empty data-map editor is not equated with omission/null."
+            }
+          }
+        },
+        {
+          "transformation_id": "job-description-null",
+          "kind": "null",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "description is an unconstrained optional String in the DTO. JobService only calls withDescription for non-null values. Quartz JobBuilder keeps its default description null, copies it into JobDetail, and the response returns it. Native openEditJobWizard projects a null description to an empty text input before the requested edit."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native submission sends a complete typed command. No ordinary native action for this exact omitted property or JSON null is declared; clearing a field or leaving an empty data-map editor is not equated with omission/null."
+            }
+          },
+          "value": null
+        },
+        {
+          "transformation_id": "job-description-empty",
+          "kind": "empty",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "description is a String without nonblank/length constraints; JobService passes non-null text to withDescription and the native editor copies it into and out of its text input. The fixed empty/Unicode literal is a source-based acceptance expectation, not a claim covering every Unicode or length boundary."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": ""
+        },
+        {
+          "transformation_id": "job-description-unicode",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "description is a String without nonblank/length constraints; JobService passes non-null text to withDescription and the native editor copies it into and out of its text input. The fixed empty/Unicode literal is a source-based acceptance expectation, not a claim covering every Unicode or length boundary."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": "Café 東京 🌱"
+        }
+      ]
+    },
+    {
+      "constraint_id": "create-job-data-map",
+      "operation_id": "create_stored_job",
+      "input_path": [
+        "jobDataMap"
+      ],
+      "applies_to_interfaces": [
+        "api"
+      ],
+      "transformations": [
+        {
+          "transformation_id": "job-map-value-string",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO accepts Map<String, ?> and JobService copies it into JobDataMap. The native loader classifies null, number, boolean, object/array JSON and string values; its serializer has the corresponding branches. This finite JSON value is expected to be stored and preserved through a description-only continuation; execution and external persistence are outside scope."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": {
+            "sample": "ordinary value"
+          }
+        },
+        {
+          "transformation_id": "job-map-value-number",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO accepts Map<String, ?> and JobService copies it into JobDataMap. The native loader classifies null, number, boolean, object/array JSON and string values; its serializer has the corresponding branches. This finite JSON value is expected to be stored and preserved through a description-only continuation; execution and external persistence are outside scope."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": {
+            "sample": 7
+          }
+        },
+        {
+          "transformation_id": "job-map-value-boolean",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO accepts Map<String, ?> and JobService copies it into JobDataMap. The native loader classifies null, number, boolean, object/array JSON and string values; its serializer has the corresponding branches. This finite JSON value is expected to be stored and preserved through a description-only continuation; execution and external persistence are outside scope."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": {
+            "sample": true
+          }
+        },
+        {
+          "transformation_id": "job-map-value-null",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO accepts Map<String, ?> and JobService copies it into JobDataMap. The native loader classifies null, number, boolean, object/array JSON and string values; its serializer has the corresponding branches. This finite JSON value is expected to be stored and preserved through a description-only continuation; execution and external persistence are outside scope."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": {
+            "sample": null
+          }
+        },
+        {
+          "transformation_id": "job-map-value-nested-json",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO accepts Map<String, ?> and JobService copies it into JobDataMap. The native loader classifies null, number, boolean, object/array JSON and string values; its serializer has the corresponding branches. This finite JSON value is expected to be stored and preserved through a description-only continuation; execution and external persistence are outside scope."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "The literal is representable by ordinary native typed controls in principle; the unchanged v1 generator implements only API payload mutations. This API-only exclusion is an adapter limitation, not a claim of intrinsic UI impossibility."
+            }
+          },
+          "value": {
+            "sample": {
+              "child": [
+                1,
+                true,
+                null,
+                {
+                  "leaf": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "transformation_id": "job-map-omitted",
+          "kind": "omit",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO marks jobDataMap nullable. JobService skips usingJobData for null. Quartz 2.5.2 JobBuilder initializes an empty JobDataMap, and JobDetailImpl.getJobDataMap supplies an empty map if unset; the response therefore exposes {}. Native toJobDataMapEntries handles that as zero entries, and serialization returns {}."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "omit_json_property"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native submission sends a complete typed command. No ordinary native action for this exact omitted property or JSON null is declared; clearing a field or leaving an empty data-map editor is not equated with omission/null."
+            }
+          }
+        },
+        {
+          "transformation_id": "job-map-null",
+          "kind": "null",
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+            "statement": "The DTO marks jobDataMap nullable. JobService skips usingJobData for null. Quartz 2.5.2 JobBuilder initializes an empty JobDataMap, and JobDetailImpl.getJobDataMap supplies an empty map if unset; the response therefore exposes {}. Native toJobDataMapEntries handles that as zero entries, and serialization returns {}."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native submission sends a complete typed command. No ordinary native action for this exact omitted property or JSON null is declared; clearing a field or leaving an empty data-map editor is not equated with omission/null."
+            }
+          },
+          "value": null
+        },
+        {
+          "transformation_id": "job-map-key-surrounding-whitespace",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1359",
+            "statement": "Backend JobService copies string-keyed maps without a declared trim/blank/duplicate policy at that layer; native serialization explicitly trims and checks keys. A normal native resubmission trims the key to padded. Whether that key change is allowed by the application business contract is unresolved. Record producer and continuation behavior; no defect label or accept/reject workflow verdict is assigned."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native data-map serialization trims keys and rejects blank or post-trim duplicate keys. The exact raw API key mapping has no native submitted-payload representation through those controls. v1 also excludes all UI payload mutation adapters."
+            }
+          },
+          "value": {
+            " padded ": "value"
+          }
+        },
+        {
+          "transformation_id": "job-map-key-blank",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1359",
+            "statement": "Backend JobService copies string-keyed maps without a declared trim/blank/duplicate policy at that layer; native serialization explicitly trims and checks keys. Native serialization trims the key to empty and throws before submitting a job update. No independent business policy verdict is registered. Record producer and continuation behavior; no defect label or accept/reject workflow verdict is assigned."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native data-map serialization trims keys and rejects blank or post-trim duplicate keys. The exact raw API key mapping has no native submitted-payload representation through those controls. v1 also excludes all UI payload mutation adapters."
+            }
+          },
+          "value": {
+            "   ": "value"
+          }
+        },
+        {
+          "transformation_id": "job-map-key-posttrim-duplicate",
+          "kind": "enum",
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1359",
+            "statement": "Backend JobService copies string-keyed maps without a declared trim/blank/duplicate policy at that layer; native serialization explicitly trims and checks keys. These are distinct raw JSON keys, not duplicate JSON members. Native serialization trims both to key and throws on the second key. The intended cross-interface key policy is unresolved. Record producer and continuation behavior; no defect label or accept/reject workflow verdict is assigned."
+          },
+          "representations": {
+            "api": {
+              "supported": true,
+              "action": "set_json_value"
+            },
+            "ui": {
+              "supported": false,
+              "reason": "Native data-map serialization trims keys and rejects blank or post-trim duplicate keys. The exact raw API key mapping has no native submitted-payload representation through those controls. v1 also excludes all UI payload mutation adapters."
+            }
+          },
+          "value": {
+            "key": "first",
+            " key ": "second"
+          }
+        }
+      ]
+    }
+  ],
+  "bounds": {
+    "max_substitutions": 2,
+    "max_mutations": 1,
+    "max_cases": 44
+  },
+  "cost_estimate": {
+    "seconds": 1.0,
+    "source": "UNMEASURED PLACEHOLDER: positive scalar required by the existing selector schema. No Quartz candidate durations have been calibrated; the prior valid-control elapsed time is not used as a mutation-cost estimate.",
+    "includes": [
+      "reset",
+      "operations",
+      "oracle"
+    ]
+  },
+  "oracle": {
+    "status": "prospective_declarative_adapter_contract_not_executed",
+    "registration": {
+      "registered_at_utc": "2026-11-07T06:37:05.375845+00:00",
+      "registered_before_boundary_execution": true,
+      "positive_control_already_executed": true,
+      "positive_control_evidence": "manifests/quartz-transfer-control.json",
+      "positive_control_manifest_sha256": "1d53aae542b9850852c1569be78aba5d91f3de007edd3bb080eae75cbc677f44",
+      "positive_control_scope": "One fixed workload on four routes; not generated-pool execution. Earlier startup/authentication/automation diagnostics are documented there.",
+      "mutation_selection_basis": "Systematic finite representative catalog declared by field/type category before any Quartz boundary execution: one requestsRecovery toggle; optional description omission/null/empty/Unicode; five ordinary JSON map-value categories; optional map omission/null; three separate unresolved raw-key policy probes. All five v1 rejection variants are retained. No category was chosen or removed using runtime fault yield.",
+      "application_excluded_from_method_development": true,
+      "method_code_sha256_before_registration": {
+        "src/mixed_interface/registry.py": "09790725cdc1546e150433454a2d3a5e007eef4205162c6da186aa1062999bd0",
+        "src/mixed_interface/__init__.py": "a4b624491c38b95ff4c0b045cc0a4343d32a7da93b43146c53381560d0da373d",
+        "src/mixed_interface/runtime.py": "8d20a56e265294da50185870b5eff0f5dfa8db90fa40afc58b882104ab20878f",
+        "src/mixed_interface/selection.py": "7cd16e8847fb5a2fcd48a1b2687419b21882b29d74bb551280cfd156c25f8f21"
+      },
+      "parent_registration": {
+        "path": "manifests/quartz-job-generation-v1.json",
+        "file_sha256": "a1ee490d6b4f0d9c796e4d37dd82b39bd50c73e2083606c5c669df8184d11b66",
+        "relationship": "Separately versioned mixed accepted-value/normalization/rejection registry; v1 remains unchanged as the rejection/control stratum."
+      },
+      "freeze_status": "not_frozen; Quartz registry adapter and protocol/policy review remain required",
+      "boundary_candidates_executed": false
+    },
+    "pinned_sources": {
+      "official_repository": "https://github.com/fabioformosa/quartz-manager",
+      "release": "5.0.1",
+      "release_commit": "71bc29df2a98490b436094666249b3a2a1207cc4",
+      "inspected_commit": "8deb40408600ab2a92173cd5f2b65a9ba252ec7c",
+      "equivalence": "GitHub comparison between release and checkout modifies only README.md.",
+      "source_mapping_manifest": "manifests/quartz-source-mapping.json",
+      "source_mapping_sha256": "95ba744576e2b928ad82b63f3424989381181d40e82443f5e36a182cad0006e5",
+      "source_links": {
+        "input_dto": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L17",
+        "create_validated": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/controllers/JobController.java#L72",
+        "create_update": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L91",
+        "eligible_classes": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L118",
+        "class_discovery": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L64",
+        "response_fields": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L145",
+        "native_form": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.html#L363",
+        "native_editor_load": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L408",
+        "native_editor_submit": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L430",
+        "native_submit_gate": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L980",
+        "native_service": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/services/job.service.ts#L24",
+        "native_scheduler_default": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/configuration/SchedulerConfig.java#L49",
+        "sample_job": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-web-showcase/src/main/java/it/fabioformosa/quartzmanager/jobs/myjobs/SampleJob.java#L12",
+        "native_map_load": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1323",
+        "native_map_serialize": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1357",
+        "native_map_key_rules": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1359",
+        "native_map_value_serialize": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L1371",
+        "backend_optional_and_map_copy": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+        "optional_dto_fields": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L20"
+      },
+      "quartz_library_source": {
+        "version": "2.5.2",
+        "url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.5.2/quartz-2.5.2-sources.jar",
+        "source_archive_sha256": "a11d97381e5fc7c2c7879d3b21a0d30eb0e0edac5bd9239747696f5d7a774dca",
+        "source_bytes": 562263,
+        "verified_from_official_source_archive_without_execution": true,
+        "locations": {
+          "org/quartz/JobBuilder.java": [
+            63,
+            68,
+            100,
+            116,
+            336,
+            338
+          ],
+          "org/quartz/impl/JobDetailImpl.java": [
+            325,
+            329
+          ],
+          "org/quartz/JobDataMap.java": [
+            90,
+            98
+          ]
+        },
+        "interpretation": "Default description null; default empty data map; builder copies supplied map; getter supplies empty map if unset. These are source-level normalization expectations."
+      },
+      "v2_source_evidence": [
+        {
+          "path": "quartz-manager-frontend/src/app/views/manager/manager.component.ts",
+          "sha256": "2794e240845d94c48611123565100288fd9b1a5069ff0796b97c2d585c39bb96",
+          "line_ranges": [
+            [
+              408,
+              450
+            ],
+            [
+              1323,
+              1354
+            ],
+            [
+              1357,
+              1395
+            ]
+          ]
+        },
+        {
+          "path": "quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java",
+          "sha256": "5028c5110475e6ec1a9166a6b5ed4546012d9fcc7e9d9eedbb9a58ade441aea6",
+          "line_ranges": [
+            [
+              132,
+              160
+            ]
+          ]
+        },
+        {
+          "path": "quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java",
+          "sha256": "cec9c25a835ce1b41f06eb7acaff67bf6a15d70bab238e1f97c4baf53938d083",
+          "line_ranges": [
+            [
+              16,
+              28
+            ]
+          ]
+        }
+      ]
+    },
+    "operation_mapping": {
+      "create_stored_job": {
+        "api_method": "POST",
+        "api_path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+        "body_envelope": null,
+        "ui_entry": "/quartz-manager-ui/index.html",
+        "native_ui_actions": [
+          "native login",
+          "Jobs",
+          "New Job",
+          "populate fixed job group/name and command fields",
+          "Create Job"
+        ]
+      },
+      "edit_job_description": {
+        "api_method": "PUT",
+        "api_path_template": "/quartz-manager/jobs/{bound_job_group}/{bound_job_name}",
+        "body_envelope": null,
+        "native_ui_actions": [
+          "fresh native login",
+          "Jobs",
+          "select returned job key",
+          "Edit Job",
+          "verify loaded producer fields",
+          "change only description",
+          "Save Job"
+        ]
+      }
+    },
+    "input_semantics": "Operation inputs are templates for JSON request bodies. Group/name are separate resource-path bindings. A future adapter must resolve accepted output bindings before editing and must never replace an accepted producer-mutated field with the baseline template.",
+    "output_bindings": [
+      {
+        "source_operation": "create_stored_job",
+        "source_path": [
+          "jobKeyDTO",
+          "group"
+        ],
+        "target_operation": "edit_job_description",
+        "target": "resource_path_parameter",
+        "target_name": "bound_job_group",
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_stored_job",
+        "source_path": [
+          "jobKeyDTO",
+          "name"
+        ],
+        "target_operation": "edit_job_description",
+        "target": "resource_path_parameter",
+        "target_name": "bound_job_name",
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_stored_job",
+        "source_path": [
+          "jobClassName"
+        ],
+        "target_operation": "edit_job_description",
+        "target": "input",
+        "target_path": [
+          "jobClass"
+        ],
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_stored_job",
+        "source_path": [
+          "durable"
+        ],
+        "target_operation": "edit_job_description",
+        "target": "input",
+        "target_path": [
+          "durable"
+        ],
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_stored_job",
+        "source_path": [
+          "requestsRecovery"
+        ],
+        "target_operation": "edit_job_description",
+        "target": "input",
+        "target_path": [
+          "requestsRecovery"
+        ],
+        "required_before_execution": true
+      },
+      {
+        "source_operation": "create_stored_job",
+        "source_path": [
+          "jobDataMap"
+        ],
+        "target_operation": "edit_job_description",
+        "target": "input",
+        "target_path": [
+          "jobDataMap"
+        ],
+        "required_before_execution": true
+      }
+    ],
+    "meaningful_edit": {
+      "operation_id": "edit_job_description",
+      "input_path": [
+        "description"
+      ],
+      "value": "Description after meaningful continuation."
+    },
+    "execution_conditions": [
+      "No v1 or v2 boundary candidate has run. The existing fixed positive-control script does not consume this generated pool. A registry adapter and protocol/policy review are required before execution or freeze.",
+      "Any future executor must use the documented matching official 5.0.1 UI/backend artifacts, complete dependency classpath and Europe/Rome JVM timezone without application source changes.",
+      "Restart the native process independently for every complete case; verify the empty RAM store, same admin/ROLE_ADMIN principal, scheduler STOPPED, zero triggers and zero executions.",
+      "Send exactly the declared one-property API mutation, leaving the other producer fields fixed. Do not start/resume the scheduler, create a trigger, or invoke job execution.",
+      "Record producer status and body, then read stored jobs regardless of success or rejection. A rejected creation must leave the reset state unchanged; rejection alone does not prove rollback.",
+      "If creation rejects, stop the continuation. Do not fabricate a resource key, mark dependency coverage, count an unattempted consumer as passed, or treat declared target edges as observed.",
+      "If creation accepts, retain its response and a fresh stored-state read. For accepted/normalization variants, evaluate the declared producer semantics and bind returned identity/class/recovery/map values without restoring baseline templates. For rejected-class variants that unexpectedly accept, record actual state without repairing the class. For unresolved key-policy variants, keep raw keys and assign no intended-policy verdict.",
+      "For a UI consumer, use a fresh native session and verify the loaded typed values against bound producer state, with only the explicit null-description display projection. Change description only. For ordinary accepted variants require preservation of the bound map and recovery flag. For key-policy variants record native key trimming, blank/duplicate errors or successful submission as observations; do not prelabel them defects or silently normalize them in the oracle.",
+      "For an API consumer, GET the same bound resource and PUT the bound complete command with only description changed. Record actual status and state rather than requiring all rejection probes to reach this step.",
+      "After an accepted continuation, perform fresh API and native UI reads, compare the listed fields under the variant-specific policy, require the requested description and verify the listed inactive-scheduler/zero-trigger/zero-execution conditions. Separate policy-unknown map differences from failures of declared accepted-value expectations.",
+      "Source expectations are hypotheses for conformance checking. Record actual rejection status separately, including 4xx versus 5xx; this registration does not prescribe status codes, label defects or credit selector coverage.",
+      "The generic generator does not validate or resolve opaque oracle bindings. A future adapter must implement and validate the declared resource and state bindings before any candidate execution.",
+      "The map-key stratum requires independent contract/policy adjudication before binary conformance or defect claims. Predicted source behavior is not observed execution; no expected 4xx/5xx status is invented."
+    ],
+    "business_state_comparison": {
+      "fields": [
+        "jobKeyDTO.group",
+        "jobKeyDTO.name",
+        "jobClassName",
+        "description",
+        "durable",
+        "requestsRecovery",
+        "jobDataMap",
+        "triggerKeys"
+      ],
+      "description": "Requested meaningful edit after accepted continuation; original producer description before it.",
+      "normalization": "JSON object-key order only for persisted business-state comparisons. Apply the separately declared null-description-to-empty UI display projection and omitted/null-map-to-empty stored normalization at their specified stages. Do not trim raw keys or collapse post-trim duplicates in oracle input. This scope does not compare every scheduler response field.",
+      "environment": [
+        "scheduler.status",
+        "scheduler.jobStoreClass",
+        "scheduler.jobStoreSupportsPersistence",
+        "scheduler.numberOfJobsExecuted",
+        "scheduler.triggerKeys",
+        "job_count",
+        "trigger_count"
+      ],
+      "scheduler_fields_outside_declared_comparison": [
+        "name",
+        "instanceId",
+        "quartzVersion",
+        "clustered",
+        "threadPoolClass",
+        "threadPoolSize",
+        "runningSince"
+      ],
+      "variant_policy": "For accepted/normalization variants, compare raw persisted producer fields to variant_semantics and project only documented UI display representations; after continuation compare bound non-edited fields plus requested description. For unresolved key-policy variants, retain raw map keys and record differences or UI blocking separately without a binary key-policy verdict. Compare only the listed business and environment fields."
+    },
+    "scope_limits": {
+      "enum_kind": "enum means an explicitly enumerated JSON literal, including complete object-valued jobDataMap inputs. It does not assert an API enum or implement nested-key, random-value, Unicode-range or fuzz operators.",
+      "native_ui_exclusions": "Forty UI-producer mutation combinations are excluded by the unchanged API-only generator. Ordinary accepted literals have plausible native control representations, whereas exact omission/null and raw whitespace/blank/post-trim duplicate key payloads have no matching native submission mapping. These reasons are separated in each transformation.",
+      "path_constraints": "Group/name URL syntax, defaults, trimming and collisions are outside the object-property mutation schema. They are fixed here and require a separately specified path/state adapter before probing.",
+      "dynamic_allowed_values": "Eligible job classes depend on the pinned classpath and configured packages. The generator neither discovers nor enforces that list. The fixed SampleJob control and java.lang.String exclusion are justified by pinned source.",
+      "fields_held_fixed": "durable remains true; job group/name remain RESEARCH/pilot-job. Each case changes at most one producer DTO property. The consumer changes only description, binds accepted producer state and applies no repair. requestsRecovery, description and jobDataMap vary only over the registered finite representatives.",
+      "unmodeled_variants": "No simultaneous mutations, path fuzzing, duplicate fixture creation, scheduler lifecycle, triggers, job execution, timing, recovery behavior or persistence mode changes.",
+      "interpretation": "Source-only preparation. Four prior ordinary controls do not validate generated variants. The catalog adds no observation-based coverage, fault yield, prevalence, held-out generalization or oracle effectiveness evidence.",
+      "evaluation_stratum": "v2 provides a prospective mixed catalog with accepted-value, normalization, rejection and unresolved-key-policy strata. No generated candidate has executed, and meaningful oracle evaluation remains pending a Quartz registry adapter and protocol review. No freeze or effectiveness claim is made.",
+      "map_key_policy": "Whitespace-surrounded, blank and post-trim-colliding keys form a separate unknown/unresolved policy stratum. Source differences motivate observation, not an intended business rule or defect label. Raw keys must remain available for adjudication.",
+      "unsupported_dimensions": "No dynamic object-key mutation operator, duplicate raw JSON member representation, path mutation, simultaneous field mutation, arbitrary-number stress, complete Unicode coverage, trigger generation or recovery execution is implemented. Map variants use explicit whole-property JSON replacements supported by the existing enum operator."
+    },
+    "cost_status": "unmeasured_uniform_placeholder",
+    "strata": {
+      "transformation_ids": {
+        "rejection": [
+          "job-class-omitted",
+          "job-class-null",
+          "job-class-empty",
+          "job-class-whitespace",
+          "job-class-ineligible"
+        ],
+        "accepted_value": [
+          "job-recovery-true",
+          "job-description-empty",
+          "job-description-unicode",
+          "job-map-value-string",
+          "job-map-value-number",
+          "job-map-value-boolean",
+          "job-map-value-null",
+          "job-map-value-nested-json"
+        ],
+        "normalization": [
+          "job-description-omitted",
+          "job-description-null",
+          "job-map-omitted",
+          "job-map-null"
+        ],
+        "unresolved_key_policy": [
+          "job-map-key-surrounding-whitespace",
+          "job-map-key-blank",
+          "job-map-key-posttrim-duplicate"
+        ]
+      },
+      "expected_case_counts": {
+        "route_controls": 4,
+        "accepted_value_mutants": 16,
+        "normalization_mutants": 8,
+        "rejection_mutants": 10,
+        "unresolved_key_policy_mutants": 6,
+        "total": 44
+      },
+      "rationale": "Retain ordinary accepted values and explicit default/display normalizations alongside the rejection stratum and separately labeled policy-unknown key probes. One literal per requested category bounds effort; this is not exhaustive equivalence-class or boundary coverage."
+    },
+    "variant_semantics": {
+      "job-recovery-true": {
+        "producer_field": "requestsRecovery",
+        "expected_persisted": true,
+        "expected_native_loaded": true,
+        "consumer": "Preserve true while editing description; no recovery execution is evaluated."
+      },
+      "job-description-omitted": {
+        "producer_field": "description",
+        "expected_persisted": null,
+        "expected_native_loaded": "",
+        "consumer": "Description is deliberately replaced by the fixed meaningful edit. A raw null-to-empty UI display projection is documented, not silently applied to other fields.",
+        "supplementary_source": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.5.2/quartz-2.5.2-sources.jar"
+      },
+      "job-description-null": {
+        "producer_field": "description",
+        "expected_persisted": null,
+        "expected_native_loaded": "",
+        "consumer": "Description is deliberately replaced by the fixed meaningful edit. A raw null-to-empty UI display projection is documented, not silently applied to other fields.",
+        "supplementary_source": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.5.2/quartz-2.5.2-sources.jar"
+      },
+      "job-description-empty": {
+        "producer_field": "description",
+        "expected_persisted": "",
+        "expected_native_loaded": "",
+        "consumer": "Description is deliberately replaced by the fixed meaningful edit. A raw null-to-empty UI display projection is documented, not silently applied to other fields.",
+        "supplementary_source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L408"
+      },
+      "job-description-unicode": {
+        "producer_field": "description",
+        "expected_persisted": "Café 東京 🌱",
+        "expected_native_loaded": "Café 東京 🌱",
+        "consumer": "Description is deliberately replaced by the fixed meaningful edit. A raw null-to-empty UI display projection is documented, not silently applied to other fields.",
+        "supplementary_source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-frontend/src/app/views/manager/manager.component.ts#L408"
+      },
+      "job-map-value-string": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {
+          "sample": "ordinary value"
+        },
+        "expected_native_loaded": {
+          "sample": "ordinary value"
+        },
+        "native_typed_representation": {
+          "key": "sample",
+          "type": "string",
+          "value": "ordinary value"
+        },
+        "consumer": "Preserve semantic JSON value, scalar type, raw key and nested array order while editing description."
+      },
+      "job-map-value-number": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {
+          "sample": 7
+        },
+        "expected_native_loaded": {
+          "sample": 7
+        },
+        "native_typed_representation": {
+          "key": "sample",
+          "type": "number",
+          "value": "7"
+        },
+        "consumer": "Preserve semantic JSON value, scalar type, raw key and nested array order while editing description."
+      },
+      "job-map-value-boolean": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {
+          "sample": true
+        },
+        "expected_native_loaded": {
+          "sample": true
+        },
+        "native_typed_representation": {
+          "key": "sample",
+          "type": "boolean",
+          "value": "true"
+        },
+        "consumer": "Preserve semantic JSON value, scalar type, raw key and nested array order while editing description."
+      },
+      "job-map-value-null": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {
+          "sample": null
+        },
+        "expected_native_loaded": {
+          "sample": null
+        },
+        "native_typed_representation": {
+          "key": "sample",
+          "type": "null",
+          "value": ""
+        },
+        "consumer": "Preserve semantic JSON value, scalar type, raw key and nested array order while editing description."
+      },
+      "job-map-value-nested-json": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {
+          "sample": {
+            "child": [
+              1,
+              true,
+              null,
+              {
+                "leaf": "text"
+              }
+            ]
+          }
+        },
+        "expected_native_loaded": {
+          "sample": {
+            "child": [
+              1,
+              true,
+              null,
+              {
+                "leaf": "text"
+              }
+            ]
+          }
+        },
+        "native_typed_representation": {
+          "key": "sample",
+          "type": "json",
+          "value": "{\"child\":[1,true,null,{\"leaf\":\"text\"}]}"
+        },
+        "consumer": "Preserve semantic JSON value, scalar type, raw key and nested array order while editing description."
+      },
+      "job-map-omitted": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {},
+        "expected_native_loaded": {},
+        "consumer": "Preserve the returned empty map; do not resubmit an omitted/null placeholder in place of bound state.",
+        "supplementary_source": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.5.2/quartz-2.5.2-sources.jar"
+      },
+      "job-map-null": {
+        "producer_field": "jobDataMap",
+        "expected_persisted": {},
+        "expected_native_loaded": {},
+        "consumer": "Preserve the returned empty map; do not resubmit an omitted/null placeholder in place of bound state.",
+        "supplementary_source": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.5.2/quartz-2.5.2-sources.jar"
+      },
+      "job-map-key-surrounding-whitespace": {
+        "producer_field": "jobDataMap",
+        "raw_input": {
+          " padded ": "value"
+        },
+        "source_behavior_hypothesis": "A normal native resubmission trims the key to padded. Whether that key change is allowed by the application business contract is unresolved.",
+        "consumer": "Preserve raw accepted producer state as the binding. Record native trimming or inability to submit as observations, not failures against an invented key policy. API continuation sends the bound raw map.",
+        "policy_verdict": "unknown; no defect classification",
+        "producer_comparison": {
+          "status": "record_only_no_expected_map",
+          "instruction": "Retain actual producer response and fresh read without normalizing raw keys; no intended key-policy verdict is declared."
+        }
+      },
+      "job-map-key-blank": {
+        "producer_field": "jobDataMap",
+        "raw_input": {
+          "   ": "value"
+        },
+        "source_behavior_hypothesis": "Native serialization trims the key to empty and throws before submitting a job update. No independent business policy verdict is registered.",
+        "consumer": "Preserve raw accepted producer state as the binding. Record native trimming or inability to submit as observations, not failures against an invented key policy. API continuation sends the bound raw map.",
+        "policy_verdict": "unknown; no defect classification",
+        "producer_comparison": {
+          "status": "record_only_no_expected_map",
+          "instruction": "Retain actual producer response and fresh read without normalizing raw keys; no intended key-policy verdict is declared."
+        }
+      },
+      "job-map-key-posttrim-duplicate": {
+        "producer_field": "jobDataMap",
+        "raw_input": {
+          "key": "first",
+          " key ": "second"
+        },
+        "source_behavior_hypothesis": "These are distinct raw JSON keys, not duplicate JSON members. Native serialization trims both to key and throws on the second key. The intended cross-interface key policy is unresolved.",
+        "consumer": "Preserve raw accepted producer state as the binding. Record native trimming or inability to submit as observations, not failures against an invented key policy. API continuation sends the bound raw map.",
+        "policy_verdict": "unknown; no defect classification",
+        "producer_comparison": {
+          "status": "record_only_no_expected_map",
+          "instruction": "Retain actual producer response and fresh read without normalizing raw keys; no intended key-policy verdict is declared."
+        }
+      }
+    },
+    "catalog_selection": {
+      "unit": "One explicit representative per requested field/type category, plus the complete inherited rejection catalog.",
+      "new_category_count": 15,
+      "all_new_transformation_ids": [
+        "job-recovery-true",
+        "job-description-omitted",
+        "job-description-null",
+        "job-description-empty",
+        "job-description-unicode",
+        "job-map-value-string",
+        "job-map-value-number",
+        "job-map-value-boolean",
+        "job-map-value-null",
+        "job-map-value-nested-json",
+        "job-map-omitted",
+        "job-map-null",
+        "job-map-key-surrounding-whitespace",
+        "job-map-key-blank",
+        "job-map-key-posttrim-duplicate"
+      ],
+      "fixed_literal_policy": "Small inert finite JSON values; number 7; boolean true; null; one Unicode string; one nested object containing an ordered array. No scheduling or job execution.",
+      "counterbalance": "Ordinary map keys and typed values are included before separately labeled normalization/key-policy probes; selection is not limited to cases suggested by UI/backend differences."
+    }
+  }
+}

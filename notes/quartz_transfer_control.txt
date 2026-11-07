@@ -1,0 +1,106 @@
+Quartz Manager native transfer control
+Completed 2026-11-07 UTC (2026-11-06 Pacific)
+
+Result
+The native Quartz Manager 5.0.1 UI and API completed one stored-job workflow
+through UI/UI, API/UI, UI/API and API/API routes, once per route. Each route
+created RESEARCH.pilot-job, changed its description, and read the final stored
+job through both a fresh native edit form and the API. All four routes passed.
+These are four executions of one workflow, not four independent applications
+or a defect-detection evaluation.
+
+Every route used a fresh JVM and Quartz RAMJobStore, with the native admin
+principal and ROLE_ADMIN. The complete initial scheduler/jobs/triggers state
+had the same SHA256 in all routes. The complete final state also had the same
+SHA256, without omitting any returned business or scheduler fields. The
+scheduler remained STOPPED, with no triggers and zero executed jobs. Each
+route issued exactly one job POST (201) and one job PUT (200).
+
+Evidence
+- manifests/quartz-eligibility-v1.json: eligibility and fixed workload before
+  application execution; its embedded-UI deployment assumption was corrected
+  in the separate preflight record, without replacing the registration.
+- manifests/quartz-transfer-control.json: completed control and attempt index.
+- manifests/quartz-source-mapping.json: source lines and hashes connecting
+  native form fields, API operations, stored fields, reset and scheduler state.
+- manifests/quartz-artifact-lock.json and quartz-declared-dependencies.json:
+  download URLs, versions, SHA256 values and deployment constraints.
+- results/quartz-transfer-attempt5/summary.json: four-route outcome summary.
+- results/quartz-transfer-attempt5/{ui-ui,api-ui,ui-api,api-api}.json:
+  native UI requests, API requests, form values, actor identity, state and checks.
+- results/quartz-transfer-attempt5/executed-runner.mjs: exact executed harness.
+  Final screenshots were taken while the native drawer could still be moving;
+  complete field values are retained in the JSON form snapshots.
+- Earlier attempt directories preserve startup, authentication and automation
+  diagnostics. Attempt 4 lost its primary exception during pending-response
+  cleanup; its screenshot and server log remain. It performed no job write.
+
+Application provenance
+Official repository: https://github.com/fabioformosa/quartz-manager
+Release tag v5.0.1: 71bc29df2a98490b436094666249b3a2a1207cc4
+Inspected checkout: 8deb40408600ab2a92173cd5f2b65a9ba252ec7c
+GitHub's release-to-checkout comparison changes only README.md; the application
+source used for mapping is unchanged. The checkout remained clean. Execution
+used official Maven Central 5.0.1 artifacts, with no source rebuild or patch.
+Artifact versions and hashes are recorded; this is not a reproducible-build
+attestation connecting published bytecode to the release source.
+
+Deployment adjustments
+1. The official showcase jar contains a metadata-only 2,616-byte UI dependency.
+   The separately published, matching 5.0.1 native UI webjar was added through
+   Spring Boot PropertiesLauncher. Each route's served index.html hash matches
+   that webjar's native entrypoint exactly.
+2. The showcase omits its declared optional Springdoc runtime dependency set.
+   Its OpenAPI configuration could not initialize. Disabling the documented
+   OpenAPI option did not bypass unconditional showcase beans. Ten pinned
+   dependency jars (2,460,440 bytes total) completed the external classpath.
+   The successful run restored the normal OpenAPI configuration.
+3. The native JWT helper interprets LocalDateTime.now() as Europe/Rome. On the
+   Pacific host, a fresh token was already expired. The successful run set
+   -Duser.timezone=Europe/Rome while preserving native authentication. This is
+   a documented environment constraint; the incidental prerequisite failure
+   is not counted as a study defect finding.
+4. The login locator was scoped to its native form, and pending response
+   failures are handled before cleanup. No workflow inputs, application code,
+   selection method or oracle policy changed from workflow outcomes.
+
+Runtime
+Temurin JRE 21.0.13+9, macOS arm64; heap capped at 256 MiB.
+Node 24.19.0; existing Playwright 1.62.1 and Chrome 156.0.8078.80.
+Only loopback HTTP port 19965 was used. Browser contexts were fresh; no user
+profile was reused. No observed browser request left the allowed workload.
+The runtime and source checkout occupy about 206 MiB; extra cash spend was $0.
+No npm, Maven, Docker or database install was required. Native upstream unit
+suites were not run. All task-owned processes stopped; port 19965 was free at
+completion. Runtime files remain under /private/tmp/codex-quartz-transfer-20261106-m.
+
+Reproduction
+From outputs/mixed-interface-study, use a dedicated runtime directory. The
+downloader pins the macOS arm64 JRE and every jar, reuses exact matching files,
+and maintains a 400 MiB disk reserve. It does not launch an application.
+
+python3 scripts/quartz_prepare_runtime.py --runtime /private/tmp/quartz-reproduction
+
+Then run the controller with an existing Node 20+ installation, Playwright
+module, and compatible Chrome executable. OUTPUT must be a new directory:
+
+node scripts/quartz_transfer_control.mjs \
+  --runtime /private/tmp/quartz-reproduction \
+  --java /private/tmp/quartz-reproduction/jdk-21.0.13+9-jre/Contents/Home/bin/java \
+  --output results/quartz-reproduction \
+  --playwright-module /absolute/path/to/playwright \
+  --chrome-executable '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+
+The controller checks all pinned jar hashes, requires port 19965 to be free,
+starts a fresh server per route, runs the ordinary native workflow, and stops
+each process. It refuses mutations other than login and the fixed job create
+and update. It never creates a trigger or invokes scheduler start/resume.
+
+Research interpretation
+This application was excluded from method development. The control establishes
+native deployment and one source-backed operation mapping under the documented
+configuration. It does not establish held-out method effectiveness, prevalence,
+generalization or transfer of a failure-detection rate. No malformed-input
+campaign, known-issue lookup, selector comparison or boundary generation was
+performed on Quartz. The classpath and authentication diagnostics belong to
+setup evidence. The successful routes belong to control evidence.

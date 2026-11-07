@@ -1,0 +1,130 @@
+CI REPRODUCTION
+
+Repository workflows
+
+.github/workflows/unit.yml runs on pushes and pull requests. It executes only
+Python harness/bootstrap tests, pure Node adapter tests and syntax checks. It
+uses a standard ubuntu-24.04 runner and a five-minute job limit.
+
+.github/workflows/applications.yml runs only through workflow_dispatch. Its
+default suite is quartz-controls; the other explicit option is
+realworld-integration. It uses a standard ubuntu-24.04 runner with a twenty-minute
+job limit, read-only contents permission, and no persistent dependency caches.
+Application execution is additionally limited to 480 seconds with a twenty-second
+termination grace. The application step has a nine-minute limit, leaving room
+for normal teardown and artifact upload before the job limit.
+
+After this workflow is present on the repository's default branch:
+
+  gh workflow run applications.yml --ref main -f suite=quartz-controls
+  gh workflow run applications.yml --ref main -f suite=realworld-integration
+
+Run one chosen suite per dispatch. These commands are examples; preparing these
+files does not itself dispatch a workflow. GitHub's default-branch requirement is
+documented at:
+https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_dispatch
+
+Pinned tools and sources
+
+Python 3.12 and Node 20 are installed by official setup actions. Quartz uses
+Temurin Java 21.0.13+9 from setup-java. Actual patch versions, runner image,
+architecture, CPU count, physical memory, repository commit, run ID and attempt
+are recorded in runtime-versions.json. Setup actions can change the selected
+Python/Node patch release within those declared families; the recorded versions
+identify each run rather than assuming bit-identical runner images.
+
+All action references are full commit SHAs, verified against these official tags:
+  actions/checkout v7.0.1
+    3d3c42e5aac5ba805825da76410c181273ba90b1
+  actions/setup-node v7.1.0
+    949feb2413d6458794dcd2491c4babbbce0c15c1
+  actions/setup-python v7.1.0
+    6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+  actions/setup-java v6.2.0
+    77dd5b2ce225ea11469928ac317850245a74ae78
+  actions/upload-artifact v7.0.2
+    cf430e030ddbb5b0abf93d22962f4752f3646cd9
+
+Verification sources are the respective official GitHub Git-reference API URLs,
+for example https://api.github.com/repos/actions/checkout/git/ref/tags/v7.0.1,
+and action.yml at each recorded commit. No third-party action is used.
+
+scripts/ci/package.json pins Playwright 1.62.1 and pnpm 8.15.9. The tools are
+installed into RUNNER_TEMP; the resolved npm lock is retained as an artifact.
+Playwright installs only its full Chromium and required Linux dependencies, with
+--no-shell. The harness receives the absolute executable returned by Playwright,
+not an independently updated browser on the runner. browser.json verifies and
+records Chromium revision 1234, version 151.0.7922.34, and executable SHA256.
+This pin was verified from the official Playwright release source:
+https://github.com/microsoft/playwright/blob/26a9e470a7b3c7822084b09fb7f13902c5f37b51/packages/playwright-core/browsers.json
+Installation guidance:
+https://playwright.dev/docs/browsers
+https://playwright.dev/docs/ci
+
+Quartz preparation
+
+scripts/ci/prepare_quartz.py downloads only the jars already locked in
+manifests/quartz-artifact-lock.json, checks exact size and SHA256, and verifies
+the declared dependency manifest. It does not download the lock's macOS JRE
+archive; the caller supplies Java 21. It does not compile or patch application
+source. quartz-bootstrap.json records the JRE source, exact Java version and
+each verified jar hash. The generated v2 adapter is invoked with --mode controls
+only. Boundary cases are not silently added to CI controls.
+
+RealWorld preparation
+
+scripts/ci/prepare_realworld.py performs independent depth-one checkouts of:
+  backend 87dd078c883a046f5ff20269df2fb004d8b5f83f
+  frontend b14ba5011cf9cc97babfcd7ca99dcfbb058862e7
+It creates a Python 3.12 virtual environment, installs the existing study lock,
+uses pnpm 8.15.9 with --frozen-lockfile --ignore-scripts and disables the Cypress
+binary download. Vite builds with VITE_API_HOST=http://127.0.0.1:18765.
+Application tracked source is checked for changes after preparation.
+
+The existing lock's psycopg2-binary 2.9.10 substitution remains explicit; this
+reproduction uses SQLite and makes no claim about PostgreSQL. The Linux resolved
+pip package list and frontend lock hash are retained in realworld-bootstrap.json;
+realworld-pip-install.json retains pip's download and distribution metadata.
+No lock fallback, version substitution or application patch occurs on failure.
+The existing generated-integration orchestrator executes its complete validation,
+fresh route-cost calibration and budget sessions with independent fixture resets.
+Each dispatch recalibrates; it does not borrow calibration or sessions from a
+prior successful or incomplete run.
+
+Evidence and resource scope
+
+The always() artifact step retains seven days of setup logs, exact resource
+metadata and current application evidence, including unsuccessful checks. It
+excludes downloaded jars, browsers, source checkouts, node_modules, caches and
+SQLite fixture files. RealWorld evidence is also uploaded directly from the
+current RUNNER_TEMP execution directory if the orchestrator's final export was
+interrupted. Abrupt runner loss or a hard job termination can still prevent an
+upload; an absent artifact is not a passing result.
+
+Hosted Linux/Chromium records are a separate environment from the prior macOS
+and Google Chrome runs. Preserve their distinct resource hashes and do not pool
+their timings as though the environment were unchanged. Application controls and
+runtime integration checks are not evidence of selector effectiveness.
+
+Costs and limits
+
+There are no model calls, paid APIs, larger runners or account billing changes.
+For a private repository, standard Linux compute draws from the account's shared
+monthly included compute amount, then uses the applicable rate. The published
+Linux two-core rate is $0.006/minute: a full twenty-minute application job is
+$0.12 nominal compute and a five-minute unit job is $0.03, before included usage
+and excluding storage. Remaining account allowance is not inferred here. The
+Free plan currently lists $12/month included compute and 500 MB artifact storage.
+Seven-day retention limits accumulation; no dependency cache is uploaded.
+Primary billing and runner references:
+https://docs.github.com/en/billing/concepts/product-billing/github-actions
+https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+
+Local static verification (does not install dependencies or start applications):
+
+  PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/ci -p 'test_*.py' -v
+  node --check scripts/ci/browser_info.mjs
+  bash -n scripts/ci/install_browser.sh scripts/ci/run_applications.sh
+
+Use Node 20 for the Node syntax check. Preparation scripts and application runs
+are intentionally not executed locally as part of this CI authoring task.

@@ -1,0 +1,54 @@
+{
+  "subject": "quartz-manager-standalone",
+  "registered_before_application_execution": true,
+  "registration_stage": "source and environment feasibility inspection; no failure search or mutation execution",
+  "purpose": "application excluded from development; positive-control transfer feasibility only",
+  "official_repository": "https://github.com/fabioformosa/quartz-manager",
+  "inspected_commit": "8deb40408600ab2a92173cd5f2b65a9ba252ec7c",
+  "release_tag": "v5.0.1",
+  "release_commit": "71bc29df2a98490b436094666249b3a2a1207cc4",
+  "release_source_equivalence": "GitHub compare confirms only README.md differs between release and inspected commit; backend and frontend application source match.",
+  "distribution": {
+    "mode": "Official Maven Central executable standalone jar with embedded native UI",
+    "url": "https://repo.maven.apache.org/maven2/it/fabioformosa/quartz-manager/quartz-manager-web-showcase/5.0.1/quartz-manager-web-showcase-5.0.1.jar",
+    "expected_size_bytes": 47276782,
+    "native_ui_artifact": "it.fabioformosa.quartz-manager:quartz-manager-starter-ui:5.0.1",
+    "build_deviation": "Use published release; do not rebuild or claim local upstream unit-suite execution."
+  },
+  "eligibility": {
+    "native_api_and_ui": true,
+    "same_version": true,
+    "equivalent_actor": "native default showcase admin account, role ADMIN; synthetic local instance only",
+    "reset_method": "restart process; default Quartz RAMJobStore loses stored jobs and triggers",
+    "meaningful_write": "create stored durable job, then change description",
+    "consumer": "load same stored job in native edit drawer or API, preserve other fields, submit description update, read persisted job",
+    "independent_requirements": "JobController and frontend JobService expose the same create/update job endpoints; native form maps the stored job fields.",
+    "scheduler_execution_control": "Native managed scheduler defaults to not auto-starting. Create no trigger, never call start/resume/trigger endpoint; verify no triggers and scheduler not running before/after."
+  },
+  "planned_workflow": {
+    "id": "quartz-stored-job-create-description-edit-v1",
+    "job_group": "RESEARCH",
+    "job_name": "pilot-job",
+    "job_class": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+    "create": {"description": "Description before continuation.", "durable": true, "requestsRecovery": false, "jobDataMap": {}},
+    "edit": {"description": "Description after meaningful continuation."},
+    "routes": ["UI/UI", "API/UI", "UI/API", "API/API"],
+    "repetitions_per_route": 1,
+    "normalization": "No generated-key comparison needed: fixed group/name. Ignore execution timestamps only if present; require matching stored business fields and no triggers."
+  },
+  "runtime_plan": {
+    "java": "Official Temurin JRE21.0.13+9, aarch64 macOS",
+    "java_archive_sha256": "225bab0a09491ef06835488cd942f5d2befa9a0410a2484f0c8bbcf7506ec09a",
+    "java_heap": "-Xmx256m",
+    "host": "127.0.0.1",
+    "port": 19965,
+    "estimated_peak_additional_disk_mb": 250,
+    "disk_stop_floor_mb": 400
+  },
+  "scope_limits": [
+    "Mapping and environment configuration only; no method or oracle policy tuning from application failure yield.",
+    "No malformed-input or known-fault tests are planned in this transfer control.",
+    "One workflow cannot establish generalization, prevalence or selector effectiveness.",
+    "RAM store configuration only; PostgreSQL persistence not evaluated."
+  ]
+}

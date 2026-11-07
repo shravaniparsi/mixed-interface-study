@@ -1,0 +1,55 @@
+RealWorld boundary harness: independent static review
+
+Scope: scripts/run_realworld_boundaries.py, scripts/realworld_boundary_case.mjs,
+and the frozen registry in results/realworld-boundaries-20261107T054339Z.
+No application execution or outcome inspection was performed for this review.
+
+Overall: suitable for the stated descriptive development replay, with narrower
+claims than full state-preserving compatibility validation. No reason from source
+inspection alone to discard the independent branch design.
+
+Strengths
+- Backend is stopped before fixture copying; each branch restores the same offline
+  SQLite file and checks its hash (orchestrator 80, 89, 95; stop helper 50-57).
+- Each UI consumer gets a fresh context and native login (case 44-71, 133, 166,
+  183), excluding stale live-store state from these experiments.
+- API continuation follows returned references and does actual read/write/readback;
+  it is not merely a status-code comparator. Duplicate-title full and unique-title
+  partial controls make the suspected collision case interpretable.
+- Registry separates contract assertions, implementation controls, and unresolved
+  length/whitespace probes. No automatic defect counter is implemented.
+
+Interpretation blockers / limitations
+1. Passing checks do not establish full preservation. Article final checks verify
+   changed body only (case 147-149); profile verifies bio and username but not email
+   or image (191-195); comment deletion verifies an empty comment list but not parent
+   article survival (174-176). Consumer-loaded fields are compared with the prefix
+   response (136), not independently with expected input effects. Thus unnoticed
+   prefix normalization/loss or continuation collateral changes can pass. State
+   the narrow check scope. Most relevant raw response fields are retained and can
+   support explicitly post hoc adjudication; do not retroactively call this a
+   preregistered preservation oracle.
+2. Empty returned slug exits before choosing the interface (127-130). A branch
+   named ui with this result did not attempt native UI continuation. Classify it
+   as a shared API-level reference precondition failure, not a measured UI failure.
+3. UI disabled/missing controls and response timeouts are runner_or_unadjudicated
+   errors (199-206), and any nonzero runner exit stops the whole batch
+   (orchestrator 103). This avoids automatic false defect labels but requires
+   explicit unresolved/incomplete reporting. Do not exclude these silently or
+   equate a timeout with an application defect. An adjudication rerun should
+   preserve DOM/control state and distinguish runner, environment, and application
+   blockage. uiRequest also starts a response wait before the action, so an action
+   failure can leave a rejecting wait promise; inspect logs if no result is saved.
+4. Failed-prefix followup records a GET without asserting unchanged state
+   (111-115). This is diagnostic evidence, not a tested failed-operation
+   atomicity oracle.
+5. Only comment/profile have UI producer controls; this is not a complete 2x2
+   producer/consumer factorial. Empty/null API representations have deliberately
+   not been claimed as equivalent native producer operations.
+
+Reporting: preserve fixed-order, one-repetition, development-only framing. A
+shared returned-reference failure is evidence that the API semantic comparator
+works, not evidence of incremental UI detection. Count distinct root causes
+separately from candidates, branches, and repetitions. No defect prevalence,
+selector superiority, equal-time advantage, or agent-specific effect follows
+from this run.

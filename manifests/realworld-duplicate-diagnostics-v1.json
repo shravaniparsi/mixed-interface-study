@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "kind": "post_discovery_diagnostic_registry",
+  "registered_before_execution": false,
+  "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+  "frontend_commit": "b14ba5011cf9cc97babfcd7ca99dcfbb058862e7",
+  "scope": "Known partial-update identifier failure and two API controls, plus new native producer control. Diagnostic replays, not independent discovery samples.",
+  "reset": "Identical offline fixture restored independently before every prefix/continuation branch.",
+  "ui_state": "Fresh browser and native login after each API prefix; fresh login between native producer and consumer. Live-tab synchronization excluded.",
+  "workflow_templates": 1,
+  "repetitions_per_branch": 2,
+  "cases": [
+    {
+      "candidate_id": "article-update-duplicate-partial",
+      "workflow": "article-update-comment",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": "Updated body before comment."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+        "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+      "target_fixture": "duplicate"
+    },
+    {
+      "candidate_id": "article-update-duplicate-full",
+      "workflow": "article-update-comment",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Duplicate fixture title",
+        "description": "Duplicate fixture description",
+        "body": "Updated body before comment.",
+        "tagList": []
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+        "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+      "target_fixture": "duplicate"
+    },
+    {
+      "candidate_id": "article-update-unique-partial",
+      "workflow": "article-update-comment",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": "Updated body before comment."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+        "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+      "target_fixture": "base"
+    },
+    {
+      "candidate_id": "article-update-duplicate-native-full",
+      "workflow": "article-update-comment",
+      "prefix_interface": "ui",
+      "prefix_payload": {
+        "title": "Duplicate fixture title",
+        "description": "Duplicate fixture description",
+        "body": "Updated body before comment.",
+        "tagList": []
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+        "statement": "Diagnostic native producer control: load duplicate article, edit body, submit native full-field bundle, consume returned reference."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+      "target_fixture": "duplicate"
+    }
+  ],
+  "diagnostic_plan_before_its_execution": true
+}

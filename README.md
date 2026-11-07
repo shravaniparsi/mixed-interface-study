@@ -1,0 +1,83 @@
+# Mixed-interface workflow testing
+
+Research prototype and executed feasibility pilot, 6 November 2026 Pacific time (7 November UTC).
+
+Private source repository: [shravaniparsi/mixed-interface-study](https://github.com/shravaniparsi/mixed-interface-study). Git includes reviewed compact summaries; complete historical case evidence remains in the original workspace. [Evidence coverage and restoration prerequisites](results/README.md). Hosted runs follow the separate [CI portability amendment](protocol/ci-portability-v1.md).
+
+The question is whether substituting API operations for native UI operations preserves the ability to complete a web workflow, and whether tests that track interface-specific dependencies find failures efficiently. The proposed contribution remains under evaluation.
+
+## Current development findings
+
+The expanded source-guided batch covers **7 workflow templates, 44 case variants and 86 independently reset replay branches** across the two applications. It reproduces one known PetClinic UI compatibility blocker and one RealWorld returned-identifier defect. The PetClinic API edit passes while the corresponding UI edit is disabled; the RealWorld failure is detected by both API and UI continuations. Diagnostic repeats and controls are stored separately.
+
+[Read the findings and their limits](notes/development_findings.md) · [Recomputed counts](results/development-batch-v2/summary.json) · [Candidate table](results/development-batch-v2/candidates.csv)
+
+These are exploratory development results. Server errors, unresolved whitespace policies and shared preflight failures are kept separate from the two reproduced findings. No selector-effectiveness or agent experiment has run, and no previously unknown fault has been established.
+
+## Runtime integration and third application
+
+The 18-case generated RealWorld pool now executes through a measured-budget controller. A complete integration batch includes 18 validations, eight cost-calibration controls and nine sessions on a common 20.696-second budget. Across sessions, 105 workers started, 96 completed in budget and nine were interrupted; no late feedback was credited. Earlier incomplete attempts are retained. This is execution/accounting verification, not selector-effectiveness evidence.
+
+Quartz Manager passed one stored-job workflow on all four UI/API routes, with equal complete initial and final state hashes. Its prospective 44-case v2 pool includes accepted-state, normalization, rejection and unresolved key-policy strata; those candidates are unexecuted and need an adapter before primary evaluation.
+
+[Detailed integration report](notes/runtime_integration.md) · [Quartz control](manifests/quartz-transfer-control.json) · [Next evaluation gates](protocol/multiworkflow-freeze-gates-v1.md)
+
+## Initial positive-control pilot
+
+| Subject | Independent workflow templates | Routes | Executions in accepted pilot | Outcome |
+| --- | ---: | --- | ---: | --- |
+| RealWorld Django Ninja + Vue | 1: create article, edit body, read | UI/UI, API/UI, UI/API, API/API | 8: two repetitions per route | All passed; expected final business state equal |
+| Spring PetClinic REST + Angular | 1: create owner, edit address, read | UI/UI, API/UI | 2: one repetition per route | Both passed; initial state, creation payload and final state equal |
+
+These initial runs used two workflow templates, not ten independent samples. They established execution feasibility before the boundary batch above. They are not included in its 86-branch count.
+
+Native application suites passed: RealWorld backend **92**, frontend **58**; PetClinic backend **248**, frontend **88**. The research harness suite passed **75 tests**, covering selectors, registries, generated-pool consistency, runtime accounting and owned-process cleanup. These counts describe separate suites and are not study sample sizes. No paid API or hosting usage occurred.
+
+- [RealWorld accepted pilot](results/realworld-20261107T021931Z/summary.json)
+- [PetClinic accepted pilot](results/petclinic-owner-pilot/paired-summary.json)
+- [Protocol amendment and next experiments](protocol/pilot-v0.2.md)
+- [Evidence and interpretation](notes/result_summary.md)
+- [Machine-readable study status](manifests/study-status.json)
+
+## What is implemented
+
+`src/mixed_interface/selection.py` provides seeded random, generic dependency-coverage, and interface-specific dependency-coverage selectors over the same finite candidate pool. Coverage is credited only after explicit execution feedback. The code rejects predicted coverage being counted merely because a candidate was selected or an operation reached. It is not a reproduction of RESTler. The new immutable registry generates bounded route and API-payload variants with explicit requirement provenance and interface exclusions. An 18-case RealWorld pool matches the registered mutation inputs. The new runtime controller and RealWorld adapter connect generated operations to returned resource/state bindings and observed dependency feedback. They enforce external-process deadlines, confirm owned-process cleanup and record actual elapsed costs. The older exploratory boundary batches remain separately registered executions.
+
+`scripts/run_realworld_pilot.py` creates a synthetic fixture in a new task-owned SQLite database, stops the backend before snapshotting and restoring, verifies restoration hashes, and launches a fresh browser for each route. It saves exact runner sources and build fingerprints. The final check includes a fresh native UI read after persistence. Fixture hashes are equal within a run; independently created fixtures need not have identical bytes across runs.
+
+PetClinic scripts, operation mapping and setup instructions are under `scripts/`, `manifests/petclinic-owner-workflow.json`, and `notes/petclinic_ui_setup.txt`. Its H2 reset was verified at the complete owner-graph observation, not by a full database byte hash. Both routes used the native anonymous actor because security was disabled in this configuration.
+
+## Reproduce the local controls
+
+Run selector checks from this directory with Python 3.9 or newer:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
+```
+
+For RealWorld, first prepare the pinned backend, Python environment and built frontend described in [setup instructions](notes/realworld_setup.txt). With Playwright available and Chrome installed, use:
+
+```sh
+PLAYWRIGHT_MODULE_PATH=/absolute/path/to/node_modules/playwright \
+CHROME_EXECUTABLE=/absolute/path/to/chrome \
+python3 scripts/run_realworld_pilot.py \
+  --subject /absolute/path/to/realworld-django-ninja \
+  --python /absolute/path/to/venv/bin/python \
+  --node /absolute/path/to/node20 \
+  --runtime-root /absolute/path/to/task-runtime \
+  --repetitions 2
+```
+
+Ports 18765 and 18766 must be free. The frontend must have been built with `VITE_API_HOST=http://127.0.0.1:18765`. The runner binds the backend and frontend to loopback, creates synthetic data, and stops its servers on completion. Browser requests to external resources are blocked, so this pilot makes no visual-layout or external-integration claim. Upstream Cypress end-to-end tests were not run.
+
+RealWorld substitutes `psycopg2-binary==2.9.10` for the upstream `psycopg2==2.9.6` dependency because the application imports that module even with SQLite. Application source was unchanged; outcomes apply to this SQLite configuration. Frontend native tests ran in UTC. Earlier setup attempts, including a local-timezone test failure, remain in the logs.
+
+## Preserved unsuccessful attempt
+
+[The first RealWorld run](results/realworld-20261107T021733Z/summary.json) passed six of eight executions. UI/API failed its final DOM check twice despite successful persistence. The browser was already on the article hash route, and navigation to the same hash issued no new article GET. The revised runner reloads and observes a fresh article GET for every route. Original traces and exact runner sources are retained. This change tests fresh-read compatibility; it does not establish automatic synchronization of an open tab. See [the adjudication record](notes/realworld_oracle_correction.md).
+
+## Next work
+
+Seven development templates and one third-application control are mapped. Next, implement and validate the Quartz v2 adapter, complete the multiworkflow eligibility/constraint ledger, and freeze the paired-oracle corpus before inspecting its unexecuted boundary outcomes. Compare native UI continuation with competent API-semantic follow-up checks first. A larger pool with multiple dependency structures is required for primary selector-effectiveness evaluation. Historical, injected and previously examined faults remain separate. Magento remains an unevaluated candidate; Quartz control feasibility is established.
+
+The earlier manuscript and submission-plan DOCX files are planning drafts. The v0.2 protocol amendment in this repository records current experimental decisions. Current development results are in notes/development_findings.md. A Q1-level method contribution remains to be established.

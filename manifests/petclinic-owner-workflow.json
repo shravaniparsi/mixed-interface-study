@@ -1,0 +1,71 @@
+{
+  "workflow_id": "petclinic-owner-create-ui-edit-v1",
+  "status": "pilot_eligible_two_routes_passed",
+  "subject": "petclinic",
+  "actor": "anonymous (native security disabled)",
+  "initial_state": "fresh process with native H2/spring-data-jpa seed, 10 owners",
+  "initial_state_sha256": "b3c3071604bd547f72384673b183f160d4f7bf43034d3638bf73b325ba5a143a",
+  "inputs": {
+    "id": null,
+    "firstName": "Alice",
+    "lastName": "Research",
+    "address": "1 Pilot Lane",
+    "city": "Testville",
+    "telephone": "5550100001"
+  },
+  "operation_map": [
+    {
+      "logical_operation": "create owner",
+      "ui": "/owners/add; fill five labelled fields; Add Owner",
+      "api": {
+        "method": "POST",
+        "path": "/petclinic/api/owners"
+      },
+      "expected_status": 201,
+      "produces": [
+        "owner.id",
+        "owner.firstName",
+        "owner.lastName",
+        "owner.address",
+        "owner.city",
+        "owner.telephone"
+      ]
+    },
+    {
+      "logical_operation": "edit address",
+      "ui": "/owners/{id}; Edit Owner; replace Address with 2 Pilot Lane; Update Owner",
+      "api_observed": {
+        "method": "PUT",
+        "path": "/petclinic/api/owners/{id}"
+      },
+      "expected_status": 204,
+      "consumes": [
+        "owner.id",
+        "all editable owner fields"
+      ]
+    }
+  ],
+  "oracle": [
+    "creation HTTP 201",
+    "UI loads all five exact values",
+    "meaningful UI edit HTTP 204",
+    "API persisted state matches all five expected fields",
+    "pets relationship stays empty",
+    "updated address visible in owner UI"
+  ],
+  "routes_executed": [
+    "UI/UI",
+    "API/UI"
+  ],
+  "routes_not_yet_executed": [
+    "UI/API",
+    "API/API"
+  ],
+  "same_post_payload_verified": true,
+  "source_rule_evidence": [
+    "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/owners/owner-form.ts",
+    "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/owners/owner.service.ts",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml"
+  ],
+  "evaluation_status": "feasibility only; no mutations or generator comparison"
+}

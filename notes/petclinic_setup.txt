@@ -1,0 +1,36 @@
+PetClinic pilot status — 6 November 2026, America/Los_Angeles
+
+Current outcome
+The unchanged pinned backend and frontend passed their native test suites, and one owner-create/edit workflow passed through UI/UI and API/UI. Both servers are stopped. Cash spent: $0.
+
+Backend source: https://github.com/spring-petclinic/spring-petclinic-rest
+Commit: 5180cc9bd0163393c4e628bedc1bc4c27cfaab1b
+Version 4.0.2, Spring Boot 4.1.2, JDK 17.0.2, Maven wrapper 3.10.0.
+Native verify: 248 tests in 19 suites; 0 failures, 0 errors, 0 skipped. Upstream JaCoCo checks passed. Maven reported 44.180 seconds.
+Jar SHA256: 26f35f880229dfcae06a796574a930236361a9403c69355aa3efea9cce77fb65
+
+Frontend source: https://github.com/spring-petclinic/spring-petclinic-angular
+Commit: fba8956cbdd04e09973f81eb39379955a825bfc3
+Angular 22.2.3, Node 24.19.0, Vitest 5.0.5.
+Native test:ci: 88 tests in 29 files passed, reported 10.35 seconds. The source worktree was clean after installation and tests.
+
+Pilot observations
+The earlier API-only smoke passed eight requests, including owner, pet and visit creation, a telephone update, and persistence/relationship checks. Full backend process restart restored the exact initial owner graph and ten seed owners.
+The paired pilot used a separate owner-create/address-edit template, one repetition per route. UI/UI and API/UI had equal initial graph hashes, creation payloads, created entities and final entities. No application validation was changed. These are feasibility observations; the 336 upstream native tests are not research samples.
+
+Setup history
+The first frontend installation failed with ENOSPC. Only generated partial packages and task caches were removed. After authorized disk cleanup, the unchanged pinned frontend installed and ran successfully in /private/tmp/codex-petclinic-pilot-20261106-m. Earlier Documents file-read timeouts were avoided by using this temporary runtime directory. The successful frontend and packaged backend remain there, but temporary storage is not archival storage.
+The first API smoke used an eight-digit telephone, which failed the runtime entity constraint requiring exactly ten digits. The fixture was corrected, and its failed evidence was retained as manifests/petclinic-api-smoke-attempt1.json. This is a setup/fixture issue, excluded from defect counts and main-study results.
+
+Evidence and reproduction
+Current subject manifest: manifests/petclinic.json
+Paired pilot manifest: manifests/petclinic-ui-pilot.json
+Operation mapping: manifests/petclinic-owner-workflow.json
+API and reset evidence: manifests/petclinic-api-smoke.json and manifests/petclinic-reset-check.json
+Paired traces, screenshots, logs and exact executed scripts: results/petclinic-owner-pilot/
+Portable reproduction commands and remaining scope: notes/petclinic_ui_setup.txt
+Portable runner checks and hashes: manifests/petclinic-reproducibility.json
+Backend native build log and Surefire reports remain in the research working directory under work/logs/petclinic-native-verify.log and work/subjects/petclinic-rest/target/surefire-reports.
+
+Later development slice
+The 18-candidate, three-template continuation study is documented in notes/petclinic_boundary_slice.txt and manifests/petclinic-boundary-slice.json. It reproduces a known name-validation compatibility issue and records two policy-ambiguous whitespace discrepancies. The original two-route pilot above remains historical evidence.
