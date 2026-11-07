@@ -230,7 +230,7 @@ async function run(){
     guarded('loaded_comment_binding',[commentIdentity(c)],before.data.comments.filter(x=>x.id===c.id).map(commentIdentity),branch);
     const path=commentPath(fixture.base.slug,c.id);
     if(branch==='api')continued=await api('DELETE',path);
-    else {guarded('singleton_delete_target',1,before.data.comments.length,'ui');await page.getByRole('button',{name:'Delete comment',exact:true}).waitFor();guarded('unique_native_delete_control',1,await page.getByRole('button',{name:'Delete comment',exact:true}).count(),'ui');continued=await uiRequest('DELETE',path,()=>page.getByRole('button',{name:'Delete comment',exact:true}).press('Enter'));}
+    else {guarded('singleton_delete_target',1,before.data.comments.length,'ui');await page.getByRole('button',{name:'Delete comment',exact:true}).waitFor({state:'attached'});guarded('unique_native_delete_control',1,await page.getByRole('button',{name:'Delete comment',exact:true}).count(),'ui');continued=await uiRequest('DELETE',path,()=>page.getByRole('button',{name:'Delete comment',exact:true}).press('Enter'));}
     result.observations.continuation_write_status=continued.status;
     const final=await api('GET',`/api/articles/${fixture.base.slug}/comments`);
     check('deletion_persisted',continued.status===204&&final.status===200&&final.data.comments.length===0);
