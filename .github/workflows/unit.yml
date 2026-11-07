@@ -18,15 +18,16 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONPATH: src
-      CI_ARTIFACT_DIR: ${{ runner.temp }}/study-artifacts
     defaults:
       run:
         shell: bash
     steps:
       - name: Initialize evidence directory
         run: |
-          mkdir -p "$CI_ARTIFACT_DIR"
-          printf '%s\n' 'Automatic unit checks; no applications started.' > "$CI_ARTIFACT_DIR/scope.txt"
+          ci_artifact_dir="$RUNNER_TEMP/study-artifacts"
+          mkdir -p "$ci_artifact_dir"
+          printf '%s\n' 'Automatic unit checks; no applications started.' > "$ci_artifact_dir/scope.txt"
+          printf 'CI_ARTIFACT_DIR=%s\n' "$ci_artifact_dir" >> "$GITHUB_ENV"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
