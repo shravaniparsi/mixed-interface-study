@@ -1,6 +1,6 @@
 # Current execution integrity step
 
-RealWorld submitted-command, returned-resource and rejected-prefix observable-state guards are implemented. Local checks pass; hosted validation is pending under `protocol/realworld-integrity-validation-v1.md`. The suite includes 14 positive controls and 8 previously examined rejection branches. Earlier statements about missing guards describe historical executing adapters; they remain applicable to those records. This change does not complete PetClinic guards, cross-workflow pairing, cleanup qualification or the primary freeze.
+RealWorld execution integrity guards passed the complete hosted suite at `27aa09f`: 22 branches (14 positive controls and 8 known rejections), 80 guards, 73 business checks and no capture errors. Hosted unit checks passed 208 tests. See `notes/realworld_execution_integrity.md` for protocol, failed-attempt handling and scope. Earlier missing-guard statements describe historical adapters. PetClinic guards, broader paired evaluation, cleanup qualification and the primary freeze remain incomplete.
 
 # Evaluation preparation
 

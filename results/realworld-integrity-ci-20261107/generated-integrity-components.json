@@ -1,0 +1,2173 @@
+{
+  "case_count": 6,
+  "cases": [
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "native_form_loaded",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "native_form_loaded",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "consumer_actual_payload",
+                "observed": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "consumer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "loaded_article_binding",
+                "observed": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true,
+                "source": "ui",
+                "stage": "continuation"
+              },
+              "id": "integrity:loaded_article_binding",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "ui",
+                "stage": "continuation"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "environment_reset_cleanup": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": true,
+                "name": "pre_state_readable",
+                "observed": true,
+                "passed": true,
+                "source": "shared_api",
+                "stage": "setup"
+              },
+              "id": "integrity:pre_state_readable",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T18:28:40.433Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T18:28:40.433Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "ui",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "producer_actual_payload",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "producer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "ui",
+                "stage": "prefix"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "ui-ui",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "assigned_native_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "native_form_loaded",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "native_form_loaded",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "consumer_actual_payload",
+                "observed": {
+                  "body": "Body after meaningful continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "consumer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "loaded_article_binding",
+                "observed": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true,
+                "source": "ui",
+                "stage": "continuation"
+              },
+              "id": "integrity:loaded_article_binding",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "ui",
+                "stage": "continuation"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "environment_reset_cleanup": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": true,
+                "name": "pre_state_readable",
+                "observed": true,
+                "passed": true,
+                "source": "shared_api",
+                "stage": "setup"
+              },
+              "id": "integrity:pre_state_readable",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "prefix"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T18:28:43.400Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T18:28:43.400Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "api",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "ui",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "api-ui",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": false,
+      "assigned_continuation_reached": false,
+      "candidate_id": "realworld-article-create-body-edit-v1::payload-mutation::a10846da9ef94ee01fd6e26d",
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::a10846da9ef94ee01fd6e26d",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_unsuccessful"
+        },
+        "environment_reset_cleanup": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": true,
+                "name": "pre_state_readable",
+                "observed": true,
+                "passed": true,
+                "source": "shared_api",
+                "stage": "setup"
+              },
+              "id": "integrity:pre_state_readable",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "actual_status": 422,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "reject",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+                  "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "prefix"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "not_accepted",
+              "id": "producer_http_status",
+              "status": 422
+            },
+            {
+              "data": {
+                "errors": {
+                  "body": [
+                    "can't be blank"
+                  ]
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "api",
+              "status": 422
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "evidence": {
+                "classification": "unchanged"
+              },
+              "id": "full_observable_rejection_state_unchanged",
+              "passed": true,
+              "scope": "bounded_api_visible_state_not_database_atomicity"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "limitations": [
+            "Snapshot covers current-user public fields, all listed own articles, global tag membership and their comments; excludes auth tokens and unobserved database state."
+          ],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "evidence": {
+                "data": {
+                  "articles": [],
+                  "articlesCount": 0
+                },
+                "status": 200
+              },
+              "id": "failed_prefix_followup"
+            },
+            {
+              "after": {
+                "data": {
+                  "articles": [],
+                  "tags": [],
+                  "user": {
+                    "bio": null,
+                    "email": "pilot@example.com",
+                    "image": null,
+                    "username": "pilotresearch"
+                  }
+                },
+                "readable": true,
+                "reads": [
+                  {
+                    "data": {
+                      "user": {
+                        "bio": null,
+                        "email": "pilot@example.com",
+                        "image": null,
+                        "token": "[REDACTED]",
+                        "username": "pilotresearch"
+                      }
+                    },
+                    "path": "/api/user",
+                    "response_sequence": 16,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "articles": [],
+                      "articlesCount": 0
+                    },
+                    "path": "/api/articles?author=pilotresearch",
+                    "response_sequence": 18,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "tags": []
+                    },
+                    "path": "/api/tags",
+                    "response_sequence": 20,
+                    "status": 200
+                  }
+                ],
+                "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps"
+              },
+              "before": {
+                "data": {
+                  "articles": [],
+                  "tags": [],
+                  "user": {
+                    "bio": null,
+                    "email": "pilot@example.com",
+                    "image": null,
+                    "username": "pilotresearch"
+                  }
+                },
+                "readable": true,
+                "reads": [
+                  {
+                    "data": {
+                      "user": {
+                        "bio": null,
+                        "email": "pilot@example.com",
+                        "image": null,
+                        "token": "[REDACTED]",
+                        "username": "pilotresearch"
+                      }
+                    },
+                    "path": "/api/user",
+                    "response_sequence": 6,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "articles": [],
+                      "articlesCount": 0
+                    },
+                    "path": "/api/articles?author=pilotresearch",
+                    "response_sequence": 8,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "tags": []
+                    },
+                    "path": "/api/tags",
+                    "response_sequence": 10,
+                    "status": 200
+                  }
+                ],
+                "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps"
+              },
+              "classification": "unchanged",
+              "id": "full_observable_rejection_state"
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "producer_native_controls": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "shared_final_native_read": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_unsuccessful"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_unsuccessful"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "api-ui",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "loaded_article_binding",
+                "observed": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "continuation"
+              },
+              "id": "integrity:loaded_article_binding",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "continuation"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "environment_reset_cleanup": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": true,
+                "name": "pre_state_readable",
+                "observed": true,
+                "passed": true,
+                "source": "shared_api",
+                "stage": "setup"
+              },
+              "id": "integrity:pre_state_readable",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T18:28:49.851Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T18:28:49.851Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "ui",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "producer_actual_payload",
+                "observed": {
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true
+              },
+              "id": "producer_actual_payload",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "ui",
+                "stage": "prefix"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "ui-api",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": true,
+      "assigned_continuation_reached": true,
+      "candidate_id": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd",
+      "case_id": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "consumer_loaded_state",
+                "passed": true
+              },
+              "id": "consumer_loaded_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "path": "/api/articles/boundary-pilot-article",
+                "status": 200
+              },
+              "id": "consumer_read_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "status": 200
+              },
+              "id": "consumer_write_http_status",
+              "passed": true,
+              "scope": "http_observation"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "name": "loaded_article_binding",
+                "observed": {
+                  "author": "pilotresearch",
+                  "body": "Body before continuation.",
+                  "description": "Boundary control description",
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article"
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "continuation"
+              },
+              "id": "integrity:loaded_article_binding",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "PUT",
+                  "path": "/api/articles/boundary-pilot-article",
+                  "payload": {
+                    "article": {
+                      "body": "Body after meaningful continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "continuation"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "environment_reset_cleanup": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": true,
+                "name": "pre_state_readable",
+                "observed": true,
+                "passed": true,
+                "source": "shared_api",
+                "stage": "setup"
+              },
+              "id": "integrity:pre_state_readable",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "producer_fields",
+                "passed": true
+              },
+              "id": "producer_fields",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "actual_status": 201,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "accept",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+                  "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "Body before continuation.",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "prefix"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "accepted",
+              "id": "producer_http_status",
+              "status": 201
+            },
+            {
+              "data": {
+                "article": {
+                  "author": {
+                    "bio": null,
+                    "following": false,
+                    "image": null,
+                    "username": "pilotresearch"
+                  },
+                  "body": "Body before continuation.",
+                  "createdAt": "2026-11-07T18:28:52.229Z",
+                  "description": "Boundary control description",
+                  "favorited": false,
+                  "favoritesCount": 0,
+                  "slug": "boundary-pilot-article",
+                  "tagList": [
+                    "pilot"
+                  ],
+                  "title": "Boundary pilot article",
+                  "updatedAt": "2026-11-07T18:28:52.229Z"
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "api",
+              "status": 201
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "producer_native_controls": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "shared_final_native_read": {
+          "checks": [
+            {
+              "evidence": {
+                "name": "shared_ui_read",
+                "passed": true
+              },
+              "id": "shared_ui_read",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "shared_ui_render",
+                "passed": true
+              },
+              "id": "shared_ui_render",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": "api",
+          "checks": [
+            {
+              "evidence": {
+                "name": "persisted_business_state",
+                "passed": true
+              },
+              "id": "persisted_business_state",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            },
+            {
+              "evidence": {
+                "name": "one_article",
+                "passed": true
+              },
+              "id": "one_article",
+              "passed": true,
+              "scope": "recorded_source_observation"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "api-api",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    },
+    {
+      "accepted_prefix": false,
+      "assigned_continuation_reached": false,
+      "candidate_id": "realworld-article-create-body-edit-v1::payload-mutation::9993d3978fab21a870b4511e",
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::9993d3978fab21a870b4511e",
+      "components": {
+        "assigned_api_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_unsuccessful"
+        },
+        "assigned_native_continuation": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_assigned"
+        },
+        "environment_reset_cleanup": {
+          "checks": [
+            {
+              "evidence": {
+                "expected": true,
+                "name": "pre_state_readable",
+                "observed": true,
+                "passed": true,
+                "source": "shared_api",
+                "stage": "setup"
+              },
+              "id": "integrity:pre_state_readable",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "no_check_mismatch_observed"
+        },
+        "immediate_response": {
+          "checks": [
+            {
+              "evidence": {
+                "actual_status": 422,
+                "expectation": {
+                  "category": "implementation_control",
+                  "outcome": "reject",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+                  "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+                }
+              },
+              "id": "declared_acceptance_expectation",
+              "passed": true,
+              "scope": "implementation_control"
+            },
+            {
+              "evidence": {
+                "expected": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "name": "submitted_command",
+                "observed": {
+                  "method": "POST",
+                  "path": "/api/articles",
+                  "payload": {
+                    "article": {
+                      "body": "",
+                      "description": "Boundary control description",
+                      "tagList": [
+                        "pilot"
+                      ],
+                      "title": "Boundary pilot article"
+                    }
+                  }
+                },
+                "passed": true,
+                "source": "api",
+                "stage": "prefix"
+              },
+              "id": "integrity:submitted_command",
+              "passed": true,
+              "scope": "execution_comparability_observation_not_adjudicated_defect"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "classification": "not_accepted",
+              "id": "producer_http_status",
+              "status": 422
+            },
+            {
+              "data": {
+                "errors": {
+                  "body": [
+                    "can't be blank"
+                  ]
+                }
+              },
+              "id": "producer_response",
+              "method": "POST",
+              "path": "/api/articles",
+              "source": "api",
+              "status": 422
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "prefix_state_reads": {
+          "checks": [
+            {
+              "evidence": {
+                "classification": "unchanged"
+              },
+              "id": "full_observable_rejection_state_unchanged",
+              "passed": true,
+              "scope": "bounded_api_visible_state_not_database_atomicity"
+            }
+          ],
+          "comparison_eligible": true,
+          "failed_check_ids": [],
+          "limitations": [
+            "Snapshot covers current-user public fields, all listed own articles, global tag membership and their comments; excludes auth tokens and unobserved database state."
+          ],
+          "mismatch_observed": false,
+          "observations": [
+            {
+              "evidence": {
+                "data": {
+                  "articles": [],
+                  "articlesCount": 0
+                },
+                "status": 200
+              },
+              "id": "failed_prefix_followup"
+            },
+            {
+              "after": {
+                "data": {
+                  "articles": [],
+                  "tags": [],
+                  "user": {
+                    "bio": null,
+                    "email": "pilot@example.com",
+                    "image": null,
+                    "username": "pilotresearch"
+                  }
+                },
+                "readable": true,
+                "reads": [
+                  {
+                    "data": {
+                      "user": {
+                        "bio": null,
+                        "email": "pilot@example.com",
+                        "image": null,
+                        "token": "[REDACTED]",
+                        "username": "pilotresearch"
+                      }
+                    },
+                    "path": "/api/user",
+                    "response_sequence": 16,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "articles": [],
+                      "articlesCount": 0
+                    },
+                    "path": "/api/articles?author=pilotresearch",
+                    "response_sequence": 18,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "tags": []
+                    },
+                    "path": "/api/tags",
+                    "response_sequence": 20,
+                    "status": 200
+                  }
+                ],
+                "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps"
+              },
+              "before": {
+                "data": {
+                  "articles": [],
+                  "tags": [],
+                  "user": {
+                    "bio": null,
+                    "email": "pilot@example.com",
+                    "image": null,
+                    "username": "pilotresearch"
+                  }
+                },
+                "readable": true,
+                "reads": [
+                  {
+                    "data": {
+                      "user": {
+                        "bio": null,
+                        "email": "pilot@example.com",
+                        "image": null,
+                        "token": "[REDACTED]",
+                        "username": "pilotresearch"
+                      }
+                    },
+                    "path": "/api/user",
+                    "response_sequence": 6,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "articles": [],
+                      "articlesCount": 0
+                    },
+                    "path": "/api/articles?author=pilotresearch",
+                    "response_sequence": 8,
+                    "status": 200
+                  },
+                  {
+                    "data": {
+                      "tags": []
+                    },
+                    "path": "/api/tags",
+                    "response_sequence": 10,
+                    "status": 200
+                  }
+                ],
+                "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps"
+              },
+              "classification": "unchanged",
+              "id": "full_observable_rejection_state"
+            }
+          ],
+          "status": "no_check_mismatch_observed"
+        },
+        "producer_native_controls": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_or_not_applicable"
+        },
+        "shared_final_native_read": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_reached_prefix_unsuccessful"
+        },
+        "shared_post_continuation_api_readback": {
+          "assigned_action_interface": null,
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+          "observations": [],
+          "status": "not_reached_prefix_unsuccessful"
+        },
+        "unresolved_policy": {
+          "checks": [],
+          "comparison_eligible": false,
+          "failed_check_ids": [],
+          "mismatch_observed": false,
+          "observations": [],
+          "status": "not_applicable"
+        }
+      },
+      "evidence_issues": [],
+      "execution_evidence_complete": true,
+      "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion.",
+      "policy_unresolved": false,
+      "route": "api-api",
+      "unclassified_checks": [],
+      "workflow": "article-create-edit"
+    }
+  ],
+  "component_status_counts": {
+    "assigned_api_continuation": {
+      "no_check_mismatch_observed": 2,
+      "not_assigned": 3,
+      "not_reached_prefix_unsuccessful": 1
+    },
+    "assigned_native_continuation": {
+      "no_check_mismatch_observed": 2,
+      "not_assigned": 3,
+      "not_reached_prefix_unsuccessful": 1
+    },
+    "environment_reset_cleanup": {
+      "no_check_mismatch_observed": 6
+    },
+    "immediate_response": {
+      "no_check_mismatch_observed": 6
+    },
+    "prefix_state_reads": {
+      "no_check_mismatch_observed": 2,
+      "not_reached_or_not_applicable": 4
+    },
+    "producer_native_controls": {
+      "no_check_mismatch_observed": 2,
+      "not_reached_or_not_applicable": 4
+    },
+    "shared_final_native_read": {
+      "no_check_mismatch_observed": 4,
+      "not_reached_prefix_unsuccessful": 2
+    },
+    "shared_post_continuation_api_readback": {
+      "no_check_mismatch_observed": 4,
+      "not_reached_prefix_unsuccessful": 2
+    },
+    "unresolved_policy": {
+      "not_applicable": 6
+    }
+  },
+  "family": "generated",
+  "input_artifact_sha256": {
+    "original-pool.json": "e30df6147de81937de728f743607b250755f3b6438d9f1518d0898272b121acc",
+    "sources/__init__.py": "a4b624491c38b95ff4c0b045cc0a4343d32a7da93b43146c53381560d0da373d",
+    "sources/evaluation.py": "70294bffcffc8dbd9d1f411956c553757663d5d70ce403dfab7be483945be6c9",
+    "sources/realworld_case_worker.py": "a0333661f5e3357be5c70aa26288cfb555f7e1f9410e6f145fca219b71e904b7",
+    "sources/realworld_generated_case.mjs": "6f6e988f0748770cff2775ed3b36096cbb864b9a2b274babfb61ac8e5aa40172",
+    "sources/realworld_integrity.mjs": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "sources/registry.py": "09790725cdc1546e150433454a2d3a5e007eef4205162c6da186aa1062999bd0",
+    "sources/response_capture.mjs": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "sources/run_generated_integration.py": "8698e73d75234324721e3b73b7a046fc74ac09e688e4946feb1550dee78e0dfb",
+    "sources/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "sources/runtime-integration-v1.md": "5dc7cad14b3d1130ff0ade716c7527bf9e2328136bba15449e91e24fb2db1d9a",
+    "sources/runtime.py": "8d20a56e265294da50185870b5eff0f5dfa8db90fa40afc58b882104ab20878f",
+    "sources/selection.py": "7cd16e8847fb5a2fcd48a1b2687419b21882b29d74bb551280cfd156c25f8f21",
+    "validation/0001-f44b6746d662/cleanup.json": "d050864a3ed835d1798476eb7853f8feced0bab27c35de3608f1c6037bd8368d",
+    "validation/0001-f44b6746d662/generated-case.json": "17ce659426f7f95ad69c366f6fc82b21cafacbc177a4c0749e0e02e4132ec72c",
+    "validation/0001-f44b6746d662/observation.json": "b0539ead795bc9223bf197c172034843e76616e818c2367d5443233628fdd01b",
+    "validation/0001-f44b6746d662/parent-browser-cleanup.json": "9da27620a5d305bfe548f1118eb27bc4c64208bf96263a067fd460300665ac90",
+    "validation/0001-f44b6746d662/reset.json": "121324429ba42d5937915b1cb8c848aace150489523ef78b20c614b10f9faaeb",
+    "validation/0002-870791978797/cleanup.json": "101e09b2268257146636b86c6a6dfacfd76ca211462996c8e63ff0f3894536af",
+    "validation/0002-870791978797/generated-case.json": "65de9836570457ed07d6e850939ea2740320329c747210632b8aa2029d674970",
+    "validation/0002-870791978797/observation.json": "16e8587b71811ce819e1020648012872d1d49ece55c565fc3465af2f8be26a9b",
+    "validation/0002-870791978797/parent-browser-cleanup.json": "27f6a1c8a6d91315a51e6c8e8d91a6579a327dca4146fd62480ef56b4b062293",
+    "validation/0002-870791978797/reset.json": "121324429ba42d5937915b1cb8c848aace150489523ef78b20c614b10f9faaeb",
+    "validation/0003-fc0126ccef4d/cleanup.json": "4558338441b112ee353668b94996c90d652ec5c2457f7fa3c532d54b55b91053",
+    "validation/0003-fc0126ccef4d/generated-case.json": "31b08d3ab6233f444154e04df08d487f22f911f6d8133a198d4c9f12e68cfcb9",
+    "validation/0003-fc0126ccef4d/observation.json": "df7372fede83245f3fbfb00cb7e175b56a7e67f30ca4d641840229ec0ffe7555",
+    "validation/0003-fc0126ccef4d/parent-browser-cleanup.json": "d4560f704ef6b2688dd7254cbb49812c2cedb40ea80582e7d443a54035954801",
+    "validation/0003-fc0126ccef4d/reset.json": "121324429ba42d5937915b1cb8c848aace150489523ef78b20c614b10f9faaeb",
+    "validation/0004-3872e4115533/cleanup.json": "1c468d4fc9119f910f0b181dd671cfeed4ce38f31372c356aba96daf2a4b52a1",
+    "validation/0004-3872e4115533/generated-case.json": "d02588a9970435800a3389a4aa909bef42804237f7e608850dca637287005aa6",
+    "validation/0004-3872e4115533/observation.json": "d309bc325a79d37352684c48cfbdf3f5989c948004485995123a5b51a2f22887",
+    "validation/0004-3872e4115533/parent-browser-cleanup.json": "5f060c0e4fd13a66116783c7fdd5aa4c42ac43b36e1715909b99f2107a7b9e34",
+    "validation/0004-3872e4115533/reset.json": "121324429ba42d5937915b1cb8c848aace150489523ef78b20c614b10f9faaeb",
+    "validation/0005-cb8089fefb1a/cleanup.json": "c55d2ac3e7196bc39c99f5f2a4e7f6484bfd20613a79792bf0708d0006cdfe80",
+    "validation/0005-cb8089fefb1a/generated-case.json": "cdbf378ee4d192f206ca10efb548e27b337b3061ab85932a4608420884a91a09",
+    "validation/0005-cb8089fefb1a/observation.json": "07db08370ddc4a22ac1816634ab3cf5f9366733dd99802fc6c52082261fa82c0",
+    "validation/0005-cb8089fefb1a/parent-browser-cleanup.json": "46f8b86dc98ccdddffe067f58a4e489299d4fac629972655fb6b7529eef67193",
+    "validation/0005-cb8089fefb1a/reset.json": "121324429ba42d5937915b1cb8c848aace150489523ef78b20c614b10f9faaeb",
+    "validation/0006-0f1df31382de/cleanup.json": "696fb071787f9a25fa19d269c67bfd2ff227b441dc8dcdf409a9a82f8e3b1e89",
+    "validation/0006-0f1df31382de/generated-case.json": "5449e5f5d30bc8acf994d324dfc6c13164b59fc31e1ca2da58571494d50af350",
+    "validation/0006-0f1df31382de/observation.json": "a9e3da8b818b3539a52987d217d3c3557b4801ffcb5a6b1771d86418a72eacfa",
+    "validation/0006-0f1df31382de/parent-browser-cleanup.json": "f16832e10ab843c303a547fbe0c4df0cbb3616930a25dbd650c942281ac72d79",
+    "validation/0006-0f1df31382de/reset.json": "121324429ba42d5937915b1cb8c848aace150489523ef78b20c614b10f9faaeb"
+  },
+  "input_directory": "/home/runner/work/_temp/study-runtime/realworld-execution/generated-integration-20261107T182834Z-c7uw97a6/evidence",
+  "input_summary_sha256": "ee98fd97e96043eaef510c5d845849f42fa39852d08e7e53fa9af3af79f10afc",
+  "kind": "realworld_component_observations",
+  "limitations": [
+    "Source-pinned extraction, not an independent application-oracle re-execution or primary freeze.",
+    "Legacy traces have no independent recorded trace hash or verified parent cleanup record; reset hashes are recorded assertions, not retained database rehashes.",
+    "Generated extraction covers validation only; calibration, timed sessions and interruption attempts are not silently pooled.",
+    "Shared API readback retains action-interface metadata; supplementary native UI checks never become API-semantic detection.",
+    "Native action timeouts/assertions lack sufficient control-state evidence to distinguish blocked application from harness error; remain unclassified.",
+    "Declared implementation expectations are source controls, not independent defect truth; unresolved acceptance policy does not erase other HTTP/state observations.",
+    "No pair equality, human adjudication, root-cause grouping, prevalence or efficacy is computed."
+  ],
+  "reducer_sha256": "46f84347c249007b5ce5f2fabbc8511053de5454a68115ce437073fe7f6513a4",
+  "registry_sha256": "e30df6147de81937de728f743607b250755f3b6438d9f1518d0898272b121acc",
+  "run_issues": [],
+  "schema_version": 1,
+  "scope": "validation_only",
+  "source_adapter_sha256": "6f6e988f0748770cff2775ed3b36096cbb864b9a2b274babfb61ac8e5aa40172",
+  "status": "complete_observations"
+}
