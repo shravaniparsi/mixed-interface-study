@@ -205,7 +205,7 @@ class RunIntegrityTests(unittest.TestCase):
     def setUp(self):
         p=patch.object(mod,'INITIAL_STATE_SHA256',mod.digest(INITIAL));p.start();self.addCleanup(p.stop)
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.folder=Path(self.temp.name)
-        shutil.copyfile(ROOT/'scripts/petclinic_boundary_slice.mjs',self.folder/'executed_boundary_slice.mjs')
+        shutil.copyfile(ROOT/'tests/fixtures/petclinic_boundary_adapter.mjs',self.folder/'executed_boundary_slice.mjs')
         shutil.copyfile(ROOT/'manifests/petclinic-candidates-v1.json',self.folder/'registered-candidates.json')
         self.summary={'subject':'petclinic','kind':'development_boundary_slice','runner_sha256':mod.RUNNER_SHA256,'registry_sha256':mod.REGISTRY_SHA256,
             'jar_sha256':mod.JAR_SHA256,'backend_commit':mod.BACKEND_COMMIT,'frontend_commit':mod.FRONTEND_COMMIT,

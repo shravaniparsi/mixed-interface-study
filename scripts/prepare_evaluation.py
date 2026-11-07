@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "scripts/petclinic_integrity.mjs", "scripts/petclinic_cleanup.mjs", "scripts/petclinic_response_capture.mjs",
+    "scripts/validate_petclinic_integrity.py", "scripts/ci/prepare_petclinic.py", "scripts/ci/run_petclinic_integrity.py",
+    "tests/petclinic_integrity.test.mjs", "tests/petclinic_cleanup.test.mjs", "tests/petclinic_capture.test.mjs",
+    "tests/test_petclinic_integrity.py", "tests/fixtures/petclinic_boundary_adapter.mjs",
+    "protocol/petclinic-integrity-validation-v1.md", "manifests/petclinic-integrity-controls-v1.json",
     "manifests/realworld-execution-integrity.json",
     "results/realworld-integrity-ci-20261107/verification.json",
     "results/realworld-integrity-ci-20261107/integrity-validation-summary.json",

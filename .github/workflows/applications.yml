@@ -14,6 +14,7 @@ on:
           - realworld-integration
           - realworld-capture-controls
           - realworld-integrity-controls
+          - petclinic-integrity-controls
 
 permissions:
   contents: read
@@ -50,13 +51,13 @@ jobs:
           python-version: '3.12'
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '20'
+          node-version: ${{ inputs.suite == 'petclinic-integrity-controls' && '24' || '20' }}
           package-manager-cache: false
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
-        if: ${{ inputs.suite == 'quartz-controls' || inputs.suite == 'quartz-paired-controls' }}
+        if: ${{ inputs.suite == 'quartz-controls' || inputs.suite == 'quartz-paired-controls' || inputs.suite == 'petclinic-integrity-controls' }}
         with:
           distribution: temurin
-          java-version: '21.0.13+9'
+          java-version: ${{ inputs.suite == 'petclinic-integrity-controls' && '17.0.2+8' || '21.0.13+9' }}
           cache-jdk: false
           overwrite-settings: false
       - name: Record runner and language versions
@@ -69,6 +70,8 @@ jobs:
         run: |
           if [[ "$STUDY_SUITE" == quartz-controls || "$STUDY_SUITE" == quartz-paired-controls ]]; then
             python scripts/ci/prepare_quartz.py --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" --report "$CI_ARTIFACT_DIR/quartz-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
+          elif [[ "$STUDY_SUITE" == petclinic-integrity-controls ]]; then
+            python scripts/ci/prepare_petclinic.py 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
           else
             python scripts/ci/prepare_realworld.py --runtime "$STUDY_RUNTIME/realworld" --node-tools "$RUNNER_TEMP/study-node-tools" --report "$CI_ARTIFACT_DIR/realworld-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
           fi

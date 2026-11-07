@@ -2,6 +2,9 @@
 set -euo pipefail
 : "${STUDY_SUITE:?}" "${STUDY_RUNTIME:?}" "${CI_ARTIFACT_DIR:?}" "${PLAYWRIGHT_MODULE_PATH:?}" "${CHROME_EXECUTABLE:?}"
 case "$STUDY_SUITE" in
+  petclinic-integrity-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_petclinic_integrity.py
+    ;;
   quartz-controls)
     : "${JAVA_HOME:?}"
     timeout --signal=TERM --kill-after=20s 480s node scripts/run_quartz_registry.mjs \
