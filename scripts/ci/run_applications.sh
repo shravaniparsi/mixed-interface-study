@@ -2,6 +2,10 @@
 set -euo pipefail
 : "${STUDY_SUITE:?}" "${STUDY_RUNTIME:?}" "${CI_ARTIFACT_DIR:?}" "${PLAYWRIGHT_MODULE_PATH:?}" "${CHROME_EXECUTABLE:?}"
 case "$STUDY_SUITE" in
+  realworld-interruption-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_realworld_interruption.py
+    python scripts/validate_realworld_interruption.py "$CI_ARTIFACT_DIR"
+    ;;
   realworld-paired-controls)
     mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-paired-controls"
     timeout --signal=TERM --kill-after=20s 300s python scripts/run_realworld_paired_controls.py \
