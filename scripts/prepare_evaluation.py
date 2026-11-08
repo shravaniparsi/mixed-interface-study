@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "manifests/quartz-repeat-integration-qualification.json",
+    "results/quartz-repeat-integration-ci-20261108/verification.json",
     'src/mixed_interface/campaign.py',
     'scripts/run_quartz_pair_job.mjs',
     'scripts/run_quartz_repeat_campaign.py',

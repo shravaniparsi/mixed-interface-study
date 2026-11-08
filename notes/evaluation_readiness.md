@@ -1,3 +1,7 @@
+# Current Quartz repeat-dispatch qualification
+
+Hosted run 42527108389 validates the new schedule → pair dispatch → component extraction → planner outcome path on two ordinary pairs and four branches. Independent reconstruction matches the campaign ledger, with zero follow-up jobs and confirmed cleanup. All 359 harness tests passed. See [the integration note](quartz_repeat_integration.md). Flagged follow-ups have synthetic coverage only; the forty Quartz boundary branches remain unexecuted, and interruption/deadline qualification and primary freeze remain open. Earlier checkpoints below retain their historical scope.
+
 # Current boundary repeat-policy preparation
 
 The executable repeat planner registers 22 Quartz pairs and 44 initial branch slots, choosing reference controls before outcomes. Flagged pairs receive two additional candidate attempts with corresponding controls. Missing repeats, variable observations, mixed prefixes and failed controls cannot become stable findings. This step uses synthetic tests and launches no applications; the 40 Quartz mutation branches remain unexecuted. Runner integration, source-qualified negative-outcome extraction and the primary freeze remain open. See [the repeat-policy note](boundary_repeat_policy.md).
