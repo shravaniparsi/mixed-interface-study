@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "manifests/realworld-paired-runner-qualification.json",
+    "results/realworld-paired-controls-ci-20261107/verification.json",
     "tests/test_paired_timing.py",
     "scripts/validate_realworld_paired_controls.py",
     "scripts/run_realworld_paired_controls.py", "scripts/realworld_paired_case.mjs",

@@ -1,3 +1,7 @@
+# Current prospective paired-runner qualification
+
+RealWorld hosted controls now validate normalization and exclusive timing in the new paired runner: fourteen branches, seven pairs, four workflow templates, 61 business checks and 59 integrity guards passed. All 301 harness checks passed in hosted CI. See [the qualification note](realworld_paired_runner_qualification.md). Remaining work includes source-qualified component extraction for this adapter, interruption/repeat qualification, remaining-application integration and eventual calibration. The primary freeze remains incomplete. Earlier checkpoints below retain their historical scope.
+
 # Current normalization and timing-contract step
 
 Pinned-source RealWorld normalization rules and executable expectations now distinguish command fidelity, tag membership, response representation and profile omission/null/empty behavior. A read-only audit matches eleven applicable accepted controls; eight rejected prefixes and three out-of-scope comment controls remain separate. See [the normalization note](normalization_and_cost_scope.md). The cost contract is specified, but prospective runner integration, native representation controls and common phase instrumentation remain incomplete. The primary freeze remains open.
