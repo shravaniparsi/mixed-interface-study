@@ -11,6 +11,7 @@ on:
         options:
           - quartz-controls
           - quartz-paired-controls
+          - quartz-repeat-controls
           - realworld-integration
           - realworld-capture-controls
           - realworld-integrity-controls
@@ -57,7 +58,7 @@ jobs:
           node-version: ${{ startsWith(inputs.suite, 'petclinic-') && '24' || '20' }}
           package-manager-cache: false
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
-        if: ${{ inputs.suite == 'quartz-controls' || inputs.suite == 'quartz-paired-controls' || startsWith(inputs.suite, 'petclinic-') }}
+        if: ${{ startsWith(inputs.suite, 'quartz-') || startsWith(inputs.suite, 'petclinic-') }}
         with:
           distribution: temurin
           java-version: ${{ startsWith(inputs.suite, 'petclinic-') && '17.0.2+8' || '21.0.13+9' }}
@@ -71,7 +72,7 @@ jobs:
       - name: Prepare pinned application without source patches
         timeout-minutes: 6
         run: |
-          if [[ "$STUDY_SUITE" == quartz-controls || "$STUDY_SUITE" == quartz-paired-controls ]]; then
+          if [[ "$STUDY_SUITE" == quartz-* ]]; then
             python scripts/ci/prepare_quartz.py --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" --report "$CI_ARTIFACT_DIR/quartz-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
           elif [[ "$STUDY_SUITE" == petclinic-* ]]; then
             python scripts/ci/prepare_petclinic.py 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"

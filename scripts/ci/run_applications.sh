@@ -22,6 +22,15 @@ case "$STUDY_SUITE" in
   petclinic-integrity-controls)
     timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_petclinic_integrity.py
     ;;
+  quartz-repeat-controls)
+    timeout --signal=TERM --kill-after=120s 480s python scripts/run_quartz_repeat_campaign.py \
+      --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
+      --node "$(command -v node)" --python "$(command -v python)" \
+      --output "$CI_ARTIFACT_DIR/quartz-repeat-controls" \
+      --playwright-module "$PLAYWRIGHT_MODULE_PATH" --chrome-executable "$CHROME_EXECUTABLE" \
+      --environment-file "$CI_ARTIFACT_DIR/runtime-versions.json" --browser-info "$CI_ARTIFACT_DIR/browser.json"
+    python scripts/validate_quartz_repeat_campaign.py "$CI_ARTIFACT_DIR/quartz-repeat-controls"
+    ;;
   quartz-controls)
     : "${JAVA_HOME:?}"
     timeout --signal=TERM --kill-after=20s 480s node scripts/run_quartz_registry.mjs \
