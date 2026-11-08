@@ -1,0 +1,97 @@
+name: Manual application checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Application checks to execute on a fresh runner
+        required: true
+        default: quartz-controls
+        type: choice
+        options:
+          - quartz-controls
+          - quartz-paired-controls
+          - quartz-repeat-controls
+          - quartz-lifecycle-controls
+          - realworld-integration
+          - realworld-capture-controls
+          - realworld-integrity-controls
+          - realworld-interruption-controls
+          - realworld-paired-controls
+          - petclinic-integrity-controls
+          - petclinic-interruption-controls
+
+permissions:
+  contents: read
+
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+
+jobs:
+  application:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      STUDY_SUITE: ${{ inputs.suite }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONPATH: src
+      TZ: UTC
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Initialize evidence directory
+        run: |
+          ci_artifact_dir="$RUNNER_TEMP/study-artifacts"
+          study_runtime="$RUNNER_TEMP/study-runtime"
+          mkdir -p "$ci_artifact_dir" "$study_runtime"
+          printf '%s\n' "$STUDY_SUITE" > "$ci_artifact_dir/requested-suite.txt"
+          printf 'CI_ARTIFACT_DIR=%s\nSTUDY_RUNTIME=%s\n' "$ci_artifact_dir" "$study_runtime" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ startsWith(inputs.suite, 'petclinic-') && '24' || '20' }}
+          package-manager-cache: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        if: ${{ startsWith(inputs.suite, 'quartz-') || startsWith(inputs.suite, 'petclinic-') }}
+        with:
+          distribution: temurin
+          java-version: ${{ startsWith(inputs.suite, 'petclinic-') && '17.0.2+8' || '21.0.13+9' }}
+          cache-jdk: false
+          overwrite-settings: false
+      - name: Record runner and language versions
+        run: python scripts/ci/capture_versions.py --output "$CI_ARTIFACT_DIR/runtime-versions.json"
+      - name: Install pinned Playwright and its Chromium
+        timeout-minutes: 4
+        run: bash scripts/ci/install_browser.sh 2>&1 | tee "$CI_ARTIFACT_DIR/browser-install.log"
+      - name: Prepare pinned application without source patches
+        timeout-minutes: 6
+        run: |
+          if [[ "$STUDY_SUITE" == quartz-* ]]; then
+            python scripts/ci/prepare_quartz.py --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" --report "$CI_ARTIFACT_DIR/quartz-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
+          elif [[ "$STUDY_SUITE" == petclinic-* ]]; then
+            python scripts/ci/prepare_petclinic.py 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
+          else
+            python scripts/ci/prepare_realworld.py --runtime "$STUDY_RUNTIME/realworld" --node-tools "$RUNNER_TEMP/study-node-tools" --report "$CI_ARTIFACT_DIR/realworld-bootstrap.json" 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
+          fi
+      - name: Run declared application checks sequentially
+        timeout-minutes: 9
+        run: bash scripts/ci/run_applications.sh 2>&1 | tee "$CI_ARTIFACT_DIR/application-run.log"
+      - name: Retain evidence even when a check fails
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: application-${{ inputs.suite }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/study-artifacts/
+            ${{ runner.temp }}/study-runtime/realworld-execution/*/evidence/
+          retention-days: 7
+          if-no-files-found: warn
+          include-hidden-files: true
+          compression-level: 6

@@ -1,3 +1,7 @@
+# Current Quartz lifecycle qualification
+
+Hosted run 42531129446 passed the new campaign's declared live-browser SIGTERM and ordinary-deadline probes, followed by four fresh controls. External stop exited after 0.681 seconds; the injected-stall branch completed cleanup after 82.281 seconds using the unchanged 75-second timer and seven-second grace. No live observed descendants, open application port or rescue actions remained. All 371 harness tests passed. See [the qualification note](quartz_lifecycle_qualification.md). Broader phase coverage, cross-workflow parity/rejection attribution and primary freeze remain open. Earlier checkpoints below retain their historical scope.
+
 # Current Quartz repeat-dispatch qualification
 
 Hosted run 42527108389 validates the new schedule → pair dispatch → component extraction → planner outcome path on two ordinary pairs and four branches. Independent reconstruction matches the campaign ledger, with zero follow-up jobs and confirmed cleanup. All 359 harness tests passed. See [the integration note](quartz_repeat_integration.md). Flagged follow-ups have synthetic coverage only; the forty Quartz boundary branches remain unexecuted, and interruption/deadline qualification and primary freeze remain open. Earlier checkpoints below retain their historical scope.
