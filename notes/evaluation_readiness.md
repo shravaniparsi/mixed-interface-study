@@ -1,3 +1,7 @@
+# Current primary-readiness audit
+
+The evidence audit identifies five active blockers: terminal-outcome/stop semantics, full-corpus executable contracts, bounded CI batching, the primary timing scope and a final enforced freeze. Known rejected-state checks and declared lifecycle probes are already qualified for their recorded source paths; older missing-check statements below retain historical scope. See [the concrete blocker list and implementation order](primary_readiness_audit.md). Next action: P1, the terminal-outcome contract. No new applications ran and the forty Quartz mutation branches remain unexecuted.
+
 # Current Quartz lifecycle qualification
 
 Hosted run 42531129446 passed the new campaign's declared live-browser SIGTERM and ordinary-deadline probes, followed by four fresh controls. External stop exited after 0.681 seconds; the injected-stall branch completed cleanup after 82.281 seconds using the unchanged 75-second timer and seven-second grace. No live observed descendants, open application port or rescue actions remained. All 371 harness tests passed. See [the qualification note](quartz_lifecycle_qualification.md). Broader phase coverage, cross-workflow parity/rejection attribution and primary freeze remain open. Earlier checkpoints below retain their historical scope.

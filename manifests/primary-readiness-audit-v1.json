@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "kind": "primary_readiness_evidence_reconciliation",
+  "recorded_date": "2026-11-08",
+  "audited_commit": "8c5eafbf06c4930e6899ef5d4441229988bf7e8a",
+  "baseline_ledger_sha256": "a550b65eadda2759af1a56dec28615e4ee0680e4509a470bb3f693d46d1fbdb8",
+  "decision_basis": "Repository evidence and code inspection; not independent human adjudication or journal acceptance assessment.",
+  "primary_freeze_complete": false,
+  "new_application_executions": 0,
+  "open_blocker_ids": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "retained_workflows": [
+    "realworld.article_create_body_edit",
+    "realworld.article_update_comment_create",
+    "realworld.comment_create_delete",
+    "realworld.profile_update_settings_edit",
+    "petclinic.owner_create_address_edit",
+    "petclinic.pet_create_rename",
+    "petclinic.visit_create_reschedule",
+    "quartz.stored_job_create_description_edit"
+  ],
+  "inventory": {
+    "declared_pair_entries": 73,
+    "singleton_control_entries": 2,
+    "independent_sample_size": null,
+    "quartz_pairs": 22,
+    "quartz_unexecuted_mutation_branches": 40
+  },
+  "qualified_conditions": [
+    {
+      "condition": "Finite inventory and exposure strata registered",
+      "status": "satisfied_for_preparation",
+      "evidence": [
+        "manifests/paired-candidate-inventory-v1.json"
+      ],
+      "limit": "Registration is not primary runtime readiness; catalog overlap remains."
+    },
+    {
+      "condition": "Source-qualified control attribution and pair accounting",
+      "status": "satisfied_for_archived_control_sources",
+      "evidence": [
+        "results/unified-controls-20261107/analysis.json",
+        "results/realworld-paired-components-20261107/analysis.json",
+        "manifests/quartz-repeat-integration-qualification.json"
+      ],
+      "limit": "38 historical branches and 14 prospective RealWorld controls overlap; do not pool into independent samples. Primary negative-outcome contract remains P1/P2."
+    },
+    {
+      "condition": "Known rejected-prefix observable-state checks",
+      "status": "satisfied_for_qualified_control_cohorts",
+      "realworld_rejection_branches": 8,
+      "petclinic_rejection_branches": 6,
+      "evidence": [
+        "results/realworld-integrity-ci-20261107/verification.json",
+        "results/petclinic-integrity-ci-20261107/verification.json"
+      ],
+      "limit": "Eight RealWorld and six PetClinic control branches; equality covers recorded API-visible projections, not database atomicity or all future cases."
+    },
+    {
+      "condition": "Declared lifecycle probes and fresh controls",
+      "status": "satisfied_for_exact_qualified_paths",
+      "evidence": [
+        "manifests/petclinic-interruption-qualification.json",
+        "manifests/realworld-interruption-qualification.json",
+        "manifests/quartz-lifecycle-qualification.json"
+      ],
+      "limit": "Scoped checkpoints, not all phases. No blanket additional interruption campaign is a new prerequisite for unchanged paths."
+    },
+    {
+      "condition": "RealWorld tag/profile normalization and timing integration",
+      "status": "satisfied_for_registered_engineering_controls",
+      "evidence": [
+        "manifests/normalization-policy-v1.json",
+        "manifests/realworld-paired-runner-qualification.json"
+      ],
+      "limit": "Does not silently extend to all profile fields, other applications or native-producer representations."
+    }
+  ],
+  "capacity_check": {
+    "quartz_initial_branches": 44,
+    "case_allowance_s": 75,
+    "sum_of_case_allowances_s": 3300,
+    "current_application_step_limit_s": 540,
+    "current_quartz_outer_limit_s": 480,
+    "additional_branches_per_flagged_pair": 8,
+    "interpretation": "Budget-envelope arithmetic, not measured duration or a claim that each case uses its timeout; excludes teardown and common setup."
+  },
+  "open_blockers": [
+    {
+      "id": "P1",
+      "title": "Resolve terminal outcomes and repeat/stop semantics",
+      "status": "open",
+      "depends_on": [],
+      "finding": "The planner schedules incomplete outcomes after a complete sweep, while the driver halts on every incomplete outcome and the Quartz wrapper raises before extraction on any unsuccessful runner exit. The reducer distinguishes only a finite set of completed statuses; application-response errors can therefore be censored with infrastructure failures.",
+      "evidence": [
+        "src/mixed_interface/repetition.py",
+        "src/mixed_interface/campaign.py",
+        "scripts/run_quartz_repeat_campaign.py",
+        "scripts/summarize_quartz_oracle_components.py"
+      ],
+      "completion": [
+        "Register terminal classes for complete check mismatch, matched rejection, policy-unresolved observation, trace-supported application response failure, missing evidence, timeout and environment/cleanup failure.",
+        "Specify which terminal records continue the initial sweep, which trigger two diagnostic repeats, and which halt the campaign; reconcile the protocol and actual launcher.",
+        "Verify each class with source-shaped fixtures and a bounded engineering dispatch test; retain all attempt identities. Do not execute untouched boundary variants to tune this contract."
+      ],
+      "next_change": "Implement a versioned outcome/stop contract before extending the candidate selection."
+    },
+    {
+      "id": "P2",
+      "title": "Bind the retained corpus to executable, qualified contracts",
+      "status": "open",
+      "depends_on": [
+        "P1"
+      ],
+      "finding": "Quartz campaign entry point selects only two route-control pairs. RealWorld prospective runner accepts only its complete one-pass engineering-control registry. PetClinic hosted wrapper uses a fixed integrity-control selection. These do not implement the declared eight-workflow primary campaign.",
+      "evidence": [
+        "scripts/run_quartz_repeat_campaign.py",
+        "scripts/run_realworld_paired_controls.py",
+        "scripts/ci/run_petclinic_integrity.py",
+        "manifests/paired-candidate-inventory-v1.json",
+        "manifests/normalization-policy-v1.json"
+      ],
+      "completion": [
+        "Create an explicit candidate/pair-to-runner map for all retained primary entries, preserving development/generated/prospective exposure labels and singleton controls.",
+        "Bind each selected route to its reference control, exact input/binding checks, rejection-state observation, normalization contract and source-qualified component/outcome extractor.",
+        "Validate changed executable paths on declared engineering controls and fixture negative outcomes. Do not demand unregistered routes or a new-finding quota. Preserve exclusions only through a prospective, justified scope amendment."
+      ],
+      "next_change": "Create the coverage map and implement the missing primary adapters using the existing qualified leaf components."
+    },
+    {
+      "id": "P3",
+      "title": "Make campaign batching and evidence aggregation bounded and immutable",
+      "status": "open",
+      "depends_on": [
+        "P1",
+        "P2"
+      ],
+      "finding": "The application step has a nine-minute limit and current Quartz wrapper a 480-second outer limit. The initial Quartz plan alone has 44 branches with a 75-second per-case allowance; repeated candidates add eight branch slots each. No bounded primary batch/aggregation protocol exists.",
+      "evidence": [
+        ".github/workflows/applications.yml",
+        "scripts/ci/run_applications.sh",
+        "scripts/run_quartz_repeat_campaign.py",
+        "results/quartz-repeat-policy-20261108/analysis.json"
+      ],
+      "completion": [
+        "Predeclare batches, immutable campaign/job/attempt IDs, per-batch budgets and expected coverage before dispatch.",
+        "Aggregate declared initial batches only after checking source/environment identity and completeness; compute follow-ups deterministically from preserved terminal outcomes.",
+        "Distinguish planned batches within one campaign from forbidden replacement/merging of failed attempts. Missing or failed batches remain explicit; no resume by silently substituting successful observations.",
+        "Show that each batch fits its declared execution and teardown envelope; retain checkout/build/shared setup separately."
+      ],
+      "next_change": "Implement bounded CI batches and a read-only completeness/aggregation validator."
+    },
+    {
+      "id": "P4",
+      "title": "Fulfil or prospectively amend the primary diagnostic timing contract",
+      "status": "open",
+      "depends_on": [
+        "P2"
+      ],
+      "finding": "RealWorld records exclusive adapter phases nested in branch time. The current primary cost protocol requires consistent phase boundaries across retained workflows; Quartz and PetClinic have not acquired that common contract. Selector calibration is separately deferred.",
+      "evidence": [
+        "protocol/normalization-and-cost-scope-v1.md",
+        "manifests/realworld-paired-runner-qualification.json",
+        "scripts/run_quartz_pair_job.mjs",
+        "scripts/ci/run_petclinic_integrity.py"
+      ],
+      "completion": [
+        "Either implement the registered common exclusive phase boundaries across the retained primary workflows, or write a prospective scope amendment limiting primary cost reporting to supported end-to-end measures and deferring unsupported phase comparisons.",
+        "In either case retain all failed/interrupted work, disclose shared setup, and never sum nested timings or infer pure component costs from combined phases. No selector calibration is required for equal-candidate diagnostic observations."
+      ],
+      "next_change": "Make the timing-scope decision before adding more timing instrumentation; record it before boundary outcomes."
+    },
+    {
+      "id": "P5",
+      "title": "Issue and enforce the dated primary freeze",
+      "status": "open",
+      "depends_on": [
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "finding": "Preparation snapshots still explicitly set primary_freeze_complete=false. There is no executable final selection/source/environment acceptance manifest for the full intended campaign.",
+      "evidence": [
+        "protocol/multiworkflow-freeze-gates-v1.md",
+        "protocol/paired-oracle-analysis-v1.md",
+        "results/quartz-lifecycle-ci-20261108/runtime-versions.json"
+      ],
+      "completion": [
+        "Freeze selected corpus and exposure strata, commands, code/extractor hashes, requirements and unresolved-policy rubric, normalization, stop/repeat policy, batches, timing scope and runtime acceptance fields.",
+        "Preflight each batch against that manifest. Record hosted image/runtime metadata and define which differences require rejection or a new frozen execution context; do not rely on a moving ubuntu label alone or compare incidental run IDs as scientific environment fields.",
+        "Use existing lifecycle qualifications for unchanged owned-process paths. Requalify only materially changed lifecycle behavior and run the final ordinary-control smoke before primary dispatch.",
+        "Write an explicit dated freeze record and keep all previous snapshots and failed attempts."
+      ],
+      "next_change": "Generate the final freeze only after P1-P4 have concrete completion evidence."
+    }
+  ],
+  "deferred_from_primary_execution": [
+    {
+      "item": "Timed selector efficacy and common-budget calibration",
+      "reason": "Later Gate 4; equal-candidate diagnostic observations do not establish practical efficiency."
+    },
+    {
+      "item": "Confirmed defect/root-cause and prior-report adjudication",
+      "reason": "Required before confirmed-defect/novelty claims, not before collecting descriptive source-check observations. Unresolved cases stay explicit; AI review is not human agreement."
+    },
+    {
+      "item": "Journal submission and publication claims",
+      "reason": "Need substantive results, literature positioning and manuscript review; control and harness counts do not establish Q1 readiness."
+    }
+  ],
+  "implementation_order": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "input_sha256": {
+    ".github/workflows/applications.yml": "9526c69683934d37f3ab09ed29d689767d4c31cef911283e6c7fbfffe92c2599",
+    "manifests/normalization-policy-v1.json": "4c75ac4b32bb4ffd001abad335cfc82d53ee7a9a3ea965b824cf2d53704d4cec",
+    "manifests/paired-candidate-inventory-v1.json": "c508eda2f3da7086706d4c60804de82e765e250d5d8dc0b8d4d72bdd39a5ac55",
+    "manifests/petclinic-interruption-qualification.json": "877c2948873ba969c2fb80454684e50a2f0e87ee869352c1f4cb45e337feb035",
+    "manifests/quartz-lifecycle-qualification.json": "4a51b9e4b42389b3e8c13fad28bcd7fbf973e11386e85e78c056e824c3eb0c16",
+    "manifests/quartz-repeat-integration-qualification.json": "4b6edc820ca1dbc566a748227371ce9e1850f1102d6d2117a501f3d0c570f869",
+    "manifests/realworld-interruption-qualification.json": "021c5622dc48a3554e31b263dc97d54debd37b3c3c899021c6debfb6d1112fbd",
+    "manifests/realworld-paired-runner-qualification.json": "6ecad400df03844299e88acc3dc04b9f9894c05d17a1e1e3e6707d95e47e6ed9",
+    "protocol/boundary-repeat-policy-v1.md": "0f81a8efb8317210f41741c1e199f2fa144697ca4f35797f31a3eccb0780829c",
+    "protocol/multiworkflow-freeze-gates-v1.md": "83474ff687a65d19bd42cd6909004d99d62ebbfbb534de0747895e8ff3eec1aa",
+    "protocol/normalization-and-cost-scope-v1.md": "56b2d0f9a451b4c05b9d75f80f770f36b6caf4afe7a822ac215a7767923c631e",
+    "protocol/paired-oracle-analysis-v1.md": "3159ae6a0373d79ab77e7844a31c4e08133c98794942c0806ce42e7f035d5afc",
+    "protocol/quartz-repeat-integration-v1.md": "c102f7f56c848b44164cbdc1304a1e077ecbbf3d2aa7d3b3d49fef6e43afc4e7",
+    "results/petclinic-integrity-ci-20261107/verification.json": "074b77c4d105fd798906f3576fd910cb429b1b77a8e947c7e4051eb393439a12",
+    "results/quartz-lifecycle-ci-20261108/runtime-versions.json": "ce7233bb0fc0acfe619dd99cbe7b6414e1bd16c495394ed6753d421902e819c2",
+    "results/quartz-repeat-policy-20261108/analysis.json": "70936ca6314b1db6f01cc46636ef3e53a8b3b40a117bba1d2cede9e82f34f194",
+    "results/realworld-integrity-ci-20261107/verification.json": "2d9e5554a619d909b11097e85f56822b817516b053e7c0542f6a5bed8ff1ea09",
+    "results/realworld-paired-components-20261107/analysis.json": "b15507ff58c59b5eb71db29fccf98b2f2e487f78a26665b3200be54cb64a0f84",
+    "results/unified-controls-20261107/analysis.json": "81d2b448c60756b4180c5787fe91f40c98b90d1150a53682c8c1bf1ebaba58b1",
+    "scripts/ci/run_applications.sh": "f64200b163a3da4b9aaa8a13a9dc080569e4b238198fbacb44a701024f538aaa",
+    "scripts/ci/run_petclinic_integrity.py": "34ee10d50c6931db4bfb7b3c16e13a60ac716a7e49cfccd312f648439d5ca0a4",
+    "scripts/quartz_repeat_outcomes.py": "c83252b91e67ee50e612c89beab75f78a21122e685f504d71df938b5ea8345ed",
+    "scripts/run_quartz_pair_job.mjs": "b2629b593315c247ae025e86ea4e67411aa79116a9900308d8ee82439f338b3e",
+    "scripts/run_quartz_repeat_campaign.py": "a56d2998439db33e78a3dae84933042cbc41339142616cd8b3478be1bf389bac",
+    "scripts/run_realworld_paired_controls.py": "7c142c6dfa7bd8aa3855b74de6a69d2d79eeca5796def75dc129d1cec2697cee",
+    "scripts/summarize_quartz_oracle_components.py": "f484be485167daabc77827fcf89f1f15e8585f275e310759b103f7eb3ed169d6",
+    "scripts/validate_petclinic_integrity.py": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "src/mixed_interface/campaign.py": "5362b5eac017e287f8bc6c3840990f942094e0702c99b3710158191e2ca15c2e",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542"
+  }
+}

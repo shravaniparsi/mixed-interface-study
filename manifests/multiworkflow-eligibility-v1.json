@@ -28,44 +28,79 @@
     {
       "id": "F-ATTRIBUTION",
       "scope": "paired_diagnostic_primary",
-      "issue": "Source-qualified component extraction now exists for RealWorld, PetClinic and Quartz. Four historical RealWorld capture-error records remain incomplete. Cross-workflow paired validity and observation-overlap integration remain pending.",
+      "issue": "Control-source extraction and paired accounting are implemented. The full primary corpus still needs one terminal-outcome contract and candidate-to-extractor coverage map.",
       "close_with": "Use the qualified capture versions in broader paired replay, preserve historical incompletes, and connect qualified branch components without attributing shared probes exclusively to either continuation channel.",
-      "implementation_progress": "Unified retrospective reduction covers 38 hosted control branches, 18 declared pairs and two singletons. Eleven accepted pairs and seven rejected-prefix pairs remain separate. Shared probes receive no channel-exclusive credit. Primary boundary campaigns and their source qualification remain pending. Separate prospective RealWorld extraction qualifies fourteen branches and seven accepted pairs; historical source and results remain unchanged. No primary boundary source qualification is implied."
+      "implementation_progress": "Unified retrospective reduction covers 38 hosted control branches, 18 declared pairs and two singletons. Eleven accepted pairs and seven rejected-prefix pairs remain separate. Shared probes receive no channel-exclusive credit. Primary boundary campaigns and their source qualification remain pending. Separate prospective RealWorld extraction qualifies fourteen branches and seven accepted pairs; historical source and results remain unchanged. No primary boundary source qualification is implied.",
+      "current_audit_blockers": [
+        "P1",
+        "P2"
+      ],
+      "current_status": "qualified_control_sources; primary_contract_pending",
+      "current_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "id": "F-PARITY",
       "scope": "paired_diagnostic_primary",
-      "issue": "Legacy native payloads are captured without complete equality guards; PetClinic loaded fields and returned relationships need explicit checks. Register tag/null normalization consistently.",
+      "issue": "Qualified RealWorld and PetClinic controls now enforce input/binding and preservation guards; RealWorld prospective normalization controls pass. Bind each retained primary case to its exact qualified route and normalization rather than extending control coverage implicitly.",
       "close_with": "Implement workflow-specific input, binding and preservation guards; validate valid controls before new boundary execution.",
-      "implementation_progress": "RealWorld prospective controls integrate source-qualified tag representation and profile omission/null rules. Hosted run 42456815285 passed fourteen branches including repeated/out-of-order tags and null/omitted bio through both continuations. Native-producer representation coverage and remaining application integration are still pending."
+      "implementation_progress": "RealWorld prospective controls integrate source-qualified tag representation and profile omission/null rules. Hosted run 42456815285 passed fourteen branches including repeated/out-of-order tags and null/omitted bio through both continuations. Native-producer representation coverage and remaining application integration are still pending.",
+      "current_audit_blockers": [
+        "P2"
+      ],
+      "current_status": "qualified_controls; full_selected_corpus_mapping_pending",
+      "current_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "id": "F-REJECTED-STATE",
       "scope": "paired_diagnostic_primary",
-      "issue": "PetClinic and generated RealWorld rejection paths need explicit state-side-effect assertions at the appropriate pre-candidate boundary.",
-      "close_with": "Capture pre-candidate state and classify unchanged, changed, unreadable and unobserved rejection outcomes independently of HTTP status."
+      "issue": "Observable rejected-state checks passed on eight RealWorld and six PetClinic known-control branches. Preserve these implementations; complete primary coverage and changed/unreadable/unobserved outcome handling remain pending.",
+      "close_with": "Map retained primary cases to the qualified state-capture implementation and explicit changed/unreadable/unobserved handling; do not reimplement already passing known-rejection checks.",
+      "current_audit_blockers": [
+        "P1",
+        "P2"
+      ],
+      "current_status": "qualified_known_rejections; primary_negative_outcome_contract_pending",
+      "current_audit": "manifests/primary-readiness-audit-v1.json",
+      "implementation_progress": "RealWorld run 42401381642 verified eight unchanged rejected-state branches; PetClinic run 42403373655 verified six unchanged rejected owner graphs. Projection scope is API-visible state, not database atomicity."
     },
     {
       "id": "F-PAIR-CAMPAIGN",
       "scope": "paired_diagnostic_primary",
-      "issue": "A declared input-pair inventory is not an executable independently reset paired campaign. Corresponding prefix-state equality, schedule, stop/resume and repeat rules need enforcement.",
+      "issue": "Repeat planning and ordinary Quartz pair dispatch are implemented, but hosted launchers still select controls. Full-corpus execution requires consistent stop/repeat semantics, candidate bindings and bounded immutable batches.",
       "close_with": "Implement and validate the registered pair schedule and paired-state reducer on ordinary controls, preserving all failed attempts.",
-      "implementation_progress": "RealWorld hosted run 42456815285 validated seven pairs across four workflow templates, alternating api-ui/ui-api order, independent fixture resets and matching actor/state/prefix/consumer commands. Quartz retains its separate two-control-pair qualification. New-source component extraction now validates these seven pairs. Failure/repeat scheduling and broader primary campaign remain pending. Two independently initialized RealWorld control attempts now match all fourteen branch outcomes. Failure-repeat scheduling for boundary candidates remains open. The pure repeat planner now registers the 22-pair Quartz initial schedule and same-workflow/producer reference controls, plans two repeats with accompanying controls for flagged outcomes, and preserves incomplete/variable/failed-control outcomes. Synthetic tests pass; boundary runner integration and source-qualified negative-outcome extraction remain pending. Hosted run 42527108389 now validates the new Quartz pair dispatcher and outcome bridge on two ordinary pairs/four branches, independently reconstructing the final planner ledger with zero follow-ups. Flagged dispatch is synthetic-tested only; real boundary execution and its qualification remain pending."
+      "implementation_progress": "RealWorld hosted run 42456815285 validated seven pairs across four workflow templates, alternating api-ui/ui-api order, independent fixture resets and matching actor/state/prefix/consumer commands. Quartz retains its separate two-control-pair qualification. New-source component extraction now validates these seven pairs. Failure/repeat scheduling and broader primary campaign remain pending. Two independently initialized RealWorld control attempts now match all fourteen branch outcomes. Failure-repeat scheduling for boundary candidates remains open. The pure repeat planner now registers the 22-pair Quartz initial schedule and same-workflow/producer reference controls, plans two repeats with accompanying controls for flagged outcomes, and preserves incomplete/variable/failed-control outcomes. Synthetic tests pass; boundary runner integration and source-qualified negative-outcome extraction remain pending. Hosted run 42527108389 now validates the new Quartz pair dispatcher and outcome bridge on two ordinary pairs/four branches, independently reconstructing the final planner ledger with zero follow-ups. Flagged dispatch is synthetic-tested only; real boundary execution and its qualification remain pending.",
+      "current_audit_blockers": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "current_status": "planner_and_control_dispatch_qualified; primary_campaign_pending",
+      "current_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "id": "F-PRIMARY-RUNTIME",
       "scope": "primary_execution",
-      "issue": "Cross-workflow interruption coverage and cost boundaries remain incomplete; PetClinic is qualified only at the declared SIGTERM checkpoint.",
+      "issue": "Declared lifecycle probes and fresh controls are qualified for the exact RealWorld, PetClinic and Quartz paths, including one Quartz ordinary-deadline probe. Retain this evidence; resolve batching, the declared timing scope and final runtime acceptance manifest.",
       "close_with": "Pin effective commands and environment, validate cleanup with subsequent fresh controls, and record cost boundaries. Use hosted execution for heavy work.",
       "implementation_progress": "Hosted run 42408826873 qualified PetClinic at the declared checkpoint: wrapper exit after 0.537 seconds, no live observed descendants, closed backend/frontend ports and no rescue actions. A fresh twelve-branch control run then passed 72 integrity guards and thirteen matched native request/response checks. This does not qualify every interruption phase or calibrate costs. RealWorld supervised run 42523114193 now qualifies one SIGTERM checkpoint: wrapper exit 0.070 seconds, no live observed descendants or open ports, no rescue actions, followed by two matching complete fourteen-branch controls. Other phases and unsupervised entry points are not qualified. Quartz hosted run 42531129446 qualifies a live-browser SIGTERM checkpoint and the unchanged 75-second case deadline with seven-second hard-stop grace after an identity-checked SIGSTOP injection. Both attempts halt before another branch/job, confirm cleanup without rescue, and are followed by four fresh passing controls. Other phases and cross-workflow freeze requirements remain open.",
-      "cost_scope_progress": "RealWorld prospective controls now record nested parent branch and exclusive adapter timing, independently verified on fourteen branches. Common fixture/frontend setup and residual process overhead are separate. The supervised runner now has one-checkpoint interruption qualification; broader coverage, cross-application timing integration and calibration remain incomplete."
+      "cost_scope_progress": "RealWorld prospective controls now record nested parent branch and exclusive adapter timing, independently verified on fourteen branches. Common fixture/frontend setup and residual process overhead are separate. The supervised runner now has one-checkpoint interruption qualification; broader coverage, cross-application timing integration and calibration remain incomplete.",
+      "current_audit_blockers": [
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "current_status": "scoped_lifecycle_qualification_satisfied; final_execution_freeze_pending",
+      "current_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "id": "F-TIMED-POOL",
       "scope": "later_timed_oracle_and_selector_evaluation",
-      "issue": "Six legacy-only templates lack common generated/runtime integration; Quartz deadline handling now has one declared injected-stall qualification, while common cost/calibration integration remains open. Current single-workflow integration is not an efficacy study.",
+      "issue": "Common-budget selector calibration and multiworkflow selector efficacy remain a later study stage; they do not block descriptive equal-candidate observations. Unsupported primary phase-cost claims are handled separately in P4.",
       "close_with": "Integrate a structurally diverse common pool and validate deadlines/calibration after diagnostic correctness. This later gate is not required to record descriptive source-check observations.",
-      "implementation_progress": "Quartz ordinary timer path validated on an injected adapter stall in run 42531129446; this is lifecycle qualification, not cost calibration or selector efficacy."
+      "implementation_progress": "Quartz ordinary timer path validated on an injected adapter stall in run 42531129446; this is lifecycle qualification, not cost calibration or selector efficacy.",
+      "current_audit_blockers": [],
+      "current_status": "deferred_from_primary_diagnostic_execution",
+      "current_audit": "manifests/primary-readiness-audit-v1.json"
     }
   ],
   "adjudication_policy": "Human/source-supported normative and root-cause decisions remain pending. Unresolved policies can remain an explicit stratum; human agreement and maintainer confirmation are not prerequisites for autonomously registering or extracting descriptive observations and cannot be claimed from agent review.",
@@ -880,7 +915,8 @@
         "integrity_guards": 80,
         "primary_freeze_complete": false,
         "remaining_scope": "PetClinic execution guards, legacy cleanup qualification, consistent tag policies, independently reset cross-workflow paired replay and fresh cost calibration remain open."
-      }
+      },
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "realworld.article_update_comment_create",
@@ -1385,7 +1421,8 @@
         "integrity_guards": 80,
         "primary_freeze_complete": false,
         "remaining_scope": "PetClinic execution guards, legacy cleanup qualification, consistent tag policies, independently reset cross-workflow paired replay and fresh cost calibration remain open."
-      }
+      },
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "realworld.comment_create_delete",
@@ -1836,7 +1873,8 @@
         "integrity_guards": 80,
         "primary_freeze_complete": false,
         "remaining_scope": "PetClinic execution guards, legacy cleanup qualification, consistent tag policies, independently reset cross-workflow paired replay and fresh cost calibration remain open."
-      }
+      },
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "realworld.profile_update_settings_edit",
@@ -2320,7 +2358,8 @@
         "integrity_guards": 80,
         "primary_freeze_complete": false,
         "remaining_scope": "PetClinic execution guards, legacy cleanup qualification, consistent tag policies, independently reset cross-workflow paired replay and fresh cost calibration remain open."
-      }
+      },
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "petclinic.owner_create_address_edit",
@@ -2895,7 +2934,8 @@
         "browser_interruption_cleanup_qualified": false,
         "remaining_scope": "Integrate new-source component observations into unified paired analysis; qualify interruption/browser cleanup and costs before broader primary evaluation."
       },
-      "historical_gap_scope": "Earlier missing-check and cleanup descriptions refer to the archived development adapter. Current guard/control progress is recorded in execution_integrity; primary freeze is not complete."
+      "historical_gap_scope": "Earlier missing-check and cleanup descriptions refer to the archived development adapter. Current guard/control progress is recorded in execution_integrity; primary freeze is not complete.",
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "petclinic.pet_create_rename",
@@ -3341,7 +3381,8 @@
         "browser_interruption_cleanup_qualified": false,
         "remaining_scope": "Integrate new-source component observations into unified paired analysis; qualify interruption/browser cleanup and costs before broader primary evaluation."
       },
-      "historical_gap_scope": "Earlier missing-check and cleanup descriptions refer to the archived development adapter. Current guard/control progress is recorded in execution_integrity; primary freeze is not complete."
+      "historical_gap_scope": "Earlier missing-check and cleanup descriptions refer to the archived development adapter. Current guard/control progress is recorded in execution_integrity; primary freeze is not complete.",
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "petclinic.visit_create_reschedule",
@@ -3801,7 +3842,8 @@
         "browser_interruption_cleanup_qualified": false,
         "remaining_scope": "Integrate new-source component observations into unified paired analysis; qualify interruption/browser cleanup and costs before broader primary evaluation."
       },
-      "historical_gap_scope": "Earlier missing-check and cleanup descriptions refer to the archived development adapter. Current guard/control progress is recorded in execution_integrity; primary freeze is not complete."
+      "historical_gap_scope": "Earlier missing-check and cleanup descriptions refer to the archived development adapter. Current guard/control progress is recorded in execution_integrity; primary freeze is not complete.",
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     },
     {
       "workflow_id": "quartz.stored_job_create_description_edit",
@@ -5624,7 +5666,8 @@
         "valid_pairs": 2,
         "confirmed_case_cleanups": 4,
         "actual_deadline_path_validated": false
-      }
+      },
+      "current_readiness_audit": "manifests/primary-readiness-audit-v1.json"
     }
   ],
   "unresolved_items": [
@@ -5954,5 +5997,19 @@
     "fresh_branches": 4,
     "boundary_branches_executed": 0,
     "primary_freeze_complete": false
+  },
+  "current_readiness_audit": {
+    "manifest": "manifests/primary-readiness-audit-v1.json",
+    "report": "notes/primary_readiness_audit.md",
+    "audited_date": "2026-11-08",
+    "open_blocker_ids": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "primary_freeze_complete": false,
+    "historical_workflow_missing_lists": "Retained as source-era records; use the current audit for active backlog."
   }
 }
