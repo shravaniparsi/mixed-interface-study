@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "tests/test_paired_timing.py",
+    "scripts/validate_realworld_paired_controls.py",
+    "scripts/run_realworld_paired_controls.py", "scripts/realworld_paired_case.mjs",
+    "scripts/realworld_normalization.mjs", "scripts/phase_clock.mjs",
+    "tests/prospective_helpers.test.mjs", "manifests/realworld-paired-controls-v1.json",
+    "protocol/realworld-paired-controls-v1.md",
     "src/mixed_interface/normalization.py", "tests/test_normalization.py",
     "scripts/audit_normalization_controls.py", "manifests/normalization-policy-v1.json",
     "protocol/normalization-and-cost-scope-v1.md", "results/normalization-controls-20261107/analysis.json",

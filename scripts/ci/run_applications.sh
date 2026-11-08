@@ -2,6 +2,16 @@
 set -euo pipefail
 : "${STUDY_SUITE:?}" "${STUDY_RUNTIME:?}" "${CI_ARTIFACT_DIR:?}" "${PLAYWRIGHT_MODULE_PATH:?}" "${CHROME_EXECUTABLE:?}"
 case "$STUDY_SUITE" in
+  realworld-paired-controls)
+    mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-paired-controls"
+    timeout --signal=TERM --kill-after=20s 300s python scripts/run_realworld_paired_controls.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" \
+      --registry manifests/realworld-paired-controls-v1.json \
+      --output-root "$CI_ARTIFACT_DIR/realworld-paired-controls"
+    python scripts/validate_realworld_paired_controls.py "$CI_ARTIFACT_DIR/realworld-paired-controls"
+    ;;
   petclinic-interruption-controls)
     timeout --signal=TERM --kill-after=20s 520s python scripts/ci/run_petclinic_interruption.py
     ;;

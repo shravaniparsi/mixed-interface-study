@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {PhaseClock} from '../scripts/phase_clock.mjs';
+import {exact,tags,articleExpected,profileExpected} from '../scripts/realworld_normalization.mjs';
+test('exclusive nested timing neither overlaps nor double counts',async()=>{let t=0;const c=new PhaseClock(()=>t);t=1;c.switch('assigned_continuation');await c.during('authentication_session',async()=>{t=3;});t=5;const r=c.finish();assert.equal(r.total_s,5);assert.equal(r.totals_s.authentication_session,2);assert.equal(r.totals_s.assigned_continuation,2);assert.equal(Object.values(r.totals_s).reduce((a,b)=>a+b,0),5);});
+test('timing restores phase after failure',async()=>{let t=0;const c=new PhaseClock(()=>t);await assert.rejects(c.during('work',async()=>{t=2;throw new Error('failure');}));t=3;assert.equal(c.finish().total_s,3);});
+test('backward clocks and reuse are rejected',()=>{let t=2;const c=new PhaseClock(()=>t);t=1;assert.throws(()=>c.switch('bad'));t=3;c.finish();assert.throws(()=>c.finish());});
+test('tag expectations preserve raw ordering and duplicates',()=>{const raw=['z','a','z'];assert.deepEqual(tags(raw),['a','z']);assert.deepEqual(raw,['z','a','z']);assert.equal(exact(raw,['a','z']),false);});
+test('tag ordering matches Python Unicode code points',()=>{assert.deepEqual(tags(['𐀀','\ue000']),['\ue000','𐀀']);});
+test('null tags never silently become empty',()=>{assert.throws(()=>tags(null));assert.throws(()=>articleExpected({tagList:null},{title:'T',description:'D',body:'B'}));});
+test('article null never falls back to the prior value',()=>{assert.throws(()=>articleExpected({title:'T',description:'D',body:'B'},{body:null}));});
+test('whitespace is retained by expectation helper',()=>{assert.deepEqual(tags([' a ','a']),[' a ','a']);});
+const user={username:'u',email:'u@example.com',bio:'before',image:null};
+test('profile omission preserves and explicit null clears',()=>{assert.equal(profileExpected(user,{}).bio,'before');assert.equal(profileExpected(user,{bio:null}).bio,null);assert.equal(profileExpected(user,{bio:''}).bio,null);});
+test('unregistered profile identity and credential edits are rejected',()=>{assert.throws(()=>profileExpected(user,{email:'new@example.com'}));assert.throws(()=>profileExpected(user,{password:'anything'}));});
