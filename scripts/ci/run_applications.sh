@@ -22,6 +22,9 @@ case "$STUDY_SUITE" in
   petclinic-integrity-controls)
     timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_petclinic_integrity.py
     ;;
+  quartz-lifecycle-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_quartz_lifecycle.py
+    ;;
   quartz-repeat-controls)
     timeout --signal=TERM --kill-after=120s 480s python scripts/run_quartz_repeat_campaign.py \
       --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
