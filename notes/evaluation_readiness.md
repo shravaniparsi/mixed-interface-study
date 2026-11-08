@@ -1,3 +1,7 @@
+# Current boundary repeat-policy preparation
+
+The executable repeat planner registers 22 Quartz pairs and 44 initial branch slots, choosing reference controls before outcomes. Flagged pairs receive two additional candidate attempts with corresponding controls. Missing repeats, variable observations, mixed prefixes and failed controls cannot become stable findings. This step uses synthetic tests and launches no applications; the 40 Quartz mutation branches remain unexecuted. Runner integration, source-qualified negative-outcome extraction and the primary freeze remain open. See [the repeat-policy note](boundary_repeat_policy.md).
+
 # Current RealWorld interruption and repeat qualification
 
 Hosted run 42523114193 passed the new supervised runner's declared SIGTERM checkpoint: wrapper exit after 0.070 seconds, no live observed descendants, closed application ports and no rescue actions. Two subsequent fourteen-branch controls passed and matched all fourteen corresponding business outcomes. All 319 harness tests passed. See [the qualification note](realworld_interruption_qualification.md). Broader interruption coverage, boundary failure-repeat scheduling, remaining application integration and the primary freeze remain open. Earlier checkpoints below retain their historical scope.

@@ -50,7 +50,7 @@
       "scope": "paired_diagnostic_primary",
       "issue": "A declared input-pair inventory is not an executable independently reset paired campaign. Corresponding prefix-state equality, schedule, stop/resume and repeat rules need enforcement.",
       "close_with": "Implement and validate the registered pair schedule and paired-state reducer on ordinary controls, preserving all failed attempts.",
-      "implementation_progress": "RealWorld hosted run 42456815285 validated seven pairs across four workflow templates, alternating api-ui/ui-api order, independent fixture resets and matching actor/state/prefix/consumer commands. Quartz retains its separate two-control-pair qualification. New-source component extraction now validates these seven pairs. Failure/repeat scheduling and broader primary campaign remain pending. Two independently initialized RealWorld control attempts now match all fourteen branch outcomes. Failure-repeat scheduling for boundary candidates remains open."
+      "implementation_progress": "RealWorld hosted run 42456815285 validated seven pairs across four workflow templates, alternating api-ui/ui-api order, independent fixture resets and matching actor/state/prefix/consumer commands. Quartz retains its separate two-control-pair qualification. New-source component extraction now validates these seven pairs. Failure/repeat scheduling and broader primary campaign remain pending. Two independently initialized RealWorld control attempts now match all fourteen branch outcomes. Failure-repeat scheduling for boundary candidates remains open. The pure repeat planner now registers the 22-pair Quartz initial schedule and same-workflow/producer reference controls, plans two repeats with accompanying controls for flagged outcomes, and preserves incomplete/variable/failed-control outcomes. Synthetic tests pass; boundary runner integration and source-qualified negative-outcome extraction remain pending."
     },
     {
       "id": "F-PRIMARY-RUNTIME",
@@ -5924,6 +5924,16 @@
     "manifest": "manifests/realworld-interruption-qualification.json",
     "status": "qualified_at_declared_checkpoint_with_two_matching_fresh_controls",
     "supervised_entry_point_only": true,
+    "primary_freeze_complete": false
+  },
+  "boundary_repeat_policy": {
+    "status": "pure_planner_and_synthetic_validation_only",
+    "protocol": "protocol/boundary-repeat-policy-v1.md",
+    "report": "results/quartz-repeat-policy-20261108/analysis.json",
+    "initial_pair_slots": 22,
+    "initial_branch_slots": 44,
+    "applications_executed": 0,
+    "runner_integration_complete": false,
     "primary_freeze_complete": false
   }
 }

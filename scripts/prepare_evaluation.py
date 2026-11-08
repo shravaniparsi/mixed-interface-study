@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/repetition.py',
+    'tests/test_repetition.py',
+    'scripts/prepare_quartz_repeat_policy.py',
+    'protocol/boundary-repeat-policy-v1.md',
+    'results/quartz-repeat-policy-20261108/analysis.json',
     "manifests/realworld-interruption-qualification.json",
     "results/realworld-interruption-ci-20261108/realworld-interruption-verification.json",
     'scripts/ci/run_realworld_supervised.py',
