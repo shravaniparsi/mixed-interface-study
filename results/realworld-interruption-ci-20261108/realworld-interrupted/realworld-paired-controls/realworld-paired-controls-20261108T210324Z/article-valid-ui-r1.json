@@ -1,0 +1,661 @@
+{
+  "schema_version": 1,
+  "candidate_id": "article-valid",
+  "workflow": "article-create-edit",
+  "prefix_interface": "api",
+  "continuation_interface": "ui",
+  "expectation": {
+    "outcome": "accept",
+    "category": "implementation_control",
+    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+    "statement": "All required nonempty fields supplied."
+  },
+  "started_at": "2026-11-08T21:03:29.687Z",
+  "execution_status": "runner_or_unadjudicated_error",
+  "oracle_revision": 3,
+  "trace": [
+    {
+      "sequence": 1,
+      "phase": "setup",
+      "type": "request",
+      "source": "api",
+      "method": "POST",
+      "path": "/api/users/login",
+      "payload": {
+        "user": {
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "phase": "setup",
+      "type": "response",
+      "source": "api",
+      "method": "POST",
+      "path": "/api/users/login",
+      "status": 200,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "phase": "setup",
+      "type": "request",
+      "source": "api",
+      "method": "GET",
+      "path": "/api/user"
+    },
+    {
+      "sequence": 4,
+      "phase": "setup",
+      "type": "response",
+      "source": "api",
+      "method": "GET",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "phase": "setup",
+      "type": "request",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user"
+    },
+    {
+      "sequence": 6,
+      "phase": "setup",
+      "type": "response",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "phase": "setup",
+      "type": "request",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 8,
+      "phase": "setup",
+      "type": "response",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [
+          {
+            "description": "Duplicate fixture description",
+            "createdAt": "2026-11-08T21:03:27.354Z",
+            "updatedAt": "2026-11-08T21:03:27.354Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "following": false,
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch"
+            },
+            "tagList": [],
+            "slug": "duplicate-fixture-title-3fb76a4c",
+            "title": "Duplicate fixture title"
+          },
+          {
+            "description": "Duplicate fixture description",
+            "createdAt": "2026-11-08T21:03:27.349Z",
+            "updatedAt": "2026-11-08T21:03:27.349Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "following": false,
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch"
+            },
+            "tagList": [],
+            "slug": "duplicate-fixture-title",
+            "title": "Duplicate fixture title"
+          },
+          {
+            "description": "Fixture description",
+            "createdAt": "2026-11-08T21:03:27.343Z",
+            "updatedAt": "2026-11-08T21:03:27.343Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "following": false,
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch"
+            },
+            "tagList": [],
+            "slug": "unique-fixture-article",
+            "title": "Unique fixture article"
+          }
+        ],
+        "articlesCount": 3
+      }
+    },
+    {
+      "sequence": 9,
+      "phase": "setup",
+      "type": "request",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags"
+    },
+    {
+      "sequence": 10,
+      "phase": "setup",
+      "type": "response",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "data": {
+        "tags": []
+      }
+    },
+    {
+      "sequence": 11,
+      "phase": "setup",
+      "type": "request",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles/duplicate-fixture-title-3fb76a4c/comments"
+    },
+    {
+      "sequence": 12,
+      "phase": "setup",
+      "type": "response",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles/duplicate-fixture-title-3fb76a4c/comments",
+      "status": 200,
+      "data": {
+        "comments": []
+      }
+    },
+    {
+      "sequence": 13,
+      "phase": "setup",
+      "type": "request",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles/duplicate-fixture-title/comments"
+    },
+    {
+      "sequence": 14,
+      "phase": "setup",
+      "type": "response",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles/duplicate-fixture-title/comments",
+      "status": 200,
+      "data": {
+        "comments": []
+      }
+    },
+    {
+      "sequence": 15,
+      "phase": "setup",
+      "type": "request",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles/unique-fixture-article/comments"
+    },
+    {
+      "sequence": 16,
+      "phase": "setup",
+      "type": "response",
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles/unique-fixture-article/comments",
+      "status": 200,
+      "data": {
+        "comments": []
+      }
+    },
+    {
+      "sequence": 17,
+      "phase": "prefix",
+      "type": "request",
+      "source": "api",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 18,
+      "phase": "prefix",
+      "type": "response",
+      "source": "api",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "createdAt": "2026-11-08T21:03:30.143Z",
+          "updatedAt": "2026-11-08T21:03:30.143Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [
+            "pilot"
+          ],
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article"
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "prefix_tag_membership_matches",
+      "passed": true
+    },
+    {
+      "name": "prefix_tag_response_representation",
+      "passed": true
+    },
+    {
+      "name": "prefix_fields_match_declared_input",
+      "passed": true
+    }
+  ],
+  "observations": {
+    "ui_continuation_started": false,
+    "api_continuation_started": false,
+    "prefix_status": 201,
+    "prefix_response": {
+      "article": {
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "createdAt": "2026-11-08T21:03:30.143Z",
+        "updatedAt": "2026-11-08T21:03:30.143Z",
+        "favorited": false,
+        "favoritesCount": 0,
+        "author": {
+          "following": false,
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "username": "pilotresearch"
+        },
+        "tagList": [
+          "pilot"
+        ],
+        "slug": "boundary-pilot-article",
+        "title": "Boundary pilot article"
+      }
+    },
+    "prefix_outcome": "accepted"
+  },
+  "capture_integrity": {
+    "version": 1,
+    "helper_sha256": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "complete": true,
+    "contexts": []
+  },
+  "integrity": {
+    "version": 1,
+    "helper_sha256": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "guards": [
+      {
+        "name": "pre_state_readable",
+        "stage": "setup",
+        "source": "shared_api",
+        "expected": true,
+        "observed": true,
+        "passed": true
+      },
+      {
+        "name": "submitted_command",
+        "stage": "prefix",
+        "source": "api",
+        "expected": {
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "title": "Boundary pilot article",
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "tagList": [
+                "pilot"
+              ]
+            }
+          }
+        },
+        "observed": {
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "title": "Boundary pilot article",
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "tagList": [
+                "pilot"
+              ]
+            }
+          }
+        },
+        "passed": true
+      }
+    ],
+    "before": {
+      "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+      "readable": true,
+      "reads": [
+        {
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          },
+          "response_sequence": 6
+        },
+        {
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Duplicate fixture description",
+                "createdAt": "2026-11-08T21:03:27.354Z",
+                "updatedAt": "2026-11-08T21:03:27.354Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-3fb76a4c",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Duplicate fixture description",
+                "createdAt": "2026-11-08T21:03:27.349Z",
+                "updatedAt": "2026-11-08T21:03:27.349Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-08T21:03:27.343Z",
+                "updatedAt": "2026-11-08T21:03:27.343Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 3
+          },
+          "response_sequence": 8
+        },
+        {
+          "path": "/api/tags",
+          "status": 200,
+          "data": {
+            "tags": []
+          },
+          "response_sequence": 10
+        },
+        {
+          "path": "/api/articles/duplicate-fixture-title-3fb76a4c/comments",
+          "status": 200,
+          "data": {
+            "comments": []
+          },
+          "response_sequence": 12
+        },
+        {
+          "path": "/api/articles/duplicate-fixture-title/comments",
+          "status": 200,
+          "data": {
+            "comments": []
+          },
+          "response_sequence": 14
+        },
+        {
+          "path": "/api/articles/unique-fixture-article/comments",
+          "status": 200,
+          "data": {
+            "comments": []
+          },
+          "response_sequence": 16
+        }
+      ],
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null
+        },
+        "articles": [
+          {
+            "article": {
+              "description": "Duplicate fixture description",
+              "createdAt": "2026-11-08T21:03:27.349Z",
+              "updatedAt": "2026-11-08T21:03:27.349Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            },
+            "comments": []
+          },
+          {
+            "article": {
+              "description": "Duplicate fixture description",
+              "createdAt": "2026-11-08T21:03:27.354Z",
+              "updatedAt": "2026-11-08T21:03:27.354Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-3fb76a4c",
+              "title": "Duplicate fixture title"
+            },
+            "comments": []
+          },
+          {
+            "article": {
+              "description": "Fixture description",
+              "createdAt": "2026-11-08T21:03:27.343Z",
+              "updatedAt": "2026-11-08T21:03:27.343Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            },
+            "comments": []
+          }
+        ],
+        "tags": []
+      }
+    },
+    "rejection": null
+  },
+  "actor": {
+    "email": "pilot@example.com",
+    "stable_fixture_username": "pilotresearch"
+  },
+  "prefix_state": {
+    "slug": "boundary-pilot-article",
+    "title": "Boundary pilot article",
+    "description": "Boundary control description",
+    "body": "Body before continuation.",
+    "tagList": [
+      "pilot"
+    ],
+    "author": "pilotresearch"
+  },
+  "browser_version": "151.0.7922.34",
+  "error": {
+    "phase": "continuation",
+    "name": "Error",
+    "message": "browser.newContext: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> /home/runner/work/_temp/study-playwright-browsers/chromium-1234/chrome-linux64/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-background-networking --disable-component-update --disable-sync --no-first-run --user-data-dir=/tmp/playwright_chromiumdev_profile-l0SDLc --remote-debugging-pipe --no-startup-window\n<launched> pid=3058\n[pid=3058] <gracefully close start>\n[pid=3058][err] [3058:3073:1108/210330.561668:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3073:1108/210330.562492:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3073:1108/210332.759957:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3058:1108/210332.782259:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3058:1108/210332.782298:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3073:1108/210332.782796:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3073:1108/210332.782807:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3058:1108/210332.788952:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3058:1108/210332.798819:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3058:1108/210332.798835:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3073:1108/210332.802038:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3058:1108/210332.803475:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[pid=3058][err] [3058:3058:1108/210332.808471:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3073:1108/210332.808508:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3058:1108/210332.811965:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[pid=3058][err] [3058:3073:1108/210332.815807:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[pid=3058][err] [3058:3058:1108/210332.816103:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+  },
+  "timing": {
+    "clock": "process_local_performance_monotonic_seconds",
+    "scope": "Exclusive adapter spans; process startup and final serialization remain in parent adapter_process interval.",
+    "total_s": 3.1483675239999998,
+    "spans": [
+      {
+        "phase": "adapter_initialization",
+        "start_s": 0,
+        "end_s": 0.0025288190000000016
+      },
+      {
+        "phase": "authentication_session",
+        "start_s": 0.0025288190000000016,
+        "end_s": 0.30271513899999997
+      },
+      {
+        "phase": "prefix_state_inspection",
+        "start_s": 0.30271513899999997,
+        "end_s": 0.452527577
+      },
+      {
+        "phase": "producer",
+        "start_s": 0.452527577,
+        "end_s": 0.50113841
+      },
+      {
+        "phase": "prefix_state_inspection",
+        "start_s": 0.50113841,
+        "end_s": 0.501327377
+      },
+      {
+        "phase": "assigned_continuation",
+        "start_s": 0.501327377,
+        "end_s": 0.501413063
+      },
+      {
+        "phase": "authentication_session",
+        "start_s": 0.501413063,
+        "end_s": 3.147525125
+      },
+      {
+        "phase": "assigned_continuation",
+        "start_s": 3.147525125,
+        "end_s": 3.147655645
+      },
+      {
+        "phase": "browser_teardown",
+        "start_s": 3.147655645,
+        "end_s": 3.148310576
+      },
+      {
+        "phase": "assigned_continuation",
+        "start_s": 3.148310576,
+        "end_s": 3.1483675239999998
+      }
+    ],
+    "totals_s": {
+      "adapter_initialization": 0.0025288190000000016,
+      "authentication_session": 2.946298382,
+      "prefix_state_inspection": 0.15000140500000003,
+      "producer": 0.04861083300000002,
+      "assigned_continuation": 0.00027315399999938705,
+      "browser_teardown": 0.0006549310000001363
+    }
+  },
+  "normalization_policy": "normalization-policy-v1",
+  "completed_at": "2026-11-08T21:03:32.835Z"
+}

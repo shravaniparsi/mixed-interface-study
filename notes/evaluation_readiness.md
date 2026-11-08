@@ -1,3 +1,7 @@
+# Current RealWorld interruption and repeat qualification
+
+Hosted run 42523114193 passed the new supervised runner's declared SIGTERM checkpoint: wrapper exit after 0.070 seconds, no live observed descendants, closed application ports and no rescue actions. Two subsequent fourteen-branch controls passed and matched all fourteen corresponding business outcomes. All 319 harness tests passed. See [the qualification note](realworld_interruption_qualification.md). Broader interruption coverage, boundary failure-repeat scheduling, remaining application integration and the primary freeze remain open. Earlier checkpoints below retain their historical scope.
+
 # Current prospective paired-runner qualification
 
 RealWorld hosted controls now validate normalization and exclusive timing in the new paired runner: fourteen branches, seven pairs, four workflow templates, 61 business checks and 59 integrity guards passed. All 301 harness checks passed in hosted CI. See [the qualification note](realworld_paired_runner_qualification.md). Source-qualified extraction now independently reproduces all fourteen branches and seven comparable accepted pairs, with no assigned or shared mismatches; see [the extraction note](realworld_paired_component_analysis.md). Remaining work includes interruption/repeat qualification, remaining-application integration and eventual calibration. The primary freeze remains incomplete. Earlier checkpoints below retain their historical scope.

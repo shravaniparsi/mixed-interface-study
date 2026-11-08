@@ -50,15 +50,15 @@
       "scope": "paired_diagnostic_primary",
       "issue": "A declared input-pair inventory is not an executable independently reset paired campaign. Corresponding prefix-state equality, schedule, stop/resume and repeat rules need enforcement.",
       "close_with": "Implement and validate the registered pair schedule and paired-state reducer on ordinary controls, preserving all failed attempts.",
-      "implementation_progress": "RealWorld hosted run 42456815285 validated seven pairs across four workflow templates, alternating api-ui/ui-api order, independent fixture resets and matching actor/state/prefix/consumer commands. Quartz retains its separate two-control-pair qualification. New-source component extraction now validates these seven pairs. Failure/repeat scheduling and broader primary campaign remain pending."
+      "implementation_progress": "RealWorld hosted run 42456815285 validated seven pairs across four workflow templates, alternating api-ui/ui-api order, independent fixture resets and matching actor/state/prefix/consumer commands. Quartz retains its separate two-control-pair qualification. New-source component extraction now validates these seven pairs. Failure/repeat scheduling and broader primary campaign remain pending. Two independently initialized RealWorld control attempts now match all fourteen branch outcomes. Failure-repeat scheduling for boundary candidates remains open."
     },
     {
       "id": "F-PRIMARY-RUNTIME",
       "scope": "primary_execution",
       "issue": "Cross-workflow interruption coverage and cost boundaries remain incomplete; PetClinic is qualified only at the declared SIGTERM checkpoint.",
       "close_with": "Pin effective commands and environment, validate cleanup with subsequent fresh controls, and record cost boundaries. Use hosted execution for heavy work.",
-      "implementation_progress": "Hosted run 42408826873 qualified PetClinic at the declared checkpoint: wrapper exit after 0.537 seconds, no live observed descendants, closed backend/frontend ports and no rescue actions. A fresh twelve-branch control run then passed 72 integrity guards and thirteen matched native request/response checks. This does not qualify every interruption phase or calibrate costs.",
-      "cost_scope_progress": "RealWorld prospective controls now record nested parent branch and exclusive adapter timing, independently verified on fourteen branches. Common fixture/frontend setup and residual process overhead are separate. The new runner still needs interruption qualification; cross-application timing integration and calibration remain incomplete."
+      "implementation_progress": "Hosted run 42408826873 qualified PetClinic at the declared checkpoint: wrapper exit after 0.537 seconds, no live observed descendants, closed backend/frontend ports and no rescue actions. A fresh twelve-branch control run then passed 72 integrity guards and thirteen matched native request/response checks. This does not qualify every interruption phase or calibrate costs. RealWorld supervised run 42523114193 now qualifies one SIGTERM checkpoint: wrapper exit 0.070 seconds, no live observed descendants or open ports, no rescue actions, followed by two matching complete fourteen-branch controls. Other phases and unsupervised entry points are not qualified.",
+      "cost_scope_progress": "RealWorld prospective controls now record nested parent branch and exclusive adapter timing, independently verified on fourteen branches. Common fixture/frontend setup and residual process overhead are separate. The supervised runner now has one-checkpoint interruption qualification; broader coverage, cross-application timing integration and calibration remain incomplete."
     },
     {
       "id": "F-TIMED-POOL",
@@ -5919,5 +5919,11 @@
     "accepted_control_pairs": 7,
     "primary_freeze_complete": false,
     "scope": "Separate overlapping engineering control cohort; not pooled with historical 38 branches."
+  },
+  "realworld_interruption_qualification": {
+    "manifest": "manifests/realworld-interruption-qualification.json",
+    "status": "qualified_at_declared_checkpoint_with_two_matching_fresh_controls",
+    "supervised_entry_point_only": true,
+    "primary_freeze_complete": false
   }
 }
