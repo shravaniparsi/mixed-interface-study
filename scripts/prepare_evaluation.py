@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "src/mixed_interface/normalization.py", "tests/test_normalization.py",
+    "scripts/audit_normalization_controls.py", "manifests/normalization-policy-v1.json",
+    "protocol/normalization-and-cost-scope-v1.md", "results/normalization-controls-20261107/analysis.json",
     "scripts/validate_petclinic_interruption.py", "manifests/petclinic-interruption-qualification.json",
     "results/petclinic-interruption-ci-20261107/verification.json",
     "scripts/ci/run_petclinic_interruption.py", "tests/test_petclinic_interruption.py",

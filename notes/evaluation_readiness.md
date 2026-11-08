@@ -1,3 +1,7 @@
+# Current normalization and timing-contract step
+
+Pinned-source RealWorld normalization rules and executable expectations now distinguish command fidelity, tag membership, response representation and profile omission/null/empty behavior. A read-only audit matches eleven applicable accepted controls; eight rejected prefixes and three out-of-scope comment controls remain separate. See [the normalization note](normalization_and_cost_scope.md). The cost contract is specified, but prospective runner integration, native representation controls and common phase instrumentation remain incomplete. The primary freeze remains open.
+
 # Current hosted interruption qualification
 
 PetClinic passed the real-browser/backend SIGTERM qualification in hosted run 42408826873: 0.537 seconds to wrapper exit, no live observed descendants or open application ports, no rescue actions, then twelve fresh controls and 72 integrity guards passed. All 273 harness tests passed in hosted unit CI. See [the qualification note](petclinic_interruption_qualification.md). Remaining gates include normalization consistency, timing/cost scope and wider interruption coverage; the primary freeze remains incomplete. Earlier checkpoints below retain their historical scope.
