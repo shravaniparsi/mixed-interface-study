@@ -28,6 +28,15 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/realworld_v5.yml',
+    'manifests/realworld-field-controls-v1.json',
+    'scripts/realworld_field_campaign.py',
+    'scripts/run_realworld_field_campaign.py',
+    'scripts/run_realworld_pair_job_v5.py',
+    'scripts/validate_realworld_field_campaign.py',
+    'tests/test_realworld_field_campaign.py',
+    'protocol/realworld-field-dispatch-v5.md',
+
     'scripts/verify_petclinic_expanded_archive.py',
     'manifests/petclinic-expanded-integration-qualification.json',
     'notes/petclinic_expanded_integration.md',
