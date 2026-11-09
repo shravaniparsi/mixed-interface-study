@@ -1,3 +1,7 @@
+# Bounded v8 campaign prepared
+
+The nine-job supervisor and independent archive verifier are implemented. Native singletons remain outside paired comparisons; unclean reference controls or terminal halts stop the sweep, including a halt on the last job. The timeout budget covers all job limits and cleanup. Eight orchestration tests pass. Next: hosted exposed-case qualification and review of its retained evidence. No primary dispatch is authorized.
+
 # Legacy article semantic paths qualified in tests
 
 Ten new tests cover all five remaining article cases on both channels, exact partial/full commands, unknown title policies, empty returned references, trace-supported 404s, missing/forged responses and wrong duplicate targets. Shared empty-reference failures remain incomparable pairs without channel-exclusive credit. These are synthetic tests derived from retained controls; no application outcomes or primary samples were added. Next: bounded mixed-cardinality supervisor and independent archive verifier before exposed hosted qualification.
