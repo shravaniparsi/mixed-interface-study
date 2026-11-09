@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/realworld_terminal_outcomes.py',
+    'tests/test_realworld_terminal_outcomes.py',
+    'protocol/realworld-terminal-extraction-v2.md',
     'src/mixed_interface/coverage.py',
     'scripts/prepare_corpus_coverage.py',
     'tests/test_corpus_coverage.py',
