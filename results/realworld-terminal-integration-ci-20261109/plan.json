@@ -1,0 +1,191 @@
+{
+  "source_commit": "540b830f264988d5d49e635ac7018b09292a7d53",
+  "plan": {
+    "schema_version": 2,
+    "kind": "terminal_campaign_plan",
+    "terminal_policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "schedule": {
+      "schema_version": 1,
+      "kind": "paired_repeat_plan",
+      "pairs": [
+        {
+          "pair_id": "article-valid",
+          "workflow_id": "article-create-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-valid-api-r1",
+            "ui": "article-valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "article-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "comment-body-valid",
+          "workflow_id": "comment-create-delete",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "comment-body-valid-api-r1",
+            "ui": "comment-body-valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "comment-body-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "profile-bio-valid",
+          "workflow_id": "profile-update-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "profile-bio-valid-api-r1",
+            "ui": "profile-bio-valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "profile-bio-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "article-update-unique-partial",
+          "workflow_id": "article-update-comment",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-update-unique-partial-api-r1",
+            "ui": "article-update-unique-partial-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "article-update-unique-partial",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        }
+      ],
+      "initial_jobs": [
+        {
+          "job_id": "initial-000",
+          "pair_id": "article-valid",
+          "target_pair_id": "article-valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-001",
+          "pair_id": "comment-body-valid",
+          "target_pair_id": "comment-body-valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "comment-body-valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "comment-body-valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-002",
+          "pair_id": "profile-bio-valid",
+          "target_pair_id": "profile-bio-valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "profile-bio-valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "profile-bio-valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-003",
+          "pair_id": "article-update-unique-partial",
+          "target_pair_id": "article-update-unique-partial",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-update-unique-partial-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-update-unique-partial-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        }
+      ],
+      "extra_candidate_attempts": 2,
+      "resume": false,
+      "primary_freeze_complete": false,
+      "scope": "Planning only; adapter integration and primary qualification remain required",
+      "plan_sha256": "b81e4d9706b65cd734d4ce2f5e59275341a6afe7ea77e6b12dd15b8e3fb24fca"
+    },
+    "primary_freeze_complete": false,
+    "plan_sha256": "cf28667fc8ae3597d93dc02ce7f5be8acd6a9bed4f11bb783ef2f94570ccd91d"
+  },
+  "sources": {
+    "scripts/validate_realworld_terminal_campaign.py": "3dc5c4e6c4f96f8d1bf221d458b1829e27a74816e6c802ad25652f26365a17db",
+    "scripts/run_realworld_terminal_campaign.py": "dc3de14e8419d5c87146ec433941bff2df2c98eea8db192f97e8b3bccaa3a3ae",
+    "scripts/run_realworld_pair_job_v2.py": "33431b1aa4f657f17ae0c2afe577db436e6411ea7f38ce9592f45ea866dd57d4",
+    "scripts/realworld_terminal_campaign.py": "b74150ac0f2b5084e11e721ee7a1d5c90d1130d8a452bed7e139140e619277c1",
+    "scripts/realworld_terminal_outcomes.py": "1bc8acb395be29264ffeab69cb18e00d1443f423e470f86b3cf5344d6302993b",
+    "scripts/summarize_realworld_paired_components.py": "8c09c2e766b1f2ba66910dd85025600c93b69e26eb28a9ce849a6807614bffd2",
+    "scripts/summarize_realworld_oracle_components.py": "46f84347c249007b5ce5f2fabbc8511053de5454a68115ce437073fe7f6513a4",
+    "scripts/validate_realworld_paired_controls.py": "3600ce6357312203af457d0a689053553bfec61e1652c6b7f8f60c96901ad758",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "scripts/realworld_paired_case.mjs": "a2f374f1651ef6b9e3c15c0c41067b9de79a91cc8181138468dceffabfef70c2",
+    "scripts/realworld_integrity.mjs": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "scripts/response_capture.mjs": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "scripts/realworld_normalization.mjs": "9384918883a253ff6ecad758417d89f0c921e664ba751818932fe7d8f5331b2b",
+    "scripts/phase_clock.mjs": "ea856d8870977c3e63137f8631c96ea6b2fd03aad850ca7875d3e2d365428f0a",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "src/mixed_interface/normalization.py": "35b15b2e31c4c5c9912341fa77d44e41b9925ee81c6a75b71a899ccff54c04cb",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "manifests/realworld-paired-controls-v1.json": "ab063ff5694ad6e01ad796fca01ec188ae2ba28279422bf384c934ceac199e38",
+    "protocol/realworld-terminal-dispatch-v2.md": "e6dc9c47440456a2fdbe386298b6c831ee9e320af8b7ca2dd6dffda54c155e15"
+  },
+  "primary_freeze_complete": false,
+  "scope": "Four baseline engineering pairs; no boundary selection; no resume",
+  "pair_timeout_s": 180,
+  "cleanup_grace_s": 5,
+  "kill_wait_s": 2
+}
