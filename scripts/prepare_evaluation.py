@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/realworld_generated_bindings_v1.py',
+    'scripts/prepare_realworld_generated_bindings_v1.py',
+    'tests/test_realworld_generated_bindings_v1.py',
+    'manifests/realworld-generated-bindings-v1.json',
+    'protocol/realworld-generated-bindings-v1.md',
     'src/mixed_interface/coverage_review_v3.py',
     'scripts/prepare_corpus_review_v3.py',
     'tests/test_corpus_review_v3.py',

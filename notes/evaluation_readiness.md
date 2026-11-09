@@ -1,3 +1,7 @@
+# Latest: generated RealWorld offline bindings
+
+Nine pairs and eighteen branches now have exact source-pinned offline jobs, same-producer reference bindings, producer/consumer intent resolution and a fail-closed pure component-extractor binding. Synthetic tests preserve omitted/null/empty/whitespace distinctions and reject changed jobs, routes and missing integrity evidence. Runtime dispatch and pair-terminal qualification remain open; no readiness counts or application evidence changed. See `protocol/realworld-generated-bindings-v1.md`. Next: source-qualified file loader and paired terminal-v2 bridge.
+
 # Latest: corpus review v3
 
 The source-derived review records engineering evidence for 49 of 75 catalog entries (73 pairs and two singletons), up from 44. Nine legacy entries have observed attempts; six entries have separate isolated database observations. No entry is primary-dispatch ready. Historical halts, unknown policies and incomparable outcomes remain explicit. The separate reference replay does not alter v9 classifications. See `manifests/retained-corpus-review-v3.json` and `protocol/retained-corpus-review-v3.md`.
