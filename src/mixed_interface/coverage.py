@@ -90,6 +90,12 @@ def build(inventory, registries, contracts, selections):
             if p['candidate_id'] in pc_controls:evidence.append('manifests/petclinic-execution-integrity.json')
             gaps=['petclinic_v2_terminal_bridge','petclinic_v2_job_dispatch']
             if p['candidate_id'] not in pc_controls:gaps.append('petclinic_extractor_beyond_six_control_candidates')
+            selected=selections.get('petclinic_terminal',{})
+            qualified=contracts['path_families'].get('petclinic_terminal_controls',{}).get('engineering_qualification')
+            exact=digest(registries[catalog])==selected.get('registry_semantic_sha256')
+            if exact and qualified and p['candidate_id'] in {c['id'] for c in selected.get('selection',[])}:
+                family='petclinic_terminal_controls';evidence.append(qualified)
+                gaps=['petclinic_unexpected_prefix_outcome_extraction']
         elif catalog=='realworld_generated_integration':
             family='realworld_generated'
             if set(p['case_ids'].values())<=rw_generated:evidence.append('manifests/realworld-execution-integrity.json')

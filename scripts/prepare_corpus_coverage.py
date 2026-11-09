@@ -11,7 +11,8 @@ from mixed_interface.evaluation import file_hashes
 
 CONTRACT='manifests/workflow-contract-bindings-v1.json'
 OUTPUT='manifests/retained-corpus-coverage-v1.json'
-SELECTIONS={'realworld_rejection':'manifests/realworld-rejection-controls-v1.json',
+SELECTIONS={'petclinic_terminal':'manifests/petclinic-terminal-integration-qualification.json',
+            'realworld_rejection':'manifests/realworld-rejection-controls-v1.json',
             'realworld_paired':'manifests/realworld-paired-controls-v1.json',
             'realworld_integrity':'manifests/realworld-integrity-controls-v1.json',
             'petclinic_integrity':'manifests/petclinic-integrity-controls-v1.json'}
@@ -51,6 +52,19 @@ def generate(root=ROOT):
             or q.get('verification',{}).get('matched_rejection_pairs')!=3
             or q.get('pairs')!=6 or q.get('branches')!=12):
             raise ValueError('RealWorld rejection qualification differs from its exact selection')
+        paths.add(qualification)
+    qualification=contracts['path_families'].get('petclinic_terminal_controls',{}).get('engineering_qualification')
+    if qualification:
+        q=selections['petclinic_terminal']
+        from mixed_interface.evaluation import digest
+        expected=selections['petclinic_integrity']['cases']
+        if (q.get('status')!='selected_control_paths_independently_verified'
+            or q.get('selection')!=expected
+            or q.get('registry_semantic_sha256')!=digest(registries['petclinic_development'])
+            or q.get('registry_sha256')!=file_hashes(root,[contracts['catalog_sources']['petclinic_development']])[contracts['catalog_sources']['petclinic_development']]
+            or q.get('verification',{}).get('verified') is not True
+            or q.get('pairs')!=6 or q.get('branches')!=12):
+            raise ValueError('PetClinic qualification differs from exact registry and selection')
         paths.add(qualification)
     for family in contracts['path_families'].values():
         paths.update(v for k,v in family.items() if k in ('adapter','runner','pair_runner','extractor','terminal_v2_bridge') and v is not None)

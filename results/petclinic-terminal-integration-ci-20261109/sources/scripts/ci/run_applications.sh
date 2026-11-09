@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+set -euo pipefail
+: "${STUDY_SUITE:?}" "${STUDY_RUNTIME:?}" "${CI_ARTIFACT_DIR:?}" "${PLAYWRIGHT_MODULE_PATH:?}" "${CHROME_EXECUTABLE:?}"
+case "$STUDY_SUITE" in
+  realworld-interruption-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_realworld_interruption.py
+    python scripts/validate_realworld_interruption.py "$CI_ARTIFACT_DIR"
+    ;;
+  realworld-rejection-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_realworld_rejection_campaign.py
+    python scripts/validate_realworld_rejection_campaign.py "$CI_ARTIFACT_DIR/realworld-rejection-controls"
+    ;;
+  realworld-expanded-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_realworld_expanded_campaign.py
+    python scripts/validate_realworld_expanded_campaign.py "$CI_ARTIFACT_DIR/realworld-expanded-controls"
+    ;;
+  realworld-terminal-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_realworld_terminal_campaign.py
+    python scripts/validate_realworld_terminal_campaign.py "$CI_ARTIFACT_DIR/realworld-terminal-controls"
+    ;;
+  realworld-paired-controls)
+    mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-paired-controls"
+    timeout --signal=TERM --kill-after=20s 300s python scripts/run_realworld_paired_controls.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" \
+      --registry manifests/realworld-paired-controls-v1.json \
+      --output-root "$CI_ARTIFACT_DIR/realworld-paired-controls"
+    python scripts/validate_realworld_paired_controls.py "$CI_ARTIFACT_DIR/realworld-paired-controls"
+    ;;
+  petclinic-interruption-controls)
+    timeout --signal=TERM --kill-after=20s 520s python scripts/ci/run_petclinic_interruption.py
+    ;;
+  petclinic-terminal-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_petclinic_terminal_campaign.py
+    python scripts/validate_petclinic_terminal_campaign.py "$CI_ARTIFACT_DIR/petclinic-terminal-controls"
+    ;;
+  petclinic-integrity-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_petclinic_integrity.py
+    ;;
+  quartz-lifecycle-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_quartz_lifecycle.py
+    ;;
+  quartz-terminal-controls)
+    timeout --signal=TERM --kill-after=120s 480s python scripts/run_quartz_terminal_campaign.py \
+      --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
+      --node "$(command -v node)" --python "$(command -v python)" \
+      --output "$CI_ARTIFACT_DIR/quartz-terminal-controls" \
+      --playwright-module "$PLAYWRIGHT_MODULE_PATH" --chrome-executable "$CHROME_EXECUTABLE" \
+      --environment-file "$CI_ARTIFACT_DIR/runtime-versions.json" --browser-info "$CI_ARTIFACT_DIR/browser.json"
+    python scripts/validate_quartz_terminal_campaign.py "$CI_ARTIFACT_DIR/quartz-terminal-controls"
+    ;;
+  quartz-repeat-controls)
+    timeout --signal=TERM --kill-after=120s 480s python scripts/run_quartz_repeat_campaign.py \
+      --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
+      --node "$(command -v node)" --python "$(command -v python)" \
+      --output "$CI_ARTIFACT_DIR/quartz-repeat-controls" \
+      --playwright-module "$PLAYWRIGHT_MODULE_PATH" --chrome-executable "$CHROME_EXECUTABLE" \
+      --environment-file "$CI_ARTIFACT_DIR/runtime-versions.json" --browser-info "$CI_ARTIFACT_DIR/browser.json"
+    python scripts/validate_quartz_repeat_campaign.py "$CI_ARTIFACT_DIR/quartz-repeat-controls"
+    ;;
+  quartz-controls)
+    : "${JAVA_HOME:?}"
+    timeout --signal=TERM --kill-after=20s 480s node scripts/run_quartz_registry.mjs \
+      --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
+      --registry manifests/quartz-job-generated-pool-v2.json \
+      --output "$CI_ARTIFACT_DIR/quartz-controls" --mode controls \
+      --playwright-module "$PLAYWRIGHT_MODULE_PATH" --chrome-executable "$CHROME_EXECUTABLE"
+    ;;
+  quartz-paired-controls)
+    : "${JAVA_HOME:?}"
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_quartz_pairs.py \
+      --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
+      --node "$(command -v node)" --python "$(command -v python)" \
+      --registry manifests/quartz-job-generated-pool-v2.json \
+      --output "$CI_ARTIFACT_DIR/quartz-paired-controls" \
+      --playwright-module "$PLAYWRIGHT_MODULE_PATH" --chrome-executable "$CHROME_EXECUTABLE" \
+      --environment-file "$CI_ARTIFACT_DIR/runtime-versions.json" \
+      --browser-info "$CI_ARTIFACT_DIR/browser.json"
+    ;;
+  realworld-capture-controls)
+    mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-legacy-controls"
+    python scripts/validate_realworld_capture.py --prepare --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
+    timeout --signal=TERM --kill-after=20s 180s python scripts/run_generated_integration.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" --phase controls
+    timeout --signal=TERM --kill-after=20s 240s python scripts/run_realworld_boundaries.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" \
+      --registry manifests/realworld-boundary-registry-v1.json \
+      --output-root "$CI_ARTIFACT_DIR/realworld-legacy-controls" \
+      --candidate article-valid --candidate comment-body-valid --candidate profile-bio-valid \
+      --candidate article-update-unique-partial --candidate comment-native-control --candidate profile-native-control
+    python scripts/validate_realworld_capture.py --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
+    ;;
+  realworld-integrity-controls)
+    mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-legacy-controls"
+    python scripts/validate_realworld_integrity.py --prepare --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
+    timeout --signal=TERM --kill-after=20s 180s python scripts/run_generated_integration.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" --phase integrity-controls
+    timeout --signal=TERM --kill-after=20s 240s python scripts/run_realworld_boundaries.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" \
+      --registry manifests/realworld-boundary-registry-v1.json \
+      --output-root "$CI_ARTIFACT_DIR/realworld-legacy-controls" \
+      --candidate article-valid --candidate comment-body-valid --candidate profile-bio-valid \
+      --candidate article-update-unique-partial --candidate comment-native-control --candidate profile-native-control \
+      --candidate article-body-omitted --candidate comment-body-omitted --candidate profile-username-empty
+    python scripts/validate_realworld_integrity.py --artifact-root "$CI_ARTIFACT_DIR" --generated-root "$STUDY_RUNTIME/realworld-execution"
+    ;;
+  realworld-integration)
+    mkdir -p "$STUDY_RUNTIME/realworld-execution"
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_generated_integration.py \
+      --subject "$STUDY_RUNTIME/realworld/realworld-django-ninja" \
+      --python "$STUDY_RUNTIME/realworld/venv/bin/python" --node "$(command -v node)" \
+      --runtime-root "$STUDY_RUNTIME/realworld-execution" --phase all
+    ;;
+  *)
+    printf 'Unsupported suite: %s\n' "$STUDY_SUITE" >&2
+    exit 2
+    ;;
+esac

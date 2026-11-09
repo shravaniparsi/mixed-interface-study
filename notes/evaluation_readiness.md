@@ -1,6 +1,10 @@
-# Current PetClinic terminal extraction preparation
+## PetClinic terminal dispatcher qualification
 
-Twelve archived control branches now replay as six terminal pairs. Completed native blocking and changed rejected-state graphs have separate evidence handling and fixture tests. No new application execution or per-job dispatch qualification was added. Next is PetClinic immutable per-job dispatch. See [the preparation note](petclinic_terminal_extraction.md).
+Six exposed pairs (12 branches) now have independently replayed per-job control evidence. See [PetClinic terminal integration](petclinic_terminal_integration.md). The remaining twelve PetClinic candidates and unexpected-prefix paths remain open; primary dispatch stays disabled.
+
+# Prior PetClinic terminal extraction preparation
+
+Twelve archived control branches now replay as six terminal pairs. Completed native blocking and changed rejected-state graphs have separate evidence handling and fixture tests. No new application execution or per-job dispatch qualification was added. The later dispatcher qualification is recorded above. See [the preparation note](petclinic_terminal_extraction.md).
 
 # Current RealWorld rejection integration
 

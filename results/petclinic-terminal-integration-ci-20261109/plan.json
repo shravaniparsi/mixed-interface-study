@@ -1,0 +1,266 @@
+{
+  "source_commit": "c9b1b4d71fda1bbfa5dfb8c470f69b7c0f414566",
+  "plan": {
+    "schema_version": 2,
+    "kind": "terminal_campaign_plan",
+    "terminal_policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "schedule": {
+      "schema_version": 1,
+      "kind": "paired_repeat_plan",
+      "pairs": [
+        {
+          "pair_id": "owner_telephone_10",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_telephone_10-api-r1",
+            "ui": "owner_telephone_10-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "pet_valid",
+          "workflow_id": "pet_rename",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "pet_valid-api-r1",
+            "ui": "pet_valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "pet_valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "visit_valid",
+          "workflow_id": "visit_reschedule",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "visit_valid-api-r1",
+            "ui": "visit_valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "visit_valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "owner_omit_firstName",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_omit_firstName-api-r1",
+            "ui": "owner_omit_firstName-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "omitted_required_field",
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "pet_omit_name",
+          "workflow_id": "pet_rename",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "pet_omit_name-api-r1",
+            "ui": "pet_omit_name-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "omitted_required_field",
+          "reference_control": "pet_valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "visit_omit_date",
+          "workflow_id": "visit_reschedule",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "visit_omit_date-api-r1",
+            "ui": "visit_omit_date-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "omitted_required_field",
+          "reference_control": "visit_valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        }
+      ],
+      "initial_jobs": [
+        {
+          "job_id": "initial-000",
+          "pair_id": "owner_telephone_10",
+          "target_pair_id": "owner_telephone_10",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_telephone_10-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_telephone_10-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-001",
+          "pair_id": "pet_valid",
+          "target_pair_id": "pet_valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "pet_valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "pet_valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-002",
+          "pair_id": "visit_valid",
+          "target_pair_id": "visit_valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "visit_valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "visit_valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-003",
+          "pair_id": "owner_omit_firstName",
+          "target_pair_id": "owner_omit_firstName",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_omit_firstName-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_omit_firstName-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-004",
+          "pair_id": "pet_omit_name",
+          "target_pair_id": "pet_omit_name",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "pet_omit_name-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "pet_omit_name-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-005",
+          "pair_id": "visit_omit_date",
+          "target_pair_id": "visit_omit_date",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "visit_omit_date-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "visit_omit_date-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        }
+      ],
+      "extra_candidate_attempts": 2,
+      "resume": false,
+      "primary_freeze_complete": false,
+      "scope": "Planning only; adapter integration and primary qualification remain required",
+      "plan_sha256": "1d97d443b140223a86a983569e332ee70530078c1a38050c5afc4a612dcce0f6"
+    },
+    "primary_freeze_complete": false,
+    "plan_sha256": "646c5edc1a1023af66ba1277f0b3fd9d1fe6d42ce6f29ec26403efee6fbae9ad"
+  },
+  "sources": {
+    ".github/workflows/applications.yml": "323a697ea66ca9783e04ead9f32565a4e0727f2a2495b09b3230de3010bb1d80",
+    "scripts/ci/run_applications.sh": "be10b288f820aafc00468f29d13cf02db40c7f83eac871df444651620587d336",
+    "scripts/ci/prepare_petclinic.py": "a118d07e548f6464a3c541b15bcd957b9567ede3b1043e9a5f66aad5b02fd051",
+    "manifests/petclinic-terminal-controls-v2.json": "b7b5751dcdb6437c64d903964b1817be6fc08675a95eba6cc5837344fa1707ae",
+    "manifests/petclinic-candidates-v1.json": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
+    "scripts/run_petclinic_pair_job_v2.mjs": "535f467ad823c5ad26cbfe1d961606d87aaa91ba77a272ab4e56c646d0dbcb47",
+    "scripts/petclinic_job_binding.mjs": "0bba4476c37db6615a2049995853d20c965a92f47f3f0a467b06dd6127814d14",
+    "scripts/petclinic_terminal_campaign.py": "fa9e0d3a45066b4b143dfd5f5c9216a0ee1adfea2f0d946c4f124ddfcdaaf3f2",
+    "scripts/run_petclinic_terminal_campaign.py": "edfe78559ce44146dc76e1875223e7c989343de26f7c5220844b0b86c529bf05",
+    "scripts/validate_petclinic_terminal_campaign.py": "e038b0e5449c9154677d83eb4b4565e3c7fc9f0b45ae4e1c4b1a24c75a4acace",
+    "scripts/petclinic_terminal_outcomes.py": "2a18771c861e1e9628107a20cdb06b092e762b6931f63079f3c839ffdeca1f81",
+    "scripts/summarize_petclinic_integrity_components.py": "b275004631c141530aa92470bd21dfb1dcd052a9de28172af9a39f8c1b98af20",
+    "scripts/summarize_petclinic_oracle_components.py": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9",
+    "scripts/validate_petclinic_integrity.py": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "scripts/petclinic_integrity.mjs": "60d5f484a3f4939753bf68d5a581a220dd727681beda8cc2989cb18969df6bc1",
+    "scripts/petclinic_response_capture.mjs": "db710ed6d36aac38405b4cc746d5e0ee1c95a54e76e7d2860477f5c24f7d5868",
+    "scripts/petclinic_cleanup.mjs": "a30e5b89c813b67b37e537b0b4c1aac3caa3892d13ff14dad547d3780be01e3c",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "protocol/petclinic-terminal-dispatch-v2.md": "5f4f7e613a129bb76912ee4f571ad5dc9f00f1fe5ca79fb6504787b300339b54"
+  },
+  "environment": {
+    "petclinic-bootstrap.json": "26be6d5e7689bde8ce1420d58f09a3f7f50c1792e288c05bb521603e5881f235",
+    "runtime-versions.json": "04f7799a5834536975099cf03209585d4ccc8ec0f66f929d1c648b75a2c1a65f",
+    "browser.json": "62b0aecfb63570b07063206f6626d74e788a3eea21d05ca215fd87f5eb529c02"
+  },
+  "primary_freeze_complete": false,
+  "pair_timeout_s": 120,
+  "campaign_timeout_s": 480,
+  "scope": "Six previously exposed controls; no new boundaries; no resume"
+}

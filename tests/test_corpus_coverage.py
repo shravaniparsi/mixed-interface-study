@@ -137,3 +137,14 @@ class CorpusCoverageTests(unittest.TestCase):
         row=next(r for r in self.build()['rows'] if r['inventory_entry'].get('candidate_id')=='profile-username-empty')
         self.assertEqual(row['path_family'],'realworld_legacy')
         self.assertNotIn('manifests/realworld-rejection-integration-qualification.json',row['recorded_engineering_evidence'])
+
+    def test_petclinic_selected_paths_only(self):
+        rows=[r for r in self.build()['rows'] if r['path_family']=='petclinic_terminal_controls']
+        self.assertEqual(len(rows),6)
+        for row in rows:
+            self.assertEqual(row['open_binding_gaps'],['petclinic_unexpected_prefix_outcome_extraction'])
+            self.assertFalse(row['primary_dispatch_ready'])
+
+    def test_changed_petclinic_registry_does_not_inherit_qualification(self):
+        self.selections['petclinic_terminal']['registry_semantic_sha256']='changed'
+        self.assertFalse(any(r['path_family']=='petclinic_terminal_controls' for r in self.build()['rows']))
