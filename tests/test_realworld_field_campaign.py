@@ -54,3 +54,19 @@ class FieldCampaignTests(unittest.TestCase):
     def test_expected_selection_does_not_claim_identity_or_unknown_policy_cases(self):
         for c in self.registry['cases']:
             self.assertIn(c['workflow'],('article-create-edit','comment-create-delete'));self.assertIn(c['expectation']['outcome'],('accept','reject'))
+
+    def test_postrun_selection_loads_the_archived_field_registry(self):
+        import tempfile
+        from validate_realworld_field_campaign import read_selection
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'sources/manifests').mkdir(parents=True)
+            p.write(root/'sources/manifests/realworld-field-controls-v1.json',self.registry)
+            self.assertEqual(read_selection(root),self.registry)
+
+    def test_old_registry_filename_cannot_substitute_for_field_selection(self):
+        import tempfile
+        from validate_realworld_field_campaign import read_selection
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'sources/manifests').mkdir(parents=True)
+            p.write(root/'sources/manifests/realworld-rejection-controls-v1.json',self.registry)
+            with self.assertRaises(FileNotFoundError):read_selection(root)

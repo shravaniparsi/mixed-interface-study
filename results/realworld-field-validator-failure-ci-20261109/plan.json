@@ -1,0 +1,370 @@
+{
+  "source_commit": "d262414fba618c340faf21452240af8770389b61",
+  "plan": {
+    "schema_version": 2,
+    "kind": "terminal_campaign_plan",
+    "terminal_policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "schedule": {
+      "schema_version": 1,
+      "kind": "paired_repeat_plan",
+      "pairs": [
+        {
+          "pair_id": "article-valid",
+          "workflow_id": "article-create-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-valid-api-r1",
+            "ui": "article-valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "article-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "comment-body-valid",
+          "workflow_id": "comment-create-delete",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "comment-body-valid-api-r1",
+            "ui": "comment-body-valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "comment-body-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "article-body-whitespace",
+          "workflow_id": "article-create-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-body-whitespace-api-r1",
+            "ui": "article-body-whitespace-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "article-body-whitespace",
+          "reference_control": "article-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "article-tags-omitted",
+          "workflow_id": "article-create-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-tags-omitted-api-r1",
+            "ui": "article-tags-omitted-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "article-tags-omitted",
+          "reference_control": "article-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "comment-body-whitespace",
+          "workflow_id": "comment-create-delete",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "comment-body-whitespace-api-r1",
+            "ui": "comment-body-whitespace-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "comment-body-whitespace",
+          "reference_control": "comment-body-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "article-body-null",
+          "workflow_id": "article-create-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-body-null-api-r1",
+            "ui": "article-body-null-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "article-body-null",
+          "reference_control": "article-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "article-body-empty",
+          "workflow_id": "article-create-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "article-body-empty-api-r1",
+            "ui": "article-body-empty-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "article-body-empty",
+          "reference_control": "article-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "comment-body-null",
+          "workflow_id": "comment-create-delete",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "comment-body-null-api-r1",
+            "ui": "comment-body-null-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "comment-body-null",
+          "reference_control": "comment-body-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "comment-body-empty",
+          "workflow_id": "comment-create-delete",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "comment-body-empty-api-r1",
+            "ui": "comment-body-empty-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "comment-body-empty",
+          "reference_control": "comment-body-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        }
+      ],
+      "initial_jobs": [
+        {
+          "job_id": "initial-000",
+          "pair_id": "article-valid",
+          "target_pair_id": "article-valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-001",
+          "pair_id": "comment-body-valid",
+          "target_pair_id": "comment-body-valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "comment-body-valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "comment-body-valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-002",
+          "pair_id": "article-body-whitespace",
+          "target_pair_id": "article-body-whitespace",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-body-whitespace-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-body-whitespace-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-003",
+          "pair_id": "article-tags-omitted",
+          "target_pair_id": "article-tags-omitted",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-tags-omitted-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-tags-omitted-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-004",
+          "pair_id": "comment-body-whitespace",
+          "target_pair_id": "comment-body-whitespace",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "comment-body-whitespace-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "comment-body-whitespace-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-005",
+          "pair_id": "article-body-null",
+          "target_pair_id": "article-body-null",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-body-null-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-body-null-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-006",
+          "pair_id": "article-body-empty",
+          "target_pair_id": "article-body-empty",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "article-body-empty-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "article-body-empty-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-007",
+          "pair_id": "comment-body-null",
+          "target_pair_id": "comment-body-null",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "comment-body-null-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "comment-body-null-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-008",
+          "pair_id": "comment-body-empty",
+          "target_pair_id": "comment-body-empty",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "comment-body-empty-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "comment-body-empty-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        }
+      ],
+      "extra_candidate_attempts": 2,
+      "resume": false,
+      "primary_freeze_complete": false,
+      "scope": "Planning only; adapter integration and primary qualification remain required",
+      "plan_sha256": "891f25493eaeed0c3cdae4fbdde08ea682cc2d0d73a8bfbd910ab85d3d6af161"
+    },
+    "primary_freeze_complete": false,
+    "plan_sha256": "7ecb2c5ab76435fc376ff11157fd273e5ce4fe68ba752efb64e0baf195c3b87d"
+  },
+  "sources": {
+    ".github/workflows/realworld_v5.yml": "38866d9b01a64b74f638b2d32273691b2a0707c435627449f939d4a5933b1643",
+    "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "scripts/realworld_rejection_outcomes.py": "cca439676fdb9b71aa176de917efd9c778abc205fc295271909b467eda19c008",
+    "scripts/realworld_terminal_campaign.py": "b74150ac0f2b5084e11e721ee7a1d5c90d1130d8a452bed7e139140e619277c1",
+    "scripts/validate_realworld_field_campaign.py": "acf5e805f53c856acba0887a4af6518174356dbf29a7b6c0b4dd5cfb0ac78a63",
+    "scripts/run_realworld_field_campaign.py": "f4814c420d456ff8bda442eba737e875bf1c456393454a205a1adae43bc94a5f",
+    "scripts/run_realworld_pair_job_v5.py": "6072a58ee49229ccaab03f3c85fa3f7a8ebdb6e8e492ad60a3f3dba8d8499861",
+    "scripts/realworld_field_campaign.py": "eb9d92ed1d345ea0259e744594ec984fa96863c196e3954dd1dc408eb863e8b7",
+    "scripts/realworld_terminal_outcomes.py": "1bc8acb395be29264ffeab69cb18e00d1443f423e470f86b3cf5344d6302993b",
+    "scripts/summarize_realworld_paired_components.py": "8c09c2e766b1f2ba66910dd85025600c93b69e26eb28a9ce849a6807614bffd2",
+    "scripts/summarize_realworld_oracle_components.py": "46f84347c249007b5ce5f2fabbc8511053de5454a68115ce437073fe7f6513a4",
+    "scripts/validate_realworld_paired_controls.py": "3600ce6357312203af457d0a689053553bfec61e1652c6b7f8f60c96901ad758",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "scripts/realworld_paired_case.mjs": "a2f374f1651ef6b9e3c15c0c41067b9de79a91cc8181138468dceffabfef70c2",
+    "scripts/realworld_integrity.mjs": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "scripts/response_capture.mjs": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "scripts/realworld_normalization.mjs": "9384918883a253ff6ecad758417d89f0c921e664ba751818932fe7d8f5331b2b",
+    "scripts/phase_clock.mjs": "ea856d8870977c3e63137f8631c96ea6b2fd03aad850ca7875d3e2d365428f0a",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "src/mixed_interface/normalization.py": "35b15b2e31c4c5c9912341fa77d44e41b9925ee81c6a75b71a899ccff54c04cb",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "manifests/realworld-field-controls-v1.json": "2ae70f4ee9617f2451d546a1c3433e4a06f88b163fc7d7f8e6d5bbe968bfe2ef",
+    "protocol/realworld-field-dispatch-v5.md": "d58cf744d357649db5cd3936b9d40aecb442e502e1058f96e500c3998824acd5"
+  },
+  "primary_freeze_complete": false,
+  "scope": "Nine exposed article/comment field pairs; no boundary selection; no resume",
+  "pair_timeout_s": 180,
+  "cleanup_grace_s": 5,
+  "kill_wait_s": 2
+}

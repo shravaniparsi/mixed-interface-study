@@ -9,12 +9,18 @@ from mixed_interface.campaign_v2 import drive
 from mixed_interface.repetition import require
 
 
+def read_selection(directory):
+    registry=read(Path(directory)/'sources/manifests/realworld-field-controls-v1.json')
+    plan_for(registry)
+    return registry
+
+
 def validate(directory):
     directory=Path(directory);cert=read(directory/'plan.json')
     require(set(cert['sources'])==set(SOURCES),'Source inventory differs')
     for n,h in cert['sources'].items():
         require(sha(directory/'sources'/n)==h==sha(ROOT/n),'Source differs: '+n)
-    registry=read(directory/'sources/manifests/realworld-rejection-controls-v1.json')
+    registry=read_selection(directory)
     require(cert['plan']==plan_for(registry),'Plan differs')
     reconstructed=[]
     def execute(job):
