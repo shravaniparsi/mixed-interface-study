@@ -1,0 +1,15 @@
+# PetClinic prefix outcome interpretation v3
+
+The immutable v2 dispatcher and its six-control qualification remain unchanged. Version 3 prepares requirement-aware extraction for the existing eighteen-case development registry. It adds no application executions or dispatcher qualification.
+
+The prefix policy pins the full registry bytes and explicitly maps each case to accept, reject, or unresolved. Valid controls and the documented legal hyphenated name have an acceptance requirement. Omitted required fields and invalid telephone lengths have rejection requirements. The two whitespace cases retain unresolved domain policy. These bindings reuse the registry's pinned requirement sources and are not new defect adjudications.
+
+Evidence validity is checked against the observed HTTP response, separately from that requirement. The same identity, command, capture, state-read and cleanup guards apply. A fully observed 201 acceptance contrary to a rejection requirement, or a fully observed 400/422 validation rejection contrary to an acceptance requirement, produces a shared producer mismatch. Neither grants native-exclusive credit. Matched rejection requires both a rejection requirement and a fully observed 400/422 stopped prefix with unchanged state. Changed rejection state remains a shared mismatch.
+
+All other non-201 statuses, including server errors, authentication/authorization errors, throttling, redirects and unsupported success responses, produce incomplete application-response outcomes when their trace and stopped-prefix state evidence are complete. They are not matched validation rejections and cannot establish stable semantic evidence. The common policy permits bounded repeats with positive controls. Missing or contradictory evidence still halts; cleanup uncertainty takes precedence. Unknown runner assertions remain execution failures.
+
+For a recorded server-error tag, a derived view adapts only that tag to the legacy validator's stopped-prefix vocabulary. The HTTP status, response, trace and state are unchanged, and the raw record is never modified. The new classifier explicitly checks the original tag against the HTTP status before this adaptation.
+
+Native blocking on a documented legal hyphenated name retains its assigned native signal. Whitespace-only blocking stays in unresolved policy unless another independently specified check fails. Unexpected-prefix interpretation does not repair the runner's unsupported assertion paths or qualify malformed returned entities lacking complete binding evidence.
+
+Tests use actual archived control records and explicitly synthetic variants. The deterministic replay first verifies the complete source-qualified v2 archive, then interprets its twelve branches under v3. The other twelve candidates and the synthetic failure paths require versioned dispatcher integration and fresh bounded application checks before any runtime qualification. No primary freeze or corpus-readiness promotion follows from this preparation.
