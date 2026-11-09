@@ -9,7 +9,7 @@ def fixture(path):
     db=sqlite3.connect(path)
     db.executescript('''PRAGMA foreign_keys=ON;
     CREATE TABLE accounts_user(id INTEGER PRIMARY KEY,username TEXT,email TEXT,password TEXT,bio TEXT,image TEXT);
-    CREATE TABLE articles_article(id INTEGER PRIMARY KEY,slug TEXT,title TEXT,description TEXT,body TEXT,author_id INTEGER REFERENCES accounts_user(id));
+    CREATE TABLE articles_article(id INTEGER PRIMARY KEY,slug TEXT,title TEXT,summary TEXT,content TEXT,author_id INTEGER REFERENCES accounts_user(id));
     INSERT INTO accounts_user VALUES(7,'pilotresearch','pilot@example.com','synthetic-hash','baseline',NULL);
     INSERT INTO articles_article VALUES(10,'one','one','description','body',7),(11,'two','two','description','body',7),(12,'three','three','description','body',7);
     ''');db.commit();db.close()
@@ -57,3 +57,12 @@ class IdentityDatabaseTests(unittest.TestCase):
         selection=json.loads((ROOT/'manifests/realworld-identity-database-diagnostic-v1.json').read_bytes());registry=json.loads((ROOT/'manifests/realworld-boundary-registry-v1.json').read_bytes())
         self.assertEqual([c['candidate_id'] for c in selection['cases']],['profile-username-null','profile-username-length60','profile-username-length61'])
         for c in selection['cases']:self.assertEqual(c,next(x for x in registry['cases'] if x['candidate_id']==c['candidate_id']))
+
+    def test_projection_reads_actual_pinned_fixture_schema(self):
+        import hashlib
+        m=json.loads((ROOT/'manifests/realworld-identity-db-fixture-failure.json').read_bytes())
+        path=ROOT/m['evidence_directory']/'fixture.sqlite3'
+        self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),m['input_sha256']['fixture.sqlite3'])
+        value=project(path);self.assertEqual(value['article_column_mapping'],{'description':'summary','body':'content'})
+        self.assertEqual(value['user']['username'],'pilotresearch');self.assertEqual(len(value['articles']),3)
+        self.assertTrue(all(a['body']=='Fixture body.' and a['description']=='Fixture description' for a in value['articles']))

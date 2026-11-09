@@ -1,0 +1,296 @@
+{
+  "status": "incomplete",
+  "source_commit": "8dff6bda18721e8d00e6f2854a7a2cb389c04f53",
+  "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+  "selection": {
+    "kind": "exposed_case_database_diagnostic",
+    "registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    "cases": [
+      {
+        "candidate_id": "profile-username-null",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": null
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "reject",
+          "category": "implementation_control",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      {
+        "candidate_id": "profile-username-length60",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      {
+        "candidate_id": "profile-username-length61",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      }
+    ],
+    "repetitions": 1,
+    "primary_freeze_complete": false
+  },
+  "sources": {
+    "manifests/realworld-boundary-registry-v1.json": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    ".github/workflows/realworld_identity_db.yml": "72172d794799eeb5238fe869f4ae51ae2895b8e7d808c553abc7b87ca6f6e366",
+    "scripts/run_realworld_identity_database_diagnostic.py": "db91972f6e9106252e3c214cd3b9482e4ea293cfe82aad562576cd7edfd2008c",
+    "scripts/validate_realworld_identity_database_diagnostic.py": "1d82ecaa6d79c8f16d922237a47299a623d79d7466dda6107683fe161b0a7030",
+    "scripts/realworld_identity_db_state_v1.py": "1f2c7398841255fc106d2bbb4e6c652eef1fab8e3f035de85d8c035f41ab995f",
+    "scripts/ci/prepare_realworld_diagnostic.py": "bb5193a7412cbb52b20ae9fa07afe8508d1d6ab3367819b563ba1ed9993f1536",
+    "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "manifests/realworld-python-lock.txt": "75b6f6559bb5f3b13d32281be0dcb75a53cd2e9f238c296934bd903291ebf491",
+    "manifests/realworld-identity-database-diagnostic-v1.json": "8b0add10788304611aacd3f4b87b7b5840323cc6cba11a34484beeec37aa1b87",
+    "protocol/realworld-identity-database-diagnostic-v1.md": "22c08d238cc3126e87aafdfb919a413ead24bf1c6aeae2e4131b6c316bfda9d5"
+  },
+  "cases": [],
+  "fixture_trace": [
+    {
+      "sequence": 1,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/users",
+      "payload": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/users",
+      "status": 201,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "request",
+      "stage": "fixture",
+      "method": "PUT",
+      "path": "/api/user",
+      "payload": {
+        "user": {
+          "bio": "Baseline profile biography."
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "response",
+      "stage": "fixture",
+      "method": "PUT",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Unique fixture article",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T14:59:21.065Z",
+          "updatedAt": "2026-11-09T14:59:21.065Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "unique-fixture-article",
+          "title": "Unique fixture article"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T14:59:21.075Z",
+          "updatedAt": "2026-11-09T14:59:21.075Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "duplicate-fixture-title",
+          "title": "Duplicate fixture title"
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T14:59:21.085Z",
+          "updatedAt": "2026-11-09T14:59:21.085Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "duplicate-fixture-title-1c688664",
+          "title": "Duplicate fixture title"
+        }
+      }
+    }
+  ],
+  "primary_freeze_complete": false,
+  "frontend_executed": false,
+  "application_sources": {
+    "apps/accounts/api.py": "2433d5259587a308fa973deb4e7b618904098ad8e552ad51743bf2a69b78b6c3",
+    "apps/accounts/schemas.py": "79a9f98cd329c022a4a7bf969b9ae1021c55016cc9da796fa05cef87f2b4734c",
+    "apps/accounts/models.py": "8dd1e84c973666582c1c21fa50a3cbeba6aa9107cf95c565fd5b66d6d4184016",
+    "apps/articles/api.py": "fce346076918c9eee1726db54fabcaab706fe3c17814d2531dd47793a9744f16",
+    "apps/articles/schemas.py": "8bda800e15aca2255ab31167eb800c2698fcffd212a206e765e31d4134063893"
+  },
+  "bootstrap_sha256": "657de7d33ea795e7e67837c1d6890d4fa8b0f229a16bb1cc4d1b0ea7f8906fbd",
+  "fixture_cleanup": {
+    "pid": 2366,
+    "exit_confirmed": true,
+    "descendant_cleanup": "not_established",
+    "signals": [
+      "SIGTERM"
+    ],
+    "errors": [],
+    "returncode": -15,
+    "elapsed_s": 0.007346914000002869
+  },
+  "error_type": "ValueError",
+  "error": "Ambiguous fixture tables"
+}
