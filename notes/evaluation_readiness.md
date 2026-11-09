@@ -1,3 +1,7 @@
+# Corpus readiness reconciled
+
+The v2 review preserves all 75 retained entries and reconciles five observed identity paths. Named engineering evidence now covers 44 entries; no row gains primary dispatch permission. Execution requirements and unresolved/incomplete outcomes are separate. `notes/corpus_readiness_review_v2.md` lists the remaining work packages. Primary timing is prospectively scoped to monotonic branch totals; PetClinic still needs that timer, and cross-workflow phase comparisons are deferred. P2–P5 remain open. No new application execution or primary sample was added.
+
 # Live paired database diagnostic verified
 
 Four exposed pairs, eight branches and twenty branch-local SQLite backups were independently reconstructed from hosted run 42651908419. The bio and 60-character controls completed API/native UI edits; null returned 422 with unchanged selected state; both 61-character branches committed the requested username despite HTTP 500 and executed no continuation. Their semantic evidence remains incomplete, and username length policies remain unresolved. See `notes/realworld_paired_database_integration.md`. Next: review identity/corpus bindings and remaining batch/cost gates. No primary samples were added; P2–P5 remain open.

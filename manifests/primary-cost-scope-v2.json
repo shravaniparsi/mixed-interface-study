@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "status": "prospectively_registered; implementation_and_preflight_incomplete",
+  "protocol": "protocol/primary-cost-scope-v2.md",
+  "primary_measure": "monotonic_branch_elapsed_seconds",
+  "start": "before_independent_branch_reset_and_startup",
+  "end": "after_raw_evidence_validation_and_confirmed_teardown_before_controller_summary_serialization",
+  "common_setup": "report_separately; no_channel_dependent_allocation",
+  "nested_intervals": "do_not_add_to_enclosing_total",
+  "unavailable_timing": "retain_explicitly; no_imputation_from_request_sums_or_wall_clock_timestamps",
+  "direct_comparison_requires": [
+    "same_workflow",
+    "same_candidate",
+    "same_instrumentation_version",
+    "same_runtime",
+    "same_cost_boundary"
+  ],
+  "deferred_claims": [
+    "cross_workflow_exclusive_phase_comparisons",
+    "isolated_assigned_action_speed",
+    "selector_efficiency_without_separate_calibration"
+  ],
+  "audited_examples": {
+    "realworld_identity_v7": {
+      "source": "scripts/run_realworld_pair_job_v7.py",
+      "field": "branches[].total_s",
+      "unit": "seconds",
+      "status": "available_in_qualified_identity_diagnostic"
+    },
+    "quartz_v2": {
+      "source": "scripts/run_quartz_pair_job_v2.mjs",
+      "field": "cases[].elapsed_ms",
+      "unit": "milliseconds",
+      "status": "available_in_qualified_controls"
+    },
+    "petclinic_v3": {
+      "source": "scripts/run_petclinic_pair_job_v3.mjs",
+      "field": null,
+      "status": "monotonic_branch_total_missing"
+    }
+  },
+  "primary_freeze_complete": false,
+  "execution_authorized": false,
+  "excluded_controller_bookkeeping": "final_controller_summary_serialization; disclose_boundary",
+  "audit_source_sha256": {
+    "scripts/run_realworld_pair_job_v7.py": "e2cc71876b3ece1191b4f07af3d1040bf409acc45cc51a855aaf1808601e42f3",
+    "scripts/run_quartz_pair_job_v2.mjs": "9b14fd66d6ba9e074a74c134600856856cb55bd8316cf7c860972945b1533ca3",
+    "scripts/run_petclinic_pair_job_v3.mjs": "cf25ca3bcd0c977023c729469c11ec55a405f304e6c6c62decc7b60c7447afc9"
+  }
+}

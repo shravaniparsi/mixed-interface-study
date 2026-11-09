@@ -1,0 +1,13 @@
+# Retained corpus readiness review, version 2
+
+This review supplements the unchanged version 1 coverage map with independently verified identity evidence. It preserves all 73 paired catalog entries, two singleton controls, 148 logical branch slots, eight workflows, source-case hashes, reference controls and exposure strata. These are accounting units, not independent observations. No row authorizes primary dispatch.
+
+The five exact exposed identity entries have observed-path evidence. Bio, null username and the 60/61-character usernames have version 7 branch-local database measurements. Empty username has a completed rejection pair in the retained version 6 halted campaign; it acquires no database evidence from another case or run. Each qualification is checked against the complete registered source-case digest and the archived requirement policy.
+
+For those exact observations, the older generic missing-identity-helper and missing-extractor labels are no longer the current backlog. The baseline fields remain for provenance, and a separate field records the gaps resolved for the observed path. Three legacy identity entries still need a general primary campaign binding; the bounded version 7 diagnostic cannot supply that authorization. Null/empty rejection evidence does not qualify unexpected acceptance. The existing bio control keeps its original prospective binding and gains supplementary database evidence.
+
+Execution requirements and outcome limits are reported separately. Unknown product requirements, incomplete response semantics and variable observations remain attached to their cases. An unresolved policy need not prevent collecting descriptive observations if the final protocol explicitly retains that category; it cannot support an adjudicated defect claim. Missing required evidence still follows the registered terminal halt rules. The 61-character case is not silently removed or marked complete because its database mutation is measurable.
+
+The generator first regenerates and checks the original source-pinned map, independently verifies both identity archives, then constructs the review. CI rejects mismatched source cases, missing diagnostic branches, changed policies, lost rows or unsupported readiness promotion. Primary P2–P5 remain open.
+
+The execution backlog is: bind the remaining legacy and generated RealWorld paths; bind the three identity paths into the primary campaign; provide the Quartz primary selection and bounded batches; retain explicit unexpected-acceptance handling and singleton accounting. The twenty untouched Quartz mutation pairs remain unexecuted. No new blanket control or lifecycle campaign is implied for unchanged qualified paths.
