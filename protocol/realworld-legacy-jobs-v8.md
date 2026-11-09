@@ -13,3 +13,11 @@ The title policies remain unknown. Empty or unresolvable returned references and
 The ten initial unit tests exercise exact selection, altered payloads/policies/routes, reference binding, singleton cardinality, missing evidence and cleanup precedence. They do not execute an application or demonstrate successful native singleton extraction.
 
 Next, add trace-qualified semantic fixtures for successful native controls and the title/duplicate reference paths, resolving extractor gaps without changing unknown policies or repairing input. Then implement a bounded supervisor and independent archive verifier for this mixed-cardinality selection. Singleton outcomes need explicit continue/halt accounting outside the paired repeat machinery. Retain interrupted and failed attempts; no automatic retry or resume. Perform hosted qualification only on this exposed selection. Primary batching, repeat integration and freeze remain separate gates.
+
+## Native semantic regression qualification
+
+The native singleton extractor now uses a versioned reducer that selects the comments-list response from the continuation phase. The earlier reducer selected the first native list response, which belongs to the producer page before creation and is empty. This made a supported comment-load check appear unsupported. No archived reducer or raw trace was edited.
+
+Eight additional tests use byte-preserved native traces from hosted run 42401381642, artifact 13585144786. The fixture provenance lists all file hashes. Test envelopes explicitly change oracle revision to 3 and assume v8 completed transport and confirmed backend cleanup. These are synthetic semantic tests, not v8 live qualification. Both native success paths classify cleanly; missing continuation-phase lists, wrong comment identities and absent cleanup confirmation fail closed. Successful singletons remain ineligible for paired contrasts.
+
+Next: qualify the title and duplicate-reference semantic paths, then add mixed-cardinality supervision and independent archive verification before hosted execution. New runner timing and cleanup remain unqualified.

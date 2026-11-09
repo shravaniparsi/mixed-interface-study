@@ -7,7 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 from realworld_terminal_campaign import ROOT, read, sha, reducer
 from mixed_interface.repetition import digest, require
-from realworld_terminal_outcomes import classify_branch
+from realworld_legacy_terminal_v8 import classify_branch
 from realworld_rejection_outcomes import pair_result
 
 SOURCE = 'manifests/realworld-boundary-registry-v1.json'
@@ -19,6 +19,7 @@ IDS = ('article-valid', 'article-update-unique-partial', 'article-title-150',
 REFERENCES = {'article-create-edit': 'article-valid',
               'article-update-comment': 'article-update-unique-partial'}
 SOURCES = {'run_realworld_legacy_job_v8.py', 'realworld_legacy_jobs_v8.py',
+           'realworld_legacy_reducer_v8.py', 'realworld_legacy_terminal_v8.py',
            'realworld_paired_case.mjs', 'run_realworld_pilot.py',
            'response_capture.mjs', 'realworld_integrity.mjs', 'phase_clock.mjs',
            'realworld_normalization.mjs', 'validate_realworld_paired_controls.py',

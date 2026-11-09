@@ -1,3 +1,7 @@
+# Native singleton extraction regression fixed
+
+The previous v8 CI passed. Native semantic tests exposed a phase-selection bug: the paired reducer used the pre-creation native comments list to verify the post-creation continuation. A versioned singleton reducer now selects continuation-phase evidence. Eight added tests cover both native successes, the regression, trace tampering and cleanup precedence using explicitly synthetic v8 envelopes over retained historic traces. This does not qualify live v8 execution. Next: title/duplicate-reference semantic paths, then bounded hosted supervision.
+
 # Legacy RealWorld job implementation
 
 Version 8 binds the five remaining paired candidates and two native-only controls, with two paired references (16 branch slots). Payloads and unknown title policies remain exact copies of the development registry. Singletons have separate extraction records and cannot enter paired comparisons. Ten adversarial unit tests cover selection and cardinality. Semantic success/reference-failure fixtures, bounded campaign supervision and hosted qualification remain pending; the 44-entry evidence coverage count is unchanged. See `protocol/realworld-legacy-jobs-v8.md`. No application runs or primary samples were added.
