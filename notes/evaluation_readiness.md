@@ -1,3 +1,7 @@
+# Latest: generated evidence loader and terminal bridge
+
+The v1 loader validates exact jobs, archived source bytes, raw hashes, per-branch reset bytes and evidence paths. The pair bridge preserves terminal precedence, unknown policies and comparison gates. Tests use synthetic bundles and a synthetic terminal matrix; the positive raw-trace/live path remains unqualified. No readiness counts changed. See `protocol/realworld-generated-loader-v1.md`. Next: bounded supervisor, branch timing, owned cleanup and complete positive trace fixtures.
+
 # Latest: generated RealWorld offline bindings
 
 Nine pairs and eighteen branches now have exact source-pinned offline jobs, same-producer reference bindings, producer/consumer intent resolution and a fail-closed pure component-extractor binding. Synthetic tests preserve omitted/null/empty/whitespace distinctions and reject changed jobs, routes and missing integrity evidence. Runtime dispatch and pair-terminal qualification remain open; no readiness counts or application evidence changed. See `protocol/realworld-generated-bindings-v1.md`. Next: source-qualified file loader and paired terminal-v2 bridge.
