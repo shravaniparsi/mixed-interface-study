@@ -25,6 +25,15 @@ case "$STUDY_SUITE" in
   quartz-lifecycle-controls)
     timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_quartz_lifecycle.py
     ;;
+  quartz-terminal-controls)
+    timeout --signal=TERM --kill-after=120s 480s python scripts/run_quartz_terminal_campaign.py \
+      --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \
+      --node "$(command -v node)" --python "$(command -v python)" \
+      --output "$CI_ARTIFACT_DIR/quartz-terminal-controls" \
+      --playwright-module "$PLAYWRIGHT_MODULE_PATH" --chrome-executable "$CHROME_EXECUTABLE" \
+      --environment-file "$CI_ARTIFACT_DIR/runtime-versions.json" --browser-info "$CI_ARTIFACT_DIR/browser.json"
+    python scripts/validate_quartz_terminal_campaign.py "$CI_ARTIFACT_DIR/quartz-terminal-controls"
+    ;;
   quartz-repeat-controls)
     timeout --signal=TERM --kill-after=120s 480s python scripts/run_quartz_repeat_campaign.py \
       --runtime "$STUDY_RUNTIME/quartz" --java "$JAVA_HOME/bin/java" \

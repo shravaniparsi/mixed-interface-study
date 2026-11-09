@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/quartz_terminal_outcomes.py',
+    'scripts/run_quartz_pair_job_v2.mjs',
+    'scripts/run_quartz_terminal_campaign.py',
+    'scripts/validate_quartz_terminal_campaign.py',
+    'tests/test_quartz_terminal_outcomes.py',
+    'protocol/quartz-terminal-integration-v2.md',
     "src/mixed_interface/terminal_outcomes.py",
     "src/mixed_interface/campaign_v2.py",
     "tests/test_terminal_campaign.py",
