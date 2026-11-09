@@ -1,0 +1,11 @@
+# Fresh exposed legacy diagnostic, version 9
+
+This is a new engineering attempt after v8 halted on title-151. It does not resume, replace or complete run 42702655033. All its evidence and five unstarted jobs remain recorded as such. The v9 selection includes fresh article-create and unique-update reference controls followed by the five exposed cases whose v8 jobs were unstarted: whitespace title, duplicate partial update, duplicate full update, native comment control and native profile control.
+
+The seven jobs contain twelve independently reset branches. Payloads, policies, producer routes, continuation routes and branch order are exactly those already bound by the frozen v8 worker registry. Worker-local job IDs are reused only inside a new v9 output root; attempt identity includes the hosted run and source commit. The full worker registry remains present for source qualification, but the v9 supervisor admits only the exact seven-job plan. The 150/151-character title cases are not dispatched again in this qualification sweep. This selection is not a primary-study exclusion rule or a change to retained corpus membership.
+
+The frozen v8 per-job runner, adapter, extraction and loader are reused without editing. New v9 supervision and independent reconstruction apply the same terminal policy and separate singleton accounting. Either reference must be clean. A halt stops the sweep even on its final job. Every started attempt is retained; no automatic retry, repetition, replacement or resume is allowed.
+
+Each worker has a 240-second deadline. Seven worker ceilings plus cleanup and 120 seconds of controller allowance fit inside the 1920-second outer execution limit. The execution step allows 34 minutes; the whole workflow allows 45 minutes including setup. Source/runtime/bootstrap hashes and exact attempt inventories are validated before a completed or terminal-halted diagnostic is certified. Executor failures remain retained but uncertified.
+
+This work provides engineering qualification for the remaining exposed paths. It adds no primary samples, defect prevalence estimate or independent defect count. The two same-backend output-validation observations are treated as one provisional mechanism family in `notes/output_validation_mechanism_reconciliation.md`; distinct root causes or defects require separate adjudication.

@@ -1,3 +1,7 @@
+# Fresh v9 legacy sweep verified
+
+Seven jobs/twelve branches completed in run 42708069641. Both reference pairs and both native singletons were clean. Whitespace titles returned empty references; duplicate partial updates returned unresolvable references. Duplicate full updates completed both continuations, but literal generated-slug comparison left their pair incomparable. All three incomparable results are retained. See `notes/realworld_fresh_legacy_integration.md`. Next: versioned branch-binding-aware reference normalization and offline replay, then corpus reconciliation. No primary samples were added.
+
 # Fresh remaining-legacy qualification prepared
 
 The username and article failures are reconciled as one provisional output-validation mechanism family, not independently counted defects. Version 9 prepares fresh article references plus the five exposed cases unstarted in v8: seven jobs and twelve branches. It preserves the v8 halt, frozen workers and unknown policies. Next: full CI and fresh hosted v9 qualification. See `protocol/realworld-fresh-legacy-v9.md` and `notes/output_validation_mechanism_reconciliation.md`.
