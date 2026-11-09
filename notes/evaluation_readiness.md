@@ -1,3 +1,7 @@
+# Current PetClinic terminal extraction preparation
+
+Twelve archived control branches now replay as six terminal pairs. Completed native blocking and changed rejected-state graphs have separate evidence handling and fixture tests. No new application execution or per-job dispatch qualification was added. Next is PetClinic immutable per-job dispatch. See [the preparation note](petclinic_terminal_extraction.md).
+
 # Current RealWorld rejection integration
 
 Three previously executed rejection pairs and three positive baselines passed hosted dispatch and independent reconstruction. Six HTTP 422 branches preserved readable observable state and did not continue. The classifier now treats unreadable post-rejection snapshots as incomplete evidence. Three rejection paths are mapped; unexpected acceptance remains unqualified. See [the qualification note](realworld_rejection_integration.md).

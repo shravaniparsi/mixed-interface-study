@@ -28,6 +28,13 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/petclinic_terminal_outcomes.py',
+    'scripts/prepare_petclinic_terminal.py',
+    'tests/test_petclinic_terminal_outcomes.py',
+    'protocol/petclinic-terminal-extraction-v2.md',
+    'manifests/petclinic-terminal-extraction-v2.json',
+    'results/petclinic-terminal-replay-v2.json',
+    'notes/petclinic_terminal_extraction.md',
     'scripts/verify_realworld_rejection_archive.py',
     'manifests/realworld-rejection-integration-qualification.json',
     'notes/realworld_rejection_integration.md',
