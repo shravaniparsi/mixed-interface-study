@@ -1,0 +1,3419 @@
+{
+  "status": "completed",
+  "source_commit": "e26c23486e7436eb1cb01f23974248f920db80bd",
+  "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+  "selection": {
+    "kind": "exposed_article_creation_database_diagnostic",
+    "registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    "cases": [
+      {
+        "candidate_id": "article-valid",
+        "workflow": "article-create-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "accept",
+          "category": "implementation_control",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+          "statement": "All required nonempty fields supplied."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      {
+        "candidate_id": "article-title-150",
+        "workflow": "article-create-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+          "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      {
+        "candidate_id": "article-title-151",
+        "workflow": "article-create-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+          "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      }
+    ],
+    "repetitions": 1,
+    "primary_freeze_complete": false
+  },
+  "sources": {
+    "manifests/realworld-boundary-registry-v1.json": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    ".github/workflows/realworld_article_db.yml": "1c02a1039efd61132d008f68677bc228277413a3b64b05fa467b511f4e5cb652",
+    "scripts/run_realworld_article_database_diagnostic.py": "2806e839a2baef5cc17a82737cccb43c740cbaaa47111cd280eec7cff0741534",
+    "scripts/validate_realworld_article_database_diagnostic.py": "a1decd2a67ba7bca71c1709f656a5fe1638f7f2f2eb75fa0b9e48d1e4f8a441f",
+    "scripts/realworld_article_db_state_v1.py": "d9e1049c172218d12792284bbb1fa76ef10d41dab1495d4af9c785f560f027f5",
+    "scripts/ci/prepare_realworld_diagnostic.py": "bb5193a7412cbb52b20ae9fa07afe8508d1d6ab3367819b563ba1ed9993f1536",
+    "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "manifests/realworld-python-lock.txt": "75b6f6559bb5f3b13d32281be0dcb75a53cd2e9f238c296934bd903291ebf491",
+    "manifests/realworld-article-database-diagnostic-v1.json": "001727e187cfb065a378e8c53118f76d7119abd6519f4498ed9a2facddcdebfe",
+    "protocol/realworld-article-database-diagnostic-v1.md": "aaafe16ac4de2e61a1da89e3dff959b0b477cbc0c2586473969536dd25d2b5cd"
+  },
+  "cases": [
+    {
+      "candidate_id": "article-valid",
+      "spec": {
+        "candidate_id": "article-valid",
+        "workflow": "article-create-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "accept",
+          "category": "implementation_control",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+          "statement": "All required nonempty fields supplied."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      "reset_sha256": "f08ca0341b53f3e74c853fa5f362730c1fd37a225ae926706bf66deac9769b40",
+      "snapshots": {
+        "before": {
+          "file": "article-valid/before.sqlite3",
+          "sha256": "676d43c800076caa44c8ca1847e3c28b5eb0951f287e5febf5f886de8ecde2f7",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "immediate": {
+          "file": "article-valid/immediate.sqlite3",
+          "sha256": "9afc16b1d25a5f2d216054dbc5fcd20509aae1af7dfb1509b943d84ca722edb3",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_stop": {
+          "file": "article-valid/after_stop.sqlite3",
+          "sha256": "b6d285d764b6af464c7a61c4c77811f8f59cd029b2ae2d1580b0a86226e9e38e",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_restart": {
+          "file": "article-valid/after_restart.sqlite3",
+          "sha256": "3349fa3948a20883f534071c9d7de6a70e2b1d84035c41542f74053b1ab4950d",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "type": "backend_started",
+          "stage": "initial"
+        },
+        {
+          "sequence": 2,
+          "type": "request",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "payload": {
+            "user": {
+              "email": "pilot@example.com",
+              "password": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "type": "response",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "status": 200,
+          "data": {
+            "user": {
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "type": "database_snapshot",
+          "stage": "before",
+          "file": "article-valid/before.sqlite3",
+          "sha256": "676d43c800076caa44c8ca1847e3c28b5eb0951f287e5febf5f886de8ecde2f7"
+        },
+        {
+          "sequence": 5,
+          "type": "request",
+          "stage": "prefix",
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "title": "Boundary pilot article",
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "tagList": [
+                "pilot"
+              ]
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "type": "response",
+          "stage": "prefix",
+          "method": "POST",
+          "path": "/api/articles",
+          "status": 201,
+          "data": {
+            "article": {
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "createdAt": "2026-11-09T21:42:24.009Z",
+              "updatedAt": "2026-11-09T21:42:24.009Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [
+                "pilot"
+              ],
+              "slug": "boundary-pilot-article",
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "type": "database_snapshot",
+          "stage": "immediate",
+          "file": "article-valid/immediate.sqlite3",
+          "sha256": "9afc16b1d25a5f2d216054dbc5fcd20509aae1af7dfb1509b943d84ca722edb3"
+        },
+        {
+          "sequence": 8,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 9,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "payload": null
+        },
+        {
+          "sequence": 11,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:24.009Z",
+                "updatedAt": "2026-11-09T21:42:24.009Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 12,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "payload": null
+        },
+        {
+          "sequence": 13,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:24.009Z",
+                "updatedAt": "2026-11-09T21:42:24.009Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 14,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 15,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.907Z",
+              "updatedAt": "2026-11-09T21:42:22.907Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 17,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.917Z",
+              "updatedAt": "2026-11-09T21:42:22.917Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "payload": null
+        },
+        {
+          "sequence": 19,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.926Z",
+              "updatedAt": "2026-11-09T21:42:22.926Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-2c695cd6",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 20,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/boundary-pilot-article",
+          "payload": null
+        },
+        {
+          "sequence": 21,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/boundary-pilot-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "createdAt": "2026-11-09T21:42:24.009Z",
+              "updatedAt": "2026-11-09T21:42:24.009Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [
+                "pilot"
+              ],
+              "slug": "boundary-pilot-article",
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        {
+          "sequence": 22,
+          "type": "backend_stopped",
+          "stage": "before_restart",
+          "cleanup": {
+            "pid": 2548,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007332893000004503
+          }
+        },
+        {
+          "sequence": 23,
+          "type": "database_snapshot",
+          "stage": "after_stop",
+          "file": "article-valid/after_stop.sqlite3",
+          "sha256": "b6d285d764b6af464c7a61c4c77811f8f59cd029b2ae2d1580b0a86226e9e38e"
+        },
+        {
+          "sequence": 24,
+          "type": "backend_started",
+          "stage": "restart"
+        },
+        {
+          "sequence": 25,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 26,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 27,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "payload": null
+        },
+        {
+          "sequence": 28,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:24.009Z",
+                "updatedAt": "2026-11-09T21:42:24.009Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 29,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "payload": null
+        },
+        {
+          "sequence": 30,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:24.009Z",
+                "updatedAt": "2026-11-09T21:42:24.009Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "boundary-pilot-article",
+                "title": "Boundary pilot article"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 31,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 32,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.907Z",
+              "updatedAt": "2026-11-09T21:42:22.907Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 33,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 34,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.917Z",
+              "updatedAt": "2026-11-09T21:42:22.917Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 35,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "payload": null
+        },
+        {
+          "sequence": 36,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.926Z",
+              "updatedAt": "2026-11-09T21:42:22.926Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-2c695cd6",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 37,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/boundary-pilot-article",
+          "payload": null
+        },
+        {
+          "sequence": 38,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/boundary-pilot-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "createdAt": "2026-11-09T21:42:24.009Z",
+              "updatedAt": "2026-11-09T21:42:24.009Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [
+                "pilot"
+              ],
+              "slug": "boundary-pilot-article",
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        {
+          "sequence": 39,
+          "type": "database_snapshot",
+          "stage": "after_restart",
+          "file": "article-valid/after_restart.sqlite3",
+          "sha256": "3349fa3948a20883f534071c9d7de6a70e2b1d84035c41542f74053b1ab4950d"
+        },
+        {
+          "sequence": 40,
+          "type": "backend_stopped",
+          "stage": "final",
+          "cleanup": {
+            "pid": 2559,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007272560000004091
+          }
+        }
+      ],
+      "status": "completed",
+      "prefix_status": 201,
+      "readback_paths": [
+        "/api/user",
+        "/api/articles?author=pilotresearch",
+        "/api/articles",
+        "/api/articles/unique-fixture-article",
+        "/api/articles/duplicate-fixture-title",
+        "/api/articles/duplicate-fixture-title-2c695cd6",
+        "/api/articles/boundary-pilot-article"
+      ],
+      "cleanup_before_restart": {
+        "pid": 2548,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007332893000004503
+      },
+      "cleanup_final": {
+        "pid": 2559,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007272560000004091
+      }
+    },
+    {
+      "candidate_id": "article-title-150",
+      "spec": {
+        "candidate_id": "article-title-150",
+        "workflow": "article-create-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+          "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      "reset_sha256": "f08ca0341b53f3e74c853fa5f362730c1fd37a225ae926706bf66deac9769b40",
+      "snapshots": {
+        "before": {
+          "file": "article-title-150/before.sqlite3",
+          "sha256": "0472389f57b08242fdfa9791bd74481cc4ff9a45e9001dd4e54d07e5bda4fcb8",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "immediate": {
+          "file": "article-title-150/immediate.sqlite3",
+          "sha256": "490515e8b6b383bf2fed3f4560e138de7b7de0c411bb31afc3e843d989464594",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_stop": {
+          "file": "article-title-150/after_stop.sqlite3",
+          "sha256": "621d6766e23a374d16871e44d9a3ca0d84678cc6a5eb7ecab48e23a4655bbaba",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_restart": {
+          "file": "article-title-150/after_restart.sqlite3",
+          "sha256": "90ed14b518441fa8332d9e955acfe164888a53d641dbab419121a3adba18bd58",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "type": "backend_started",
+          "stage": "initial"
+        },
+        {
+          "sequence": 2,
+          "type": "request",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "payload": {
+            "user": {
+              "email": "pilot@example.com",
+              "password": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "type": "response",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "status": 200,
+          "data": {
+            "user": {
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "type": "database_snapshot",
+          "stage": "before",
+          "file": "article-title-150/before.sqlite3",
+          "sha256": "0472389f57b08242fdfa9791bd74481cc4ff9a45e9001dd4e54d07e5bda4fcb8"
+        },
+        {
+          "sequence": 5,
+          "type": "request",
+          "stage": "prefix",
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "tagList": [
+                "pilot"
+              ]
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "type": "response",
+          "stage": "prefix",
+          "method": "POST",
+          "path": "/api/articles",
+          "status": 201,
+          "data": {
+            "article": {
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "createdAt": "2026-11-09T21:42:26.321Z",
+              "updatedAt": "2026-11-09T21:42:26.321Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [
+                "pilot"
+              ],
+              "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "type": "database_snapshot",
+          "stage": "immediate",
+          "file": "article-title-150/immediate.sqlite3",
+          "sha256": "490515e8b6b383bf2fed3f4560e138de7b7de0c411bb31afc3e843d989464594"
+        },
+        {
+          "sequence": 8,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 9,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "payload": null
+        },
+        {
+          "sequence": 11,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:26.321Z",
+                "updatedAt": "2026-11-09T21:42:26.321Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 12,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "payload": null
+        },
+        {
+          "sequence": 13,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:26.321Z",
+                "updatedAt": "2026-11-09T21:42:26.321Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 14,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 15,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.907Z",
+              "updatedAt": "2026-11-09T21:42:22.907Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 17,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.917Z",
+              "updatedAt": "2026-11-09T21:42:22.917Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "payload": null
+        },
+        {
+          "sequence": 19,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.926Z",
+              "updatedAt": "2026-11-09T21:42:22.926Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-2c695cd6",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 20,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "payload": null
+        },
+        {
+          "sequence": 21,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "createdAt": "2026-11-09T21:42:26.321Z",
+              "updatedAt": "2026-11-09T21:42:26.321Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [
+                "pilot"
+              ],
+              "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          }
+        },
+        {
+          "sequence": 22,
+          "type": "backend_stopped",
+          "stage": "before_restart",
+          "cleanup": {
+            "pid": 2594,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007280545000000416
+          }
+        },
+        {
+          "sequence": 23,
+          "type": "database_snapshot",
+          "stage": "after_stop",
+          "file": "article-title-150/after_stop.sqlite3",
+          "sha256": "621d6766e23a374d16871e44d9a3ca0d84678cc6a5eb7ecab48e23a4655bbaba"
+        },
+        {
+          "sequence": 24,
+          "type": "backend_started",
+          "stage": "restart"
+        },
+        {
+          "sequence": 25,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 26,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 27,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "payload": null
+        },
+        {
+          "sequence": 28,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:26.321Z",
+                "updatedAt": "2026-11-09T21:42:26.321Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 29,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "payload": null
+        },
+        {
+          "sequence": 30,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "status": 200,
+          "data": {
+            "articles": [
+              {
+                "description": "Boundary control description",
+                "createdAt": "2026-11-09T21:42:26.321Z",
+                "updatedAt": "2026-11-09T21:42:26.321Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [
+                  "pilot"
+                ],
+                "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.926Z",
+                "updatedAt": "2026-11-09T21:42:22.926Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.917Z",
+                "updatedAt": "2026-11-09T21:42:22.917Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title"
+              },
+              {
+                "description": "Fixture description",
+                "createdAt": "2026-11-09T21:42:22.907Z",
+                "updatedAt": "2026-11-09T21:42:22.907Z",
+                "favorited": false,
+                "favoritesCount": 0,
+                "author": {
+                  "following": false,
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "username": "pilotresearch"
+                },
+                "tagList": [],
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article"
+              }
+            ],
+            "articlesCount": 4
+          }
+        },
+        {
+          "sequence": 31,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 32,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.907Z",
+              "updatedAt": "2026-11-09T21:42:22.907Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 33,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 34,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.917Z",
+              "updatedAt": "2026-11-09T21:42:22.917Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 35,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "payload": null
+        },
+        {
+          "sequence": 36,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.926Z",
+              "updatedAt": "2026-11-09T21:42:22.926Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-2c695cd6",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 37,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "payload": null
+        },
+        {
+          "sequence": 38,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "createdAt": "2026-11-09T21:42:26.321Z",
+              "updatedAt": "2026-11-09T21:42:26.321Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [
+                "pilot"
+              ],
+              "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          }
+        },
+        {
+          "sequence": 39,
+          "type": "database_snapshot",
+          "stage": "after_restart",
+          "file": "article-title-150/after_restart.sqlite3",
+          "sha256": "90ed14b518441fa8332d9e955acfe164888a53d641dbab419121a3adba18bd58"
+        },
+        {
+          "sequence": 40,
+          "type": "backend_stopped",
+          "stage": "final",
+          "cleanup": {
+            "pid": 2605,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007280704999999443
+          }
+        }
+      ],
+      "status": "completed",
+      "prefix_status": 201,
+      "readback_paths": [
+        "/api/user",
+        "/api/articles?author=pilotresearch",
+        "/api/articles",
+        "/api/articles/unique-fixture-article",
+        "/api/articles/duplicate-fixture-title",
+        "/api/articles/duplicate-fixture-title-2c695cd6",
+        "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+      ],
+      "cleanup_before_restart": {
+        "pid": 2594,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007280545000000416
+      },
+      "cleanup_final": {
+        "pid": 2605,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007280704999999443
+      }
+    },
+    {
+      "candidate_id": "article-title-151",
+      "spec": {
+        "candidate_id": "article-title-151",
+        "workflow": "article-create-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [
+            "pilot"
+          ]
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+          "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      "reset_sha256": "f08ca0341b53f3e74c853fa5f362730c1fd37a225ae926706bf66deac9769b40",
+      "snapshots": {
+        "before": {
+          "file": "article-title-151/before.sqlite3",
+          "sha256": "5c09acd6902bd7527c53f11b6f59974affa7f02d5e54d0b171981edeb1cb32a9",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "immediate": {
+          "file": "article-title-151/immediate.sqlite3",
+          "sha256": "0fe17a2299b39463adf8f9b0dae3c1ece0641e49e0fc38a85b35f2a16f5bfe20",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_stop": {
+          "file": "article-title-151/after_stop.sqlite3",
+          "sha256": "92a2bc12e62e3b8e44ba54b9dbb69775b99cbaa641e22fffeb4306bf23d68ae8",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_restart": {
+          "file": "article-title-151/after_restart.sqlite3",
+          "sha256": "992973dd1a84afb84104ede64694f32bf194d90d4e115cc3899bc2157e02b312",
+          "projection": {
+            "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-2c695cd6",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 4,
+                "slug": "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+                "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                "description": "Boundary control description",
+                "body": "Body before continuation.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "type": "backend_started",
+          "stage": "initial"
+        },
+        {
+          "sequence": 2,
+          "type": "request",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "payload": {
+            "user": {
+              "email": "pilot@example.com",
+              "password": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "type": "response",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "status": 200,
+          "data": {
+            "user": {
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "type": "database_snapshot",
+          "stage": "before",
+          "file": "article-title-151/before.sqlite3",
+          "sha256": "5c09acd6902bd7527c53f11b6f59974affa7f02d5e54d0b171981edeb1cb32a9"
+        },
+        {
+          "sequence": 5,
+          "type": "request",
+          "stage": "prefix",
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+              "description": "Boundary control description",
+              "body": "Body before continuation.",
+              "tagList": [
+                "pilot"
+              ]
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "type": "response",
+          "stage": "prefix",
+          "method": "POST",
+          "path": "/api/articles",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1358,
+            "sha256": "7a1267e19e591b42ebde2ab8fd02b3590b38d119d4d478977f1ebc05ae61bc4c"
+          }
+        },
+        {
+          "sequence": 7,
+          "type": "database_snapshot",
+          "stage": "immediate",
+          "file": "article-title-151/immediate.sqlite3",
+          "sha256": "0fe17a2299b39463adf8f9b0dae3c1ece0641e49e0fc38a85b35f2a16f5bfe20"
+        },
+        {
+          "sequence": 8,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 9,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "payload": null
+        },
+        {
+          "sequence": 11,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1354,
+            "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+          }
+        },
+        {
+          "sequence": 12,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "payload": null
+        },
+        {
+          "sequence": 13,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1354,
+            "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+          }
+        },
+        {
+          "sequence": 14,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 15,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.907Z",
+              "updatedAt": "2026-11-09T21:42:22.907Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 17,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.917Z",
+              "updatedAt": "2026-11-09T21:42:22.917Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "payload": null
+        },
+        {
+          "sequence": 19,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.926Z",
+              "updatedAt": "2026-11-09T21:42:22.926Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-2c695cd6",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 20,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "payload": null
+        },
+        {
+          "sequence": 21,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1342,
+            "sha256": "f56c4b5ed60ee78199c9ad51544152bb139acccedfb00f051652a4de91f20e55"
+          }
+        },
+        {
+          "sequence": 22,
+          "type": "backend_stopped",
+          "stage": "before_restart",
+          "cleanup": {
+            "pid": 2617,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.00727716799999456
+          }
+        },
+        {
+          "sequence": 23,
+          "type": "database_snapshot",
+          "stage": "after_stop",
+          "file": "article-title-151/after_stop.sqlite3",
+          "sha256": "92a2bc12e62e3b8e44ba54b9dbb69775b99cbaa641e22fffeb4306bf23d68ae8"
+        },
+        {
+          "sequence": 24,
+          "type": "backend_started",
+          "stage": "restart"
+        },
+        {
+          "sequence": 25,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 26,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 27,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "payload": null
+        },
+        {
+          "sequence": 28,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles?author=pilotresearch",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1354,
+            "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+          }
+        },
+        {
+          "sequence": 29,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "payload": null
+        },
+        {
+          "sequence": 30,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1354,
+            "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+          }
+        },
+        {
+          "sequence": 31,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 32,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.907Z",
+              "updatedAt": "2026-11-09T21:42:22.907Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 33,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 34,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.917Z",
+              "updatedAt": "2026-11-09T21:42:22.917Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 35,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "payload": null
+        },
+        {
+          "sequence": 36,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-2c695cd6",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T21:42:22.926Z",
+              "updatedAt": "2026-11-09T21:42:22.926Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-2c695cd6",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 37,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "payload": null
+        },
+        {
+          "sequence": 38,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1342,
+            "sha256": "f56c4b5ed60ee78199c9ad51544152bb139acccedfb00f051652a4de91f20e55"
+          }
+        },
+        {
+          "sequence": 39,
+          "type": "database_snapshot",
+          "stage": "after_restart",
+          "file": "article-title-151/after_restart.sqlite3",
+          "sha256": "992973dd1a84afb84104ede64694f32bf194d90d4e115cc3899bc2157e02b312"
+        },
+        {
+          "sequence": 40,
+          "type": "backend_stopped",
+          "stage": "final",
+          "cleanup": {
+            "pid": 2628,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007279814000000329
+          }
+        }
+      ],
+      "status": "completed",
+      "prefix_status": 500,
+      "readback_paths": [
+        "/api/user",
+        "/api/articles?author=pilotresearch",
+        "/api/articles",
+        "/api/articles/unique-fixture-article",
+        "/api/articles/duplicate-fixture-title",
+        "/api/articles/duplicate-fixture-title-2c695cd6",
+        "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+      ],
+      "cleanup_before_restart": {
+        "pid": 2617,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.00727716799999456
+      },
+      "cleanup_final": {
+        "pid": 2628,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007279814000000329
+      }
+    }
+  ],
+  "fixture_trace": [
+    {
+      "sequence": 1,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/users",
+      "payload": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/users",
+      "status": 201,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "request",
+      "stage": "fixture",
+      "method": "PUT",
+      "path": "/api/user",
+      "payload": {
+        "user": {
+          "bio": "Baseline profile biography."
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "response",
+      "stage": "fixture",
+      "method": "PUT",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Unique fixture article",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T21:42:22.907Z",
+          "updatedAt": "2026-11-09T21:42:22.907Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "unique-fixture-article",
+          "title": "Unique fixture article"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T21:42:22.917Z",
+          "updatedAt": "2026-11-09T21:42:22.917Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "duplicate-fixture-title",
+          "title": "Duplicate fixture title"
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T21:42:22.926Z",
+          "updatedAt": "2026-11-09T21:42:22.926Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "duplicate-fixture-title-2c695cd6",
+          "title": "Duplicate fixture title"
+        }
+      }
+    }
+  ],
+  "primary_freeze_complete": false,
+  "frontend_executed": false,
+  "application_sources": {
+    "apps/accounts/api.py": "2433d5259587a308fa973deb4e7b618904098ad8e552ad51743bf2a69b78b6c3",
+    "apps/accounts/schemas.py": "79a9f98cd329c022a4a7bf969b9ae1021c55016cc9da796fa05cef87f2b4734c",
+    "apps/accounts/models.py": "8dd1e84c973666582c1c21fa50a3cbeba6aa9107cf95c565fd5b66d6d4184016",
+    "apps/articles/api.py": "fce346076918c9eee1726db54fabcaab706fe3c17814d2531dd47793a9744f16",
+    "apps/articles/schemas.py": "8bda800e15aca2255ab31167eb800c2698fcffd212a206e765e31d4134063893",
+    "apps/articles/models.py": "69764841aab568531a60aabd4c7039350dba21a30ebbc30f47b7b5bca2afca6f"
+  },
+  "bootstrap_sha256": "657de7d33ea795e7e67837c1d6890d4fa8b0f229a16bb1cc4d1b0ea7f8906fbd",
+  "fixture_cleanup": {
+    "pid": 2541,
+    "exit_confirmed": true,
+    "descendant_cleanup": "not_established",
+    "signals": [
+      "SIGTERM"
+    ],
+    "errors": [],
+    "returncode": -15,
+    "elapsed_s": 0.007302666000001068
+  },
+  "fixture": {
+    "file": "fixture.sqlite3",
+    "sha256": "f08ca0341b53f3e74c853fa5f362730c1fd37a225ae926706bf66deac9769b40",
+    "projection": {
+      "scope": "single synthetic user and all article identities/title/body/ownership; excludes credentials, tag relations and unrelated columns",
+      "tables": {
+        "user": "accounts_user",
+        "article": "articles_article"
+      },
+      "article_column_mapping": {
+        "description": "summary",
+        "body": "content"
+      },
+      "read_uncommitted": 0,
+      "query_only": 1,
+      "user": {
+        "id": 1,
+        "username": "pilotresearch",
+        "email": "pilot@example.com",
+        "bio": "Baseline profile biography.",
+        "image": null
+      },
+      "articles": [
+        {
+          "id": 1,
+          "slug": "unique-fixture-article",
+          "title": "Unique fixture article",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "author_id": 1
+        },
+        {
+          "id": 2,
+          "slug": "duplicate-fixture-title",
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "author_id": 1
+        },
+        {
+          "id": 3,
+          "slug": "duplicate-fixture-title-2c695cd6",
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "author_id": 1
+        }
+      ],
+      "foreign_key_violations": []
+    }
+  },
+  "article_slugs": [
+    "unique-fixture-article",
+    "duplicate-fixture-title",
+    "duplicate-fixture-title-2c695cd6"
+  ],
+  "application_source_modified": false
+}

@@ -1,3 +1,7 @@
+# Article committed-state diagnostic verified
+
+Run 42704951705 completed the ordinary, title-150 and title-151 API-only cases with thirteen verified SQLite backups. Title-151 returned 500 after inserting the requested article; selected state survived restart. Both lists and the new detail returned 500, while the user and three fixture details remained readable. The two controls returned 201 with successful readbacks. See `notes/realworld_article_database_diagnostic.md`. Policies remain unknown; no UI comparison or primary samples were added. Next: mechanism deduplication and a fresh bounded plan for v8’s five unstarted exposed jobs.
+
 # Article database diagnostic prepared
 
 The v8 title-151 logs identify output-schema title-length failures. The pinned creation code exits its insert transaction before response serialization, motivating a committed-state test. A separately versioned API-only diagnostic now binds the ordinary article, title-150 and title-151 cases to thirteen independent SQLite backups with immediate, shutdown and restart measurements. It does not resume v8 or execute UI continuations. Next: full CI, then the bounded exposed-case diagnostic.

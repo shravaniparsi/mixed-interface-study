@@ -1,0 +1,153 @@
+{
+  "verified": true,
+  "scope": "three exposed API-prefix database diagnostics; no frontend or primary-study execution",
+  "source_commit": "e26c23486e7436eb1cb01f23974248f920db80bd",
+  "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+  "cases": [
+    {
+      "candidate_id": "article-valid",
+      "prefix_status": 201,
+      "before_article_count": 3,
+      "immediate_article_count": 4,
+      "new_article_rows": [
+        {
+          "id": 4,
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "author_id": 1
+        }
+      ],
+      "requested_article_fields_observed": true,
+      "user_preserved": true,
+      "fixture_articles_preserved": true,
+      "post_response_selected_state_survives_restart": true,
+      "selected_state_unchanged": false,
+      "scope": "selected public user and article fields; excludes tag relations and unrelated database state",
+      "readback_statuses": {
+        "readback": {
+          "/api/user": 200,
+          "/api/articles?author=pilotresearch": 200,
+          "/api/articles": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-2c695cd6": 200,
+          "/api/articles/boundary-pilot-article": 200
+        },
+        "restart_readback": {
+          "/api/user": 200,
+          "/api/articles?author=pilotresearch": 200,
+          "/api/articles": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-2c695cd6": 200,
+          "/api/articles/boundary-pilot-article": 200
+        }
+      },
+      "requirement_policy": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "All required nonempty fields supplied."
+      }
+    },
+    {
+      "candidate_id": "article-title-150",
+      "prefix_status": 201,
+      "before_article_count": 3,
+      "immediate_article_count": 4,
+      "new_article_rows": [
+        {
+          "id": 4,
+          "slug": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "author_id": 1
+        }
+      ],
+      "requested_article_fields_observed": true,
+      "user_preserved": true,
+      "fixture_articles_preserved": true,
+      "post_response_selected_state_survives_restart": true,
+      "selected_state_unchanged": false,
+      "scope": "selected public user and article fields; excludes tag relations and unrelated database state",
+      "readback_statuses": {
+        "readback": {
+          "/api/user": 200,
+          "/api/articles?author=pilotresearch": 200,
+          "/api/articles": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-2c695cd6": 200,
+          "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt": 200
+        },
+        "restart_readback": {
+          "/api/user": 200,
+          "/api/articles?author=pilotresearch": 200,
+          "/api/articles": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-2c695cd6": 200,
+          "/api/articles/tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt": 200
+        }
+      },
+      "requirement_policy": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      }
+    },
+    {
+      "candidate_id": "article-title-151",
+      "prefix_status": 500,
+      "before_article_count": 3,
+      "immediate_article_count": 4,
+      "new_article_rows": [
+        {
+          "id": 4,
+          "slug": "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "author_id": 1
+        }
+      ],
+      "requested_article_fields_observed": true,
+      "user_preserved": true,
+      "fixture_articles_preserved": true,
+      "post_response_selected_state_survives_restart": true,
+      "selected_state_unchanged": false,
+      "scope": "selected public user and article fields; excludes tag relations and unrelated database state",
+      "readback_statuses": {
+        "readback": {
+          "/api/user": 200,
+          "/api/articles?author=pilotresearch": 500,
+          "/api/articles": 500,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-2c695cd6": 200,
+          "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt": 500
+        },
+        "restart_readback": {
+          "/api/user": 200,
+          "/api/articles?author=pilotresearch": 500,
+          "/api/articles": 500,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-2c695cd6": 200,
+          "/api/articles/ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt": 500
+        }
+      },
+      "requirement_policy": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      }
+    }
+  ],
+  "primary_freeze_complete": false
+}
