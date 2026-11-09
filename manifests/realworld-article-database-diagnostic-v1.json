@@ -1,0 +1,80 @@
+{
+  "kind": "exposed_article_creation_database_diagnostic",
+  "registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+  "cases": [
+    {
+      "candidate_id": "article-valid",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "All required nonempty fields supplied."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-title-150",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-title-151",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    }
+  ],
+  "repetitions": 1,
+  "primary_freeze_complete": false
+}

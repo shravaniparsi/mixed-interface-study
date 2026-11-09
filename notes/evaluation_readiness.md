@@ -1,3 +1,7 @@
+# Article database diagnostic prepared
+
+The v8 title-151 logs identify output-schema title-length failures. The pinned creation code exits its insert transaction before response serialization, motivating a committed-state test. A separately versioned API-only diagnostic now binds the ordinary article, title-150 and title-151 cases to thirteen independent SQLite backups with immediate, shutdown and restart measurements. It does not resume v8 or execute UI continuations. Next: full CI, then the bounded exposed-case diagnostic.
+
 # Live v8 diagnostic halted and verified
 
 Run 42702655033 completed four exposed jobs (eight branches) before the 151-character title case triggered the registered missing-evidence halt. Two reference controls were clean; the 150-character title case completed both continuations under unknown policy. Both 151-character producers and follow-up reads returned 500, and neither continuation ran. Five later jobs remain unstarted. Hosted and local reconstruction verified the halt; see `notes/realworld_legacy_halted_integration.md`. No primary samples were added.
