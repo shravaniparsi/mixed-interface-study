@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/petclinic_v3.yml',
+    'manifests/petclinic-expanded-batches-v3.json',
+    'protocol/petclinic-expanded-dispatch-v3.md',
+    'scripts/petclinic_expanded_campaign.py',
+    'scripts/run_petclinic_expanded_campaign.py',
+    'scripts/validate_petclinic_expanded_campaign.py',
+    'scripts/run_petclinic_pair_job_v3.mjs',
+    'scripts/petclinic_job_binding_v3.mjs',
+    'tests/test_petclinic_expanded_campaign.py',
+    'tests/petclinic_job_binding_v3.test.mjs',
+
     'scripts/petclinic_prefix_outcomes_v3.py',
     'scripts/prepare_petclinic_prefix_v3.py',
     'tests/test_petclinic_prefix_outcomes_v3.py',
