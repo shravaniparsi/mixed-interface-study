@@ -1,3 +1,7 @@
+# Latest: retrospective reference comparison
+
+The separate v1 replay qualifies the duplicate full-update pair after proving each branch’s producer-to-load-to-comment reference chain. Empty-reference and unresolved-reference pairs remain incomparable; the frozen v9 archive is unchanged. No application reruns or primary samples were added. See `protocol/realworld-reference-comparison-v1.md` and `manifests/realworld-reference-replay-v1.json`. Next is source-derived corpus readiness reconciliation.
+
 # Fresh v9 legacy sweep verified
 
 Seven jobs/twelve branches completed in run 42708069641. Both reference pairs and both native singletons were clean. Whitespace titles returned empty references; duplicate partial updates returned unresolvable references. Duplicate full updates completed both continuations, but literal generated-slug comparison left their pair incomparable. All three incomparable results are retained. See `notes/realworld_fresh_legacy_integration.md`. Next: versioned branch-binding-aware reference normalization and offline replay, then corpus reconciliation. No primary samples were added.
