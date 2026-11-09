@@ -1,0 +1,176 @@
+{
+  "status": "isolated_database_diagnostic_independently_verified",
+  "application_run": 42641159904,
+  "source_commit": "019de9c88c39f0e9fb9515db54131cbf3da27e19",
+  "unit_run": 42640919156,
+  "executing_source_test_count": 634,
+  "diagnostic_cases": 3,
+  "database_backups": 13,
+  "new_primary_samples": 0,
+  "primary_freeze_complete": false,
+  "evidence_directory": "results/realworld-identity-database-ci-20261109",
+  "prior_failed_setup": "manifests/realworld-identity-db-fixture-failure.json",
+  "verification": {
+    "verified": true,
+    "scope": "three exposed API-prefix database diagnostics; no frontend or primary-study execution",
+    "source_commit": "019de9c88c39f0e9fb9515db54131cbf3da27e19",
+    "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+    "cases": [
+      {
+        "candidate_id": "profile-username-null",
+        "prefix_status": 422,
+        "before_username": "pilotresearch",
+        "immediate_username": "pilotresearch",
+        "after_stop_username": "pilotresearch",
+        "after_restart_username": "pilotresearch",
+        "username_changed": false,
+        "requested_username_observed": false,
+        "post_response_state_survives_restart": true,
+        "user_primary_key_preserved": true,
+        "article_identity_body_ownership_preserved": true,
+        "selected_state_unchanged": true,
+        "readback_statuses": {
+          "readback": {
+            "/api/user": 200,
+            "/api/articles/unique-fixture-article": 200,
+            "/api/articles/duplicate-fixture-title": 200,
+            "/api/articles/duplicate-fixture-title-bad2f74a": 200
+          },
+          "restart_readback": {
+            "/api/user": 200,
+            "/api/articles/unique-fixture-article": 200,
+            "/api/articles/duplicate-fixture-title": 200,
+            "/api/articles/duplicate-fixture-title-bad2f74a": 200
+          }
+        },
+        "requirement_policy": {
+          "outcome": "reject",
+          "category": "implementation_control",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        }
+      },
+      {
+        "candidate_id": "profile-username-length60",
+        "prefix_status": 200,
+        "before_username": "pilotresearch",
+        "immediate_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+        "after_stop_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+        "after_restart_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+        "username_changed": true,
+        "requested_username_observed": true,
+        "post_response_state_survives_restart": true,
+        "user_primary_key_preserved": true,
+        "article_identity_body_ownership_preserved": true,
+        "selected_state_unchanged": false,
+        "readback_statuses": {
+          "readback": {
+            "/api/user": 200,
+            "/api/articles/unique-fixture-article": 200,
+            "/api/articles/duplicate-fixture-title": 200,
+            "/api/articles/duplicate-fixture-title-bad2f74a": 200
+          },
+          "restart_readback": {
+            "/api/user": 200,
+            "/api/articles/unique-fixture-article": 200,
+            "/api/articles/duplicate-fixture-title": 200,
+            "/api/articles/duplicate-fixture-title-bad2f74a": 200
+          }
+        },
+        "requirement_policy": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        }
+      },
+      {
+        "candidate_id": "profile-username-length61",
+        "prefix_status": 500,
+        "before_username": "pilotresearch",
+        "immediate_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+        "after_stop_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+        "after_restart_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+        "username_changed": true,
+        "requested_username_observed": true,
+        "post_response_state_survives_restart": true,
+        "user_primary_key_preserved": true,
+        "article_identity_body_ownership_preserved": true,
+        "selected_state_unchanged": false,
+        "readback_statuses": {
+          "readback": {
+            "/api/user": 500,
+            "/api/articles/unique-fixture-article": 500,
+            "/api/articles/duplicate-fixture-title": 500,
+            "/api/articles/duplicate-fixture-title-bad2f74a": 500
+          },
+          "restart_readback": {
+            "/api/user": 500,
+            "/api/articles/unique-fixture-article": 500,
+            "/api/articles/duplicate-fixture-title": 500,
+            "/api/articles/duplicate-fixture-title-bad2f74a": 500
+          }
+        },
+        "requirement_policy": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        }
+      }
+    ],
+    "primary_freeze_complete": false
+  },
+  "input_sha256": {
+    "application_sources/apps/accounts/api.py": "2433d5259587a308fa973deb4e7b618904098ad8e552ad51743bf2a69b78b6c3",
+    "application_sources/apps/accounts/models.py": "8dd1e84c973666582c1c21fa50a3cbeba6aa9107cf95c565fd5b66d6d4184016",
+    "application_sources/apps/accounts/schemas.py": "79a9f98cd329c022a4a7bf969b9ae1021c55016cc9da796fa05cef87f2b4734c",
+    "application_sources/apps/articles/api.py": "fce346076918c9eee1726db54fabcaab706fe3c17814d2531dd47793a9744f16",
+    "application_sources/apps/articles/schemas.py": "8bda800e15aca2255ab31167eb800c2698fcffd212a206e765e31d4134063893",
+    "bootstrap.json": "657de7d33ea795e7e67837c1d6890d4fa8b0f229a16bb1cc4d1b0ea7f8906fbd",
+    "fixture-backend.log": "b4923c6ed9af1b975c78531d9beeb7c1c06eb009136f639a88d7682fa0b2c5ee",
+    "fixture.sqlite3": "22d18614a629ccf40e35533e39a221166c43f41fb8ce4414fb634bb40a085908",
+    "migration.log": "b489c93c91ec60bebadce94c53d23fe9eab73571ca7b2d8b1b47f147e3743b58",
+    "original-application-bootstrap.log": "373c8e66a7de888782348e435f16d31eef8e1d6e00e5571bcbdab5b7013f3d86",
+    "original-application-run.log": "6be0fbec212474ab15b463f38f6a1408a1a7689d8c1c7ca55403b5ded4f13897",
+    "original-diagnostic-pip-install.json": "bcaff8e5a3959f830a8d6149cbe5276bd4ca8a492eb1450467057fdd8529b593",
+    "profile-username-length60/after_restart.sqlite3": "4f13b4b86ca9205770938556b18ab18f1bb0861b0f86119b79c71bc7ffe591e6",
+    "profile-username-length60/after_stop.sqlite3": "4b877206781545961c83de0e6a63ec2e64ca5233226e84128e8e65cc87e7116f",
+    "profile-username-length60/before.sqlite3": "4ba52a45e3bd23ace5081ddcf07936cd764d07ca4c250fa6e04bc4f8638715e3",
+    "profile-username-length60/immediate.sqlite3": "9511bbb2da4444ccb401e14674f9b0a7cd22e1c2bdaf8b2367da767a1ae56984",
+    "profile-username-length60-backend.log": "b1e2041a60f73afd3e018f7dba5784b696cbb4537501fd934759627966045d4f",
+    "profile-username-length60-restart-backend.log": "516174f3e1d1a1eb1921c22cd1578fe6517668b0d668adcbf8587d67391a0cea",
+    "profile-username-length61/after_restart.sqlite3": "aa9491ae1b02a90af0325e2d23bfa7bd9a1da62db500e6018ac848e58753d41c",
+    "profile-username-length61/after_stop.sqlite3": "d03c07123bdec00b66e0afb6140fa29ebacb8893cbab90b2c37c132605fef42b",
+    "profile-username-length61/before.sqlite3": "f9791cda26c6c0ce9cb5baeb10967ce4bf4e32462d23dd41782596fc5591becc",
+    "profile-username-length61/immediate.sqlite3": "e3af8e055e134f18ae6078362d62d6289dc1cb998ebf6c98925e3f805501db5b",
+    "profile-username-length61-backend.log": "7ffefffd82ba14e0dc8bfbd5e6e8a17d0874fb9f6303a0cd239ead016eef7d77",
+    "profile-username-length61-restart-backend.log": "4e20bcb27040c140945e1588bfc39559a5c3a9efd3b64b7fc251343c1bba7869",
+    "profile-username-null/after_restart.sqlite3": "5f611dfb44a11c5606260cbaffe0aa84b6f6d9d36235f18c0991b7ea8e18def3",
+    "profile-username-null/after_stop.sqlite3": "34789a6f2b13214ce48fadaf313df94a106c8c021583b204497e9c7bb12dce3d",
+    "profile-username-null/before.sqlite3": "aa4ee85cb62c7102a72ef588f4871a9e293157f16dd7320e33ee88e495d354bc",
+    "profile-username-null/immediate.sqlite3": "aa4ee85cb62c7102a72ef588f4871a9e293157f16dd7320e33ee88e495d354bc",
+    "profile-username-null-backend.log": "523f3e8ec3aa9ea3a62268588651c3873adbd9cf1f6b679fa218736b5366f50a",
+    "profile-username-null-restart-backend.log": "b468c6d919e1ba2942b23659a49b736bb83f03017b4ade910023b039e08ed089",
+    "report.json": "b66deebc931df6917e27edd9147f65af8705a8cb2ea1fbade6557135468bab3f",
+    "sources/.github/workflows/realworld_identity_db.yml": "72172d794799eeb5238fe869f4ae51ae2895b8e7d808c553abc7b87ca6f6e366",
+    "sources/manifests/realworld-boundary-registry-v1.json": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    "sources/manifests/realworld-identity-database-diagnostic-v1.json": "8b0add10788304611aacd3f4b87b7b5840323cc6cba11a34484beeec37aa1b87",
+    "sources/manifests/realworld-python-lock.txt": "75b6f6559bb5f3b13d32281be0dcb75a53cd2e9f238c296934bd903291ebf491",
+    "sources/protocol/realworld-identity-database-diagnostic-v1.md": "0fb19bbf18f6c8a05fd7ff73b0d7fbffbc77104d52fba83b7141f669084de8c4",
+    "sources/scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "sources/scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "sources/scripts/ci/prepare_realworld_diagnostic.py": "bb5193a7412cbb52b20ae9fa07afe8508d1d6ab3367819b563ba1ed9993f1536",
+    "sources/scripts/realworld_identity_db_state_v1.py": "94115849aa2e517b367a770ef70b49d9018e2731af4a3370fbfeb299d940c86f",
+    "sources/scripts/run_realworld_identity_database_diagnostic.py": "db91972f6e9106252e3c214cd3b9482e4ea293cfe82aad562576cd7edfd2008c",
+    "sources/scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "sources/scripts/validate_realworld_identity_database_diagnostic.py": "1d82ecaa6d79c8f16d922237a47299a623d79d7466dda6107683fe161b0a7030",
+    "verification.json": "f6673d7c626833eb0fabad2921f963c019eb9ed05bc9a94d93cf68185a4ef061"
+  },
+  "limits": [
+    "Single diagnostic execution per exposed case on pinned SQLite backend.",
+    "No new primary sample, frontend execution or channel comparison.",
+    "The prior halted campaign classifications remain unchanged.",
+    "The unchanged-state comparison covers selected user/article fields, not every database column."
+  ]
+}

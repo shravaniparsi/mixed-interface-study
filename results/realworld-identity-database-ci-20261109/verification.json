@@ -1,0 +1,111 @@
+{
+  "verified": true,
+  "scope": "three exposed API-prefix database diagnostics; no frontend or primary-study execution",
+  "source_commit": "019de9c88c39f0e9fb9515db54131cbf3da27e19",
+  "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+  "cases": [
+    {
+      "candidate_id": "profile-username-null",
+      "prefix_status": 422,
+      "before_username": "pilotresearch",
+      "immediate_username": "pilotresearch",
+      "after_stop_username": "pilotresearch",
+      "after_restart_username": "pilotresearch",
+      "username_changed": false,
+      "requested_username_observed": false,
+      "post_response_state_survives_restart": true,
+      "user_primary_key_preserved": true,
+      "article_identity_body_ownership_preserved": true,
+      "selected_state_unchanged": true,
+      "readback_statuses": {
+        "readback": {
+          "/api/user": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-bad2f74a": 200
+        },
+        "restart_readback": {
+          "/api/user": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-bad2f74a": 200
+        }
+      },
+      "requirement_policy": {
+        "outcome": "reject",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      }
+    },
+    {
+      "candidate_id": "profile-username-length60",
+      "prefix_status": 200,
+      "before_username": "pilotresearch",
+      "immediate_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "after_stop_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "after_restart_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "username_changed": true,
+      "requested_username_observed": true,
+      "post_response_state_survives_restart": true,
+      "user_primary_key_preserved": true,
+      "article_identity_body_ownership_preserved": true,
+      "selected_state_unchanged": false,
+      "readback_statuses": {
+        "readback": {
+          "/api/user": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-bad2f74a": 200
+        },
+        "restart_readback": {
+          "/api/user": 200,
+          "/api/articles/unique-fixture-article": 200,
+          "/api/articles/duplicate-fixture-title": 200,
+          "/api/articles/duplicate-fixture-title-bad2f74a": 200
+        }
+      },
+      "requirement_policy": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      }
+    },
+    {
+      "candidate_id": "profile-username-length61",
+      "prefix_status": 500,
+      "before_username": "pilotresearch",
+      "immediate_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "after_stop_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "after_restart_username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "username_changed": true,
+      "requested_username_observed": true,
+      "post_response_state_survives_restart": true,
+      "user_primary_key_preserved": true,
+      "article_identity_body_ownership_preserved": true,
+      "selected_state_unchanged": false,
+      "readback_statuses": {
+        "readback": {
+          "/api/user": 500,
+          "/api/articles/unique-fixture-article": 500,
+          "/api/articles/duplicate-fixture-title": 500,
+          "/api/articles/duplicate-fixture-title-bad2f74a": 500
+        },
+        "restart_readback": {
+          "/api/user": 500,
+          "/api/articles/unique-fixture-article": 500,
+          "/api/articles/duplicate-fixture-title": 500,
+          "/api/articles/duplicate-fixture-title-bad2f74a": 500
+        }
+      },
+      "requirement_policy": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      }
+    }
+  ],
+  "primary_freeze_complete": false
+}

@@ -76,6 +76,8 @@ jobs:
         run: python scripts/verify_realworld_field_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-field-archive.log"
       - name: Verify halted RealWorld identity archive
         run: python scripts/verify_realworld_identity_halted_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-identity-halted-archive.log"
+      - name: Verify RealWorld identity database archive
+        run: python scripts/verify_realworld_identity_database_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-identity-database-archive.log"
       - name: Verify retained corpus bindings
         run: python scripts/prepare_corpus_coverage.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-coverage.log"
       - name: Pure Node adapter tests

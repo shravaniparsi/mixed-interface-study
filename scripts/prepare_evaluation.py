@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'tests/test_realworld_identity_database_archive.py',
+    'scripts/verify_realworld_identity_database_archive.py',
+    'manifests/realworld-identity-database-integration.json',
+    'notes/realworld_identity_database_diagnostic.md',
+
     'manifests/realworld-identity-db-fixture-failure.json',
     'results/realworld-identity-db-fixture-failure-ci-20261109/report.json',
     '.github/workflows/realworld_identity_db.yml',

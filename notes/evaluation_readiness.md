@@ -1,3 +1,7 @@
+## Identity database diagnostic
+
+An isolated replay retained thirteen SQLite backups for three exposed inputs. The 61-character username persisted despite HTTP 500 and survived a backend restart; current-user and three article reads remained 500. Null and 60-character controls distinguished rejected unchanged state and successful committed state. See [the diagnostic note](realworld_identity_database_diagnostic.md). The earlier campaign remains halted, and no primary sample or coverage promotion is added. Next work separates HTTP outcome, persisted state and readback availability.
+
 ## Identity campaign halt
 
 Five exposed pairs (ten branches) ran. The 61-character username case returned HTTP 500 and left user/article API reads unreadable in both branches; terminal policy halted the campaign with missing evidence. The exact halted ledger is retained and reconstructed, with no completed-campaign or coverage promotion. See [the identity run note](realworld_identity_halted_integration.md). Next work is a post-write-state diagnostic replay and explicit failed-write semantics.

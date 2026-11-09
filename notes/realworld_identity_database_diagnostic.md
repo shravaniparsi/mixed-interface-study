@@ -1,0 +1,19 @@
+# Username write persisted despite HTTP 500
+
+The isolated diagnostic [42641159904](https://github.com/shravaniparsi/mixed-interface-study/actions/runs/42641159904) executed source `019de9c88c39f0e9fb9515db54131cbf3da27e19` after unit run 42640919156 passed 634 tests. Three previously exposed inputs were each executed once from the same restored synthetic SQLite fixture. This was an API-only mechanism diagnostic; no frontend continuation or new primary-study sample was added.
+
+| Username input | Write response | Database observation | User and three article reads, immediately and after restart |
+| --- | --- | --- | --- |
+| Null | 422 | Original username retained; selected user/article state unchanged | All 200 |
+| 60 characters | 200 | Requested username committed and persisted after restart | All 200 |
+| 61 characters | 500 | Requested username committed and persisted after restart | All 500 |
+
+Thirteen unchanged SQLite backups are retained: the common fixture plus before-write, immediate post-response, post-teardown and post-restart backups for each case. The immediate backup precedes every diagnostic API read. Backups use independent read-only connections with read_uncommitted disabled; regression tests establish that uncommitted writes are excluded. Reopening the retained backups reconstructs the same observations. The stable user primary key and all three article identities, bodies and ownership foreign keys were preserved in every case. The equality statements cover the declared projection, not every database column.
+
+The evidence establishes a committed write with a failed response on this pinned SQLite deployment. The retained accounts API source calls `request.user.save()` before constructing the validated response object (`apps/accounts/api.py`, lines 78–81). The input update schema accepts a string without the model's maximum-length constraint, while output schemas apply the 60-character constraint. Retained backend logs report that constraint failing for the user response and nested article authors. Together with the backups and restart observations, this supports the mechanism: the username is saved, response validation fails, and later reads of the same account and its articles continue to fail. It does not establish the behavior of other databases, application revisions or deployments.
+
+For the study protocol, HTTP outcome and stored-state outcome must be separate observations. A failed producer response cannot be treated as proof of rollback or unchanged state. This diagnostic supplies mechanism evidence for a previously exposed case, not a new prevalence estimate, an API-versus-UI discrepancy, or an adjudicated primary defect count. The original five-pair campaign remains halted with its final case incomplete; these new database observations do not overwrite that ledger or resolve its registered unknown username policy.
+
+The first database diagnostic attempt, 42639985631, stopped before candidate execution because the initial SQL reader expected API field names instead of the pinned summary/content database columns. Its 23 files and fixture backup remain retained under `manifests/realworld-identity-db-fixture-failure.json`; the corrected mapping is covered by a test using that actual fixture. The successful diagnostic is a separate fresh run. All successful-run backups, traces, logs, pinned application-source extracts and dependency-install evidence are archived and hashed by `manifests/realworld-identity-database-integration.json`.
+
+Next: specify failed-response observations with separate HTTP, persistence and readback fields, including partial/unreadable evidence states and stable reference-control requirements. Apply that contract prospectively, then review the remaining identity and corpus bindings. Primary P2-P5 gates remain open; this diagnostic does not authorize new primary-boundary execution.

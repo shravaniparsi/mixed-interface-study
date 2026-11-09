@@ -1,0 +1,2186 @@
+{
+  "status": "completed",
+  "source_commit": "019de9c88c39f0e9fb9515db54131cbf3da27e19",
+  "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+  "selection": {
+    "kind": "exposed_case_database_diagnostic",
+    "registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    "cases": [
+      {
+        "candidate_id": "profile-username-null",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": null
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "reject",
+          "category": "implementation_control",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      {
+        "candidate_id": "profile-username-length60",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      {
+        "candidate_id": "profile-username-length61",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      }
+    ],
+    "repetitions": 1,
+    "primary_freeze_complete": false
+  },
+  "sources": {
+    "manifests/realworld-boundary-registry-v1.json": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+    ".github/workflows/realworld_identity_db.yml": "72172d794799eeb5238fe869f4ae51ae2895b8e7d808c553abc7b87ca6f6e366",
+    "scripts/run_realworld_identity_database_diagnostic.py": "db91972f6e9106252e3c214cd3b9482e4ea293cfe82aad562576cd7edfd2008c",
+    "scripts/validate_realworld_identity_database_diagnostic.py": "1d82ecaa6d79c8f16d922237a47299a623d79d7466dda6107683fe161b0a7030",
+    "scripts/realworld_identity_db_state_v1.py": "94115849aa2e517b367a770ef70b49d9018e2731af4a3370fbfeb299d940c86f",
+    "scripts/ci/prepare_realworld_diagnostic.py": "bb5193a7412cbb52b20ae9fa07afe8508d1d6ab3367819b563ba1ed9993f1536",
+    "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "manifests/realworld-python-lock.txt": "75b6f6559bb5f3b13d32281be0dcb75a53cd2e9f238c296934bd903291ebf491",
+    "manifests/realworld-identity-database-diagnostic-v1.json": "8b0add10788304611aacd3f4b87b7b5840323cc6cba11a34484beeec37aa1b87",
+    "protocol/realworld-identity-database-diagnostic-v1.md": "0fb19bbf18f6c8a05fd7ff73b0d7fbffbc77104d52fba83b7141f669084de8c4"
+  },
+  "cases": [
+    {
+      "candidate_id": "profile-username-null",
+      "spec": {
+        "candidate_id": "profile-username-null",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": null
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "reject",
+          "category": "implementation_control",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      "reset_sha256": "22d18614a629ccf40e35533e39a221166c43f41fb8ce4414fb634bb40a085908",
+      "snapshots": {
+        "before": {
+          "file": "profile-username-null/before.sqlite3",
+          "sha256": "aa4ee85cb62c7102a72ef588f4871a9e293157f16dd7320e33ee88e495d354bc",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "immediate": {
+          "file": "profile-username-null/immediate.sqlite3",
+          "sha256": "aa4ee85cb62c7102a72ef588f4871a9e293157f16dd7320e33ee88e495d354bc",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_stop": {
+          "file": "profile-username-null/after_stop.sqlite3",
+          "sha256": "34789a6f2b13214ce48fadaf313df94a106c8c021583b204497e9c7bb12dce3d",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_restart": {
+          "file": "profile-username-null/after_restart.sqlite3",
+          "sha256": "5f611dfb44a11c5606260cbaffe0aa84b6f6d9d36235f18c0991b7ea8e18def3",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "type": "backend_started",
+          "stage": "initial"
+        },
+        {
+          "sequence": 2,
+          "type": "request",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "payload": {
+            "user": {
+              "email": "pilot@example.com",
+              "password": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "type": "response",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "status": 200,
+          "data": {
+            "user": {
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "type": "database_snapshot",
+          "stage": "before",
+          "file": "profile-username-null/before.sqlite3",
+          "sha256": "aa4ee85cb62c7102a72ef588f4871a9e293157f16dd7320e33ee88e495d354bc"
+        },
+        {
+          "sequence": 5,
+          "type": "request",
+          "stage": "prefix",
+          "method": "PUT",
+          "path": "/api/user",
+          "payload": {
+            "user": {
+              "username": null
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "type": "response",
+          "stage": "prefix",
+          "method": "PUT",
+          "path": "/api/user",
+          "status": 422,
+          "data": {
+            "errors": {
+              "username": [
+                "can't be blank"
+              ]
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "type": "database_snapshot",
+          "stage": "immediate",
+          "file": "profile-username-null/immediate.sqlite3",
+          "sha256": "aa4ee85cb62c7102a72ef588f4871a9e293157f16dd7320e33ee88e495d354bc"
+        },
+        {
+          "sequence": 8,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 9,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 11,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.772Z",
+              "updatedAt": "2026-11-09T15:06:26.772Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 12,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 13,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.780Z",
+              "updatedAt": "2026-11-09T15:06:26.780Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 14,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "payload": null
+        },
+        {
+          "sequence": 15,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.815Z",
+              "updatedAt": "2026-11-09T15:06:26.815Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-bad2f74a",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "type": "backend_stopped",
+          "stage": "before_restart",
+          "cleanup": {
+            "pid": 2469,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.008190088000006313
+          }
+        },
+        {
+          "sequence": 17,
+          "type": "database_snapshot",
+          "stage": "after_stop",
+          "file": "profile-username-null/after_stop.sqlite3",
+          "sha256": "34789a6f2b13214ce48fadaf313df94a106c8c021583b204497e9c7bb12dce3d"
+        },
+        {
+          "sequence": 18,
+          "type": "backend_started",
+          "stage": "restart"
+        },
+        {
+          "sequence": 19,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 20,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 21,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 22,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.772Z",
+              "updatedAt": "2026-11-09T15:06:26.772Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 23,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 24,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.780Z",
+              "updatedAt": "2026-11-09T15:06:26.780Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 25,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "payload": null
+        },
+        {
+          "sequence": 26,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.815Z",
+              "updatedAt": "2026-11-09T15:06:26.815Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "pilotresearch"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-bad2f74a",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 27,
+          "type": "database_snapshot",
+          "stage": "after_restart",
+          "file": "profile-username-null/after_restart.sqlite3",
+          "sha256": "5f611dfb44a11c5606260cbaffe0aa84b6f6d9d36235f18c0991b7ea8e18def3"
+        },
+        {
+          "sequence": 28,
+          "type": "backend_stopped",
+          "stage": "final",
+          "cleanup": {
+            "pid": 2477,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007247023000005015
+          }
+        }
+      ],
+      "status": "completed",
+      "prefix_status": 422,
+      "cleanup_before_restart": {
+        "pid": 2469,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.008190088000006313
+      },
+      "cleanup_final": {
+        "pid": 2477,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007247023000005015
+      }
+    },
+    {
+      "candidate_id": "profile-username-length60",
+      "spec": {
+        "candidate_id": "profile-username-length60",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      "reset_sha256": "22d18614a629ccf40e35533e39a221166c43f41fb8ce4414fb634bb40a085908",
+      "snapshots": {
+        "before": {
+          "file": "profile-username-length60/before.sqlite3",
+          "sha256": "4ba52a45e3bd23ace5081ddcf07936cd764d07ca4c250fa6e04bc4f8638715e3",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "immediate": {
+          "file": "profile-username-length60/immediate.sqlite3",
+          "sha256": "9511bbb2da4444ccb401e14674f9b0a7cd22e1c2bdaf8b2367da767a1ae56984",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_stop": {
+          "file": "profile-username-length60/after_stop.sqlite3",
+          "sha256": "4b877206781545961c83de0e6a63ec2e64ca5233226e84128e8e65cc87e7116f",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_restart": {
+          "file": "profile-username-length60/after_restart.sqlite3",
+          "sha256": "4f13b4b86ca9205770938556b18ab18f1bb0861b0f86119b79c71bc7ffe591e6",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "type": "backend_started",
+          "stage": "initial"
+        },
+        {
+          "sequence": 2,
+          "type": "request",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "payload": {
+            "user": {
+              "email": "pilot@example.com",
+              "password": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "type": "response",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "status": 200,
+          "data": {
+            "user": {
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "type": "database_snapshot",
+          "stage": "before",
+          "file": "profile-username-length60/before.sqlite3",
+          "sha256": "4ba52a45e3bd23ace5081ddcf07936cd764d07ca4c250fa6e04bc4f8638715e3"
+        },
+        {
+          "sequence": 5,
+          "type": "request",
+          "stage": "prefix",
+          "method": "PUT",
+          "path": "/api/user",
+          "payload": {
+            "user": {
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "type": "response",
+          "stage": "prefix",
+          "method": "PUT",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "type": "database_snapshot",
+          "stage": "immediate",
+          "file": "profile-username-length60/immediate.sqlite3",
+          "sha256": "9511bbb2da4444ccb401e14674f9b0a7cd22e1c2bdaf8b2367da767a1ae56984"
+        },
+        {
+          "sequence": 8,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 9,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 11,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.772Z",
+              "updatedAt": "2026-11-09T15:06:26.772Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 12,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 13,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.780Z",
+              "updatedAt": "2026-11-09T15:06:26.780Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 14,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "payload": null
+        },
+        {
+          "sequence": 15,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.815Z",
+              "updatedAt": "2026-11-09T15:06:26.815Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-bad2f74a",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "type": "backend_stopped",
+          "stage": "before_restart",
+          "cleanup": {
+            "pid": 2483,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.00725964199999396
+          }
+        },
+        {
+          "sequence": 17,
+          "type": "database_snapshot",
+          "stage": "after_stop",
+          "file": "profile-username-length60/after_stop.sqlite3",
+          "sha256": "4b877206781545961c83de0e6a63ec2e64ca5233226e84128e8e65cc87e7116f"
+        },
+        {
+          "sequence": 18,
+          "type": "backend_started",
+          "stage": "restart"
+        },
+        {
+          "sequence": 19,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 20,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 21,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 22,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.772Z",
+              "updatedAt": "2026-11-09T15:06:26.772Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+              },
+              "tagList": [],
+              "slug": "unique-fixture-article",
+              "title": "Unique fixture article"
+            }
+          }
+        },
+        {
+          "sequence": 23,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 24,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.780Z",
+              "updatedAt": "2026-11-09T15:06:26.780Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 25,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "payload": null
+        },
+        {
+          "sequence": 26,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "status": 200,
+          "data": {
+            "article": {
+              "description": "Fixture description",
+              "body": "Fixture body.",
+              "createdAt": "2026-11-09T15:06:26.815Z",
+              "updatedAt": "2026-11-09T15:06:26.815Z",
+              "favorited": false,
+              "favoritesCount": 0,
+              "author": {
+                "following": false,
+                "bio": "Baseline profile biography.",
+                "image": null,
+                "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+              },
+              "tagList": [],
+              "slug": "duplicate-fixture-title-bad2f74a",
+              "title": "Duplicate fixture title"
+            }
+          }
+        },
+        {
+          "sequence": 27,
+          "type": "database_snapshot",
+          "stage": "after_restart",
+          "file": "profile-username-length60/after_restart.sqlite3",
+          "sha256": "4f13b4b86ca9205770938556b18ab18f1bb0861b0f86119b79c71bc7ffe591e6"
+        },
+        {
+          "sequence": 28,
+          "type": "backend_stopped",
+          "stage": "final",
+          "cleanup": {
+            "pid": 2491,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.00724844500000188
+          }
+        }
+      ],
+      "status": "completed",
+      "prefix_status": 200,
+      "cleanup_before_restart": {
+        "pid": 2483,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.00725964199999396
+      },
+      "cleanup_final": {
+        "pid": 2491,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.00724844500000188
+      }
+    },
+    {
+      "candidate_id": "profile-username-length61",
+      "spec": {
+        "candidate_id": "profile-username-length61",
+        "workflow": "profile-update-edit",
+        "prefix_interface": "api",
+        "prefix_payload": {
+          "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        },
+        "continuations": [
+          "api",
+          "ui"
+        ],
+        "expectation": {
+          "outcome": "unknown",
+          "category": "unresolved",
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+          "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+        },
+        "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+      },
+      "reset_sha256": "22d18614a629ccf40e35533e39a221166c43f41fb8ce4414fb634bb40a085908",
+      "snapshots": {
+        "before": {
+          "file": "profile-username-length61/before.sqlite3",
+          "sha256": "f9791cda26c6c0ce9cb5baeb10967ce4bf4e32462d23dd41782596fc5591becc",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "immediate": {
+          "file": "profile-username-length61/immediate.sqlite3",
+          "sha256": "e3af8e055e134f18ae6078362d62d6289dc1cb998ebf6c98925e3f805501db5b",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_stop": {
+          "file": "profile-username-length61/after_stop.sqlite3",
+          "sha256": "d03c07123bdec00b66e0afb6140fa29ebacb8893cbab90b2c37c132605fef42b",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        },
+        "after_restart": {
+          "file": "profile-username-length61/after_restart.sqlite3",
+          "sha256": "aa9491ae1b02a90af0325e2d23bfa7bd9a1da62db500e6018ac848e58753d41c",
+          "projection": {
+            "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+            "tables": {
+              "user": "accounts_user",
+              "article": "articles_article"
+            },
+            "article_column_mapping": {
+              "description": "summary",
+              "body": "content"
+            },
+            "read_uncommitted": 0,
+            "query_only": 1,
+            "user": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null
+            },
+            "articles": [
+              {
+                "id": 1,
+                "slug": "unique-fixture-article",
+                "title": "Unique fixture article",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 2,
+                "slug": "duplicate-fixture-title",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              },
+              {
+                "id": 3,
+                "slug": "duplicate-fixture-title-bad2f74a",
+                "title": "Duplicate fixture title",
+                "description": "Fixture description",
+                "body": "Fixture body.",
+                "author_id": 1
+              }
+            ],
+            "foreign_key_violations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "type": "backend_started",
+          "stage": "initial"
+        },
+        {
+          "sequence": 2,
+          "type": "request",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "payload": {
+            "user": {
+              "email": "pilot@example.com",
+              "password": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "type": "response",
+          "stage": "login",
+          "method": "POST",
+          "path": "/api/users/login",
+          "status": 200,
+          "data": {
+            "user": {
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Baseline profile biography.",
+              "image": null,
+              "token": "[REDACTED]"
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "type": "database_snapshot",
+          "stage": "before",
+          "file": "profile-username-length61/before.sqlite3",
+          "sha256": "f9791cda26c6c0ce9cb5baeb10967ce4bf4e32462d23dd41782596fc5591becc"
+        },
+        {
+          "sequence": 5,
+          "type": "request",
+          "stage": "prefix",
+          "method": "PUT",
+          "path": "/api/user",
+          "payload": {
+            "user": {
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "type": "response",
+          "stage": "prefix",
+          "method": "PUT",
+          "path": "/api/user",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1354,
+            "sha256": "b23c7b276093c305c3710c4c2ae63ff2367bfb45341a0017d4cce4f486d8a7f5"
+          }
+        },
+        {
+          "sequence": 7,
+          "type": "database_snapshot",
+          "stage": "immediate",
+          "file": "profile-username-length61/immediate.sqlite3",
+          "sha256": "e3af8e055e134f18ae6078362d62d6289dc1cb998ebf6c98925e3f805501db5b"
+        },
+        {
+          "sequence": 8,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 9,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1386,
+            "sha256": "a183061abce8ffe058338021f9efefddbf1c1d06e2d9156a43bb4aa374a9b3c2"
+          }
+        },
+        {
+          "sequence": 10,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 11,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1351,
+            "sha256": "e1657ceda9619a5b0a13352f5c240578f82b6a7ad6b336d289f71d1fc7d47ecc"
+          }
+        },
+        {
+          "sequence": 12,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 13,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1351,
+            "sha256": "e1657ceda9619a5b0a13352f5c240578f82b6a7ad6b336d289f71d1fc7d47ecc"
+          }
+        },
+        {
+          "sequence": 14,
+          "type": "request",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "payload": null
+        },
+        {
+          "sequence": 15,
+          "type": "response",
+          "stage": "readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1351,
+            "sha256": "e1657ceda9619a5b0a13352f5c240578f82b6a7ad6b336d289f71d1fc7d47ecc"
+          }
+        },
+        {
+          "sequence": 16,
+          "type": "backend_stopped",
+          "stage": "before_restart",
+          "cleanup": {
+            "pid": 2497,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.00726493099999459
+          }
+        },
+        {
+          "sequence": 17,
+          "type": "database_snapshot",
+          "stage": "after_stop",
+          "file": "profile-username-length61/after_stop.sqlite3",
+          "sha256": "d03c07123bdec00b66e0afb6140fa29ebacb8893cbab90b2c37c132605fef42b"
+        },
+        {
+          "sequence": 18,
+          "type": "backend_started",
+          "stage": "restart"
+        },
+        {
+          "sequence": 19,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "payload": null
+        },
+        {
+          "sequence": 20,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/user",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1386,
+            "sha256": "a183061abce8ffe058338021f9efefddbf1c1d06e2d9156a43bb4aa374a9b3c2"
+          }
+        },
+        {
+          "sequence": 21,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "payload": null
+        },
+        {
+          "sequence": 22,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/unique-fixture-article",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1351,
+            "sha256": "e1657ceda9619a5b0a13352f5c240578f82b6a7ad6b336d289f71d1fc7d47ecc"
+          }
+        },
+        {
+          "sequence": 23,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "payload": null
+        },
+        {
+          "sequence": 24,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1351,
+            "sha256": "e1657ceda9619a5b0a13352f5c240578f82b6a7ad6b336d289f71d1fc7d47ecc"
+          }
+        },
+        {
+          "sequence": 25,
+          "type": "request",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "payload": null
+        },
+        {
+          "sequence": 26,
+          "type": "response",
+          "stage": "restart_readback",
+          "method": "GET",
+          "path": "/api/articles/duplicate-fixture-title-bad2f74a",
+          "status": 500,
+          "data": {
+            "non_json": true,
+            "bytes": 1351,
+            "sha256": "e1657ceda9619a5b0a13352f5c240578f82b6a7ad6b336d289f71d1fc7d47ecc"
+          }
+        },
+        {
+          "sequence": 27,
+          "type": "database_snapshot",
+          "stage": "after_restart",
+          "file": "profile-username-length61/after_restart.sqlite3",
+          "sha256": "aa9491ae1b02a90af0325e2d23bfa7bd9a1da62db500e6018ac848e58753d41c"
+        },
+        {
+          "sequence": 28,
+          "type": "backend_stopped",
+          "stage": "final",
+          "cleanup": {
+            "pid": 2505,
+            "exit_confirmed": true,
+            "descendant_cleanup": "not_established",
+            "signals": [
+              "SIGTERM"
+            ],
+            "errors": [],
+            "returncode": -15,
+            "elapsed_s": 0.007248305000004507
+          }
+        }
+      ],
+      "status": "completed",
+      "prefix_status": 500,
+      "cleanup_before_restart": {
+        "pid": 2497,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.00726493099999459
+      },
+      "cleanup_final": {
+        "pid": 2505,
+        "exit_confirmed": true,
+        "descendant_cleanup": "not_established",
+        "signals": [
+          "SIGTERM"
+        ],
+        "errors": [],
+        "returncode": -15,
+        "elapsed_s": 0.007248305000004507
+      }
+    }
+  ],
+  "fixture_trace": [
+    {
+      "sequence": 1,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/users",
+      "payload": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/users",
+      "status": 201,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "request",
+      "stage": "fixture",
+      "method": "PUT",
+      "path": "/api/user",
+      "payload": {
+        "user": {
+          "bio": "Baseline profile biography."
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "response",
+      "stage": "fixture",
+      "method": "PUT",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": "Baseline profile biography.",
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Unique fixture article",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T15:06:26.772Z",
+          "updatedAt": "2026-11-09T15:06:26.772Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "unique-fixture-article",
+          "title": "Unique fixture article"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T15:06:26.780Z",
+          "updatedAt": "2026-11-09T15:06:26.780Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "duplicate-fixture-title",
+          "title": "Duplicate fixture title"
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "request",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "type": "response",
+      "stage": "fixture",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "createdAt": "2026-11-09T15:06:26.815Z",
+          "updatedAt": "2026-11-09T15:06:26.815Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": "Baseline profile biography.",
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "duplicate-fixture-title-bad2f74a",
+          "title": "Duplicate fixture title"
+        }
+      }
+    }
+  ],
+  "primary_freeze_complete": false,
+  "frontend_executed": false,
+  "application_sources": {
+    "apps/accounts/api.py": "2433d5259587a308fa973deb4e7b618904098ad8e552ad51743bf2a69b78b6c3",
+    "apps/accounts/schemas.py": "79a9f98cd329c022a4a7bf969b9ae1021c55016cc9da796fa05cef87f2b4734c",
+    "apps/accounts/models.py": "8dd1e84c973666582c1c21fa50a3cbeba6aa9107cf95c565fd5b66d6d4184016",
+    "apps/articles/api.py": "fce346076918c9eee1726db54fabcaab706fe3c17814d2531dd47793a9744f16",
+    "apps/articles/schemas.py": "8bda800e15aca2255ab31167eb800c2698fcffd212a206e765e31d4134063893"
+  },
+  "bootstrap_sha256": "657de7d33ea795e7e67837c1d6890d4fa8b0f229a16bb1cc4d1b0ea7f8906fbd",
+  "fixture_cleanup": {
+    "pid": 2461,
+    "exit_confirmed": true,
+    "descendant_cleanup": "not_established",
+    "signals": [
+      "SIGTERM"
+    ],
+    "errors": [],
+    "returncode": -15,
+    "elapsed_s": 0.007251299999992966
+  },
+  "fixture": {
+    "file": "fixture.sqlite3",
+    "sha256": "22d18614a629ccf40e35533e39a221166c43f41fb8ce4414fb634bb40a085908",
+    "projection": {
+      "scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+      "tables": {
+        "user": "accounts_user",
+        "article": "articles_article"
+      },
+      "article_column_mapping": {
+        "description": "summary",
+        "body": "content"
+      },
+      "read_uncommitted": 0,
+      "query_only": 1,
+      "user": {
+        "id": 1,
+        "username": "pilotresearch",
+        "email": "pilot@example.com",
+        "bio": "Baseline profile biography.",
+        "image": null
+      },
+      "articles": [
+        {
+          "id": 1,
+          "slug": "unique-fixture-article",
+          "title": "Unique fixture article",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "author_id": 1
+        },
+        {
+          "id": 2,
+          "slug": "duplicate-fixture-title",
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "author_id": 1
+        },
+        {
+          "id": 3,
+          "slug": "duplicate-fixture-title-bad2f74a",
+          "title": "Duplicate fixture title",
+          "description": "Fixture description",
+          "body": "Fixture body.",
+          "author_id": 1
+        }
+      ],
+      "foreign_key_violations": []
+    }
+  },
+  "article_slugs": [
+    "unique-fixture-article",
+    "duplicate-fixture-title",
+    "duplicate-fixture-title-bad2f74a"
+  ],
+  "application_source_modified": false
+}
