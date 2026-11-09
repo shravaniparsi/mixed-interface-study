@@ -52,6 +52,8 @@ jobs:
         run: python scripts/audit_normalization_controls.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/normalization-controls.log"
       - name: Verify prospective RealWorld component analysis
         run: python scripts/summarize_realworld_paired_components.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-paired-components.log"
+      - name: Replay RealWorld terminal classification
+        run: python scripts/realworld_terminal_outcomes.py results/realworld-paired-controls-ci-20261107 > "$CI_ARTIFACT_DIR/realworld-terminal-replay.json"
       - name: Verify Quartz repeat-policy planning
         run: python scripts/prepare_quartz_repeat_policy.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/quartz-repeat-policy.log"
       - name: Verify Quartz terminal integration archive
