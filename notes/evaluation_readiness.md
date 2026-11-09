@@ -1,3 +1,7 @@
+# Fresh remaining-legacy qualification prepared
+
+The username and article failures are reconciled as one provisional output-validation mechanism family, not independently counted defects. Version 9 prepares fresh article references plus the five exposed cases unstarted in v8: seven jobs and twelve branches. It preserves the v8 halt, frozen workers and unknown policies. Next: full CI and fresh hosted v9 qualification. See `protocol/realworld-fresh-legacy-v9.md` and `notes/output_validation_mechanism_reconciliation.md`.
+
 # Article committed-state diagnostic verified
 
 Run 42704951705 completed the ordinary, title-150 and title-151 API-only cases with thirteen verified SQLite backups. Title-151 returned 500 after inserting the requested article; selected state survived restart. Both lists and the new detail returned 500, while the user and three fixture details remained readable. The two controls returned 201 with successful readbacks. See `notes/realworld_article_database_diagnostic.md`. Policies remain unknown; no UI comparison or primary samples were added. Next: mechanism deduplication and a fresh bounded plan for v8’s five unstarted exposed jobs.
