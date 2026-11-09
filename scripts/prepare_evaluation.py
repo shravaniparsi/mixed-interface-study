@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/realworld_identity_v1.mjs',
+    'tests/realworld_identity_v1.test.mjs',
+    'protocol/realworld-identity-preparation-v1.md',
     'scripts/verify_realworld_field_archive.py',
     'manifests/realworld-field-integration-qualification.json',
     'notes/realworld_field_integration.md',
