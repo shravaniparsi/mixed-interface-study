@@ -52,14 +52,16 @@ def project(reads,principal,slugs):
     tags=at('/api/tags')['tags']
     require(type(tags) is list and all(type(t) is str for t in tags),'Invalid tags')
     output=[]
-    for article in articles:
+    for summary in articles:
+        article=at('/api/articles/'+encode(summary['slug']))['article']
+        require(article['slug']==summary['slug'] and all(strict_json_equal(article.get(k),v) for k,v in summary.items()),'Article summary/detail differs')
         require(article['author']['username']==principal['username'],'Wrong article author')
         require(all(type(article[k]) is str for k in ('title','description','body')) and type(article['tagList']) is list and all(type(t) is str for t in article['tagList']),'Invalid article fields')
         comments=at('/api/articles/'+encode(article['slug'])+'/comments')['comments']
         require(type(comments) is list and all(type(c['id']) is int and 0<c['id']<=9007199254740991 and type(c['body']) is str and type(c['author']['username']) is str for c in comments),'Invalid comments')
         require(len(comments)==len({c['id'] for c in comments}),'Duplicate comment ids')
         output.append({'article':{**article,'tagList':sorted(set(article['tagList']),key=jskey)},'comments':sorted(comments,key=lambda c:c['id'])})
-    require(len(reads)==3+len(slugs),'Extra snapshot probes')
+    require(len(reads)==3+2*len(slugs),'Extra snapshot probes')
     return {'user':current,'articles':sorted(output,key=lambda a:jskey(a['article']['slug'])),'tags':sorted(set(tags),key=jskey)}
 
 

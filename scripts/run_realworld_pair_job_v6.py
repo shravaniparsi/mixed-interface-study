@@ -113,7 +113,7 @@ def main():
                         mark('adapter_process');active_phase='backend_teardown'
                         stop(backend);branch['backend_exit_confirmed']=backend.poll() is not None;backend=None;mark('backend_teardown');active_phase='parent_evidence_validation'
                     result=json.loads(result_file.read_text())
-                    branch.update(evidence=result_file.name,exit_code=completed.returncode,prefix_status=result['observations']['prefix_status'])
+                    branch.update(evidence=result_file.name,exit_code=completed.returncode,prefix_status=result.get('observations',{}).get('prefix_status'))
                     if completed.returncode!=0 or result['execution_status']!='completed':raise RuntimeError('Incomplete adapter')
                     spans=result['timing']['spans']
                     if any(s['end_s']<s['start_s'] for s in spans) or any(a['end_s']!=b['start_s'] for a,b in zip(spans,spans[1:])):raise RuntimeError('Invalid adapter timing')

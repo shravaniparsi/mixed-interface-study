@@ -1,0 +1,233 @@
+{
+  "source_commit": "46bced9ec43820ce0fb4d74e0ea0fa91c50d4cfa",
+  "plan": {
+    "schema_version": 2,
+    "kind": "terminal_campaign_plan",
+    "terminal_policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "schedule": {
+      "schema_version": 1,
+      "kind": "paired_repeat_plan",
+      "pairs": [
+        {
+          "pair_id": "profile-bio-valid",
+          "workflow_id": "profile-update-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "profile-bio-valid-api-r1",
+            "ui": "profile-bio-valid-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "profile-bio-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "profile-username-null",
+          "workflow_id": "profile-update-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "profile-username-null-api-r1",
+            "ui": "profile-username-null-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "profile-username-null",
+          "reference_control": "profile-bio-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "profile-username-empty",
+          "workflow_id": "profile-update-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "profile-username-empty-api-r1",
+            "ui": "profile-username-empty-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "profile-username-empty",
+          "reference_control": "profile-bio-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "profile-username-length60",
+          "workflow_id": "profile-update-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "profile-username-length60-api-r1",
+            "ui": "profile-username-length60-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "profile-username-length60",
+          "reference_control": "profile-bio-valid",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "profile-username-length61",
+          "workflow_id": "profile-update-edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "profile-username-length61-api-r1",
+            "ui": "profile-username-length61-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "profile-username-length61",
+          "reference_control": "profile-bio-valid",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        }
+      ],
+      "initial_jobs": [
+        {
+          "job_id": "initial-000",
+          "pair_id": "profile-bio-valid",
+          "target_pair_id": "profile-bio-valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "profile-bio-valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "profile-bio-valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-001",
+          "pair_id": "profile-username-null",
+          "target_pair_id": "profile-username-null",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "profile-username-null-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "profile-username-null-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-002",
+          "pair_id": "profile-username-empty",
+          "target_pair_id": "profile-username-empty",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "profile-username-empty-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "profile-username-empty-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-003",
+          "pair_id": "profile-username-length60",
+          "target_pair_id": "profile-username-length60",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "profile-username-length60-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "profile-username-length60-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-004",
+          "pair_id": "profile-username-length61",
+          "target_pair_id": "profile-username-length61",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "profile-username-length61-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "profile-username-length61-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        }
+      ],
+      "extra_candidate_attempts": 2,
+      "resume": false,
+      "primary_freeze_complete": false,
+      "scope": "Planning only; adapter integration and primary qualification remain required",
+      "plan_sha256": "98df1879221f8cd13c4b40bd873907a54527728040f43a838eddc1a90b5b151a"
+    },
+    "primary_freeze_complete": false,
+    "plan_sha256": "40deb052aa9936b2d2dc4c0479b21e95bbed53982b742a817b04e3fb1cfa7768"
+  },
+  "sources": {
+    "scripts/realworld_identity_bridge_v1.py": "d1a66230c7d856b90260159317e8cd1e97720ccc3fa2b6005a68cf03a68192aa",
+    "scripts/realworld_identity_extract_v1.py": "bdc59a50573fc72c290d83ace125407768c7555d2f1ca0ae98eabe04ae2dd4b2",
+    "scripts/realworld_identity_v1.mjs": "9415b33af8f3567f073acf521576fd3b9ba399ae911609276c8993ea16c76d52",
+    ".github/workflows/realworld_v6.yml": "9dbc23e503e3253a1d50c9e699f5b5f9c12084006dd91d5208080007ede16306",
+    "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "scripts/realworld_rejection_outcomes.py": "cca439676fdb9b71aa176de917efd9c778abc205fc295271909b467eda19c008",
+    "scripts/realworld_terminal_campaign.py": "b74150ac0f2b5084e11e721ee7a1d5c90d1130d8a452bed7e139140e619277c1",
+    "scripts/validate_realworld_identity_campaign.py": "cfd8591077e5a4b58a327ea798ce4fddaecf3c051ceb3a0e8ce40878bdadadd0",
+    "scripts/run_realworld_identity_campaign.py": "da90cf67a41ea5de43800be1bb504e311d8b55d0c103cc1b3ad68960891569ee",
+    "scripts/run_realworld_pair_job_v6.py": "b02d81e265ad3649c1ae67621450f7a2f041226b9dd6a92c28c8d90aef8877aa",
+    "scripts/realworld_identity_campaign.py": "fe577060c631d3e2187ee4ac33f8dcb33dbb82d9319b87352603261266f7fd56",
+    "scripts/realworld_terminal_outcomes.py": "1bc8acb395be29264ffeab69cb18e00d1443f423e470f86b3cf5344d6302993b",
+    "scripts/summarize_realworld_paired_components.py": "8c09c2e766b1f2ba66910dd85025600c93b69e26eb28a9ce849a6807614bffd2",
+    "scripts/summarize_realworld_oracle_components.py": "46f84347c249007b5ce5f2fabbc8511053de5454a68115ce437073fe7f6513a4",
+    "scripts/validate_realworld_paired_controls.py": "3600ce6357312203af457d0a689053553bfec61e1652c6b7f8f60c96901ad758",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "scripts/realworld_identity_case_v1.mjs": "78d0f1e28c3164e1ad4cb4141b3107db8650c678516f745a7090b3fbc1256615",
+    "scripts/realworld_integrity.mjs": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "scripts/response_capture.mjs": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "scripts/realworld_normalization.mjs": "9384918883a253ff6ecad758417d89f0c921e664ba751818932fe7d8f5331b2b",
+    "scripts/phase_clock.mjs": "ea856d8870977c3e63137f8631c96ea6b2fd03aad850ca7875d3e2d365428f0a",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "src/mixed_interface/normalization.py": "35b15b2e31c4c5c9912341fa77d44e41b9925ee81c6a75b71a899ccff54c04cb",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "manifests/realworld-identity-controls-v1.json": "7e5573ca7c56ce2a7f3ff4f4f5d55b9751b719bf2869623afb68987493332a0a",
+    "protocol/realworld-identity-dispatch-v6.md": "3fabc204da45c63e29a640e897e9837c9da0b53475d682b4f33b85d78e2473af"
+  },
+  "primary_freeze_complete": false,
+  "scope": "Five exposed profile identity pairs; no boundary selection; no resume",
+  "pair_timeout_s": 180,
+  "cleanup_grace_s": 5,
+  "kill_wait_s": 2
+}

@@ -7,9 +7,9 @@ const renamed={...before,username:'u'.repeat(61)};
 const fixtures=['first','second'];
 function evidence(user=renamed){
   return [{path:'/api/user',status:200,data:{user:{...user,token:'excluded'}}},
-    {path:authorPath(user.username),status:200,data:{articlesCount:2,articles:fixtures.map(slug=>({slug,title:slug,description:'description',body:'body',tagList:['x'],author:{username:user.username}}))}},
+    {path:authorPath(user.username),status:200,data:{articlesCount:2,articles:fixtures.map(slug=>({slug,title:slug,description:'description',tagList:['x'],author:{username:user.username}}))}},
     {path:'/api/tags',status:200,data:{tags:['x']}},
-    ...fixtures.map(slug=>({path:`/api/articles/${slug}/comments`,status:200,data:{comments:[]}}))];
+    ...fixtures.flatMap(slug=>[{path:`/api/articles/${slug}`,status:200,data:{article:{slug,title:slug,description:'description',body:'body',tagList:['x'],author:{username:user.username}}}},{path:`/api/articles/${slug}/comments`,status:200,data:{comments:[]}}])];
 }
 test('accepted username representation preserves length and whitespace without setting acceptance policy',()=>{
   for(const username of ['u'.repeat(60),'u'.repeat(61),'  renamed  ','a/b?x&y'])assert.deepEqual(profileIdentityExpected(before,{username}),{...before,username});
@@ -54,7 +54,7 @@ test('unreadable, duplicate, and extra probes cannot form a complete snapshot',(
   }
 });
 test('malformed comment collections and article fields are rejected',()=>{
-  for(const mutate of [x=>{x[3].data.comments=[{id:1,body:'x',author:{username:'other'}},{id:1,body:'y',author:{username:'other'}}];},x=>{delete x[1].data.articles[0].body;}]){
+  for(const mutate of [x=>{x[4].data.comments=[{id:1,body:'x',author:{username:'other'}},{id:1,body:'y',author:{username:'other'}}];},x=>{delete x[3].data.article.body;}]){
     const reads=evidence();mutate(reads);assert.throws(()=>projectIdentitySnapshot(reads,renamed,fixtures));
   }
 });
@@ -65,12 +65,12 @@ test('collection ordering does not change projected identity state',()=>{
 test('network snapshot uses encoded author binding and independently pinned article references',async()=>{
   const user={...renamed,username:'a/b?x&y'},reads=evidence(user),seen=[];
   const result=await identitySnapshot(async(method,path)=>{seen.push([method,path]);return reads.find(r=>r.path===path);},user,fixtures);
-  assert.equal(result.readable,true);assert.equal(seen[1][1],'/api/articles?author=a%2Fb%3Fx%26y');assert.equal(seen.length,5);
+  assert.equal(result.readable,true);assert.equal(seen[1][1],'/api/articles?author=a%2Fb%3Fx%26y');assert.equal(seen.length,7);
 });
 test('zero author results retain reference probes and stay unreadable',async()=>{
   const reads=evidence();reads[1].data={articles:[],articlesCount:0};const seen=[];
   const result=await identitySnapshot(async(method,path)=>{seen.push(path);return reads.find(r=>r.path===path);},renamed,fixtures);
-  assert.equal(result.readable,false);assert.equal(result.reads.length,5);assert.ok(seen.includes('/api/articles/second/comments'));
+  assert.equal(result.readable,false);assert.equal(result.reads.length,7);assert.ok(seen.includes('/api/articles/second/comments'));
 });
 test('transport failures preserve attempted successful probes and do not report complete state',async()=>{
   const reads=evidence();let count=0;
@@ -79,4 +79,15 @@ test('transport failures preserve attempted successful probes and do not report 
 });
 test('invalid fixture bindings fail before requests',async()=>{
   for(const refs of [[],['first','first'],[null]])await assert.rejects(identitySnapshot(()=>{throw new Error('must not request');},renamed,refs),/fixture/);
+});
+
+test('article list may omit body only when a full bound detail read supplies it',()=>{
+  const reads=evidence();assert.equal(Object.hasOwn(reads[1].data.articles[0],'body'),false);
+  assert.equal(projectIdentitySnapshot(reads,renamed,fixtures).articles[0].article.body,'body');
+  reads.splice(3,1);assert.throws(()=>projectIdentitySnapshot(reads,renamed,fixtures));
+});
+test('wrong article detail reference or conflicting summary cannot supply missing body',()=>{
+  for(const key of ['slug','title']){
+    const reads=evidence();reads[3].data.article[key]='foreign';assert.throws(()=>projectIdentitySnapshot(reads,renamed,fixtures));
+  }
 });

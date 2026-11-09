@@ -53,7 +53,10 @@ export function projectIdentitySnapshot(reads,boundPrincipal,expectedSlugs){
   requireValue(exact(collection.articles.map(a=>a?.slug).sort(),expected),'Fixture articles missing, duplicated or foreign');
   const tags=at('/api/tags')?.tags;
   requireValue(Array.isArray(tags) && tags.every(t=>typeof t==='string'),'Invalid tags');
-  const articles=collection.articles.map(article=>{
+  const articles=collection.articles.map(summary=>{
+    const article=at('/api/articles/'+encodeURIComponent(summary.slug))?.article;
+    requireValue(article?.slug===summary.slug,'Article detail reference differs');
+    requireValue(Object.entries(summary).every(([key,value])=>exact(article[key],value)),'Article summary/detail differs');
     requireValue(article?.author?.username===boundPrincipal.username,'Article author differs from bound principal');
     requireValue(['title','description','body'].every(k=>typeof article[k]==='string')
       && Array.isArray(article.tagList) && article.tagList.every(t=>typeof t==='string'),'Incomplete article state');
@@ -63,7 +66,7 @@ export function projectIdentitySnapshot(reads,boundPrincipal,expectedSlugs){
       && new Set(comments.map(c=>c.id)).size===comments.length,'Invalid comment collection');
     return {article:{...article,tagList:[...new Set(article.tagList)].sort()},comments:[...comments].sort((a,b)=>a.id-b.id)};
   }).sort((a,b)=>a.article.slug<b.article.slug?-1:a.article.slug>b.article.slug?1:0);
-  requireValue(reads.length===3+expected.length,'Unregistered snapshot probes');
+  requireValue(reads.length===3+2*expected.length,'Unregistered snapshot probes');
   return {user,articles,tags:[...new Set(tags)].sort()};
 }
 export async function identitySnapshot(read,boundPrincipal,expectedSlugs){
@@ -73,7 +76,7 @@ export async function identitySnapshot(read,boundPrincipal,expectedSlugs){
     async function get(path){const response=await read('GET',path);reads.push({path,status:response.status,data:response.data,response_sequence:response.response_sequence});return response;}
     await get('/api/user');await get(authorPath(boundPrincipal.username));await get('/api/tags');
     // Probe fixture references even when the author query unexpectedly returns zero.
-    for(const slug of expected)await get('/api/articles/'+encodeURIComponent(slug)+'/comments');
+    for(const slug of expected){await get('/api/articles/'+encodeURIComponent(slug));await get('/api/articles/'+encodeURIComponent(slug)+'/comments');}
     return {readable:true,reads,data:projectIdentitySnapshot(reads,boundPrincipal,expected)};
   }catch(error){return {readable:false,reads,error:error.message};}
 }

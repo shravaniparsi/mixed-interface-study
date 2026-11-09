@@ -25,7 +25,7 @@ def synthetic(branch='api',username='u'*61,status=200,unknown=True):
         articles=deepcopy(list(fixture.values()))
         for a in articles:a['author']['username']=principal['username'];a['author']['bio']=principal['bio']
         from urllib.parse import quote
-        probes=[('/api/user',{'user':principal}),('/api/articles?author='+quote(principal['username'],safe="~()*!.'-"),{'articlesCount':3,'articles':articles}),('/api/tags',{'tags':[]})]+[('/api/articles/'+a['slug']+'/comments',{'comments':[]}) for a in sorted(articles,key=lambda x:x['slug'])]
+        probes=[('/api/user',{'user':principal}),('/api/articles?author='+quote(principal['username'],safe="~()*!.'-"),{'articlesCount':3,'articles':[{k:v for k,v in a.items() if k!='body'} for a in articles]}),('/api/tags',{'tags':[]})]+[entry for a in sorted(articles,key=lambda x:x['slug']) for entry in [('/api/articles/'+a['slug'],{'article':a}),('/api/articles/'+a['slug']+'/comments',{'comments':[]})]]
         reads=[]
         for path,data in probes:
             event=exchange('state_probe',phase,'GET',path,None,data)
@@ -171,8 +171,8 @@ process.on('exit',()=>{if(index!==traffic.length)process.exitCode=1;});
         raw,spec,fixture=synthetic(unknown=False)
         for stage in ('prefix','after'):
             record=raw['identity'][stage]
-            record['reads'][1]['data']['articles'][0]['body']='unexpected mutation'
-            raw['trace'][record['reads'][1]['response_sequence']-1]['data']=deepcopy(record['reads'][1]['data'])
+            record['reads'][3]['data']['article']['body']='unexpected mutation'
+            raw['trace'][record['reads'][3]['response_sequence']-1]['data']=deepcopy(record['reads'][3]['data'])
             record['data']['articles'][0]['article']['body']='unexpected mutation'
         next(c for c in raw['checks'] if c['name']=='prefix_related_state_preserved')['passed']=False
         raw['observations']['continuation_outcome']='state_mismatch'

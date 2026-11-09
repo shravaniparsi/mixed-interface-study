@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/scripts/run_realworld_identity_campaign.py", line 64, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/scripts/run_realworld_identity_campaign.py", line 59, in main
+    state=drive(plan,execute,lambda state:write(output/'campaign.json',state))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/src/mixed_interface/campaign_v2.py", line 89, in drive
+    if not run(job, 'initial'): return state
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/src/mixed_interface/campaign_v2.py", line 75, in run
+    result = execute(deepcopy(job)); validate(result)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/scripts/run_realworld_identity_campaign.py", line 56, in execute
+    result=read_job(directory,job,registry,execution);write(directory/'observations.json',result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/scripts/realworld_identity_campaign.py", line 41, in read_job
+    require(execution.get('exit_confirmed') is True and not execution.get('errors') and execution.get('returncode')==0,'Runner exit not clean')
+  File "/home/runner/work/mixed-interface-study/mixed-interface-study/src/mixed_interface/repetition.py", line 13, in require
+    raise ValueError(message)
+ValueError: Runner exit not clean
