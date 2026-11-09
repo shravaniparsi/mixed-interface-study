@@ -1,3 +1,7 @@
+# Paired database capture prepared
+
+Runner version 7 and identity adapter version 2 capture branch-local SQLite backups before the producer, immediately after its response, and after an executed continuation. An independent validator reopens backups and checks trace ordering. Qualification uses the actual API adapter with mocked HTTP and real SQLite; the UI ordering fixture does not execute a browser. See `protocol/realworld-paired-database-capture-v7.md`. Next: source-qualified version 7 paired loader and fresh exposed-control qualification, including native UI. No application executions or primary samples were added; P2–P5 remain open.
+
 # Paired identity measurement integration
 
 The version 2 measurement loader invokes the frozen source-qualified paired loader and attaches separate trace-bound producer/readback measurements. No paired branch has database snapshots; persisted state remains unknown and the separate database diagnostic cannot backfill it. Original terminal decisions, including the final missing-evidence halt, remain unchanged. CI replays five retained pairs and ten branches and retains derived JSON. See `protocol/realworld-identity-measurements-v2.md`. Next: branch-local database capture and ordering qualification for a versioned runner. No application executions or primary samples were added; P2–P5 remain open.
