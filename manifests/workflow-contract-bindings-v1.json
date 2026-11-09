@@ -11,10 +11,12 @@
   "path_families": {
     "realworld_paired_controls": {
       "adapter": "scripts/realworld_paired_case.mjs",
-      "runner": "scripts/run_realworld_paired_controls.py",
-      "extractor": "scripts/summarize_realworld_paired_components.py",
-      "terminal_v2_bridge": null,
-      "selection_scope": "Complete one-pass seven-case engineering registry only; no arbitrary subset or diagnostic-repeat job."
+      "runner": "scripts/run_realworld_expanded_campaign.py",
+      "extractor": "scripts/realworld_expanded_campaign.py",
+      "terminal_v2_bridge": "scripts/realworld_expanded_campaign.py",
+      "selection_scope": "Exact seven-case exposed engineering registry; six retained entries plus one additional tag control. Immutable initial/repeat jobs with baseline references; primary dispatch remains disabled.",
+      "pair_runner": "scripts/run_realworld_pair_job_v3.py",
+      "engineering_qualification": "manifests/realworld-expanded-integration-qualification.json"
     },
     "realworld_legacy": {
       "adapter": "scripts/realworld_boundary_case.mjs",
@@ -264,6 +266,9 @@
     "src/mixed_interface/campaign_v2.py",
     "src/mixed_interface/repetition.py",
     "src/mixed_interface/normalization.py",
-    "scripts/realworld_normalization.mjs"
+    "scripts/realworld_normalization.mjs",
+    "scripts/realworld_terminal_campaign.py",
+    "scripts/realworld_terminal_outcomes.py",
+    "scripts/summarize_realworld_paired_components.py"
   ]
 }

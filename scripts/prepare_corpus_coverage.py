@@ -28,6 +28,17 @@ def generate(root=ROOT):
     paths={CONTRACT,'manifests/paired-candidate-inventory-v1.json','src/mixed_interface/coverage.py',
            'src/mixed_interface/evaluation.py','scripts/prepare_corpus_coverage.py','protocol/retained-corpus-bindings-v1.md',
            *contracts['catalog_sources'].values(),*SELECTIONS.values(),*contracts['shared_contract_sources']}
+    qualification=contracts['path_families']['realworld_paired_controls'].get('engineering_qualification')
+    if qualification:
+        q=json.loads((root/qualification).read_bytes())
+        expected_ids=[c['candidate_id'] for c in selections['realworld_paired']['cases']]
+        registry_hash=file_hashes(root,[SELECTIONS['realworld_paired']])[SELECTIONS['realworld_paired']]
+        if (q.get('status')!='ordinary_exposed_controls_independently_verified'
+            or q.get('qualified_candidate_ids')!=expected_ids or q.get('registry_sha256')!=registry_hash
+            or q.get('verification',{}).get('verified') is not True
+            or q.get('pairs')!=7 or q.get('branches')!=14):
+            raise ValueError('RealWorld qualification does not cover the exact engineering registry')
+        paths.add(qualification)
     for family in contracts['path_families'].values():
         paths.update(v for k,v in family.items() if k in ('adapter','runner','pair_runner','extractor','terminal_v2_bridge') and v is not None)
     for workflow in contracts['workflows'].values():

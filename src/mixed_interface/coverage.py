@@ -74,6 +74,10 @@ def build(inventory, registries, contracts, selections):
             if exact:evidence.append('manifests/realworld-paired-runner-qualification.json')
             if cid in rw_legacy:evidence.append('manifests/realworld-execution-integrity.json')
             gaps=['realworld_v2_terminal_bridge','realworld_v2_job_dispatch']
+            qualification=contracts['path_families'][family].get('engineering_qualification')
+            if exact and qualification:
+                evidence.append(qualification)
+                gaps=[]
             if not exact:gaps.append('prospective_normalization_and_extractor_case_binding')
             if p['workflow_id'].endswith('profile_update_settings_edit') and any(k not in ('bio','image') for k in spec['prefix_payload']):gaps.append('profile_identity_fields_outside_normalization_helper')
         elif catalog=='petclinic_development':

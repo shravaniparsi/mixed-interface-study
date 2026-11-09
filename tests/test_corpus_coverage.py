@@ -88,7 +88,7 @@ class CorpusCoverageTests(unittest.TestCase):
     def test_readiness_promotion_and_deleted_gap_rejected(self):
         saved=self.build();saved['rows'][0]['primary_dispatch_ready']=True
         with self.assertRaisesRegex(ValueError,'dispatch flags'):validate(saved,self.inventory,self.registries,self.contracts,self.selections)
-        saved=self.build();saved['rows'][0]['open_binding_gaps']=[]
+        saved=self.build();next(r for r in saved['rows'] if r['open_binding_gaps'])['open_binding_gaps']=[]
         with self.assertRaises(ValueError):validate(saved,self.inventory,self.registries,self.contracts,self.selections)
 
     def test_dispatch_guard_cannot_be_bypassed_by_truthy_flags(self):
@@ -106,3 +106,19 @@ class CorpusCoverageTests(unittest.TestCase):
         pairs,singletons=reconstruct(self.registries,self.contracts)
         self.inventory['pairs']=pairs;self.inventory['unpaired_controls']=singletons
         with self.assertRaisesRegex(ValueError,'accepted route control'):self.build()
+
+    def test_qualified_realworld_path_is_limited_to_exact_selected_entries(self):
+        rows=[r for r in self.build()['rows'] if r['path_family']=='realworld_paired_controls']
+        self.assertEqual(len(rows),6)
+        for row in rows:
+            self.assertEqual(row['terminal_v2_bridge'],'scripts/realworld_expanded_campaign.py')
+            self.assertIn('manifests/realworld-expanded-integration-qualification.json',row['recorded_engineering_evidence'])
+            self.assertFalse(row['open_binding_gaps'])
+            self.assertFalse(row['primary_dispatch_ready'])
+
+    def test_changed_selection_does_not_inherit_expanded_qualification(self):
+        self.selections['realworld_paired']['cases'][5]['prefix_payload']={'bio':'changed'}
+        row=next(r for r in self.build()['rows'] if r['inventory_entry'].get('candidate_id')=='profile-bio-null')
+        self.assertEqual(row['path_family'],'realworld_legacy')
+        self.assertNotIn('manifests/realworld-expanded-integration-qualification.json',row['recorded_engineering_evidence'])
+        self.assertIn('realworld_v2_job_dispatch',row['open_binding_gaps'])

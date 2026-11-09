@@ -1,3 +1,7 @@
+# Current expanded RealWorld engineering integration
+
+Seven exposed pairs/fourteen branches passed hosted dispatch and independent ledger reconstruction. Six exact retained entries now have qualified engineering job/extraction paths; the extra tag-duplication control does not enlarge the corpus. P2 remains open for legacy/generated RealWorld and PetClinic bindings. No untouched boundaries ran. See [the qualification note](realworld_expanded_integration.md).
+
 # Current RealWorld v2 baseline integration
 
 Four baseline pairs/eight branches passed hosted terminal dispatch and independent ledger reconstruction. All 464 hosted checks passed. P2 remains open for the remaining retained RealWorld and PetClinic bindings. No untouched boundary branches ran. See [the qualification note](realworld_terminal_integration.md).

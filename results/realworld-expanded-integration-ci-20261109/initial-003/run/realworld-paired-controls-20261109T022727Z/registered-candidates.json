@@ -1,0 +1,152 @@
+{
+  "kind": "prospective_runner_engineering_controls",
+  "primary_freeze_complete": false,
+  "source_registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+  "schedule": "registry pair order; alternate api-ui then ui-api; independently reset every branch",
+  "cases": [
+    {
+      "candidate_id": "article-valid",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "All required nonempty fields supplied."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "comment-body-valid",
+      "workflow": "comment-create-delete",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": "Comment before deletion."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/comments/schemas.py#L10",
+        "statement": "Comment creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-bio-valid",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "bio": "Bio before continuation."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-update-unique-partial",
+      "workflow": "article-update-comment",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": "Updated body before comment."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+        "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+      "target_fixture": "base"
+    },
+    {
+      "candidate_id": "article-tag-order-duplicates-control",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "tagList": [
+          "zeta",
+          "alpha",
+          "zeta"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "Engineering representation control: unique tag relationships serialize in sorted order; raw submitted duplicates and order retained."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-bio-null",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "bio": null
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-bio-omitted",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {},
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    }
+  ]
+}
