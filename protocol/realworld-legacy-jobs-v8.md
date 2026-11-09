@@ -21,3 +21,11 @@ The native singleton extractor now uses a versioned reducer that selects the com
 Eight additional tests use byte-preserved native traces from hosted run 42401381642, artifact 13585144786. The fixture provenance lists all file hashes. Test envelopes explicitly change oracle revision to 3 and assume v8 completed transport and confirmed backend cleanup. These are synthetic semantic tests, not v8 live qualification. Both native success paths classify cleanly; missing continuation-phase lists, wrong comment identities and absent cleanup confirmation fail closed. Successful singletons remain ineligible for paired contrasts.
 
 Next: qualify the title and duplicate-reference semantic paths, then add mixed-cardinality supervision and independent archive verification before hosted execution. New runner timing and cleanup remain unqualified.
+
+## Article semantic qualification
+
+Ten additional tests construct explicit synthetic scenarios from the retained paired-control traces. They bind the exact registered title strings and duplicate partial/full commands, preserve unknown policies, and exercise both API and UI success paths. Resource substitutions and canonical snapshot reconstruction occur only in test fixtures; they are not observed application results or input repairs in the runner.
+
+The API failure-path tests distinguish an empty producer reference from a trace-supported continuation 404. An empty reference is an immediate-response mismatch and reaches neither continuation. Two such branches remain an incomparable pair with no channel-discrepancy claim because neither executed a consumer command. A 404 has an assigned HTTP observation; a missing response or a claimed status inconsistent with its trace remains missing evidence. Wrong duplicate targets and forged command bodies also fail closed.
+
+This qualifies the listed synthetic semantic paths, not all browser failure behavior, live runner timing or cleanup. The accepted title success paths remain unresolved-policy observations. The next implementation step is a bounded mixed-cardinality campaign supervisor and independent archive verifier, followed by hosted execution of exposed cases only.

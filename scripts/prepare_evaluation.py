@@ -31,6 +31,7 @@ ARTIFACTS = [
     'scripts/realworld_legacy_reducer_v8.py',
     'scripts/realworld_legacy_terminal_v8.py',
     'tests/test_realworld_legacy_semantics_v8.py',
+    'tests/test_realworld_legacy_articles_v8.py',
     'tests/fixtures/legacy-native-v8/comment-native-control-ui-r1.json',
     'tests/fixtures/legacy-native-v8/fixture-references.json',
     'tests/fixtures/legacy-native-v8/profile-native-control-ui-r1.json',

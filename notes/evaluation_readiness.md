@@ -1,3 +1,7 @@
+# Legacy article semantic paths qualified in tests
+
+Ten new tests cover all five remaining article cases on both channels, exact partial/full commands, unknown title policies, empty returned references, trace-supported 404s, missing/forged responses and wrong duplicate targets. Shared empty-reference failures remain incomparable pairs without channel-exclusive credit. These are synthetic tests derived from retained controls; no application outcomes or primary samples were added. Next: bounded mixed-cardinality supervisor and independent archive verifier before exposed hosted qualification.
+
 # Native singleton extraction regression fixed
 
 The previous v8 CI passed. Native semantic tests exposed a phase-selection bug: the paired reducer used the pre-creation native comments list to verify the post-creation continuation. A versioned singleton reducer now selects continuation-phase evidence. Eight added tests cover both native successes, the regression, trace tampering and cleanup precedence using explicitly synthetic v8 envelopes over retained historic traces. This does not qualify live v8 execution. Next: title/duplicate-reference semantic paths, then bounded hosted supervision.
