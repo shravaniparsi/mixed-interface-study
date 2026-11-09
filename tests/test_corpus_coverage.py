@@ -166,3 +166,18 @@ class CorpusCoverageTests(unittest.TestCase):
         rows=self.build()['rows']
         self.assertFalse(any(r['path_family']=='petclinic_expanded' for r in rows))
         self.assertEqual(sum(r['path_family']=='petclinic_terminal_controls' for r in rows),6)
+
+    def test_field_cohort_adds_seven_entries_without_reassigning_baselines(self):
+        rows=[r for r in self.build()['rows'] if r['path_family']=='realworld_field_controls']
+        self.assertEqual(len(rows),7)
+        rejected={'article-body-null','article-body-empty','comment-body-null','comment-body-empty'}
+        for row in rows:
+            cid=row['inventory_entry']['candidate_id'];self.assertNotIn(cid,{'article-valid','comment-body-valid'})
+            self.assertEqual(row['open_binding_gaps'],['unexpected_acceptance_normalization_and_continuation'] if cid in rejected else [])
+            self.assertFalse(row['primary_dispatch_ready'])
+
+    def test_changed_field_payload_cannot_inherit_qualification(self):
+        self.selections['realworld_fields']['cases'][2]['prefix_payload']['body']='changed'
+        row=next(r for r in self.build()['rows'] if r['inventory_entry'].get('candidate_id')=='article-body-whitespace')
+        self.assertEqual(row['path_family'],'realworld_legacy')
+        self.assertNotIn('manifests/realworld-field-integration-qualification.json',row['recorded_engineering_evidence'])

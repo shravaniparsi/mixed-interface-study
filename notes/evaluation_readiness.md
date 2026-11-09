@@ -1,3 +1,7 @@
+## RealWorld field integration
+
+Nine exposed pairs (18 branches) passed fresh dispatch and independent replay. Seven additional retained entries are bound; four rejection entries retain unexpected-acceptance gaps. See [the integration note](realworld_field_integration.md). Remaining P2 work concerns RealWorld identities, duplicate slugs, policy-unknown boundaries, native singletons and generated cases. Primary P3-P5 gates remain open.
+
 ## Expanded PetClinic engineering integration
 
 Four independently replayed batches cover 18 exposed candidates, 31 paired attempts and 62 branches. Incomplete response and policy observations remain explicit. See [the integration note](petclinic_expanded_integration.md). Next is the remaining RealWorld corpus bindings; primary P3-P5 gates remain open.

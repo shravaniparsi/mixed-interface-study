@@ -11,7 +11,8 @@ from mixed_interface.evaluation import file_hashes, digest
 
 CONTRACT='manifests/workflow-contract-bindings-v1.json'
 OUTPUT='manifests/retained-corpus-coverage-v1.json'
-SELECTIONS={'petclinic_expanded':'manifests/petclinic-expanded-integration-qualification.json',
+SELECTIONS={'realworld_fields':'manifests/realworld-field-controls-v1.json',
+            'petclinic_expanded':'manifests/petclinic-expanded-integration-qualification.json',
             'petclinic_terminal':'manifests/petclinic-terminal-integration-qualification.json',
             'realworld_rejection':'manifests/realworld-rejection-controls-v1.json',
             'realworld_paired':'manifests/realworld-paired-controls-v1.json',
@@ -82,6 +83,18 @@ def generate(root=ROOT):
             or set(q.get('verification',{}).get('batches',{}))!={'owner_required','owner_formats','pets','visits'}):
             raise ValueError('Expanded PetClinic qualification differs from exact registry and batches')
         paths.update((qualification,batches))
+    qualification=contracts['path_families'].get('realworld_field_controls',{}).get('engineering_qualification')
+    if qualification:
+        q=json.loads((root/qualification).read_bytes())
+        expected=[c['candidate_id'] for c in selections['realworld_fields']['cases']]
+        registry_hash=file_hashes(root,[SELECTIONS['realworld_fields']])[SELECTIONS['realworld_fields']]
+        if (q.get('status')!='exposed_field_paths_independently_verified'
+            or q.get('qualified_candidate_ids')!=expected or q.get('registry_sha256')!=registry_hash
+            or q.get('verification',{}).get('verified') is not True
+            or q.get('verification',{}).get('matched_rejection_pairs')!=4
+            or q.get('pairs')!=9 or q.get('branches')!=18):
+            raise ValueError('RealWorld field qualification differs from exact selected cases')
+        paths.add(qualification)
     for family in contracts['path_families'].values():
         paths.update(v for k,v in family.items() if k in ('adapter','runner','pair_runner','extractor','terminal_v2_bridge') and v is not None)
     for workflow in contracts['workflows'].values():
