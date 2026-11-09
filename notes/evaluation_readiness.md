@@ -1,3 +1,7 @@
+# Paired identity measurement integration
+
+The version 2 measurement loader invokes the frozen source-qualified paired loader and attaches separate trace-bound producer/readback measurements. No paired branch has database snapshots; persisted state remains unknown and the separate database diagnostic cannot backfill it. Original terminal decisions, including the final missing-evidence halt, remain unchanged. CI replays five retained pairs and ten branches and retains derived JSON. See `protocol/realworld-identity-measurements-v2.md`. Next: branch-local database capture and ordering qualification for a versioned runner. No application executions or primary samples were added; P2–P5 remain open.
+
 # Separate write observations prepared
 
 The prospective contract in `protocol/write-observations-v1.md` separates producer HTTP response, committed-state projection, per-endpoint readback and native continuation. `scripts/replay_write_observations.py` verifies the retained database archive before deriving three API-only records; native continuation remains not measured and unknown username policies remain unresolved. Frozen terminal policies and the original halted campaign are unchanged. Next: versioned paired identity integration and negative-path qualification. P2–P5 remain open; no application executions or primary samples were added.
