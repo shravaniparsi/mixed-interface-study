@@ -33,6 +33,7 @@ def build(inventory, registries, contracts, selections):
     require(len(by_id)==len(pairs)+len(singletons),'Duplicate pair identity')
     case_indexes={c:{r['id' if c=='petclinic_development' else 'candidate_id' if c=='realworld_development' else 'case_id']:r for r in registries[c]['candidates' if c=='petclinic_development' else 'cases']} for c in CATALOGS}
     rw_controls={c['candidate_id']:c for c in selections['realworld_paired']['cases']}
+    rw_rejections={c['candidate_id']:c for c in selections.get('realworld_rejection',{}).get('cases',[]) if c['expectation']['outcome']=='reject'}
     pc_controls={c['id'] for c in selections['petclinic_integrity']['cases']}
     rw_legacy={c['candidate_id'] for c in selections['realworld_integrity']['legacy_branches']}
     rw_generated={c['case_id'] for c in selections['realworld_integrity']['generated_cases']}
@@ -70,7 +71,8 @@ def build(inventory, registries, contracts, selections):
         if catalog=='realworld_development':
             cid=p['candidate_id'];spec=specs[channels[0]]
             exact=cid in rw_controls and rw_controls[cid]==spec
-            family='realworld_paired_controls' if exact else 'realworld_legacy'
+            rejected_exact=cid in rw_rejections and rw_rejections[cid]==spec
+            family='realworld_paired_controls' if exact else 'realworld_rejection_controls' if rejected_exact else 'realworld_legacy'
             if exact:evidence.append('manifests/realworld-paired-runner-qualification.json')
             if cid in rw_legacy:evidence.append('manifests/realworld-execution-integrity.json')
             gaps=['realworld_v2_terminal_bridge','realworld_v2_job_dispatch']
@@ -78,7 +80,10 @@ def build(inventory, registries, contracts, selections):
             if exact and qualification:
                 evidence.append(qualification)
                 gaps=[]
-            if not exact:gaps.append('prospective_normalization_and_extractor_case_binding')
+            if rejected_exact and qualification:
+                evidence.append(qualification)
+                gaps=['unexpected_acceptance_normalization_and_continuation']
+            elif not exact:gaps.append('prospective_normalization_and_extractor_case_binding')
             if p['workflow_id'].endswith('profile_update_settings_edit') and any(k not in ('bio','image') for k in spec['prefix_payload']):gaps.append('profile_identity_fields_outside_normalization_helper')
         elif catalog=='petclinic_development':
             family='petclinic_integrity'

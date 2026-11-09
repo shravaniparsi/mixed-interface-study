@@ -5,7 +5,8 @@ P2 now has a deterministic, source-pinned map for all 73 paired entries and both
 | Available path | Retained entries | Remaining integration |
 | --- | ---: | --- |
 | Prospective RealWorld controls | 6 | Exact engineering dispatch/extraction qualified; primary freeze remains open |
-| Legacy RealWorld | 20, including two singletons | v2 dispatch/extraction and exact normalization bindings; singleton accounting |
+| Previously executed RealWorld rejections | 3 | Expected rejection paths qualified; unexpected acceptance remains open |
+| Legacy RealWorld | 17, including two singletons | v2 dispatch/extraction and exact normalization bindings; singleton accounting |
 | Generated RealWorld | 9 | v2 dispatch/extraction and normalized case bindings |
 | PetClinic integrity | 18 | v2 dispatch/extraction; extend source-qualified extraction beyond six selected candidates |
 | Quartz terminal v2 | 22 | Bind the 20 mutation pairs to primary selection; hosted campaign still selects two controls |
@@ -18,6 +19,6 @@ Twenty-two entries have named prior engineering evidence. That count describes c
 
 All primary_dispatch_ready flags remain false. An explicit guard rejects using this coverage inventory as an execution manifest, including a caller's attempt to promote a flag. The forty Quartz mutation branches remain unexecuted. P2 stays open because mapping available code does not implement the missing job interfaces and source-qualified extractors.
 
-The exact seven-case exposed engineering selection now has qualified per-job dispatch and terminal extraction. Next are previously executed rejection cases, remaining legacy case bindings and singleton accounting; control qualification does not extend to changed inputs. PetClinic and generated RealWorld bindings follow; Quartz primary selection will be connected to the immutable batching work in P3.
+The exact seven-case exposed engineering selection now has qualified per-job dispatch and terminal extraction. Three previously executed rejection paths are also qualified, with unexpected-acceptance gaps retained. Next are remaining legacy case bindings and singleton accounting; qualification does not extend to changed inputs. PetClinic and generated RealWorld bindings follow; Quartz primary selection will be connected to the immutable batching work in P3.
 
-Artifacts: [workflow contracts](../manifests/workflow-contract-bindings-v1.json), [full coverage map](../manifests/retained-corpus-coverage-v1.json), [binding protocol](../protocol/retained-corpus-bindings-v1.md). Twenty focused tests cover coverage conservation, route/control matching, rejected-reference refusal, exact control-input matching, profile-helper scope, exposure preservation, singleton handling and dispatch refusal.
+Artifacts: [workflow contracts](../manifests/workflow-contract-bindings-v1.json), [full coverage map](../manifests/retained-corpus-coverage-v1.json), [binding protocol](../protocol/retained-corpus-bindings-v1.md). Twenty-two focused tests cover coverage conservation, route/control matching, rejected-reference refusal, exact control-input matching, profile-helper scope, exposure preservation, singleton handling and dispatch refusal.

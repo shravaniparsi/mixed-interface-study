@@ -1,3 +1,7 @@
+# Current RealWorld rejection integration
+
+Three previously executed rejection pairs and three positive baselines passed hosted dispatch and independent reconstruction. Six HTTP 422 branches preserved readable observable state and did not continue. The classifier now treats unreadable post-rejection snapshots as incomplete evidence. Three rejection paths are mapped; unexpected acceptance remains unqualified. See [the qualification note](realworld_rejection_integration.md).
+
 # Current expanded RealWorld engineering integration
 
 Seven exposed pairs/fourteen branches passed hosted dispatch and independent ledger reconstruction. Six exact retained entries now have qualified engineering job/extraction paths; the extra tag-duplication control does not enlarge the corpus. P2 remains open for legacy/generated RealWorld and PetClinic bindings. No untouched boundaries ran. See [the qualification note](realworld_expanded_integration.md).

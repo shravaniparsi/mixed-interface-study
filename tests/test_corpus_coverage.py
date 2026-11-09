@@ -122,3 +122,18 @@ class CorpusCoverageTests(unittest.TestCase):
         self.assertEqual(row['path_family'],'realworld_legacy')
         self.assertNotIn('manifests/realworld-expanded-integration-qualification.json',row['recorded_engineering_evidence'])
         self.assertIn('realworld_v2_job_dispatch',row['open_binding_gaps'])
+
+    def test_rejection_path_qualification_does_not_cover_unexpected_acceptance(self):
+        rows=[r for r in self.build()['rows'] if r['path_family']=='realworld_rejection_controls']
+        self.assertEqual({r['inventory_entry']['candidate_id'] for r in rows},{'article-body-omitted','comment-body-omitted','profile-username-empty'})
+        for row in rows:
+            self.assertIn('manifests/realworld-rejection-integration-qualification.json',row['recorded_engineering_evidence'])
+            self.assertIn('unexpected_acceptance_normalization_and_continuation',row['open_binding_gaps'])
+            self.assertNotIn('realworld_v2_job_dispatch',row['open_binding_gaps'])
+            self.assertFalse(row['primary_dispatch_ready'])
+
+    def test_changed_rejection_payload_does_not_inherit_qualification(self):
+        self.selections['realworld_rejection']['cases'][-1]['prefix_payload']={'username':'different'}
+        row=next(r for r in self.build()['rows'] if r['inventory_entry'].get('candidate_id')=='profile-username-empty')
+        self.assertEqual(row['path_family'],'realworld_legacy')
+        self.assertNotIn('manifests/realworld-rejection-integration-qualification.json',row['recorded_engineering_evidence'])

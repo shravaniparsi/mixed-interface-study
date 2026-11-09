@@ -1,0 +1,712 @@
+{
+  "terminal": {
+    "schema_version": 2,
+    "policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "kind": "clean_observation",
+    "outcome": {
+      "job_id": "initial-002",
+      "execution": "complete",
+      "prefix": "accepted",
+      "channel_discrepancy": false,
+      "check_failure": false,
+      "cleanup_confirmed": true,
+      "observation_signature": {
+        "kinds": {
+          "api": "clean_observation",
+          "ui": "clean_observation"
+        },
+        "gates": {
+          "same_actor": true,
+          "same_pre_state": true,
+          "same_prefix_command": true,
+          "same_prefix_status": true,
+          "same_reset": true,
+          "distinct_branches": true,
+          "same_prefix_state": true,
+          "same_consumer_command": true
+        },
+        "checks": {
+          "api": {
+            "immediate_response": [
+              [
+                "declared_acceptance_expectation",
+                true,
+                "implementation_control"
+              ],
+              [
+                "integrity:submitted_command",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "producer_native_controls": [],
+            "prefix_state_reads": [
+              [
+                "prefix_profile_matches_input",
+                true,
+                "recorded_source_observation"
+              ]
+            ],
+            "assigned_api_continuation": [
+              [
+                "consumer_write_http_status",
+                true,
+                "http_observation"
+              ],
+              [
+                "integrity:submitted_command",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "assigned_native_continuation": [],
+            "shared_post_continuation_api_readback": [
+              [
+                "profile_edit_persisted",
+                true,
+                "recorded_source_observation"
+              ],
+              [
+                "profile_reference_resolvable",
+                true,
+                "recorded_source_observation"
+              ]
+            ],
+            "shared_final_native_read": [],
+            "environment_reset_cleanup": [
+              [
+                "integrity:pre_state_readable",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "unresolved_policy": []
+          },
+          "ui": {
+            "immediate_response": [
+              [
+                "declared_acceptance_expectation",
+                true,
+                "implementation_control"
+              ],
+              [
+                "integrity:submitted_command",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "producer_native_controls": [],
+            "prefix_state_reads": [
+              [
+                "prefix_profile_matches_input",
+                true,
+                "recorded_source_observation"
+              ]
+            ],
+            "assigned_api_continuation": [],
+            "assigned_native_continuation": [
+              [
+                "consumer_write_http_status",
+                true,
+                "http_observation"
+              ],
+              [
+                "integrity:settings_form_bound",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ],
+              [
+                "integrity:submitted_command",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "shared_post_continuation_api_readback": [
+              [
+                "profile_edit_persisted",
+                true,
+                "recorded_source_observation"
+              ],
+              [
+                "profile_reference_resolvable",
+                true,
+                "recorded_source_observation"
+              ]
+            ],
+            "shared_final_native_read": [],
+            "environment_reset_cleanup": [
+              [
+                "fresh_ui_principal_matches",
+                true,
+                "recorded_source_observation"
+              ],
+              [
+                "integrity:pre_state_readable",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "unresolved_policy": []
+          }
+        },
+        "prefix_http_status": {
+          "api": 200,
+          "ui": 200
+        },
+        "rejection_completeness_issues": {}
+      }
+    },
+    "evidence": {
+      "summary": "1f9e94286ceffa138840e0e0ab56265e5d39b69719d370e3c8b3c9a49fb038a8",
+      "job": "2cc5165b8bde3262d7d6e5b3752293449d24a27cbaa895bd6f57a399f5fe7d5b",
+      "execution": "efd716142e783e01591c73894ec97d0bc849fe0a091095b0463b16bd9c30ad83",
+      "profile-bio-valid-api-r1.json": "eca89c17bb126a7d74f84dcad75d6dc8af985f5fb667f25fc4eaf2eb648c6054",
+      "profile-bio-valid-ui-r1.json": "719fabcfe87c6b883a0cab9b92451af4a96f1a95d7a2594013e12f0add10fbe3"
+    }
+  },
+  "comparability": {
+    "same_actor": true,
+    "same_pre_state": true,
+    "same_prefix_command": true,
+    "same_prefix_status": true,
+    "same_reset": true,
+    "distinct_branches": true,
+    "same_prefix_state": true,
+    "same_consumer_command": true
+  },
+  "branches": {
+    "api": {
+      "kind": "clean_observation",
+      "issues": [],
+      "components": {
+        "case_id": "profile-bio-valid-api-r1",
+        "candidate_id": "profile-bio-valid",
+        "workflow": "profile-update-edit",
+        "route": "api-api",
+        "accepted_prefix": true,
+        "assigned_continuation_reached": true,
+        "execution_evidence_complete": true,
+        "evidence_issues": [],
+        "components": {
+          "immediate_response": {
+            "checks": [
+              {
+                "id": "declared_acceptance_expectation",
+                "passed": true,
+                "scope": "implementation_control",
+                "evidence": {
+                  "expectation": {
+                    "outcome": "accept",
+                    "category": "implementation_control",
+                    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+                    "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+                  },
+                  "actual_status": 200
+                }
+              },
+              {
+                "id": "integrity:submitted_command",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "submitted_command",
+                  "stage": "prefix",
+                  "source": "api",
+                  "expected": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "bio": "Bio before continuation."
+                      }
+                    }
+                  },
+                  "observed": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "bio": "Bio before continuation."
+                      }
+                    }
+                  },
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [
+              {
+                "id": "producer_http_status",
+                "status": 200,
+                "classification": "accepted"
+              },
+              {
+                "id": "producer_response",
+                "source": "api",
+                "method": "PUT",
+                "path": "/api/user",
+                "status": 200,
+                "data": {
+                  "user": {
+                    "email": "pilot@example.com",
+                    "bio": "Bio before continuation.",
+                    "image": null,
+                    "username": "pilotresearch",
+                    "token": "[REDACTED]"
+                  }
+                }
+              }
+            ],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "producer_native_controls": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_or_not_applicable"
+          },
+          "prefix_state_reads": {
+            "checks": [
+              {
+                "id": "prefix_profile_matches_input",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "prefix_profile_matches_input",
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [
+              {
+                "id": "current_user_read_status",
+                "status": 200
+              }
+            ],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "assigned_api_continuation": {
+            "checks": [
+              {
+                "id": "consumer_write_http_status",
+                "passed": true,
+                "scope": "http_observation",
+                "evidence": {
+                  "status": 200
+                }
+              },
+              {
+                "id": "integrity:submitted_command",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "submitted_command",
+                  "stage": "continuation",
+                  "source": "api",
+                  "expected": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "username": "pilotresearch",
+                        "email": "pilot@example.com",
+                        "bio": "Bio after meaningful continuation."
+                      }
+                    }
+                  },
+                  "observed": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "username": "pilotresearch",
+                        "email": "pilot@example.com",
+                        "bio": "Bio after meaningful continuation."
+                      }
+                    }
+                  },
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "assigned_native_continuation": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_assigned"
+          },
+          "shared_post_continuation_api_readback": {
+            "checks": [
+              {
+                "id": "profile_edit_persisted",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "profile_edit_persisted",
+                  "passed": true
+                }
+              },
+              {
+                "id": "profile_reference_resolvable",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "profile_reference_resolvable",
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "assigned_action_interface": "api",
+            "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "shared_final_native_read": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_or_not_applicable"
+          },
+          "environment_reset_cleanup": {
+            "checks": [
+              {
+                "id": "integrity:pre_state_readable",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "pre_state_readable",
+                  "stage": "setup",
+                  "source": "shared_api",
+                  "expected": true,
+                  "observed": true,
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "unresolved_policy": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_applicable"
+          }
+        },
+        "policy_unresolved": false,
+        "unclassified_checks": [],
+        "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion."
+      }
+    },
+    "ui": {
+      "kind": "clean_observation",
+      "issues": [],
+      "components": {
+        "case_id": "profile-bio-valid-ui-r1",
+        "candidate_id": "profile-bio-valid",
+        "workflow": "profile-update-edit",
+        "route": "api-ui",
+        "accepted_prefix": true,
+        "assigned_continuation_reached": true,
+        "execution_evidence_complete": true,
+        "evidence_issues": [],
+        "components": {
+          "immediate_response": {
+            "checks": [
+              {
+                "id": "declared_acceptance_expectation",
+                "passed": true,
+                "scope": "implementation_control",
+                "evidence": {
+                  "expectation": {
+                    "outcome": "accept",
+                    "category": "implementation_control",
+                    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+                    "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+                  },
+                  "actual_status": 200
+                }
+              },
+              {
+                "id": "integrity:submitted_command",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "submitted_command",
+                  "stage": "prefix",
+                  "source": "api",
+                  "expected": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "bio": "Bio before continuation."
+                      }
+                    }
+                  },
+                  "observed": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "bio": "Bio before continuation."
+                      }
+                    }
+                  },
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [
+              {
+                "id": "producer_http_status",
+                "status": 200,
+                "classification": "accepted"
+              },
+              {
+                "id": "producer_response",
+                "source": "api",
+                "method": "PUT",
+                "path": "/api/user",
+                "status": 200,
+                "data": {
+                  "user": {
+                    "email": "pilot@example.com",
+                    "bio": "Bio before continuation.",
+                    "image": null,
+                    "username": "pilotresearch",
+                    "token": "[REDACTED]"
+                  }
+                }
+              }
+            ],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "producer_native_controls": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_or_not_applicable"
+          },
+          "prefix_state_reads": {
+            "checks": [
+              {
+                "id": "prefix_profile_matches_input",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "prefix_profile_matches_input",
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [
+              {
+                "id": "current_user_read_status",
+                "status": 200
+              }
+            ],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "assigned_api_continuation": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_assigned"
+          },
+          "assigned_native_continuation": {
+            "checks": [
+              {
+                "id": "consumer_write_http_status",
+                "passed": true,
+                "scope": "http_observation",
+                "evidence": {
+                  "status": 200
+                }
+              },
+              {
+                "id": "integrity:settings_form_bound",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "settings_form_bound",
+                  "stage": "continuation",
+                  "source": "ui",
+                  "expected": {
+                    "username": "pilotresearch",
+                    "email": "pilot@example.com",
+                    "bio": "Bio before continuation.",
+                    "image": "",
+                    "new_credential_blank": true
+                  },
+                  "observed": {
+                    "username": "pilotresearch",
+                    "email": "pilot@example.com",
+                    "bio": "Bio before continuation.",
+                    "image": "",
+                    "new_credential_blank": true
+                  },
+                  "passed": true
+                }
+              },
+              {
+                "id": "integrity:submitted_command",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "submitted_command",
+                  "stage": "continuation",
+                  "source": "ui",
+                  "expected": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "username": "pilotresearch",
+                        "email": "pilot@example.com",
+                        "bio": "Bio after meaningful continuation."
+                      }
+                    }
+                  },
+                  "observed": {
+                    "method": "PUT",
+                    "path": "/api/user",
+                    "payload": {
+                      "user": {
+                        "username": "pilotresearch",
+                        "bio": "Bio after meaningful continuation.",
+                        "email": "pilot@example.com"
+                      }
+                    }
+                  },
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "shared_post_continuation_api_readback": {
+            "checks": [
+              {
+                "id": "profile_edit_persisted",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "profile_edit_persisted",
+                  "passed": true
+                }
+              },
+              {
+                "id": "profile_reference_resolvable",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "profile_reference_resolvable",
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "assigned_action_interface": "ui",
+            "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "shared_final_native_read": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_or_not_applicable"
+          },
+          "environment_reset_cleanup": {
+            "checks": [
+              {
+                "id": "fresh_ui_principal_matches",
+                "passed": true,
+                "scope": "recorded_source_observation",
+                "evidence": {
+                  "name": "fresh_ui_principal_matches",
+                  "passed": true
+                }
+              },
+              {
+                "id": "integrity:pre_state_readable",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "pre_state_readable",
+                  "stage": "setup",
+                  "source": "shared_api",
+                  "expected": true,
+                  "observed": true,
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "unresolved_policy": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_applicable"
+          }
+        },
+        "policy_unresolved": false,
+        "unclassified_checks": [],
+        "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion."
+      }
+    }
+  },
+  "rejection_completeness_issues": {}
+}

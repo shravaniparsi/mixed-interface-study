@@ -11,7 +11,8 @@ from mixed_interface.evaluation import file_hashes
 
 CONTRACT='manifests/workflow-contract-bindings-v1.json'
 OUTPUT='manifests/retained-corpus-coverage-v1.json'
-SELECTIONS={'realworld_paired':'manifests/realworld-paired-controls-v1.json',
+SELECTIONS={'realworld_rejection':'manifests/realworld-rejection-controls-v1.json',
+            'realworld_paired':'manifests/realworld-paired-controls-v1.json',
             'realworld_integrity':'manifests/realworld-integrity-controls-v1.json',
             'petclinic_integrity':'manifests/petclinic-integrity-controls-v1.json'}
 
@@ -38,6 +39,18 @@ def generate(root=ROOT):
             or q.get('verification',{}).get('verified') is not True
             or q.get('pairs')!=7 or q.get('branches')!=14):
             raise ValueError('RealWorld qualification does not cover the exact engineering registry')
+        paths.add(qualification)
+    qualification=contracts['path_families'].get('realworld_rejection_controls',{}).get('engineering_qualification')
+    if qualification:
+        q=json.loads((root/qualification).read_bytes())
+        expected_ids=[c['candidate_id'] for c in selections['realworld_rejection']['cases']]
+        registry_hash=file_hashes(root,[SELECTIONS['realworld_rejection']])[SELECTIONS['realworld_rejection']]
+        if (q.get('status')!='known_rejections_independently_verified'
+            or q.get('qualified_candidate_ids')!=expected_ids or q.get('registry_sha256')!=registry_hash
+            or q.get('verification',{}).get('verified') is not True
+            or q.get('verification',{}).get('matched_rejection_pairs')!=3
+            or q.get('pairs')!=6 or q.get('branches')!=12):
+            raise ValueError('RealWorld rejection qualification differs from its exact selection')
         paths.add(qualification)
     for family in contracts['path_families'].values():
         paths.update(v for k,v in family.items() if k in ('adapter','runner','pair_runner','extractor','terminal_v2_bridge') and v is not None)
