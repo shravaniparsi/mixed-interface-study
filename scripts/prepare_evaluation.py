@@ -28,6 +28,13 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/realworld_v7.yml',
+    'scripts/realworld_identity_database_job_v7.py',
+    'scripts/realworld_paired_database_plan_v7.py',
+    'scripts/run_realworld_paired_database_v7.py',
+    'scripts/validate_realworld_paired_database_v7.py',
+    'protocol/realworld-paired-database-dispatch-v7.md',
+    'tests/test_realworld_identity_database_job_v7.py',
     'scripts/capture_identity_database_v2.py',
     'scripts/realworld_database_capture_v2.mjs',
     'scripts/realworld_identity_case_v2.mjs',
