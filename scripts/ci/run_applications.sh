@@ -31,6 +31,10 @@ case "$STUDY_SUITE" in
   petclinic-interruption-controls)
     timeout --signal=TERM --kill-after=20s 520s python scripts/ci/run_petclinic_interruption.py
     ;;
+  petclinic-terminal-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_petclinic_terminal_campaign.py
+    python scripts/validate_petclinic_terminal_campaign.py "$CI_ARTIFACT_DIR/petclinic-terminal-controls"
+    ;;
   petclinic-integrity-controls)
     timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_petclinic_integrity.py
     ;;
