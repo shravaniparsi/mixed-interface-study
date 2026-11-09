@@ -1,4 +1,8 @@
-# Current primary-readiness audit
+# Current readiness — 9 November 2026 UTC
+
+P1 is qualified: the common terminal policy, Quartz runner and extractor now agree on continue/repeat/halt behavior. Hosted run 42538228610 verified four ordinary branches and independent ledger reconstruction; all 411 unit tests passed. Negative terminal paths and follow-ups have source-shaped fixture coverage. Four blockers remain: P2 full-corpus bindings, P3 bounded batches, P4 timing scope and P5 final freeze. See [the qualification note](quartz_terminal_integration.md) and [current progress record](../manifests/primary-readiness-progress-v2.json). Next is P2. No untouched boundaries ran; the forty Quartz mutation branches remain unexecuted. Earlier checkpoints below retain their dated scope.
+
+# Prior readiness audit — 8 November 2026
 
 The evidence audit identifies five active blockers: terminal-outcome/stop semantics, full-corpus executable contracts, bounded CI batching, the primary timing scope and a final enforced freeze. Known rejected-state checks and declared lifecycle probes are already qualified for their recorded source paths; older missing-check statements below retain historical scope. See [the concrete blocker list and implementation order](primary_readiness_audit.md). Next action: P1, the terminal-outcome contract. No new applications ran and the forty Quartz mutation branches remain unexecuted.
 
