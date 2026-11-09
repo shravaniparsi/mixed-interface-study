@@ -1,3 +1,7 @@
+## Identity campaign halt
+
+Five exposed pairs (ten branches) ran. The 61-character username case returned HTTP 500 and left user/article API reads unreadable in both branches; terminal policy halted the campaign with missing evidence. The exact halted ledger is retained and reconstructed, with no completed-campaign or coverage promotion. See [the identity run note](realworld_identity_halted_integration.md). Next work is a post-write-state diagnostic replay and explicit failed-write semantics.
+
 ## RealWorld field integration
 
 Nine exposed pairs (18 branches) passed fresh dispatch and independent replay. Seven additional retained entries are bound; four rejection entries retain unexpected-acceptance gaps. See [the integration note](realworld_field_integration.md). Remaining P2 work concerns RealWorld identities, duplicate slugs, policy-unknown boundaries, native singletons and generated cases. Primary P3-P5 gates remain open.
