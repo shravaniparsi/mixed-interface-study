@@ -1,3 +1,7 @@
+# Current RealWorld v2 baseline integration
+
+Four baseline pairs/eight branches passed hosted terminal dispatch and independent ledger reconstruction. All 464 hosted checks passed. P2 remains open for the remaining retained RealWorld and PetClinic bindings. No untouched boundary branches ran. See [the qualification note](realworld_terminal_integration.md).
+
 # Current P2 coverage step
 
 The complete retained inventory is now mapped: 73 pairs, two singletons and 148 logical branch slots across eight workflows. Exact source hashes, same-producer reference controls, available guards/extractors and missing bindings are recorded and checked in CI. P2 remains open; next is RealWorld v2 per-job dispatch and terminal extraction. No applications or untouched boundaries ran. See [the coverage note](retained_corpus_coverage.md).
