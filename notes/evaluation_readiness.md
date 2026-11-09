@@ -1,3 +1,7 @@
+# Current P2 coverage step
+
+The complete retained inventory is now mapped: 73 pairs, two singletons and 148 logical branch slots across eight workflows. Exact source hashes, same-producer reference controls, available guards/extractors and missing bindings are recorded and checked in CI. P2 remains open; next is RealWorld v2 per-job dispatch and terminal extraction. No applications or untouched boundaries ran. See [the coverage note](retained_corpus_coverage.md).
+
 # Current readiness — 9 November 2026 UTC
 
 P1 is qualified: the common terminal policy, Quartz runner and extractor now agree on continue/repeat/halt behavior. Hosted run 42538228610 verified four ordinary branches and independent ledger reconstruction; all 411 unit tests passed. Negative terminal paths and follow-ups have source-shaped fixture coverage. Four blockers remain: P2 full-corpus bindings, P3 bounded batches, P4 timing scope and P5 final freeze. See [the qualification note](quartz_terminal_integration.md) and [current progress record](../manifests/primary-readiness-progress-v2.json). Next is P2. No untouched boundaries ran; the forty Quartz mutation branches remain unexecuted. Earlier checkpoints below retain their dated scope.

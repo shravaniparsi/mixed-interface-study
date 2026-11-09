@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "kind": "retained_workflow_contract_bindings",
+  "execution_authorized": false,
+  "catalog_sources": {
+    "realworld_development": "manifests/realworld-boundary-registry-v1.json",
+    "petclinic_development": "manifests/petclinic-candidates-v1.json",
+    "realworld_generated_integration": "manifests/realworld-article-generated-pool-v1.json",
+    "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json"
+  },
+  "path_families": {
+    "realworld_paired_controls": {
+      "adapter": "scripts/realworld_paired_case.mjs",
+      "runner": "scripts/run_realworld_paired_controls.py",
+      "extractor": "scripts/summarize_realworld_paired_components.py",
+      "terminal_v2_bridge": null,
+      "selection_scope": "Complete one-pass seven-case engineering registry only; no arbitrary subset or diagnostic-repeat job."
+    },
+    "realworld_legacy": {
+      "adapter": "scripts/realworld_boundary_case.mjs",
+      "runner": "scripts/run_realworld_boundaries.py",
+      "extractor": "scripts/summarize_realworld_oracle_components.py",
+      "terminal_v2_bridge": null,
+      "selection_scope": "Legacy --candidate selection exists; not a qualified v2 campaign or normalized prospective extractor."
+    },
+    "realworld_generated": {
+      "adapter": "scripts/realworld_generated_case.mjs",
+      "runner": "scripts/run_generated_integration.py",
+      "extractor": "scripts/summarize_realworld_oracle_components.py",
+      "terminal_v2_bridge": null,
+      "selection_scope": "Declared phase selection only; no immutable paired v2 job API."
+    },
+    "petclinic_integrity": {
+      "adapter": "scripts/petclinic_boundary_slice.mjs",
+      "runner": "scripts/ci/run_petclinic_integrity.py",
+      "extractor": "scripts/summarize_petclinic_integrity_components.py",
+      "terminal_v2_bridge": null,
+      "selection_scope": "Leaf --cases selection exists; hosted wrapper and source-qualified extractor cover six integrity candidates only."
+    },
+    "quartz_terminal": {
+      "adapter": "scripts/quartz_generated_case.mjs",
+      "runner": "scripts/run_quartz_terminal_campaign.py",
+      "pair_runner": "scripts/run_quartz_pair_job_v2.mjs",
+      "extractor": "scripts/quartz_terminal_outcomes.py",
+      "terminal_v2_bridge": "scripts/quartz_terminal_outcomes.py",
+      "selection_scope": "Pair runner accepts an exact registered pair; hosted v2 campaign selects two route-control pairs only."
+    }
+  },
+  "workflows": {
+    "realworld.article_create_body_edit": {
+      "registry_workflow": "article-create-edit",
+      "reference_control_candidate": "article-valid",
+      "input_and_binding_checks": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbols": [
+          "command",
+          "audit",
+          "enforce",
+          "articleIdentity"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbol": "rejectionState",
+        "projection": "Current user public fields, complete own-article list, global tags and comments; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "article_tag_create"
+        ],
+        "integration_limit": "Helper scope and per-candidate integration must be verified; no inference from matching workflow name."
+      }
+    },
+    "realworld.article_update_comment_create": {
+      "registry_workflow": "article-update-comment",
+      "reference_control_candidate": "article-update-unique-partial",
+      "input_and_binding_checks": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbols": [
+          "command",
+          "audit",
+          "enforce",
+          "articleIdentity"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbol": "rejectionState",
+        "projection": "Current user public fields, complete own-article list, global tags and comments; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "article_tag_update"
+        ],
+        "integration_limit": "Helper scope and per-candidate integration must be verified; no inference from matching workflow name."
+      }
+    },
+    "realworld.comment_create_delete": {
+      "registry_workflow": "comment-create-delete",
+      "reference_control_candidate": "comment-body-valid",
+      "input_and_binding_checks": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbols": [
+          "command",
+          "audit",
+          "enforce",
+          "commentIdentity"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbol": "rejectionState",
+        "projection": "Current user public fields, complete own-article list, global tags and comments; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands"
+        ],
+        "integration_limit": "Helper scope and per-candidate integration must be verified; no inference from matching workflow name."
+      }
+    },
+    "realworld.profile_update_settings_edit": {
+      "registry_workflow": "profile-update-edit",
+      "reference_control_candidate": "profile-bio-valid",
+      "input_and_binding_checks": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbols": [
+          "command",
+          "audit",
+          "enforce",
+          "profileBundle"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/realworld_integrity.mjs",
+        "symbol": "rejectionState",
+        "projection": "Current user public fields, complete own-article list, global tags and comments; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "profile_update"
+        ],
+        "integration_limit": "Helper scope and per-candidate integration must be verified; no inference from matching workflow name."
+      }
+    },
+    "petclinic.owner_create_address_edit": {
+      "registry_workflow": "owner_address_edit",
+      "reference_control_candidate": "owner_telephone_10",
+      "input_and_binding_checks": {
+        "source": "scripts/petclinic_integrity.mjs",
+        "symbols": [
+          "command",
+          "guard",
+          "enforce",
+          "expectedPayload",
+          "entityFields",
+          "validId"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/petclinic_integrity.mjs",
+        "symbol": "compareRejection",
+        "projection": "Recorded owner/pet/visit graph; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "other_applications"
+        ],
+        "integration_limit": "Exact registered representations; no inferred coercions."
+      }
+    },
+    "petclinic.pet_create_rename": {
+      "registry_workflow": "pet_rename",
+      "reference_control_candidate": "pet_valid",
+      "input_and_binding_checks": {
+        "source": "scripts/petclinic_integrity.mjs",
+        "symbols": [
+          "command",
+          "guard",
+          "enforce",
+          "expectedPayload",
+          "entityFields",
+          "validId"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/petclinic_integrity.mjs",
+        "symbol": "compareRejection",
+        "projection": "Recorded owner/pet/visit graph; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "other_applications"
+        ],
+        "integration_limit": "Exact registered representations; no inferred coercions."
+      }
+    },
+    "petclinic.visit_create_reschedule": {
+      "registry_workflow": "visit_reschedule",
+      "reference_control_candidate": "visit_valid",
+      "input_and_binding_checks": {
+        "source": "scripts/petclinic_integrity.mjs",
+        "symbols": [
+          "command",
+          "guard",
+          "enforce",
+          "expectedPayload",
+          "entityFields",
+          "validId"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/petclinic_integrity.mjs",
+        "symbol": "compareRejection",
+        "projection": "Recorded owner/pet/visit graph; not database atomicity."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "other_applications"
+        ],
+        "integration_limit": "Exact registered representations; no inferred coercions."
+      }
+    },
+    "quartz.stored_job_create_description_edit": {
+      "registry_workflow": "quartz",
+      "reference_control_candidate": null,
+      "input_and_binding_checks": {
+        "source": "scripts/quartz_generated_case.mjs",
+        "symbols": [
+          "payload_matches_bound_intent",
+          "bindConsumer"
+        ]
+      },
+      "rejected_state": {
+        "source": "scripts/quartz_generated_case.mjs",
+        "symbol": "rejected_prefix_full_state_unchanged",
+        "projection": "Scheduler, jobs and triggers in recorded RAM-store snapshot."
+      },
+      "normalization": {
+        "policy": "manifests/normalization-policy-v1.json",
+        "rules": [
+          "submitted_commands",
+          "other_applications"
+        ],
+        "integration_limit": "Exact declared business fields; unresolved map policy stays separate."
+      }
+    }
+  },
+  "shared_contract_sources": [
+    "src/mixed_interface/terminal_outcomes.py",
+    "src/mixed_interface/campaign_v2.py",
+    "src/mixed_interface/repetition.py",
+    "src/mixed_interface/normalization.py",
+    "scripts/realworld_normalization.mjs"
+  ]
+}

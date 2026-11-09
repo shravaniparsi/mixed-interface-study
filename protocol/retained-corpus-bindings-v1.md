@@ -1,0 +1,15 @@
+# Retained corpus bindings v1
+
+This deterministic map covers every entry in the existing inventory: all paired candidates and both native-only controls. It neither changes the corpus nor authorizes execution. Catalog overlap, prior exposure and unresolved expectations remain attached to their original entries. Logical branch identifiers are mapping keys, not executed attempt identities or independent observations.
+
+The map reconstructs pairing directly from all four source registries and requires exact agreement with the registered inventory. Each branch records its source case, canonical case hash, producer and continuation interfaces, and the runner's channel name. PetClinic's `api_semantic` and `fresh_ui` names are explicitly mapped to API and UI continuations.
+
+Paired reference controls are chosen before outcomes and stay within the same catalog, workflow and producer interface. The RealWorld development controls are article-valid, article-update-unique-partial, comment-body-valid and profile-bio-valid. PetClinic uses each template's valid control. Generated catalogs use their unique route-only pair for the same producer. Native-only singleton controls remain singletons, with no invented API branch or paired reference control.
+
+Each workflow contract names available input/binding and rejected-state predicates and the applicable normalization policy keys. Source hashes pin the runner, adapter, extractor, guard helpers, policies, selection registries and named qualification records. Symbol existence is a structural check, not a proof of semantic correctness. Named engineering evidence describes its archived cohort; it does not establish primary coverage for a whole workflow or for changed inputs.
+
+Five path families distinguish the exact prospective RealWorld control cases from legacy and generated RealWorld, PetClinic integrity controls and Quartz v2. Cases qualify for the prospective RealWorld path only if their complete registry record equals a selected control record, not merely because their identifier or workflow matches. Extra engineering controls are listed separately and do not silently enlarge the retained inventory.
+
+The map records outstanding bindings explicitly. RealWorld and PetClinic need v2 terminal bridges and job dispatch. Cases outside source-qualified selections need extractor/normalization binding. Profile identity mutations remain outside the bio/image normalization helper. Quartz's pair runner accepts explicit registered pairs, but its hosted campaign selects ordinary controls; a mapping entry does not enable the untouched mutation pairs.
+
+All rows have primary_dispatch_ready=false. The explicit dispatch guard refuses to treat a coverage map as a frozen execution manifest, even if a caller alters a row's flag. P2 executable integration, P3 batching, P4 timing scope and P5 freeze remain required. The verifier regenerates the map and rejects missing entries, reordered/foreign semantics, changed exposure, altered source hashes or unsupported promotion of readiness.

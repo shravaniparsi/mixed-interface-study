@@ -28,6 +28,13 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/coverage.py',
+    'scripts/prepare_corpus_coverage.py',
+    'tests/test_corpus_coverage.py',
+    'manifests/workflow-contract-bindings-v1.json',
+    'manifests/retained-corpus-coverage-v1.json',
+    'protocol/retained-corpus-bindings-v1.md',
+    'notes/retained_corpus_coverage.md',
     'manifests/quartz-terminal-integration-qualification.json',
     'manifests/primary-readiness-progress-v2.json',
     'results/quartz-terminal-integration-ci-20261109/verification.json',
