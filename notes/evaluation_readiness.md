@@ -1,3 +1,9 @@
+# Latest: corpus review v3
+
+The source-derived review records engineering evidence for 49 of 75 catalog entries (73 pairs and two singletons), up from 44. Nine legacy entries have observed attempts; six entries have separate isolated database observations. No entry is primary-dispatch ready. Historical halts, unknown policies and incomparable outcomes remain explicit. The separate reference replay does not alter v9 classifications. See `manifests/retained-corpus-review-v3.json` and `protocol/retained-corpus-review-v3.md`.
+
+Next: prepare offline source-pinned bindings for nine generated RealWorld pairs. The remaining backlog also includes three identity and seven legacy primary bindings, eight unexpected-acceptance paths, Quartz batch selection, PetClinic branch-cost timing and final freeze. No untouched boundaries are authorized for execution.
+
 # Latest: retrospective reference comparison
 
 The separate v1 replay qualifies the duplicate full-update pair after proving each branch’s producer-to-load-to-comment reference chain. Empty-reference and unresolved-reference pairs remain incomparable; the frozen v9 archive is unchanged. No application reruns or primary samples were added. See `protocol/realworld-reference-comparison-v1.md` and `manifests/realworld-reference-replay-v1.json`. Next is source-derived corpus readiness reconciliation.

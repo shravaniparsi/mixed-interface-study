@@ -94,6 +94,8 @@ jobs:
         run: python scripts/verify_realworld_legacy_halted_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-legacy-halted.log"
       - name: Verify retained corpus bindings
         run: python scripts/prepare_corpus_coverage.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-coverage.log"
+      - name: Verify legacy and database readiness reconciliation
+        run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
       - name: Verify reconciled corpus readiness
         run: python scripts/prepare_corpus_review_v2.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v2.log"
       - name: Pure Node adapter tests
