@@ -1,4 +1,8 @@
-## PetClinic prefix interpretation v3 preparation
+## Expanded PetClinic engineering integration
+
+Four independently replayed batches cover 18 exposed candidates, 31 paired attempts and 62 branches. Incomplete response and policy observations remain explicit. See [the integration note](petclinic_expanded_integration.md). Next is the remaining RealWorld corpus bindings; primary P3-P5 gates remain open.
+
+## Prior PetClinic prefix interpretation v3 preparation
 
 Requirement-aware extraction now covers the eighteen registered policy bindings and preserves uncertainty for unsupported response paths. Nineteen focused tests and replay of the six archived control pairs validate the preparation. No new applications ran or coverage gaps closed; next is versioned dispatcher integration and bounded fresh checks. See [the preparation note](petclinic_prefix_preparation_v3.md).
 

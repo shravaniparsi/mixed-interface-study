@@ -1,0 +1,233 @@
+{
+  "source_commit": "45724866b98a2445b01213936239c4808bb192ab",
+  "batch": "owner_formats",
+  "plan": {
+    "schema_version": 2,
+    "kind": "terminal_campaign_plan",
+    "terminal_policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "schedule": {
+      "schema_version": 1,
+      "kind": "paired_repeat_plan",
+      "pairs": [
+        {
+          "pair_id": "owner_telephone_10",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_telephone_10-api-r1",
+            "ui": "owner_telephone_10-ui-r1"
+          },
+          "intervention": "route_only",
+          "mutation": null,
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "owner_telephone_9",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_telephone_9-api-r1",
+            "ui": "owner_telephone_9-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "boundary",
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "owner_telephone_11",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_telephone_11-api-r1",
+            "ui": "owner_telephone_11-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "boundary",
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        },
+        {
+          "pair_id": "owner_city_whitespace",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_city_whitespace-api-r1",
+            "ui": "owner_city_whitespace-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "boundary",
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "ui",
+            "api"
+          ]
+        },
+        {
+          "pair_id": "owner_first_name_hyphen",
+          "workflow_id": "owner_address_edit",
+          "producer_interface": "api",
+          "case_ids": {
+            "api": "owner_first_name_hyphen-api-r1",
+            "ui": "owner_first_name_hyphen-ui-r1"
+          },
+          "intervention": "payload_mutation",
+          "mutation": "legal_schema_boundary",
+          "reference_control": "owner_telephone_10",
+          "consumer_order": [
+            "api",
+            "ui"
+          ]
+        }
+      ],
+      "initial_jobs": [
+        {
+          "job_id": "initial-000",
+          "pair_id": "owner_telephone_10",
+          "target_pair_id": "owner_telephone_10",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_telephone_10-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_telephone_10-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-001",
+          "pair_id": "owner_telephone_9",
+          "target_pair_id": "owner_telephone_9",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_telephone_9-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_telephone_9-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-002",
+          "pair_id": "owner_telephone_11",
+          "target_pair_id": "owner_telephone_11",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_telephone_11-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_telephone_11-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-003",
+          "pair_id": "owner_city_whitespace",
+          "target_pair_id": "owner_city_whitespace",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_city_whitespace-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_city_whitespace-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        {
+          "job_id": "initial-004",
+          "pair_id": "owner_first_name_hyphen",
+          "target_pair_id": "owner_first_name_hyphen",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_first_name_hyphen-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_first_name_hyphen-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        }
+      ],
+      "extra_candidate_attempts": 2,
+      "resume": false,
+      "primary_freeze_complete": false,
+      "scope": "Planning only; adapter integration and primary qualification remain required",
+      "plan_sha256": "c10ef632ac91755d403d9988e1992051e4eb7cb9404f1c1117ce5223c04c5924"
+    },
+    "primary_freeze_complete": false,
+    "plan_sha256": "2877876bba6e10da937f2608160e6f44d04f3f2f5072dc0a0735f323746466f9"
+  },
+  "sources": {
+    ".github/workflows/petclinic_v3.yml": "e9ba6217ec0e3ff3eec35d27cc8a2c8d20a8b8ba72f9148e82a8bc1d273c6cfe",
+    "scripts/ci/prepare_petclinic.py": "a118d07e548f6464a3c541b15bcd957b9567ede3b1043e9a5f66aad5b02fd051",
+    "scripts/petclinic_prefix_outcomes_v3.py": "30f375fe6cc099725fd9d227dd0dfd958acaff49f056e82bbe5225b8c2ca427d",
+    "manifests/petclinic-prefix-policy-v3.json": "95a1c08e7a62b72c19031ffec84ef5602e2553fd7c67bbde432656febd6faf9e",
+    "manifests/petclinic-expanded-batches-v3.json": "716c5ffeed77f00146038441324a9ba6f4a863681cdd3b1c9e7c23cd9b50800d",
+    "manifests/petclinic-candidates-v1.json": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
+    "scripts/run_petclinic_pair_job_v3.mjs": "cf25ca3bcd0c977023c729469c11ec55a405f304e6c6c62decc7b60c7447afc9",
+    "scripts/petclinic_job_binding_v3.mjs": "1395bbfe1869cae656ddc00b5ed5d43712e319354296a642b67b3d060df2d6db",
+    "scripts/petclinic_expanded_campaign.py": "555e1c23565302c0718cd09c7add1b9519681ffbe682f9adf1b7eb504179b260",
+    "scripts/run_petclinic_expanded_campaign.py": "67b6e7467b024ea16b1d86159e100e8fe25e31bc46d197a37e80fc65549aab3f",
+    "scripts/validate_petclinic_expanded_campaign.py": "4f34c479b3761b3ed798d0397f1c079ee22fcdb3b56f67e81d09becdd73e9fec",
+    "scripts/petclinic_terminal_outcomes.py": "2a18771c861e1e9628107a20cdb06b092e762b6931f63079f3c839ffdeca1f81",
+    "scripts/summarize_petclinic_integrity_components.py": "b275004631c141530aa92470bd21dfb1dcd052a9de28172af9a39f8c1b98af20",
+    "scripts/summarize_petclinic_oracle_components.py": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9",
+    "scripts/validate_petclinic_integrity.py": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "scripts/petclinic_integrity.mjs": "60d5f484a3f4939753bf68d5a581a220dd727681beda8cc2989cb18969df6bc1",
+    "scripts/petclinic_response_capture.mjs": "db710ed6d36aac38405b4cc746d5e0ee1c95a54e76e7d2860477f5c24f7d5868",
+    "scripts/petclinic_cleanup.mjs": "a30e5b89c813b67b37e537b0b4c1aac3caa3892d13ff14dad547d3780be01e3c",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "protocol/petclinic-expanded-dispatch-v3.md": "0c86ea6fb2c642771519dd4653e626405edf1f101f4c4cf8aabde414e4197429"
+  },
+  "environment": {
+    "petclinic-bootstrap.json": "26be6d5e7689bde8ce1420d58f09a3f7f50c1792e288c05bb521603e5881f235",
+    "runtime-versions.json": "f75a811a6cc0db3e9a0995f8e8fca57bb5cfbdba714dca7c6794a95a08f2b885",
+    "browser.json": "62b0aecfb63570b07063206f6626d74e788a3eea21d05ca215fd87f5eb529c02"
+  },
+  "primary_freeze_complete": false,
+  "pair_timeout_s": 120,
+  "campaign_timeout_s": 900,
+  "scope": "Exposed development registry batch; no new boundaries; no resume"
+}

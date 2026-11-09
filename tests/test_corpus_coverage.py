@@ -139,6 +139,7 @@ class CorpusCoverageTests(unittest.TestCase):
         self.assertNotIn('manifests/realworld-rejection-integration-qualification.json',row['recorded_engineering_evidence'])
 
     def test_petclinic_selected_paths_only(self):
+        self.selections.pop('petclinic_expanded',None)
         rows=[r for r in self.build()['rows'] if r['path_family']=='petclinic_terminal_controls']
         self.assertEqual(len(rows),6)
         for row in rows:
@@ -146,5 +147,22 @@ class CorpusCoverageTests(unittest.TestCase):
             self.assertFalse(row['primary_dispatch_ready'])
 
     def test_changed_petclinic_registry_does_not_inherit_qualification(self):
+        self.selections.pop('petclinic_expanded',None)
         self.selections['petclinic_terminal']['registry_semantic_sha256']='changed'
         self.assertFalse(any(r['path_family']=='petclinic_terminal_controls' for r in self.build()['rows']))
+
+    def test_expanded_petclinic_binding_keeps_observation_limits(self):
+        rows=[r for r in self.build()['rows'] if r['path_family']=='petclinic_expanded']
+        self.assertEqual(len(rows),18)
+        for row in rows:
+            self.assertFalse(row['primary_dispatch_ready'])
+            self.assertNotIn('petclinic_v2_job_dispatch',row['open_binding_gaps'])
+            kinds=self.selections['petclinic_expanded']['verification']['candidate_terminal_kinds'][row['inventory_entry']['candidate_id']]
+            if 'application_response_failure' in kinds:self.assertIn('petclinic_response_semantics_incomplete',row['open_binding_gaps'])
+            if 'unresolved_policy' in kinds:self.assertIn('petclinic_domain_policy_unresolved',row['open_binding_gaps'])
+
+    def test_changed_expanded_petclinic_registry_cannot_inherit_qualification(self):
+        self.selections['petclinic_expanded']['registry_semantic_sha256']='changed'
+        rows=self.build()['rows']
+        self.assertFalse(any(r['path_family']=='petclinic_expanded' for r in rows))
+        self.assertEqual(sum(r['path_family']=='petclinic_terminal_controls' for r in rows),6)

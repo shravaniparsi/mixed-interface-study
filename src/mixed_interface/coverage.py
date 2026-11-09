@@ -96,6 +96,15 @@ def build(inventory, registries, contracts, selections):
             if exact and qualified and p['candidate_id'] in {c['id'] for c in selected.get('selection',[])}:
                 family='petclinic_terminal_controls';evidence.append(qualified)
                 gaps=['petclinic_unexpected_prefix_outcome_extraction']
+            expanded=selections.get('petclinic_expanded',{})
+            qualified=contracts['path_families'].get('petclinic_expanded',{}).get('engineering_qualification')
+            if qualified and digest(registries[catalog])==expanded.get('registry_semantic_sha256') and p['candidate_id'] in expanded.get('qualified_candidate_ids',[]):
+                family='petclinic_expanded';evidence.append(qualified);gaps=[]
+                kinds=expanded['verification']['candidate_terminal_kinds'][p['candidate_id']]
+                for kind,gap in [('application_response_failure','petclinic_response_semantics_incomplete'),('unresolved_policy','petclinic_domain_policy_unresolved'),('incomparable_observation','petclinic_state_comparability_unresolved')]:
+                    if kind in kinds:gaps.append(gap)
+                for report in expanded['verification']['batches'].values():
+                    if any(row['pair_id']==p['candidate_id'] and row['status']=='variable_observations' for row in report['repeat_summary']['pairs']):gaps.append('petclinic_variable_observations')
         elif catalog=='realworld_generated_integration':
             family='realworld_generated'
             if set(p['case_ids'].values())<=rw_generated:evidence.append('manifests/realworld-execution-integrity.json')

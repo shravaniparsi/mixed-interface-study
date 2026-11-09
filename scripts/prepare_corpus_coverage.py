@@ -7,11 +7,12 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from mixed_interface.coverage import build, validate
-from mixed_interface.evaluation import file_hashes
+from mixed_interface.evaluation import file_hashes, digest
 
 CONTRACT='manifests/workflow-contract-bindings-v1.json'
 OUTPUT='manifests/retained-corpus-coverage-v1.json'
-SELECTIONS={'petclinic_terminal':'manifests/petclinic-terminal-integration-qualification.json',
+SELECTIONS={'petclinic_expanded':'manifests/petclinic-expanded-integration-qualification.json',
+            'petclinic_terminal':'manifests/petclinic-terminal-integration-qualification.json',
             'realworld_rejection':'manifests/realworld-rejection-controls-v1.json',
             'realworld_paired':'manifests/realworld-paired-controls-v1.json',
             'realworld_integrity':'manifests/realworld-integrity-controls-v1.json',
@@ -56,7 +57,6 @@ def generate(root=ROOT):
     qualification=contracts['path_families'].get('petclinic_terminal_controls',{}).get('engineering_qualification')
     if qualification:
         q=selections['petclinic_terminal']
-        from mixed_interface.evaluation import digest
         expected=selections['petclinic_integrity']['cases']
         if (q.get('status')!='selected_control_paths_independently_verified'
             or q.get('selection')!=expected
@@ -66,6 +66,22 @@ def generate(root=ROOT):
             or q.get('pairs')!=6 or q.get('branches')!=12):
             raise ValueError('PetClinic qualification differs from exact registry and selection')
         paths.add(qualification)
+    qualification=contracts['path_families'].get('petclinic_expanded',{}).get('engineering_qualification')
+    if qualification:
+        q=selections['petclinic_expanded'];reg=registries['petclinic_development']
+        expected=[c['id'] for c in reg['candidates']]
+        batches='manifests/petclinic-expanded-batches-v3.json'
+        if (q.get('status')!='exposed_registry_batches_independently_verified'
+            or q.get('qualified_candidate_ids')!=expected
+            or q.get('registry_semantic_sha256')!=digest(reg)
+            or q.get('registry_sha256')!=file_hashes(root,[contracts['catalog_sources']['petclinic_development']])[contracts['catalog_sources']['petclinic_development']]
+            or q.get('batch_contract_sha256')!=file_hashes(root,[batches])[batches]
+            or q.get('verification',{}).get('verified') is not True
+            or q.get('verification',{}).get('unique_candidates')!=18
+            or q.get('verification',{}).get('initial_pair_attempts')!=19
+            or set(q.get('verification',{}).get('batches',{}))!={'owner_required','owner_formats','pets','visits'}):
+            raise ValueError('Expanded PetClinic qualification differs from exact registry and batches')
+        paths.update((qualification,batches))
     for family in contracts['path_families'].values():
         paths.update(v for k,v in family.items() if k in ('adapter','runner','pair_runner','extractor','terminal_v2_bridge') and v is not None)
     for workflow in contracts['workflows'].values():
