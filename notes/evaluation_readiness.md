@@ -1,3 +1,7 @@
+# Separate write observations prepared
+
+The prospective contract in `protocol/write-observations-v1.md` separates producer HTTP response, committed-state projection, per-endpoint readback and native continuation. `scripts/replay_write_observations.py` verifies the retained database archive before deriving three API-only records; native continuation remains not measured and unknown username policies remain unresolved. Frozen terminal policies and the original halted campaign are unchanged. Next: versioned paired identity integration and negative-path qualification. P2–P5 remain open; no application executions or primary samples were added.
+
 ## Identity database diagnostic
 
 An isolated replay retained thirteen SQLite backups for three exposed inputs. The 61-character username persisted despite HTTP 500 and survived a backend restart; current-user and three article reads remained 500. Null and 60-character controls distinguished rejected unchanged state and successful committed state. See [the diagnostic note](realworld_identity_database_diagnostic.md). The earlier campaign remains halted, and no primary sample or coverage promotion is added. Next work separates HTTP outcome, persisted state and readback availability.

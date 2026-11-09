@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/write_observations.py',
+    'protocol/write-observations-v1.md',
+    'scripts/replay_write_observations.py',
+    'tests/test_write_observations.py',
     'tests/test_realworld_identity_database_archive.py',
     'scripts/verify_realworld_identity_database_archive.py',
     'manifests/realworld-identity-database-integration.json',
