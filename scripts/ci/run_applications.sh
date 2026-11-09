@@ -6,6 +6,10 @@ case "$STUDY_SUITE" in
     timeout --signal=TERM --kill-after=20s 480s python scripts/ci/run_realworld_interruption.py
     python scripts/validate_realworld_interruption.py "$CI_ARTIFACT_DIR"
     ;;
+  realworld-terminal-controls)
+    timeout --signal=TERM --kill-after=20s 480s python scripts/run_realworld_terminal_campaign.py
+    python scripts/validate_realworld_terminal_campaign.py "$CI_ARTIFACT_DIR/realworld-terminal-controls"
+    ;;
   realworld-paired-controls)
     mkdir -p "$STUDY_RUNTIME/realworld-execution" "$CI_ARTIFACT_DIR/realworld-paired-controls"
     timeout --signal=TERM --kill-after=20s 300s python scripts/run_realworld_paired_controls.py \
