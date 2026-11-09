@@ -1,3 +1,7 @@
+# Live v8 diagnostic halted and verified
+
+Run 42702655033 completed four exposed jobs (eight branches) before the 151-character title case triggered the registered missing-evidence halt. Two reference controls were clean; the 150-character title case completed both continuations under unknown policy. Both 151-character producers and follow-up reads returned 500, and neither continuation ran. Five later jobs remain unstarted. Hosted and local reconstruction verified the halt; see `notes/realworld_legacy_halted_integration.md`. No primary samples were added.
+
 # Bounded v8 campaign prepared
 
 The nine-job supervisor and independent archive verifier are implemented. Native singletons remain outside paired comparisons; unclean reference controls or terminal halts stop the sweep, including a halt on the last job. The timeout budget covers all job limits and cleanup. Eight orchestration tests pass. Next: hosted exposed-case qualification and review of its retained evidence. No primary dispatch is authorized.

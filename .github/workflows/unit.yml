@@ -84,6 +84,8 @@ jobs:
         run: python scripts/replay_identity_measurements_v2.py > "$CI_ARTIFACT_DIR/identity-measurements-v2.json"
       - name: Verify live paired database archive
         run: python scripts/verify_realworld_paired_database_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/paired-database-archive.log"
+      - name: Verify halted legacy v8 archive
+        run: python scripts/verify_realworld_legacy_halted_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-legacy-halted.log"
       - name: Verify retained corpus bindings
         run: python scripts/prepare_corpus_coverage.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-coverage.log"
       - name: Verify reconciled corpus readiness

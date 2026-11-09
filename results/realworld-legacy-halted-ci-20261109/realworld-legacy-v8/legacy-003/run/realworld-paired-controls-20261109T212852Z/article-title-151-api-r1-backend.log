@@ -1,0 +1,80 @@
+[09/Nov/2026 21:28:57] "GET /api/tags HTTP/1.1" 200 12
+[09/Nov/2026 21:28:57] "POST /api/users/login HTTP/1.1" 200 356
+[09/Nov/2026 21:28:57] "GET /api/user HTTP/1.1" 200 356
+[09/Nov/2026 21:28:57] "GET /api/user HTTP/1.1" 200 356
+[09/Nov/2026 21:28:57] "GET /api/articles?author=pilotresearch HTTP/1.1" 200 1150
+[09/Nov/2026 21:28:57] "GET /api/tags HTTP/1.1" 200 12
+[09/Nov/2026 21:28:57] "GET /api/articles/duplicate-fixture-title-dd8a30d1/comments HTTP/1.1" 200 16
+[09/Nov/2026 21:28:57] "GET /api/articles/duplicate-fixture-title/comments HTTP/1.1" 200 16
+[09/Nov/2026 21:28:57] "GET /api/articles/unique-fixture-article/comments HTTP/1.1" 200 16
+1 validation error for ArticleOutSchema
+title
+  String should have at most 150 characters [type=string_too_long, input_value='TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTTT', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/articles/api.py", line 90, in create_article
+    return 201, {"article": ArticleOutSchema.from_orm(article, context={"request": request})}
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ArticleOutSchema
+title
+  String should have at most 150 characters [type=string_too_long, input_value='TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTTT', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/articles
+[09/Nov/2026 21:28:57] "POST /api/articles HTTP/1.1" 500 1358
+1 validation error for ArticleListOutSchema
+title
+  String should have at most 150 characters [type=string_too_long, input_value='TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTTT', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/articles/api.py", line 66, in list_articles
+    "articles": [ArticleListOutSchema.from_orm(a, context={"request": request}) for a in articles],
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ArticleListOutSchema
+title
+  String should have at most 150 characters [type=string_too_long, input_value='TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTTT', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/articles
+[09/Nov/2026 21:28:58] "GET /api/articles?author=pilotresearch HTTP/1.1" 500 1354
+[09/Nov/2026 21:28:58] "GET /api/user HTTP/1.1" 200 356
+1 validation error for ArticleListOutSchema
+title
+  String should have at most 150 characters [type=string_too_long, input_value='TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTTT', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/articles/api.py", line 66, in list_articles
+    "articles": [ArticleListOutSchema.from_orm(a, context={"request": request}) for a in articles],
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ArticleListOutSchema
+title
+  String should have at most 150 characters [type=string_too_long, input_value='TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTTT', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/articles
+[09/Nov/2026 21:28:58] "GET /api/articles?author=pilotresearch HTTP/1.1" 500 1354
+[09/Nov/2026 21:28:58] "GET /api/tags HTTP/1.1" 200 19
