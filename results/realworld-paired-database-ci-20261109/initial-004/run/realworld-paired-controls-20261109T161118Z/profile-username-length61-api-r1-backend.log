@@ -1,0 +1,132 @@
+[09/Nov/2026 16:11:22] "GET /api/tags HTTP/1.1" 200 12
+[09/Nov/2026 16:11:22] "POST /api/users/login HTTP/1.1" 200 356
+[09/Nov/2026 16:11:22] "GET /api/user HTTP/1.1" 200 356
+[09/Nov/2026 16:11:22] "GET /api/user HTTP/1.1" 200 356
+[09/Nov/2026 16:11:22] "GET /api/articles?author=pilotresearch HTTP/1.1" 200 1150
+[09/Nov/2026 16:11:22] "GET /api/tags HTTP/1.1" 200 12
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title HTTP/1.1" 200 419
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title/comments HTTP/1.1" 200 16
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title-aa02e3d0 HTTP/1.1" 200 428
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title-aa02e3d0/comments HTTP/1.1" 200 16
+[09/Nov/2026 16:11:22] "GET /api/articles/unique-fixture-article HTTP/1.1" 200 397
+[09/Nov/2026 16:11:22] "GET /api/articles/unique-fixture-article/comments HTTP/1.1" 200 16
+1 validation error for UserInPartialUpdateOutSchema
+username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/accounts/api.py", line 81, in put_user
+    user=UserInPartialUpdateOutSchema.from_orm(request.user, context={"token": token}),
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for UserInPartialUpdateOutSchema
+username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/user
+[09/Nov/2026 16:11:22] "PUT /api/user HTTP/1.1" 500 1354
+1 validation error for UserMineSchema
+username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/accounts/api.py", line 66, in get_user
+    return UserGetSchema.model_construct(user=UserMineSchema.from_orm(request.user, context={"token": token}))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for UserMineSchema
+username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/user
+[09/Nov/2026 16:11:22] "GET /api/user HTTP/1.1" 500 1386
+[09/Nov/2026 16:11:22] "GET /api/articles?author=pilotresearch HTTP/1.1" 200 36
+[09/Nov/2026 16:11:22] "GET /api/tags HTTP/1.1" 200 12
+1 validation error for ArticleOutSchema
+author.username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/articles/api.py", line 96, in retrieve
+    return {"article": ArticleOutSchema.from_orm(article, context={"request": request})}
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ArticleOutSchema
+author.username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/articles/duplicate-fixture-title
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title HTTP/1.1" 500 1351
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title/comments HTTP/1.1" 200 16
+1 validation error for ArticleOutSchema
+author.username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/articles/api.py", line 96, in retrieve
+    return {"article": ArticleOutSchema.from_orm(article, context={"request": request})}
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ArticleOutSchema
+author.username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/articles/duplicate-fixture-title-aa02e3d0
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title-aa02e3d0 HTTP/1.1" 500 1351
+[09/Nov/2026 16:11:22] "GET /api/articles/duplicate-fixture-title-aa02e3d0/comments HTTP/1.1" 200 16
+1 validation error for ArticleOutSchema
+author.username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/operation.py", line 133, in run
+    result = self.view_func(request, **values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/realworld-django-ninja/apps/articles/api.py", line 96, in retrieve
+    return {"article": ArticleOutSchema.from_orm(article, context={"request": request})}
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/ninja/schema.py", line 232, in from_orm
+    return cls.model_validate(obj, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/study-runtime/realworld/venv/lib/python3.12/site-packages/pydantic/main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ArticleOutSchema
+author.username
+  String should have at most 60 characters [type=string_too_long, input_value='uuuuuuuuuuuuuuuuuuuuuuuu...uuuuuuuuuuuuuuuuuuuuuuu', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/string_too_long
+Internal Server Error: /api/articles/unique-fixture-article
+[09/Nov/2026 16:11:22] "GET /api/articles/unique-fixture-article HTTP/1.1" 500 1351
+[09/Nov/2026 16:11:22] "GET /api/articles/unique-fixture-article/comments HTTP/1.1" 200 16

@@ -1,3 +1,7 @@
+# Live paired database diagnostic verified
+
+Four exposed pairs, eight branches and twenty branch-local SQLite backups were independently reconstructed from hosted run 42651908419. The bio and 60-character controls completed API/native UI edits; null returned 422 with unchanged selected state; both 61-character branches committed the requested username despite HTTP 500 and executed no continuation. Their semantic evidence remains incomplete, and username length policies remain unresolved. See `notes/realworld_paired_database_integration.md`. Next: review identity/corpus bindings and remaining batch/cost gates. No primary samples were added; P2–P5 remain open.
+
 # Paired database capture prepared
 
 Runner version 7 and identity adapter version 2 capture branch-local SQLite backups before the producer, immediately after its response, and after an executed continuation. An independent validator reopens backups and checks trace ordering. Qualification uses the actual API adapter with mocked HTTP and real SQLite; the UI ordering fixture does not execute a browser. See `protocol/realworld-paired-database-capture-v7.md`. Next: source-qualified version 7 paired loader and fresh exposed-control qualification, including native UI. No application executions or primary samples were added; P2–P5 remain open.

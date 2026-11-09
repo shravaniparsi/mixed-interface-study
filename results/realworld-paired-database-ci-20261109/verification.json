@@ -1,0 +1,1408 @@
+{
+  "verified": true,
+  "source_commit": "c38b59bf1058d8af63333ebcfcc244f36df6c121",
+  "pairs": 4,
+  "branches": 8,
+  "database_backups": 20,
+  "results": [
+    {
+      "candidate_id": "profile-bio-valid",
+      "terminal_kind": "clean_observation",
+      "measurements": {
+        "api": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 200
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-89782119",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Bio before continuation.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-89782119",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "requested_patch_observed",
+              "intended_values_observed": true,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "prefix_readback:/api/user": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles?author=pilotresearch": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-89782119": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-89782119/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "observed",
+              "interface": "api",
+              "checks": {
+                "prefix_profile_matches_input": true,
+                "prefix_related_state_preserved": true,
+                "profile_reference_resolvable": true,
+                "profile_edit_persisted": true,
+                "related_state_preserved": true
+              }
+            }
+          },
+          "continuation_database": {
+            "state": "observed",
+            "projection": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Bio after meaningful continuation.",
+              "image": null,
+              "articles": [
+                {
+                  "id": 1,
+                  "slug": "unique-fixture-article",
+                  "title": "Unique fixture article",
+                  "description": "Fixture description",
+                  "body": "Fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 2,
+                  "slug": "duplicate-fixture-title",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 3,
+                  "slug": "duplicate-fixture-title-89782119",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                }
+              ]
+            }
+          },
+          "requirement_policy": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+            "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "2880fbe3f6a6709c770092ed211b13d935379bc0d42aac9857b44b4a985929f6",
+            "after_prefix": "30f2de1fdb5db84f37212c7489fbe4f4e63bf837e04eba63b79e733fa2c44a3e",
+            "after_continuation": "d699601d020e4f9c979a4c13897aef6e5a97e0cf7992653fd7f4d5f73c74a58d"
+          },
+          "restart_observed": false,
+          "raw_sha256": "694f1b4f920ab3179dceb15f80b9ec6bc983dceb4279aa4fadffaca9726f7824",
+          "reset_sha256": "43e3b4b454322932afb0ce161842820c9cb4428521bf8de67e2ae3aa438868f0"
+        },
+        "ui": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 200
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-89782119",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Bio before continuation.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-89782119",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "requested_patch_observed",
+              "intended_values_observed": true,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "prefix_readback:/api/user": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles?author=pilotresearch": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-89782119": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-89782119/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "observed",
+              "interface": "ui",
+              "checks": {
+                "prefix_profile_matches_input": true,
+                "prefix_related_state_preserved": true,
+                "profile_reference_resolvable": true,
+                "profile_edit_persisted": true,
+                "related_state_preserved": true
+              }
+            }
+          },
+          "continuation_database": {
+            "state": "observed",
+            "projection": {
+              "id": 1,
+              "username": "pilotresearch",
+              "email": "pilot@example.com",
+              "bio": "Bio after meaningful continuation.",
+              "image": null,
+              "articles": [
+                {
+                  "id": 1,
+                  "slug": "unique-fixture-article",
+                  "title": "Unique fixture article",
+                  "description": "Fixture description",
+                  "body": "Fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 2,
+                  "slug": "duplicate-fixture-title",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 3,
+                  "slug": "duplicate-fixture-title-89782119",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                }
+              ]
+            }
+          },
+          "requirement_policy": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+            "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "01a35e48905bf95c31340ed82d3cfce0b58a0dd55409f47b57ee6384890a43e1",
+            "after_prefix": "210d1746c19cd570c5608828f459afa76e99409796c07aeef7571ad228367d0f",
+            "after_continuation": "85bfecfc6823b612fef57b50e20385f41cdaed0093ef1732188df819ffe01e4f"
+          },
+          "restart_observed": false,
+          "raw_sha256": "80328166a544ae8cae9c41f5a11391fc73f106ca51ddc84268f75150cd908682",
+          "reset_sha256": "43e3b4b454322932afb0ce161842820c9cb4428521bf8de67e2ae3aa438868f0"
+        }
+      },
+      "database_pair_comparison": {
+        "same_before_projection": true,
+        "same_after_prefix_projection": true
+      }
+    },
+    {
+      "candidate_id": "profile-username-null",
+      "terminal_kind": "matched_rejection",
+      "measurements": {
+        "ui": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 422
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-00c2be71",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-00c2be71",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "unchanged",
+              "intended_values_observed": false,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "failed_prefix_followup:/api/user": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles?author=pilotresearch": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-00c2be71": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-00c2be71/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "not_executed_prefix_unsuccessful",
+              "interface": "ui"
+            }
+          },
+          "continuation_database": {
+            "state": "not_executed"
+          },
+          "requirement_policy": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+            "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "11ead6065f692dbc334ed22431f1177debc2324b8e775089a9777441744f52b6",
+            "after_prefix": "11ead6065f692dbc334ed22431f1177debc2324b8e775089a9777441744f52b6"
+          },
+          "restart_observed": false,
+          "raw_sha256": "2232c753c1454a4cec07d0e8cadf5bd5812cd978295b5a00aa1d731408223a0f",
+          "reset_sha256": "2d34f6ede3940ccabfb250e04ba38baeee4d296630128b824f352b255d1edbbb"
+        },
+        "api": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 422
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-00c2be71",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-00c2be71",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "unchanged",
+              "intended_values_observed": false,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "failed_prefix_followup:/api/user": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles?author=pilotresearch": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-00c2be71": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-00c2be71/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "not_executed_prefix_unsuccessful",
+              "interface": "api"
+            }
+          },
+          "continuation_database": {
+            "state": "not_executed"
+          },
+          "requirement_policy": {
+            "outcome": "reject",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+            "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "8079b72db43da853add897ea16ee888bba314fbf8e90f58b806221ea96325cff",
+            "after_prefix": "8079b72db43da853add897ea16ee888bba314fbf8e90f58b806221ea96325cff"
+          },
+          "restart_observed": false,
+          "raw_sha256": "190015615641aaabedeb6e0df78ec5a7e3fd756e648ec6818d92a2fd2c92ad7f",
+          "reset_sha256": "2d34f6ede3940ccabfb250e04ba38baeee4d296630128b824f352b255d1edbbb"
+        }
+      },
+      "database_pair_comparison": {
+        "same_before_projection": true,
+        "same_after_prefix_projection": true
+      }
+    },
+    {
+      "candidate_id": "profile-username-length60",
+      "terminal_kind": "unresolved_policy",
+      "measurements": {
+        "ui": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 200
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-d0e69e03",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-d0e69e03",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "requested_patch_observed",
+              "intended_values_observed": true,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "prefix_readback:/api/user": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles?author=uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-d0e69e03": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-d0e69e03/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "observed",
+              "interface": "ui",
+              "checks": {
+                "prefix_profile_matches_input": true,
+                "prefix_related_state_preserved": true,
+                "profile_reference_resolvable": true,
+                "profile_edit_persisted": true,
+                "related_state_preserved": true
+              }
+            }
+          },
+          "continuation_database": {
+            "state": "observed",
+            "projection": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Bio after meaningful continuation.",
+              "image": null,
+              "articles": [
+                {
+                  "id": 1,
+                  "slug": "unique-fixture-article",
+                  "title": "Unique fixture article",
+                  "description": "Fixture description",
+                  "body": "Fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 2,
+                  "slug": "duplicate-fixture-title",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 3,
+                  "slug": "duplicate-fixture-title-d0e69e03",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                }
+              ]
+            }
+          },
+          "requirement_policy": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+            "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "3a23a6a8310f9cf2d97e84b14c9443bbcfb1af9c38a987475f00515eb73b5408",
+            "after_prefix": "1fa4b283bf6523e069b73e76dc46e8e8aba8d490b942fc19c5c00f69ab7c409e",
+            "after_continuation": "b78c40dc86395d52f837f0635f480423ed6b37f074fc36a11e5ca58c2ad56943"
+          },
+          "restart_observed": false,
+          "raw_sha256": "288b2c82e118af625ef46207b3c8f1b282e5dc09d386c4b98b21aa9f2ecac760",
+          "reset_sha256": "f9b551972a25a7c1f46baeefd284187ce041dfe30ae8917bb1eb7490283d6e63"
+        },
+        "api": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 200
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-d0e69e03",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-d0e69e03",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "requested_patch_observed",
+              "intended_values_observed": true,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "prefix_readback:/api/user": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles?author=uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-d0e69e03": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/duplicate-fixture-title-d0e69e03/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 200
+              },
+              "prefix_readback:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "observed",
+              "interface": "api",
+              "checks": {
+                "prefix_profile_matches_input": true,
+                "prefix_related_state_preserved": true,
+                "profile_reference_resolvable": true,
+                "profile_edit_persisted": true,
+                "related_state_preserved": true
+              }
+            }
+          },
+          "continuation_database": {
+            "state": "observed",
+            "projection": {
+              "id": 1,
+              "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+              "email": "pilot@example.com",
+              "bio": "Bio after meaningful continuation.",
+              "image": null,
+              "articles": [
+                {
+                  "id": 1,
+                  "slug": "unique-fixture-article",
+                  "title": "Unique fixture article",
+                  "description": "Fixture description",
+                  "body": "Fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 2,
+                  "slug": "duplicate-fixture-title",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                },
+                {
+                  "id": 3,
+                  "slug": "duplicate-fixture-title-d0e69e03",
+                  "title": "Duplicate fixture title",
+                  "description": "Duplicate fixture description",
+                  "body": "Duplicate fixture body.",
+                  "author_id": 1
+                }
+              ]
+            }
+          },
+          "requirement_policy": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+            "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "30ebff661f622a957a32b6cdc937439031e6bf49d162227fb2ed45021d6f2cb9",
+            "after_prefix": "0bf1582286f6771fc741e96c28255c7d2a250fc793c52c32947330549ea7b912",
+            "after_continuation": "d875ee7468c68a09e30930b3d348e0d93910ed4608f91d69697d6bbc93ab125b"
+          },
+          "restart_observed": false,
+          "raw_sha256": "2a1b7e5df6d920a5c4f9b2eae1df6fbf8c667790e4f353beb16a0ca10bef72cc",
+          "reset_sha256": "f9b551972a25a7c1f46baeefd284187ce041dfe30ae8917bb1eb7490283d6e63"
+        }
+      },
+      "database_pair_comparison": {
+        "same_before_projection": true,
+        "same_after_prefix_projection": true
+      }
+    },
+    {
+      "candidate_id": "profile-username-length61",
+      "terminal_kind": "missing_evidence",
+      "measurements": {
+        "api": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 500
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-aa02e3d0",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-aa02e3d0",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "requested_patch_observed",
+              "intended_values_observed": true,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "failed_prefix_followup:/api/user": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles?author=pilotresearch": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-aa02e3d0": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-aa02e3d0/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "not_executed_prefix_unsuccessful",
+              "interface": "api"
+            }
+          },
+          "continuation_database": {
+            "state": "not_executed"
+          },
+          "requirement_policy": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+            "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "ae04dd39bc47beb64096918177e3960d2e56dcd315ed2d1486c1091df532ea77",
+            "after_prefix": "969425d9dd1def95ed84d36ae396c408e9ef01c221522e608d140e82a0e8341a"
+          },
+          "restart_observed": false,
+          "raw_sha256": "cfb11003d259d35eeb765fc5ac058a99cf5d077aebe531bcf56cb258a644f516",
+          "reset_sha256": "c77d8492bb73b6a6fd722ab11d6c6be9a2fe613da5fd8e6ec712857d4af5c3c6"
+        },
+        "ui": {
+          "qualified": true,
+          "measurement": {
+            "schema_version": 1,
+            "http": {
+              "state": "response",
+              "status": 500
+            },
+            "persistence": {
+              "before": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "pilotresearch",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-aa02e3d0",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "immediate": {
+                "state": "observed",
+                "projection": {
+                  "id": 1,
+                  "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+                  "email": "pilot@example.com",
+                  "bio": "Baseline profile biography.",
+                  "image": null,
+                  "articles": [
+                    {
+                      "id": 1,
+                      "slug": "unique-fixture-article",
+                      "title": "Unique fixture article",
+                      "description": "Fixture description",
+                      "body": "Fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 2,
+                      "slug": "duplicate-fixture-title",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    },
+                    {
+                      "id": 3,
+                      "slug": "duplicate-fixture-title-aa02e3d0",
+                      "title": "Duplicate fixture title",
+                      "description": "Duplicate fixture description",
+                      "body": "Duplicate fixture body.",
+                      "author_id": 1
+                    }
+                  ]
+                }
+              },
+              "restart": {
+                "state": "not_planned"
+              },
+              "selected_change": "requested_patch_observed",
+              "intended_values_observed": true,
+              "immediate_projection_survives_restart": null
+            },
+            "readbacks": {
+              "failed_prefix_followup:/api/user": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles?author=pilotresearch": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/tags": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-aa02e3d0": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles/duplicate-fixture-title-aa02e3d0/comments": {
+                "state": "response",
+                "status": 200
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article": {
+                "state": "response",
+                "status": 500
+              },
+              "failed_prefix_followup:/api/articles/unique-fixture-article/comments": {
+                "state": "response",
+                "status": 200
+              }
+            },
+            "continuation": {
+              "state": "not_executed_prefix_unsuccessful",
+              "interface": "ui"
+            }
+          },
+          "continuation_database": {
+            "state": "not_executed"
+          },
+          "requirement_policy": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+            "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+          },
+          "database_scope": "single synthetic user identity and three fixture article identities/bodies/ownership; excludes credentials and unrelated columns",
+          "snapshot_sha256": {
+            "before_prefix": "8d2a4c975df190b9a9b24e2b5962cf20680002ee3690cc0f092fc30de21f0ebc",
+            "after_prefix": "26174f8edd5afd42d0ef0d85c4d33d8ab0a827b7e4fba14fd030b9df0589aad4"
+          },
+          "restart_observed": false,
+          "raw_sha256": "47f8b1d2ea9e5e3137524d8291d912dff568875f2341e6df372ec30cc393a68a",
+          "reset_sha256": "c77d8492bb73b6a6fd722ab11d6c6be9a2fe613da5fd8e6ec712857d4af5c3c6"
+        }
+      },
+      "database_pair_comparison": {
+        "same_before_projection": true,
+        "same_after_prefix_projection": true
+      }
+    }
+  ],
+  "primary_freeze_complete": false,
+  "new_primary_samples": 0,
+  "scope": "bounded engineering diagnostic; no stable finding or primary prevalence estimate"
+}
