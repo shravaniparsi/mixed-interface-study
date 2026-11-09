@@ -1,3 +1,7 @@
+# Legacy RealWorld job implementation
+
+Version 8 binds the five remaining paired candidates and two native-only controls, with two paired references (16 branch slots). Payloads and unknown title policies remain exact copies of the development registry. Singletons have separate extraction records and cannot enter paired comparisons. Ten adversarial unit tests cover selection and cardinality. Semantic success/reference-failure fixtures, bounded campaign supervision and hosted qualification remain pending; the 44-entry evidence coverage count is unchanged. See `protocol/realworld-legacy-jobs-v8.md`. No application runs or primary samples were added.
+
 # Corpus readiness reconciled
 
 The v2 review preserves all 75 retained entries and reconciles five observed identity paths. Named engineering evidence now covers 44 entries; no row gains primary dispatch permission. Execution requirements and unresolved/incomplete outcomes are separate. `notes/corpus_readiness_review_v2.md` lists the remaining work packages. Primary timing is prospectively scoped to monotonic branch totals; PetClinic still needs that timer, and cross-workflow phase comparisons are deferred. P2–P5 remain open. No new application execution or primary sample was added.
