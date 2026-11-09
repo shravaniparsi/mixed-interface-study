@@ -28,6 +28,14 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/realworld_rejection_campaign.py',
+    'scripts/realworld_rejection_outcomes.py',
+    'scripts/run_realworld_pair_job_v4.py',
+    'scripts/run_realworld_rejection_campaign.py',
+    'scripts/validate_realworld_rejection_campaign.py',
+    'tests/test_realworld_rejection_campaign.py',
+    'protocol/realworld-rejection-dispatch-v4.md',
+    'manifests/realworld-rejection-controls-v1.json',
     'scripts/verify_realworld_expanded_archive.py',
     'manifests/realworld-expanded-integration-qualification.json',
     'notes/realworld_expanded_integration.md',
