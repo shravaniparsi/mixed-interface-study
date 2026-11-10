@@ -51,3 +51,5 @@ Location/task run 42886883102 completed: both task pairs qualified (six native f
 Registered v2 observer/controller/verifier and grocy-extension-controls-v2.json cover location and product, two pairs each. Task remains qualified by its unchanged v1 evidence. v2 records complete initial target/prerequisite seed collections, requires specified target counts (location 1, products 0), rejects fixture-name collisions, and compares all seed business fields across resets. Only generated row_created_timestamp is omitted from paired seed comparison; raw timestamp remains retained. No seed is deleted, no producer mutation changed and no boundary input executed. Scientific inventory must freeze concrete seed data after these ordinary controls pass.
 
 Node/Python syntax and workflow-context checks passed before dispatch. No v1 runtime or registry has been rewritten.
+
+Grocy v2 dispatched as run 42889952089 at 3c6264b7e26a9bda02bebed134f992eb74a24b1a. Next: download grocy-controls-v2-* artifacts after completion and run verify_grocy_controls_v2.py; preserve any failures before corrections. No other manual application workflow is queued.
