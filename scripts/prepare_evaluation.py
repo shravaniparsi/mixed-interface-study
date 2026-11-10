@@ -28,6 +28,19 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/run_quartz_public_qualification_unit_v1.py',
+    'scripts/validate_quartz_public_qualification_unit_v1.py',
+    'scripts/quartz_public_qualification_matrix_v1.py',
+    'scripts/quartz_public_qualification_collection_v1.py',
+    'scripts/verify_quartz_public_qualification_collection_v1.py',
+    'scripts/freeze_quartz_public_qualification_v1.py',
+    'scripts/verify_quartz_public_qualification_freeze_v1.py',
+    'scripts/quartz_public_qualification_preflight_v1.py',
+    '.github/workflows/quartz_public_qualification_v1.yml',
+    'protocol/quartz-public-host-qualification-v1.md',
+    'scripts/prepare_quartz_public_qualification_v1.py',
+    'manifests/quartz-public-qualification-preparation-v1.json',
+
     'tests/test_primary_analysis_order_v1.py',
     'notes/public_repository_transition_v1.md',
     'manifests/quartz-recovery-local-validation-v1.json',
