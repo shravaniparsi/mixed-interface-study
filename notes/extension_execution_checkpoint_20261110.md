@@ -182,3 +182,6 @@ Source-derived candidate inventory manifests/memos-candidate-inventory-v1.json i
 Preference v5 calibration run42899404684 dispatched at04d4152. Same ordinary inputs; close popups through bound trigger and persist per-field option inventory before dismissal. Expected memos-preference-controls-v5-* artifacts; analyze verify_memos_preference_controls_v5.py.
 
 Registered memos-memo-probe-v1.json: one synthetic empty-editor probe inside a fresh ordinary pair, restoring text before the original unrelated visibility edit. Capture disabled native Update, actual force-target click on disabled control,1500ms absence of target RPC, and full persisted readback unchanged. This is deliberately violating adapter qualification, not a scientific candidate. No boundary inputs authorized.
+
+
+Synthetic memo probe dispatched as run42899599065 at5f4bdef, behind calibration42899404684. Expected artifact memos-memo-probe-v1-memo-empty-probe-42899599065-1; archive results/memos-memo-probe-v1-ci-42899599065; verify_memos_memo_probe_v1.py. Shared manual concurrency now has this pending slot; do not enqueue a third run while the calibration remains live.
