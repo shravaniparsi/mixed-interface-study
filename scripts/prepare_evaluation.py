@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/memos-candidate-inventory-v1.json',
+    'manifests/memos-preference-attempt4-v1.json',
     'manifests/memos-memo-attempt1-v1.json',
     'manifests/memos-preference-controls-v4.json',
     'manifests/memos-memo-controls-v1.json',
