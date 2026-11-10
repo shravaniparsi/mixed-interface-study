@@ -18,3 +18,6 @@ This supports reproducibility of the observed native blocking and unsupported-pr
 
 
 Input counterfactual packet memos-content-mechanism-v1.json verifies the initial empty-content observation and both qualified repeats against their original ordinary controls. Only producer content differs; snippet is the disclosed derived readback difference. Starting fixture, actor, attachments and other business state agree. The ordinary content enables the audience edit in both channels; empty content disables native commit while API continuation succeeds. This is one repeated source-consistent mechanism, not a new native-only detector result. The source validation rule is shared baseline information. No additional experiment or source-patch intervention was run.
+
+
+Expanded packet memos-content-mechanism-v2.json now covers all11qualified initial/repeat comparisons across the four content variants, preserving version1 and explicitly listing the one unqualified omitted-content repeat. Each comparison changes only producer content; derived snippet differences are disclosed. These variants remain one content-validation mechanism.

@@ -29,6 +29,13 @@ SOURCES = {
 }
 ARTIFACTS = [
     'manifests/gitea-controls-v3.json',
+    'manifests/gitea-followup-results-v1.json',
+    'manifests/gitea-counterfactuals-v1.json',
+    'manifests/memos-content-mechanism-v2.json',
+    'manifests/production-extension-summary-v1.json',
+    'manifests/production-extension-reverification-v1.json',
+    'manifests/production-extension-cost-v1.json',
+
     'manifests/gitea-initial-results-v1.json',
     'manifests/gitea-followup-execution-v1.json',
     'manifests/memos-content-mechanism-v1.json',

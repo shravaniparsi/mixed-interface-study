@@ -8,7 +8,29 @@ The original registered experiments and selected repetitions are complete. The c
 
 The repository is now public. Heavy work uses standard public GitHub runners. The cash ceiling remains $100. No paid model calls are requested for the new extension.
 
-The active next stage is an outcome-independent production application extension: linkding, Vikunja, Memos, Gitea, Paperless-ngx, and Grocy. [Read the protocol](protocol/production-extension-v1.md) and [the independently checked prior-art limits](notes/extension_prior_art_verification_20261110.md). Their first deployment screen measures HTTP reachability only; it is not scientific case execution. Natural findings, known historical faults, injected controls, and engineering qualifications remain separate. Q1 readiness is not established.
+The production extension is complete across linkding, Paperless-ngx, Grocy, Memos, Vikunja and Gitea. It covers 16 ordinary workflows, with boundary candidates in 15; Gitea's field-local issue-body editor contributes controls but no applicable preserved-field constraint. The finite schedule contains **358 paired executions**: 150 initial boundary variants, 64 initial valid controls, and 144 followup pairs. All ten result files reconstruct exactly from archived raw evidence. Of 72 scheduled boundary repeats, 71 have qualified linked controls and match their initial outcomes; one Memos repeat remains unqualified after its control failed.
+
+| Application | Initial boundary variants | Producer rejected | Both clean | Channel differences | Documented normalization |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| linkding | 24 | 14 | 10 | 0 | 0 |
+| Paperless-ngx | 36 | 15 | 21 | 0 | 0 |
+| Grocy | 28 | 6 | 9 | 13 | 0 |
+| Memos | 16 | 4 | 8 | 4 | 0 |
+| Vikunja | 27 | 12 | 12 | 1 | 2 |
+| Gitea | 19 | 7 | 4 | 8 | 0 |
+| Total | 150 | 58 | 64 | 26 | 2 |
+
+All 26 initial channel differences are covered by shared constraint/contract/reference checks: **zero additional native-only detection signals** in this prospective cohort. A successful API write and full API edit can coexist with a blocked native edit or a changed preserved field. Input-only counterfactual packets substantiate those behaviors; they do not establish new defects. Variants and repeats are correlated. The separate nine-pair Grocy energy investigation remains exploratory and is excluded from this table.
+
+[Summary](manifests/production-extension-summary-v1.json) · [Complete raw-evidence reconstruction](manifests/production-extension-reverification-v1.json) · [Finite compute accounting](manifests/production-extension-cost-v1.json) · [Protocol](protocol/production-extension-v1.md) · [Verified prior-art limits](notes/extension_prior_art_verification_20261110.md)
+
+The finite runs used 91 jobs and 183.45 job-elapsed runner minutes, including job setup/upload but excluding queue time and earlier qualification work. No paid model calls were made. This is compute accounting, not a billing statement.
+
+**Contribution assessment: no-go for submission claiming a new, broadly superior detector.** The dataset supports a reproducible empirical account of interface-specific continuation failures. It does not yet establish the distinct contribution needed for a strong Q1 submission. Client/server validation gaps and downstream client harm have prior art. Moreover, deriving candidates from native constraints favors a shared constraint baseline by construction; the zero incremental yield must not be generalized to all possible API-created states. Eight Memos preference variants trigger shared membership checks yet allow the prescribed edit, so a constraint alert alone is not proof of task failure. No LLM-agent performance, preventive guard efficacy, or population prevalence was measured.
+
+The next defensible research question is whether native continuation provides useful outcome confirmation on inputs selected independently of its own constraints. That requires a separate prospective sampling protocol, previously unexamined workflows, a frozen baseline and explicit valid-write costs before new outcomes are viewed. Additional repetitions of this completed pool would not resolve that question. This recommendation is not an authorization to relabel the existing pool as held-out evidence or to claim Q1 readiness.
+
+To recheck the finite cohort without overwriting proof files: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=scripts/extension python3 -c 'from verify_production_extension_v1 import build; print(build()["total_pairs"])'`.
 
 Reconstruct the completed package with `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 scripts/build_experiment_completion_v3.py --verify`.
 
