@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/coverage_review_v5.py',
+    'scripts/prepare_corpus_review_v5.py',
+    'tests/test_corpus_review_v5.py',
+    'protocol/retained-corpus-review-v5.md',
+    'manifests/retained-corpus-review-v5.json',
+    'scripts/petclinic_branch_cost_v1.mjs',
+    'scripts/run_petclinic_pair_job_v4.mjs',
+    'scripts/prepare_petclinic_branch_cost_v1.py',
+    'tests/petclinic-branch-cost.test.mjs',
+    'protocol/petclinic-branch-cost-v1.md',
+    'manifests/petclinic-branch-cost-v1.json',
     'scripts/verify_realworld_reference_runtime_v10.py',
     'tests/test_realworld_reference_runtime_v10.py',
     'manifests/realworld-reference-runtime-v10.json',
