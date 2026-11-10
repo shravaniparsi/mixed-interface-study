@@ -42,3 +42,10 @@ Further pinned-source inspection establishes `/setting#preference` as a basic-us
 `server/api/user_service.go::CreateUser` validates username/password/email, assigns the first account ADMIN, and lets an authenticated ADMIN create a separately specified USER. Test accounts must be bootstrapped privately, then ordinary resource operations authenticated as that USER. `proto/api/common.proto` declares NORMAL and ARCHIVED lifecycle states. `user_service_converters.go` copies stored GENERAL strings and boolean directly when the setting exists, falling back to getDefaultUserGeneralSetting only when absent. The default helper's definition still needs inspection before registration.
 
 No boundary candidates or results are added by this source inspection. Native binary payload decoding remains unqualified.
+
+
+## Memo editor binding inspection
+
+Pinned MemoActionMenu.tsx exposes the More button and Edit menu item. MemoView.tsx identifies the editable node as `.memo-editor-root[contenteditable="true"]`. MemoEditor/edit/Toolbar/EditorToolbar.tsx calls the existing-memo commit button Update, not Save. AudienceMenu.tsx labels its trigger with the current audience; a personal memo can select Protected (Anyone signed in). Capture loaded content, current audience, commit-button validity and fresh final readback. Use a uniquely scoped memo card/editor; ambiguous page-level More buttons must fail qualification.
+
+The native memo service includes name and content in its patch even when only visibility changes, but adds only visibility to the mask in that case. It adds update_time only for content/attachment/relation/location edits or explicit timestamp changes. Thus the prospective unrelated audience edit should preserve content and timestamps, subject to source/server qualification. This is source reasoning, not an observed control result. Memo binary request schema and ordinary paired execution remain to be implemented.
