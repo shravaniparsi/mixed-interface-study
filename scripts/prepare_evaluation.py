@@ -28,6 +28,16 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/realworld_reference_terminal_v2.py',
+    'scripts/realworld_legacy_jobs_v10.py',
+    'scripts/realworld_legacy_campaign_v10.py',
+    'scripts/run_realworld_legacy_campaign_v10.py',
+    'scripts/validate_realworld_legacy_campaign_v10.py',
+    'scripts/prepare_realworld_reference_integration_v2.py',
+    'tests/test_realworld_reference_integration_v2.py',
+    'protocol/realworld-fresh-legacy-v10.md',
+    'manifests/realworld-reference-integration-v2.json',
+    '.github/workflows/realworld_v10.yml',
     'src/mixed_interface/coverage_review_v4.py',
     'scripts/prepare_corpus_review_v4.py',
     'tests/test_corpus_review_v4.py',
