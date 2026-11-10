@@ -1,0 +1,13 @@
+# Prepared recovery of never-started Quartz cases
+
+The latest hosted unit check, run 42795243761 at commit b9489f1ceceb97f7fe1a742903eadddfa6998789, was rejected before runner assignment with the same payment/spending-limit annotation. The prior goal turn completed evidence retention and local verification; this turn prepares the remaining execution while the provider block persists.
+
+`manifests/quartz-recovery-preparation-v1.json` registers exactly qrecover-057 through qrecover-072. Each entry links to its original provider-rejected job, preserves its complete runtime payload and reference, and uses new outer attempt IDs. The six executed qfix units are excluded. This additional exposed collection follows the prospective amendment in `protocol/quartz-provider-recovery-v1.md`; it never overwrites the failed correction attempt.
+
+The release manifest is deliberately absent. The matrix refuses dispatch without it. `freeze_quartz_recovery_v1.py` requires the complete API JSON for a successful hosted Unit checks run at the current clean source commit, as well as independent provider-evidence and corrected-reader qualification checks. Failed or different-source CI cannot release the collection. No recovery application has been started.
+
+After the account block clears, rerun the latest Unit checks workflow and retain its full GitHub API run response. Use `python scripts/freeze_quartz_recovery_v1.py --ci-run-json /path/to/verified-ci-run.json`, commit the release and its CI record, verify that commit, and dispatch `quartz_recovery_v1.yml` with mode `initial` and batch `all`. Archive the entire 16-unit phase before using `prepare_quartz_recovery_followups_v1.py` to register repetition two and then repetition three when selected. All source and environment restrictions remain enforced.
+
+The recovery archive and phase manifests use `quartz-recovery` names and the same retained-unit structure as the corrected collection. `analyze_quartz_recovery_v1.py` and `verify_quartz_recovery_results_v1.py` handle that separate collection. Once its selected repetitions finish, `build_experiment_completion_v2.py` verifies original-study completion and explicit coverage by the six executed corrected units plus the 16 recovery cases. It rejects missing or duplicated case coverage. The earlier unissued completion-v1 builder is not applicable to this provider-recovery history.
+
+Local preparation validation passed 768 Python harness tests and six bootstrap tests. The recovery-specific checks reject started cases, absent releases, failed CI, wrong-source CI, missing coverage and duplicate coverage. The full logs and hashes are retained in `manifests/quartz-recovery-local-validation-v1.json`; these do not replace the required hosted CI result.
