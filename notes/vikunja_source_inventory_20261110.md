@@ -31,3 +31,11 @@ ColorPicker.vue uses input[type=color], prefixes # for3/6-character values, and 
 ## Remaining qualification
 
 Confirm API version/base URL, actor bootstrap, actual request schemas and update semantics, source/DOM constraints, complete records and metadata handling. Qualify two reversed-order ordinary pairs per eligible workflow and deliberately violating adapter controls before finite boundary generation. No candidate inventory or outcomes are frozen by this source note.
+
+## Ordinary qualification v1 preparation
+
+Confirmed helpers/apiUrl.ts uses /api/v2 and client/http.ts adds bearer authentication. The v2 registration wrapper defaults POST to201; auth login explicitly returns200. user-settings GET /user exposes is_admin. Bootstrap registers a separate first account, then study-actor; the latter must report is_admin=false. Neither passwords nor login token responses are archived.
+
+v2/validation.go runs govalidator valid tags in addition to Huma schema validation. Project native query projection supplies eight writable fields; labels supply three. Ordinary qualification uses exactly those full bodies and the same PUT endpoint as the frontend. It renames title while preserving a nonempty description and nondefault color; project identifier is also nondefault. TipTap.vue exposes .tiptap__editor for source-bound description observation. English source strings confirm Login and Save labels. No invalid inputs are included in this run.
+
+The first qualification run covers projects and labels (two reversed-order pairs each). Task inspection remains pending and is not silently excluded. Full records are retained; within-branch preservation excludes only root updated. Cross-reset comparison excludes only named server timestamp locations: root created/updated, owner or created_by created/updated, and direct project-view created/updated. Unknown metadata is not broadly discarded. Ordinary runtime must still establish whether this projection is adequate before scientific registration.
