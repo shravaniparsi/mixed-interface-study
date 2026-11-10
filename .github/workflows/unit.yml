@@ -110,6 +110,8 @@ jobs:
         run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
       - name: Verify live reference readiness reconciliation
         run: python scripts/prepare_corpus_review_v5.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v5.log"
+      - name: Verify live common generated archive
+        run: python scripts/verify_common_generated_archive_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/common-generated-runtime-v1.log"
       - name: Verify live common executor archive
         run: python scripts/verify_common_petclinic_archive_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/common-executor-runtime-v1.log"
       - name: Verify common engineering bindings

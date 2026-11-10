@@ -1,0 +1,200 @@
+{
+  "plan": {
+    "kind": "common_generated_qualification_v1",
+    "preflight": {
+      "kind": "common_engineering_preflight_v1",
+      "registry_sha256": "0633d13a819672a3b66e54bb35a9fb74990c5b5a2762187475e73be634436ad5",
+      "campaign": {
+        "schema_version": 2,
+        "kind": "terminal_campaign_plan",
+        "terminal_policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+        "schedule": {
+          "schema_version": 1,
+          "kind": "paired_repeat_plan",
+          "pairs": [
+            {
+              "pair_id": "realworld_generated_integration::094381c98c3957122c94919e",
+              "workflow_id": "realworld.article_create_body_edit",
+              "producer_interface": "ui",
+              "case_ids": {
+                "api": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+                "ui": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92"
+              },
+              "intervention": "route_only",
+              "mutation": null,
+              "reference_control": "realworld_generated_integration::094381c98c3957122c94919e",
+              "consumer_order": [
+                "api",
+                "ui"
+              ]
+            },
+            {
+              "pair_id": "realworld_generated_integration::39e1c6bcd74a76d7d1cc99b7",
+              "workflow_id": "realworld.article_create_body_edit",
+              "producer_interface": "api",
+              "case_ids": {
+                "ui": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+                "api": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd"
+              },
+              "intervention": "route_only",
+              "mutation": null,
+              "reference_control": "realworld_generated_integration::39e1c6bcd74a76d7d1cc99b7",
+              "consumer_order": [
+                "ui",
+                "api"
+              ]
+            }
+          ],
+          "initial_jobs": [
+            {
+              "job_id": "initial-000",
+              "pair_id": "realworld_generated_integration::094381c98c3957122c94919e",
+              "target_pair_id": "realworld_generated_integration::094381c98c3957122c94919e",
+              "role": "initial",
+              "repetition": 1,
+              "branches": [
+                {
+                  "case_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+                  "continuation": "api",
+                  "fresh_reset_required": true
+                },
+                {
+                  "case_id": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92",
+                  "continuation": "ui",
+                  "fresh_reset_required": true
+                }
+              ]
+            },
+            {
+              "job_id": "initial-001",
+              "pair_id": "realworld_generated_integration::39e1c6bcd74a76d7d1cc99b7",
+              "target_pair_id": "realworld_generated_integration::39e1c6bcd74a76d7d1cc99b7",
+              "role": "initial",
+              "repetition": 1,
+              "branches": [
+                {
+                  "case_id": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+                  "continuation": "ui",
+                  "fresh_reset_required": true
+                },
+                {
+                  "case_id": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd",
+                  "continuation": "api",
+                  "fresh_reset_required": true
+                }
+              ]
+            }
+          ],
+          "extra_candidate_attempts": 2,
+          "resume": false,
+          "primary_freeze_complete": false,
+          "scope": "Planning only; adapter integration and primary qualification remain required",
+          "plan_sha256": "f06000bf32386f35a90298e2b7194423d8e04d9328ece5a08e3937189c9dae51"
+        },
+        "primary_freeze_complete": false,
+        "plan_sha256": "fd21b26934384fafbcddfdff53b6b0c266dbac0bec9d1b28a1eb9b3ff550e2de"
+      },
+      "binding_sha256": {
+        "realworld_generated_integration::094381c98c3957122c94919e": "c6a6bc5bce9bf06062898c6bb22d811bf6d97bfa5a94487bf45b0eeef9f78846",
+        "realworld_generated_integration::39e1c6bcd74a76d7d1cc99b7": "068c80586d51a645afb89e4bd62376507d26ac40344f6cbdc7e8865f2fb63cca"
+      },
+      "engineering_preflight_passed": true,
+      "execution_authorized": false,
+      "primary_freeze_complete": false,
+      "live_common_executor_qualified": false,
+      "preflight_sha256": "577dfd79550571d9a4a9e2ca9a3f63ee807280276b34b9dae711cd6adaf4cb81"
+    },
+    "expected_kinds": [
+      "clean_observation",
+      "clean_observation"
+    ],
+    "pair_timeout_s": 190,
+    "outer_timeout_s": 600,
+    "automatic_repeats": false,
+    "resume": false,
+    "new_primary_samples": 0,
+    "primary_freeze_complete": false
+  },
+  "run_identity": "42775240013:1",
+  "sources": {
+    ".github/workflows/common_generated_v1.yml": "6d904563a9b2f331c80135a5ba6528154a27c9fce299f78167f542480604f729",
+    ".github/workflows/common_petclinic_v1.yml": "27afd9cb24b01631fdf020bb7a0ba38aa4e7c1b1dd83addcd677217109dced23",
+    ".github/workflows/petclinic_timing_v1.yml": "54c37efdf94f630f385d90fafcd888bbc5d48153d1fcc67091b8a43ee6eb7599",
+    ".github/workflows/petclinic_v3.yml": "e9ba6217ec0e3ff3eec35d27cc8a2c8d20a8b8ba72f9148e82a8bc1d273c6cfe",
+    ".github/workflows/realworld_generated_v2.yml": "b57c60499f72a7f07300d46fe00029a57d66dad1ec6c5cb366e492e304f3f179",
+    ".github/workflows/realworld_generated_v3.yml": "38c0b35ad5470cdac2ca1f621a7d34ad9f30667d1b8c74e1bd5bb250cbb23b97",
+    "manifests/common-bindings-v1.json": "998786efdb708ed1860011124ec43dcfa7f1d8d3ccf905431b906b0992764f9a",
+    "manifests/petclinic-candidates-v1.json": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
+    "manifests/petclinic-expanded-batches-v3.json": "716c5ffeed77f00146038441324a9ba6f4a863681cdd3b1c9e7c23cd9b50800d",
+    "manifests/petclinic-prefix-policy-v3.json": "95a1c08e7a62b72c19031ffec84ef5602e2553fd7c67bbde432656febd6faf9e",
+    "manifests/realworld-article-generated-pool-v1.json": "e30df6147de81937de728f743607b250755f3b6438d9f1518d0898272b121acc",
+    "manifests/realworld-python-lock.txt": "75b6f6559bb5f3b13d32281be0dcb75a53cd2e9f238c296934bd903291ebf491",
+    "protocol/common-execution-v1.md": "9f6c64a0c6fbe0dbc0795618e01ce4fa5f355df94b41d17d1e68b2bd417b6d82",
+    "protocol/common-generated-v1.md": "4dee4fa116bdadcfd9288a4108c8bbf7ac691f6d7913e33b47f612ef3e01f107",
+    "protocol/petclinic-expanded-dispatch-v3.md": "0c86ea6fb2c642771519dd4653e626405edf1f101f4c4cf8aabde414e4197429",
+    "protocol/petclinic-timing-qualification-v1.md": "3ef42b6296b50fa6be763bdb4f40655c21539053855b7e254b5972e630b0a23c",
+    "protocol/realworld-generated-execution-v3.md": "5c3d6dec830a6d22407bdccc3fbed2b1a656e2d2394834a5b34b468a4d99683f",
+    "protocol/realworld-generated-mutations-v3.md": "5d3d9bc2979caaf669a1dd308c1b7dd1babac3c757548adc90b7ff6ca5f13502",
+    "protocol/realworld-generated-runtime-v2.md": "fb7ff75ac59da867dd78ea725fa9ec829fa07b8e5ebab08593b94ffd0afc136a",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "scripts/ci/prepare_petclinic.py": "a118d07e548f6464a3c541b15bcd957b9567ede3b1043e9a5f66aad5b02fd051",
+    "scripts/ci/prepare_realworld.py": "17571cd8bf7a61e35db59d61c771c8b2336249b21b34da79f9815c67d6af5da5",
+    "scripts/common_generated_adapter_v1.py": "d8b128e65ee263d7a34607320dae01e5d3fbda9aa99042e51bf591c460fcff6a",
+    "scripts/common_generated_qualification_v1.py": "1c5c2647738a533ed937e37d4d7988541411e04f4d364747aa1e35b0d4c2de94",
+    "scripts/common_petclinic_adapter_v1.py": "a51cf974cddfb17def3fc530d8cf34ca7e7c625be9f14e2a9a1dfe9412c00ce0",
+    "scripts/common_petclinic_qualification_v1.py": "90a8269318deb69f1e0635f3e05340f15fafb32c801eecd7c18597299235a4eb",
+    "scripts/petclinic_branch_cost_v1.mjs": "7554463914743ab9a963059f53b72b5aaa6cda08b7b0b98e82c15b428ea4015a",
+    "scripts/petclinic_branch_cost_validation_v1.py": "afecca16db576930165d2b8a8c1e19c4c58d00ed7ca4218404c9fc964c94775a",
+    "scripts/petclinic_cleanup.mjs": "a30e5b89c813b67b37e537b0b4c1aac3caa3892d13ff14dad547d3780be01e3c",
+    "scripts/petclinic_expanded_campaign.py": "555e1c23565302c0718cd09c7add1b9519681ffbe682f9adf1b7eb504179b260",
+    "scripts/petclinic_integrity.mjs": "60d5f484a3f4939753bf68d5a581a220dd727681beda8cc2989cb18969df6bc1",
+    "scripts/petclinic_job_binding_v3.mjs": "1395bbfe1869cae656ddc00b5ed5d43712e319354296a642b67b3d060df2d6db",
+    "scripts/petclinic_prefix_outcomes_v3.py": "30f375fe6cc099725fd9d227dd0dfd958acaff49f056e82bbe5225b8c2ca427d",
+    "scripts/petclinic_response_capture.mjs": "db710ed6d36aac38405b4cc746d5e0ee1c95a54e76e7d2860477f5c24f7d5868",
+    "scripts/petclinic_terminal_outcomes.py": "2a18771c861e1e9628107a20cdb06b092e762b6931f63079f3c839ffdeca1f81",
+    "scripts/petclinic_timed_jobs_v4.py": "786f6e1bdc401e3d21c62f3cf6e650bbf538c4786665e8135616c9886d7fdfae",
+    "scripts/petclinic_timing_qualification_v1.py": "b28875e4ff312eb2fb4850045753d4ece4a44775268a92d54b71d802cb4092f6",
+    "scripts/realworld_case_worker.py": "a0333661f5e3357be5c70aa26288cfb555f7e1f9410e6f145fca219b71e904b7",
+    "scripts/realworld_generated_bindings_v1.py": "ac8b15507271f6ce81b79c0ab0e82e1fabd22c4b14362a57921e374bd2fc34c8",
+    "scripts/realworld_generated_case.mjs": "6f6e988f0748770cff2775ed3b36096cbb864b9a2b274babfb61ac8e5aa40172",
+    "scripts/realworld_generated_execution_v3.py": "bfbbd27441946b451702d3c6b973ccff2eb598c14e44b557135fe330af8e2b64",
+    "scripts/realworld_generated_loader_v1.py": "cf906e9836455665e523ecbb6188df8e2506878e5261cc50fa3b2b8c71cbd832",
+    "scripts/realworld_generated_mutations_v3.py": "c68ae870a60c92e32ae90001e16eb814f95c23344dc1207fe7c0a329f52be972",
+    "scripts/realworld_generated_runtime_v2.py": "2692a8f9ec803ce88e41ae40a52d641d7d6a9386c685791e8832db87380339d6",
+    "scripts/realworld_generated_runtime_v3.py": "7b44b30e1bbd81fb0fa39aed8c233434c2886658ee11d3bbe316256a69b73845",
+    "scripts/realworld_generated_terminal_v1.py": "72a2e8e65c8c84250f2118b18ed1c2576d0b669c93c17976275e63cae77474c3",
+    "scripts/realworld_generated_terminal_v3.py": "7c58d1e5a685d2a8437a971eda693c1660396f1ce8edf8a2addcdeead4761f4a",
+    "scripts/realworld_generated_worker_v2.py": "779829cef3ac960df92c7afaabe84395e783e2f4d91b8db2d2cf8478c35e8763",
+    "scripts/realworld_integrity.mjs": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "scripts/response_capture.mjs": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "scripts/run_common_generated_v1.py": "bcb1a9cb0734486d88d473dfac411e78a5f7c6504b2c48fbaffe871dc5590052",
+    "scripts/run_common_petclinic_v1.py": "a68e6eb3a19009cd83dd05691b624955b62d72a4100e7f9a8a48224a9d70be0f",
+    "scripts/run_petclinic_expanded_campaign.py": "67b6e7467b024ea16b1d86159e100e8fe25e31bc46d197a37e80fc65549aab3f",
+    "scripts/run_petclinic_pair_job_v3.mjs": "cf25ca3bcd0c977023c729469c11ec55a405f304e6c6c62decc7b60c7447afc9",
+    "scripts/run_petclinic_pair_job_v4.mjs": "bb0c3c407734d61a2cd00d14a104ccfcff3776648b9a85435ec99c1968dc8a29",
+    "scripts/run_petclinic_timing_qualification_v1.py": "53975682cfd23a87f3702ba1ddb8580198eb5e123e895e4e6cd4c7b528a35cb3",
+    "scripts/run_realworld_generated_controls_v2.py": "cc1d8b5b6f7562bcecdc0641e37e9591fa8631ef6d48b699f8c402fdea5406cf",
+    "scripts/run_realworld_generated_mutations_v3.py": "24fee79dd580f3b129ddbc259b215fdd63a992bf079c35cd561fb31015cd72f9",
+    "scripts/run_realworld_pilot.py": "c081b6869e65a3ca34b01edb87b463a9abfc138df2d03a20a0718f8b8b1e2075",
+    "scripts/summarize_petclinic_integrity_components.py": "b275004631c141530aa92470bd21dfb1dcd052a9de28172af9a39f8c1b98af20",
+    "scripts/summarize_petclinic_oracle_components.py": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9",
+    "scripts/summarize_realworld_oracle_components.py": "46f84347c249007b5ce5f2fabbc8511053de5454a68115ce437073fe7f6513a4",
+    "scripts/validate_common_generated_v1.py": "4620de9c9f81bb8c65475fe5d63855204115bc1ccfe9f3248109fb7d67aba5ba",
+    "scripts/validate_common_petclinic_v1.py": "9436496e29a3bbdc7d56e14385c99d30eea691a1a413d8af7531a694fb94f019",
+    "scripts/validate_petclinic_expanded_campaign.py": "4f34c479b3761b3ed798d0397f1c079ee22fcdb3b56f67e81d09becdd73e9fec",
+    "scripts/validate_petclinic_integrity.py": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "scripts/validate_petclinic_timing_qualification_v1.py": "03420cf243e0918e38e41be3c0d8a68e4be7f578690b3605d74f32495addc6b0",
+    "scripts/validate_realworld_generated_controls_v2.py": "f7d8fe5a7f3526bab582f64d225469a1198548854cf03087a3f0f19d4d292d2a",
+    "scripts/validate_realworld_generated_mutations_v3.py": "a139affc0d3562313a5584f766650b3502438f02c401bb9bcd2a24b8f15dd7ea",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/common_bindings_v1.py": "ebd6a3bc23fcdca8ed151502d38bf7754e8e43cd79d09372e67f6a32c05ffef3",
+    "src/mixed_interface/common_execution_v1.py": "4dcbd598f88b45343b235bda5b08f6fd865bfbbcca0896b7889acf4e2e4d47e1",
+    "src/mixed_interface/evaluation.py": "70294bffcffc8dbd9d1f411956c553757663d5d70ce403dfab7be483945be6c9",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20"
+  },
+  "source_commit": "3ad77e2cabad9e4c896026a5cf9aa9cd7151c689",
+  "worker_timeout_s": 80,
+  "outer_timeout_s": 600,
+  "primary_freeze_complete": false
+}
