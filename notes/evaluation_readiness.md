@@ -1,3 +1,7 @@
+# Latest: live generated reference qualification
+
+Two exposed generated reference pairs (four branches) passed hosted execution and independent hosted/local reconstruction. Reset databases, raw evidence, cleanup and timing are archived. No mutations or primary samples were run; the evidence-entry count remains 49 because these references already had historical evidence. See `notes/realworld_generated_runtime_integration.md`. Next: separately versioned preparation for seven generated mutation pairs.
+
 # Latest: generated supervisor synthetic preflight
 
 All four positive synthetic routes now pass raw component extraction and paired comparison. The file loader accepts a complete synthetic bundle and rejects resealed bad trace bindings. Actual synthetic worker processes exercise success, failure and timeout, with reset-byte validation, direct-child cleanup and monotonic branch totals. Backend/browser ownership, outer watchdog and real runtime loader qualification remain open. No application executions or readiness promotions were added. See `protocol/realworld-generated-supervisor-v1.md`.
