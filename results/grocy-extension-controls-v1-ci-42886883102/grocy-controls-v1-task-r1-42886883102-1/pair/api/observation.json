@@ -1,0 +1,168 @@
+{
+  "kind": "grocy_ordinary_control_v1",
+  "workflow": "task",
+  "channel": "api",
+  "status": "ordinary_control_passed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.038790248
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.015424108000000004
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.015501256999999996
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/task_categories",
+      "body": {
+        "name": "Study category",
+        "description": "Fixture category",
+        "active": 1
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.048675629999999984
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/tasks",
+      "body": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": 1,
+        "assigned_to_user_id": 2
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.012428429000000022
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "done_timestamp": null,
+        "category_id": 1,
+        "assigned_to_user_id": 2,
+        "row_created_timestamp": "2026-11-10 19:50:23",
+        "userfields": null
+      },
+      "elapsed_s": 0.008893066000000005
+    },
+    {
+      "channel": "api",
+      "method": "PUT",
+      "path": "/api/objects/tasks/1",
+      "body": {
+        "name": "Ordinary task",
+        "description": "Edited ordinary description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": 1,
+        "assigned_to_user_id": 2
+      },
+      "status": 204,
+      "response": null,
+      "elapsed_s": 0.010530315000000002
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary task",
+        "description": "Edited ordinary description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "done_timestamp": null,
+        "category_id": 1,
+        "assigned_to_user_id": 2,
+        "row_created_timestamp": "2026-11-10 19:50:23",
+        "userfields": null
+      },
+      "elapsed_s": 0.008569688000000013
+    }
+  ],
+  "forms": [],
+  "timing": {
+    "continuation_s": 0.019870311000000015
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0
+  },
+  "fixture_ids": {
+    "category": 1
+  },
+  "resolved_payload": {
+    "name": "Ordinary task",
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "prefix": {
+    "name": "Ordinary task",
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "resource_id": 1,
+  "final": {
+    "name": "Ordinary task",
+    "description": "Edited ordinary description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "browser_cleanup_confirmed": true
+}

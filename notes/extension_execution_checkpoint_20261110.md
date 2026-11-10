@@ -43,3 +43,11 @@ All twelve batches succeeded. Full raw archive is results/paperless-cases-v1-ini
 Across the two completed production applications, 60 boundary cases have been verified (24 linkding, 36 Paperless), with 20 separate valid controls. These finite inventories contain no eligible native-only signal. This is not a population prevalence claim and does not establish Q1 readiness. Four applications remain uncollected.
 
 Grocy location/task run 42886883102 is now executing. Product run 42889354652 was dispatched at source 4429ffc233c39954b2a8c541fa554496a3ea6e86 and is queued behind it. Do not enqueue another manual app workflow while that pending slot is occupied. Memos pre-qualification source note now records native binary Connect transport and two candidate workflows (memos and GENERAL settings). Source contents also remain in session store under memos/<path>; pinned sources can be re-fetched.
+
+## Grocy qualification correction
+
+Location/task run 42886883102 completed: both task pairs qualified (six native form views); both location pairs stopped at initial collection count, before producer creation. Product run 42889354652 also stopped at its location prerequisite count. Each fresh image contains location id 2, Fridge, description null, active 1, freezer 0. Raw archives and independent first-attempt proofs are retained. This is a harness fixture assumption failure, not a boundary finding.
+
+Registered v2 observer/controller/verifier and grocy-extension-controls-v2.json cover location and product, two pairs each. Task remains qualified by its unchanged v1 evidence. v2 records complete initial target/prerequisite seed collections, requires specified target counts (location 1, products 0), rejects fixture-name collisions, and compares all seed business fields across resets. Only generated row_created_timestamp is omitted from paired seed comparison; raw timestamp remains retained. No seed is deleted, no producer mutation changed and no boundary input executed. Scientific inventory must freeze concrete seed data after these ordinary controls pass.
+
+Node/Python syntax and workflow-context checks passed before dispatch. No v1 runtime or registry has been rewritten.
