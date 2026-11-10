@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/common_bindings_v1.py',
+    'scripts/prepare_common_bindings_v1.py',
+    'tests/test_common_bindings_v1.py',
+    'protocol/common-bindings-v1.md',
+    'manifests/common-bindings-v1.json',
     'scripts/verify_petclinic_timing_archive_v1.py',
     'tests/test_petclinic_timing_archive_v1.py',
     'manifests/petclinic-timing-runtime-v1.json',
