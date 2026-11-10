@@ -1,6 +1,6 @@
 # Gitea source inventory before ordinary qualification
 
-Pinned release28.3.0, source4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1, image and HTTP qualification from production-extension-screen-v2.json. Fixed workflow priority remains issues, milestones, labels. No ordinary or boundary resource run has been executed.
+Pinned release28.3.0, source4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1, image and HTTP qualification from the first production-extension-screen run42874085809. Fixed workflow priority remains issues, milestones, labels. No ordinary or boundary resource run has been executed.
 
 Source root: https://github.com/go-gitea/gitea/tree/4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1
 
@@ -25,3 +25,7 @@ CreateIssueOption requires title and includes body, ref, assignees, due_date, mi
 ## Next qualification requirements
 
 Inspect native issue/label edit JS and Markdown editor, ordinary nonadmin actor/repository bootstrap, API response shapes, source-bound DOM fields, and preservation/readback inventories. Qualify reversed-order ordinary pairs and deliberate measurement probes before registering a finite boundary inventory. All descriptions above are source exposure, not application findings or novelty claims.
+
+LabelEdit.ts confirms the approve handler explicitly checks and reports form validity before submitFormFetchAction, despite the outside-form Save button. It also turns exclusive off when a label name lacks a slash-delimited scope and toggles the exclusive-order editor. This is a source-declared cross-field rule to credit to both consistency baselines, not a native-only discovery. Ordinary controls should use a scoped label name when exercising exclusive state.
+
+The shared Markdown editor defaults to a real textarea.markdown-text-editor; the optional legacy EasyMDE switch is a user preference. Isolated contexts should start with the default editor. Native milestone date clearing writes an empty date input. Gitea deployment already passed on the first screen; do not confuse it with second-attempt Vikunja setup. The CLI user-create command supports nonadmin accounts with --must-change-password=false; any generated credentials/tokens must remain private bootstrap material.
