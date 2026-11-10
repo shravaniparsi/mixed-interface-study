@@ -18,6 +18,8 @@ def combine_categories(first,additional,expected):
     return {**first,**additional}
 
 def build():
+    from verify_quartz_recovery_dispatch_v3 import check as dispatch_check
+    dispatch_check()
     original=primary();recovered=recovery();provider=retained();require(provider==read(RETENTION),'Provider retention differs')
     plan=read(ROOT/'manifests/quartz-form-correction-preparation-v1.json')['plan']['initial_batches']
     first={}
@@ -31,7 +33,7 @@ def build():
     additional={r['pair_id']:r['assigned_overlap']['category'] for r in recovery_result['rows']}
     coverage=combine_categories(first,additional,[u['target_pair_id'] for u in plan])
     require(len(first)==6 and len(additional)==16,'Executed/recovery split differs')
-    paths=['manifests/primary-results-v1.json',str(RETENTION.relative_to(ROOT)),
+    paths=['manifests/quartz-recovery-dispatch-v3.json','manifests/quartz-recovery-dispatch-ci-v3.json','manifests/primary-results-v1.json',str(RETENTION.relative_to(ROOT)),
         'manifests/quartz-recovery-results-v2.json','manifests/quartz-form-measurement-audit-v1.json',
         'manifests/quartz-form-correction-freeze-v1.json','manifests/quartz-public-qualification-freeze-v1.json','manifests/quartz-recovery-freeze-v2.json']
     return {'kind':'completed_diagnostic_experiments_with_explicit_public_provider_recovery_v3',
