@@ -110,6 +110,8 @@ jobs:
         run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
       - name: Verify live reference readiness reconciliation
         run: python scripts/prepare_corpus_review_v5.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v5.log"
+      - name: Verify corrected Quartz reader qualification
+        run: python scripts/verify_quartz_correction_freeze_v1.py
       - name: Verify complete second primary repetition
         run: python scripts/verify_primary_collection_v1.py manifests/primary-repeat2-runtime-v1.json
       - name: Verify complete initial primary collection

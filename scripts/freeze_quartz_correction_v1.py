@@ -18,7 +18,9 @@ def freeze(manifest):
         for form in read(path)['ui_forms']:
             require(form['typed_entries'] and form['values']['jobDataMap']=={'sample':'ordinary value'},'Nonempty live form was not measured correctly')
             forms.append({'raw_result':str(path.relative_to(ROOT)),'sha256':sha(path),'label':form['label']})
-    require(len(forms)==6,'Nonempty form coverage differs')
+    from collections import Counter
+    require(Counter(f['label'] for f in forms)=={'consumer_loaded':2,'consumer_before_submit':2,'fresh_final_native_read':4},'Nonempty form stages differ')
+    require(len(forms)==8,'Nonempty form coverage differs')
     sources(read(PREPARATION))
     value={'kind':'exposed_quartz_form_correction_qualification_v1','frozen_at_utc':datetime.now(timezone.utc).isoformat(),
         'preparation_sha256':sha(PREPARATION),'qualification_manifest':str(manifest.relative_to(ROOT)),
