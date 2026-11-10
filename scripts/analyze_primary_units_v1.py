@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Descriptive source-component overlap and timing strata; no defect adjudication."""
-import argparse,json,statistics
+import argparse,json,statistics,math
 from collections import Counter,defaultdict
 from pathlib import Path
 from primary_preflight_v1 import ROOT,PREPARATION,read,sha
@@ -81,7 +81,7 @@ def analyze(initial_manifest,second_manifest=None,third_manifest=None):
     strata=defaultdict(list)
     for t in times:strata[(t['profile'],t['image_version'],t['platform'],t['channel'],t['role'],t['workflow_id'],t['pair_id'],t['runtime_context_sha256'])].append(t['branch_total_s'])
     result['timing_strata']=[{'profile':k[0],'image_version':k[1],'platform':k[2],'channel':k[3],'role':k[4],'workflow_id':k[5],'pair_id':k[6],'runtime_context_sha256':k[7],
-                            'observations':len(v),'median_s':statistics.median(v),'min_s':min(v),'max_s':max(v),'total_s':sum(v)} for k,v in sorted(strata.items())]
+                            'observations':len(v),'median_s':statistics.median(v),'min_s':min(v),'max_s':max(v),'total_s':math.fsum(v)} for k,v in sorted(strata.items())]
     result['input_manifest_sha256']={str(p.relative_to(ROOT)):sha(p) for p in manifests}
     result['interpretation']='Assigned-component check signals only. Shared verification is reported separately and earns no channel-exclusive credit. Unknown, unavailable and rejected outcomes retain separate categories. Timings remain source/host strata and are not an efficacy comparison.'
     return result
