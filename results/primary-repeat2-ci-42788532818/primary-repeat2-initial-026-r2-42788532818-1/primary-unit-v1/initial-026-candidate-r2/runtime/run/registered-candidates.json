@@ -1,0 +1,375 @@
+{
+  "subject": "petclinic",
+  "version": "development-boundaries-v1",
+  "registered_before_execution_at_utc": "2026-11-07T05:38:58.667981+00:00",
+  "backend_commit": "5180cc9bd0163393c4e628bedc1bc4c27cfaab1b",
+  "frontend_commit": "fba8956cbdd04e09973f81eb39379955a825bfc3",
+  "purpose": "Development slice; not a frozen benchmark or measured selector evaluation. Candidate payloads and requirement interpretations recorded before execution.",
+  "actor": "anonymous native default",
+  "initial_state": "fresh native H2 process per candidate and per continuation oracle",
+  "oracles": [
+    "api_semantic",
+    "fresh_ui"
+  ],
+  "repetitions": 1,
+  "classification_policy": "Record prefix rejection, continuation result, readback and relationship assertions separately. Shared validation failures are negative controls. Stricter UI-only rules are candidate discrepancies, not automatic defects.",
+  "fixtures": {
+    "owner": {
+      "firstName": "Alice",
+      "lastName": "Research",
+      "address": "1 Pilot Lane",
+      "city": "Testville",
+      "telephone": "5550100001"
+    },
+    "pet": {
+      "name": "Pilotpet",
+      "birthDate": "2024-01-10",
+      "type": {
+        "id": 1,
+        "name": "cat"
+      }
+    },
+    "visit": {
+      "date": "2026-11-06",
+      "description": "Pilot routine check"
+    }
+  },
+  "requirements": {
+    "owner_required": {
+      "independent_source": "backend OpenAPI OwnerFields.required; model Owner and Person NotEmpty",
+      "rule": "firstName, lastName, address, city, telephone present and nonempty"
+    },
+    "owner_telephone": {
+      "independent_source": "backend model Owner.java Pattern ^[0-9]{10}$",
+      "rule": "exactly 10 digits; OpenAPI allows 1\u201320, so both layers must be distinguished"
+    },
+    "owner_name_pattern": {
+      "independent_source": "backend OpenAPI OwnerFields.firstName pattern ^[\\p{L}]+([ '-][\\p{L}]+){0,2}$; Person.java NotEmpty",
+      "rule": "Anne-Marie matches API input contract; frontend owner-form.ts has narrower ^[a-zA-Z]*$"
+    },
+    "pet_required": {
+      "independent_source": "backend OpenAPI PetFields.required; Pet.birthDate NotNull",
+      "rule": "name, birthDate, type required"
+    },
+    "visit_required": {
+      "independent_source": "backend OpenAPI VisitFields.required and minLength; Visit.date NotNull, Visit.description NotEmpty",
+      "rule": "date and nonempty description required"
+    },
+    "whitespace_ui_only": {
+      "independent_source": "backend strings minLength 1 / NotEmpty versus frontend form-utils.ts notBlank",
+      "rule": "No independent nonblank backend requirement found in inspected sources; do not declare stricter UI rejection a domain defect"
+    },
+    "relation_preservation": {
+      "independent_source": "backend PetRestControllerV1.updatePet mutates name/date/type; VisitRestControllerV1.updateVisit mutates date/description; owner/pet relationships are read-only API fields",
+      "rule": "Unchanged fields and owner/pet/visit links survive the equivalent intended edit"
+    }
+  },
+  "source_urls": [
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/resources/openapi.yml",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/model/Owner.java",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/model/Person.java",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/model/Pet.java",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/model/Visit.java",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/rest/controller/v1/PetRestControllerV1.java",
+    "https://github.com/spring-petclinic/spring-petclinic-rest/blob/5180cc9bd0163393c4e628bedc1bc4c27cfaab1b/src/main/java/org/springframework/samples/petclinic/rest/controller/v1/VisitRestControllerV1.java",
+    "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/owners/owner-form.ts",
+    "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/pets/pet-form.ts",
+    "https://github.com/spring-petclinic/spring-petclinic-angular/blob/fba8956cbdd04e09973f81eb39379955a825bfc3/src/app/visits/visit-form.ts"
+  ],
+  "templates": {
+    "owner_address_edit": {
+      "prefix": "API create candidate owner",
+      "operation": "change address to 2 Pilot Lane; preserve all other fields",
+      "api": "GET/PUT/GET /owners/{id}",
+      "ui": "fresh GET /owners/{id}/edit; fill Address; Update Owner"
+    },
+    "pet_rename": {
+      "prefix": "API create valid owner, candidate pet, then valid linked visit",
+      "operation": "change pet name to Renamedpet; preserve birth date/type/owner/visit",
+      "api": "GET/PUT/GET /pets/{id}, GET /owners/{ownerId}",
+      "ui": "fresh GET /pets/{id}/edit; fill Name; Update Pet"
+    },
+    "visit_reschedule": {
+      "prefix": "API create valid owner, valid pet, candidate visit",
+      "operation": "change visit date to 2026-11-07; preserve description and owner/pet relationships",
+      "api": "GET/PUT/GET /visits/{id}, GET /owners/{ownerId}",
+      "ui": "fresh GET /visits/{id}/edit; fill Date; Update Visit"
+    }
+  },
+  "candidates": [
+    {
+      "id": "owner_telephone_9",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "555010001"
+      },
+      "kind": "boundary",
+      "requirement_ids": [
+        "owner_required",
+        "owner_telephone"
+      ],
+      "pre_execution_expectation": "Outside entity exactly-10-digit constraint; prefix rejection is a common validation control, not a mixed-interface defect."
+    },
+    {
+      "id": "owner_telephone_10",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001"
+      },
+      "kind": "valid_control",
+      "requirement_ids": [
+        "owner_required",
+        "owner_telephone"
+      ],
+      "pre_execution_expectation": "Accepted and legally editable"
+    },
+    {
+      "id": "owner_telephone_11",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "55501000001"
+      },
+      "kind": "boundary",
+      "requirement_ids": [
+        "owner_required",
+        "owner_telephone"
+      ],
+      "pre_execution_expectation": "Outside entity exactly-10-digit constraint; prefix rejection is a common validation control, not a mixed-interface defect."
+    },
+    {
+      "id": "owner_omit_firstName",
+      "template": "owner_address_edit",
+      "payload": {
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "owner_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; rejection does not establish UI continuation value."
+    },
+    {
+      "id": "owner_omit_lastName",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "owner_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; rejection does not establish UI continuation value."
+    },
+    {
+      "id": "owner_omit_address",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "city": "Testville",
+        "telephone": "5550100001"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "owner_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; rejection does not establish UI continuation value."
+    },
+    {
+      "id": "owner_omit_city",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "telephone": "5550100001"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "owner_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; rejection does not establish UI continuation value."
+    },
+    {
+      "id": "owner_omit_telephone",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "owner_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; rejection does not establish UI continuation value."
+    },
+    {
+      "id": "owner_city_whitespace",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Alice",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": " ",
+        "telephone": "5550100001"
+      },
+      "kind": "boundary",
+      "requirement_ids": [
+        "owner_required",
+        "whitespace_ui_only"
+      ],
+      "pre_execution_expectation": "API length and entity NotEmpty allow a whitespace string, UI notBlank forbids it. Any observed divergence remains requirement-ambiguous until independently adjudicated."
+    },
+    {
+      "id": "owner_first_name_hyphen",
+      "template": "owner_address_edit",
+      "payload": {
+        "firstName": "Anne-Marie",
+        "lastName": "Research",
+        "address": "1 Pilot Lane",
+        "city": "Testville",
+        "telephone": "5550100001"
+      },
+      "kind": "legal_schema_boundary",
+      "requirement_ids": [
+        "owner_name_pattern"
+      ],
+      "pre_execution_expectation": "Hyphenated name matches documented API regex and entity nonempty constraint; native UI regex differs. Require actual accepted creation, independent continuation replays, persisted readback and adjudication before any defect label."
+    },
+    {
+      "id": "pet_valid",
+      "template": "pet_rename",
+      "payload": {
+        "name": "Pilotpet",
+        "birthDate": "2024-01-10",
+        "type": {
+          "id": 1,
+          "name": "cat"
+        }
+      },
+      "kind": "valid_control",
+      "requirement_ids": [
+        "pet_required",
+        "relation_preservation"
+      ],
+      "pre_execution_expectation": "Accepted pet and linked visit; rename must preserve owner/type/birth date/visit relation."
+    },
+    {
+      "id": "pet_omit_name",
+      "template": "pet_rename",
+      "payload": {
+        "birthDate": "2024-01-10",
+        "type": {
+          "id": 1,
+          "name": "cat"
+        }
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "pet_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; prefix rejection is a negative control."
+    },
+    {
+      "id": "pet_omit_birthDate",
+      "template": "pet_rename",
+      "payload": {
+        "name": "Pilotpet",
+        "type": {
+          "id": 1,
+          "name": "cat"
+        }
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "pet_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; prefix rejection is a negative control."
+    },
+    {
+      "id": "pet_omit_type",
+      "template": "pet_rename",
+      "payload": {
+        "name": "Pilotpet",
+        "birthDate": "2024-01-10"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "pet_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; prefix rejection is a negative control."
+    },
+    {
+      "id": "visit_valid",
+      "template": "visit_reschedule",
+      "payload": {
+        "date": "2026-11-06",
+        "description": "Pilot routine check"
+      },
+      "kind": "valid_control",
+      "requirement_ids": [
+        "visit_required",
+        "relation_preservation"
+      ],
+      "pre_execution_expectation": "Accepted visit; date edit must preserve description, pet and owner relations."
+    },
+    {
+      "id": "visit_omit_date",
+      "template": "visit_reschedule",
+      "payload": {
+        "description": "Pilot routine check"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "visit_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; prefix rejection is a negative control."
+    },
+    {
+      "id": "visit_omit_description",
+      "template": "visit_reschedule",
+      "payload": {
+        "date": "2026-11-06"
+      },
+      "kind": "omission",
+      "requirement_ids": [
+        "visit_required"
+      ],
+      "pre_execution_expectation": "Required by API contract; prefix rejection is a negative control."
+    },
+    {
+      "id": "visit_description_whitespace",
+      "template": "visit_reschedule",
+      "payload": {
+        "date": "2026-11-06",
+        "description": " "
+      },
+      "kind": "boundary",
+      "requirement_ids": [
+        "visit_required",
+        "whitespace_ui_only"
+      ],
+      "pre_execution_expectation": "API length and entity NotEmpty allow whitespace; UI notBlank forbids it. UI blockage alone is not an independently established domain violation."
+    }
+  ]
+}

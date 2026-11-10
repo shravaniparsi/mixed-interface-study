@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/primary-repeat2-runtime-v1.json',
+    'manifests/primary-execution-repeat3-v1.json',
     '.github/workflows/quartz_correction_v1.yml',
     'manifests/quartz-form-correction-preparation-v1.json',
     'manifests/quartz-form-measurement-audit-v1.json',
