@@ -1,0 +1,1150 @@
+{
+  "kind": "paperless_candidate_inventory_v1",
+  "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+  "seed": "production-extension-v1:paperless:20261110",
+  "execution_authorized": false,
+  "workflows": [
+    {
+      "id": "correspondent",
+      "collection": "/api/correspondents/",
+      "list_path": "/attributes/correspondents",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Renamed ordinary correspondent",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "document-type",
+      "collection": "/api/document_types/",
+      "list_path": "/attributes/documenttypes",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Renamed ordinary document-type",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "tag",
+      "collection": "/api/tags/",
+      "list_path": "/attributes/tags",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "color",
+        "is_inbox_tag",
+        "parent",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Renamed ordinary tag",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox"
+        },
+        {
+          "field": "color",
+          "selector": "[formcontrolname=\"color\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "is_inbox_tag",
+          "selector": "[formcontrolname=\"is_inbox_tag\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "continuation_rationale": "Rename is present for all matching algorithms. Pattern and case-insensitive inputs are intentionally hidden for algorithms 0 and 6; their absence is not a native failure. The unchanged hidden fields must still be preserved in persisted readback.",
+  "qualification_required": "Ordinary controls, field measurement and negative adapter probes, then the exact finite executor valid-control gate.",
+  "constraints": {
+    "match": {
+      "max_length": 256,
+      "optional": true,
+      "null_allowed": false,
+      "layer": "shared_API_endpoint"
+    },
+    "matching_algorithm": {
+      "options": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "omitted_default": 1,
+      "layer": "browser_enum_and_shared_API"
+    },
+    "regex": {
+      "when": "matching_algorithm=4 and match supplied",
+      "rule": "Pattern must pass validate_regex_pattern",
+      "layer": "shared_API_endpoint"
+    },
+    "tag.color": {
+      "max_length": 7,
+      "null_allowed": false,
+      "empty_allowed": false,
+      "layer": "shared_API_endpoint",
+      "pattern": "#[0-9a-fA-F]{6}",
+      "authority": "TagSerializer.validate_color plus model maximum length"
+    }
+  },
+  "provenance": {
+    "model": "src/documents/models.py: MatchingModel and Tag",
+    "serializer": "src/documents/serialisers.py: MatchingModelSerializer.validate_match, TagSerializer.validate_color and model fields",
+    "native_visibility": "src-ui/src/app/components/common/edit-dialog/edit-dialog.component.ts: patternRequired",
+    "native_enum": "src-ui/src/app/data/matching-model.ts",
+    "native_submission": "src-ui/src/app/services/rest/abstract-paperless-service.ts: update uses PUT",
+    "api_version": "src/paperless/settings/__init__.py DEFAULT_VERSION=10; native Accept header uses environment.apiVersion"
+  },
+  "unsupported_or_excluded": {
+    "name": "Unrelated continuation edit; not varied as producer boundary.",
+    "tag.parent": "Tree-reference fixtures and native identity-to-label measurement are outside this finite inventory. Parent remains null and must be preserved.",
+    "owner_permissions": "Matched ordinary actor setup, not an authorization-bypass study.",
+    "browser_text_limits": "Inspected text component does not declare required/maxlength. API/model limits are not relabeled as browser constraints."
+  },
+  "selected_boundary_cases": [
+    {
+      "id": "correspondent-match-valid-regex",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "valid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-value--1",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value--1",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": -1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-length-257",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "length-257",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-match-invalid-regex",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "invalid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-null",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "null",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": null,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-omitted",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-value-6",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value-6",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-length-255",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "length-255",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-omitted",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "omitted",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-null",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "null",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": null,
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-value-0",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value-0",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-length-256",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "length-256",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-match-invalid-regex",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "invalid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-omitted",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "omitted",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-null",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "null",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": null,
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-match-valid-regex",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "valid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value-0",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value-0",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-empty",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "empty",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value-6",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value-6",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-omitted",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value--1",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value--1",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": -1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-length-257",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "length-257",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-null",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "null",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": null,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-length-256",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "length-256",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-invalid-regex",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "invalid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-omitted",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "omitted",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-color-invalid-hex",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "invalid-hex",
+      "family": "format",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#gggggg",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-length-257",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "length-257",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-valid-regex",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "valid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value-6",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value-6",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-color-omitted",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value-0",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value-0",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-match-omitted",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-null",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "null",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": null,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-match-length-255",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "length-255",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value--1",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value--1",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": -1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    }
+  ],
+  "unselected_boundary_cases": [
+    {
+      "id": "correspondent-matching_algorithm-value-7",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value-7",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 7,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-empty",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "empty",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value-7",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value-7",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 7,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-length-255",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "length-255",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-color-empty",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "empty",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value-7",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value-7",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 7,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-match-null",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "null",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": null,
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-color-length-6",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "length-6",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#aaaaa",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-length-256",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "length-256",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-empty",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "empty",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-color-length-8",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "length-8",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#aaaaaaa",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-color-null",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "null",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": null,
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-color-length-7",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "length-7",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#aaaaaa",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    }
+  ],
+  "valid_controls": [
+    {
+      "id": "correspondent-valid-1",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-valid-2",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-valid-3",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-valid-4",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-1",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-2",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-3",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-4",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-1",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-2",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-3",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-4",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    }
+  ],
+  "counts": {
+    "generated_boundary": 49,
+    "selected_boundary": 36,
+    "unselected_boundary": 13,
+    "valid_controls": 12
+  }
+}

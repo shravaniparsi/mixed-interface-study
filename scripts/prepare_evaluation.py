@@ -28,6 +28,15 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/run_paperless_controls_v2.py',
+    'scripts/extension/paperless_control_v2.mjs',
+    'scripts/extension/verify_paperless_controls_v2.py',
+    '.github/workflows/paperless_extension_controls_v2.yml',
+    'manifests/paperless-extension-controls-v2.json',
+    'manifests/paperless-extension-controls-attempt1-v1.json',
+    'scripts/extension/build_paperless_candidates_v1.py',
+    'manifests/paperless-candidate-inventory-v1.json',
+
     'manifests/linkding-initial-results-v1.json',
     'manifests/linkding-followup-selection-v1.json',
     'scripts/extension/run_paperless_controls_v1.py',
