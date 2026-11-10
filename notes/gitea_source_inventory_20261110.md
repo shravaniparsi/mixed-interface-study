@@ -43,3 +43,5 @@ routers/web/web.go confirms milestone POST /milestones/{id}/edit and label POST 
 Run42908370077 at sourcef659611 retains all4attempted pairs,0qualified. Both branches authenticate as nonadmin actor2, but POST /api/v1/user/repos returns403 with required=[write:user]; the initial token carried write:issue,write:repository,read:user. No target milestone or label is created. This is bootstrap qualification failure, not a domain finding.
 
 Controls-v2 replaces read:user with write:user, retaining write:repository and write:issue. Actor role, resource payloads, native observer and preservation rules are unchanged. The original raw403s, command traces and qualification result remain archived. The broader self-user token scope does not make the actor an instance administrator.
+
+Independent control verifier v2 tightens the paired-state flag: missing prefix/final records can no longer compare equal merely because both are absent. Version1's failed bootstrap proof already qualified0pairs; its raw records and proof remain unchanged. The correction changes bookkeeping for incomplete attempts, not application outcomes or the ordinary qualification gate.

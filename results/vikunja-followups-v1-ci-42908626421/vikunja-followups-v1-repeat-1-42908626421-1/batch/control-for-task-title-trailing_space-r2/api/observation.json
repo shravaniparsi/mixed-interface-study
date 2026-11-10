@@ -1,0 +1,1510 @@
+{
+  "kind": "vikunja_finite_observation_v1",
+  "case_id": "task-valid-1",
+  "workflow": "task",
+  "channel": "api",
+  "status": "observed",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v2/info",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/VikunjaInfos.json",
+        "version": "v2.8.0",
+        "frontend_url": "http://127.0.0.1:18080/",
+        "motd": "",
+        "link_sharing_enabled": true,
+        "max_file_size": "20MB",
+        "max_items_per_page": 50,
+        "available_migrators": [
+          "vikunja-file",
+          "ticktick",
+          "wekan",
+          "csv",
+          "planka"
+        ],
+        "task_attachments_enabled": true,
+        "enabled_background_providers": [
+          "upload"
+        ],
+        "totp_enabled": true,
+        "legal": {
+          "imprint_url": "",
+          "privacy_policy_url": "",
+          "links": []
+        },
+        "caldav_enabled": true,
+        "auth": {
+          "local": {
+            "enabled": true,
+            "registration_enabled": true
+          },
+          "ldap": {
+            "enabled": false
+          },
+          "openid_connect": {
+            "enabled": false,
+            "providers": null
+          }
+        },
+        "email_reminders_enabled": true,
+        "user_deletion_enabled": true,
+        "task_comments_enabled": true,
+        "demo_mode_enabled": false,
+        "webhooks_enabled": true,
+        "public_teams_enabled": false,
+        "allow_icon_changes": false,
+        "enabled_pro_features": [],
+        "concurrent_writes": false
+      },
+      "elapsed_s": 0.023054688999999996
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/user",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/UserInfoBody.json",
+        "id": 2,
+        "name": "",
+        "username": "study-actor",
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z",
+        "settings": {
+          "name": "",
+          "email_reminders_enabled": false,
+          "discoverable_by_name": false,
+          "discoverable_by_email": false,
+          "overdue_tasks_reminders_enabled": true,
+          "overdue_tasks_reminders_time": "9:00",
+          "default_project_id": 2,
+          "week_start": 0,
+          "language": "en",
+          "timezone": "GMT",
+          "frontend_settings": null,
+          "extra_settings_links": null
+        },
+        "deletion_scheduled_at": "0001-01-01T00:00:00Z",
+        "is_local_user": true,
+        "auth_provider": "local",
+        "is_admin": false
+      },
+      "elapsed_s": 0.0014805559999999786
+    },
+    {
+      "method": "POST",
+      "path": "/api/v2/projects",
+      "body": {
+        "title": "Study project",
+        "description": "<p>Fixture description</p>",
+        "hex_color": "336699",
+        "identifier": "STUDY",
+        "parent_project_id": 0,
+        "is_archived": false,
+        "is_favorite": false,
+        "position": 65536
+      },
+      "status": 201,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/Project.json",
+        "id": 3,
+        "title": "Study project",
+        "description": "<p>Fixture description</p>",
+        "identifier": "STUDY",
+        "hex_color": "336699",
+        "parent_project_id": 0,
+        "owner": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "0001-01-01T00:00:00Z",
+          "updated": "0001-01-01T00:00:00Z"
+        },
+        "is_archived": false,
+        "background_information": null,
+        "background_blur_hash": "",
+        "is_favorite": false,
+        "position": 65536,
+        "views": [
+          {
+            "id": 17,
+            "title": "List",
+            "project_id": 3,
+            "view_kind": "list",
+            "filter": {
+              "s": "",
+              "sort_by": null,
+              "order_by": null,
+              "filter": "done = false",
+              "filter_include_nulls": false
+            },
+            "position": 100,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32.847981192Z",
+            "created": "2026-11-10T21:49:32.847952278Z"
+          },
+          {
+            "id": 18,
+            "title": "Gantt",
+            "project_id": 3,
+            "view_kind": "gantt",
+            "filter": null,
+            "position": 200,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32.848456699Z",
+            "created": "2026-11-10T21:49:32.848421606Z"
+          },
+          {
+            "id": 19,
+            "title": "Table",
+            "project_id": 3,
+            "view_kind": "table",
+            "filter": null,
+            "position": 300,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32.848835099Z",
+            "created": "2026-11-10T21:49:32.848808509Z"
+          },
+          {
+            "id": 20,
+            "title": "Kanban",
+            "project_id": 3,
+            "view_kind": "kanban",
+            "filter": null,
+            "position": 400,
+            "bucket_configuration_mode": "manual",
+            "bucket_configuration": null,
+            "default_bucket_id": 13,
+            "done_bucket_id": 15,
+            "updated": "2026-11-10T21:49:32.849448283Z",
+            "created": "2026-11-10T21:49:32.849174891Z"
+          }
+        ],
+        "max_permission": null,
+        "created": "2026-11-10T21:49:32.847756483Z",
+        "updated": "2026-11-10T21:49:32.847837405Z"
+      },
+      "elapsed_s": 0.004239740999999981
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/projects/3",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+        "id": 3,
+        "title": "Study project",
+        "description": "<p>Fixture description</p>",
+        "identifier": "STUDY",
+        "hex_color": "336699",
+        "parent_project_id": 0,
+        "owner": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        },
+        "is_archived": false,
+        "background_information": null,
+        "background_blur_hash": "",
+        "is_favorite": false,
+        "position": 65536,
+        "views": [
+          {
+            "id": 17,
+            "title": "List",
+            "project_id": 3,
+            "view_kind": "list",
+            "filter": {
+              "s": "",
+              "sort_by": null,
+              "order_by": null,
+              "filter": "done = false",
+              "filter_include_nulls": false
+            },
+            "position": 100,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 18,
+            "title": "Gantt",
+            "project_id": 3,
+            "view_kind": "gantt",
+            "filter": null,
+            "position": 200,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 19,
+            "title": "Table",
+            "project_id": 3,
+            "view_kind": "table",
+            "filter": null,
+            "position": 300,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 20,
+            "title": "Kanban",
+            "project_id": 3,
+            "view_kind": "kanban",
+            "filter": null,
+            "position": 400,
+            "bucket_configuration_mode": "manual",
+            "bucket_configuration": null,
+            "default_bucket_id": 13,
+            "done_bucket_id": 15,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          }
+        ],
+        "max_permission": 2,
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z"
+      },
+      "elapsed_s": 0.0017151759999999854
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/tasks",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/PaginatedTask.json",
+        "items": [],
+        "total": 0,
+        "page": 1,
+        "per_page": 50,
+        "total_pages": 0
+      },
+      "elapsed_s": 0.0016220450000000142
+    },
+    {
+      "method": "POST",
+      "path": "/api/v2/projects/3/tasks",
+      "body": {
+        "title": "Ordinary task",
+        "description": "<p>Ordinary description</p>",
+        "done": false,
+        "due_date": "2027-01-15T12:00:00Z",
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "priority": 2,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "is_favorite": false,
+        "bucket_id": 0,
+        "reminders": [],
+        "cover_image_attachment_id": 0,
+        "project_id": 3
+      },
+      "status": 201,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/Task.json",
+        "id": 1,
+        "title": "Ordinary task",
+        "description": "<p>Ordinary description</p>",
+        "project_id": 3,
+        "done": false,
+        "done_at": "0001-01-01T00:00:00Z",
+        "due_date": "2027-01-15T12:00:00Z",
+        "reminders": null,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "priority": 2,
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "assignees": [],
+        "labels": null,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "identifier": "STUDY-1",
+        "index": 1,
+        "related_tasks": null,
+        "attachments": null,
+        "cover_image_attachment_id": 0,
+        "is_favorite": false,
+        "created": "2026-11-10T21:49:32.85720869Z",
+        "updated": "2026-11-10T21:49:32.857209591Z",
+        "bucket_id": 0,
+        "position": 0,
+        "positions": [
+          {
+            "task_id": 1,
+            "project_view_id": 17,
+            "position": 65536
+          },
+          {
+            "task_id": 1,
+            "project_view_id": 18,
+            "position": 65536
+          },
+          {
+            "task_id": 1,
+            "project_view_id": 19,
+            "position": 65536
+          },
+          {
+            "task_id": 1,
+            "project_view_id": 20,
+            "position": 65536
+          }
+        ],
+        "reactions": null,
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        }
+      },
+      "elapsed_s": 0.0033236389999999573
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/tasks/1",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/TaskReadOneBody.json",
+        "id": 1,
+        "title": "Ordinary task",
+        "description": "<p>Ordinary description</p>",
+        "project_id": 3,
+        "done": false,
+        "done_at": "0001-01-01T00:00:00Z",
+        "due_date": "2027-01-15T12:00:00Z",
+        "reminders": null,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "priority": 2,
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "assignees": null,
+        "labels": null,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "identifier": "STUDY-1",
+        "index": 1,
+        "related_tasks": {},
+        "attachments": null,
+        "cover_image_attachment_id": 0,
+        "is_favorite": false,
+        "subscription": {
+          "id": 1,
+          "entity": "task",
+          "entity_id": 1,
+          "created": "2026-11-10T21:49:32Z"
+        },
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z",
+        "bucket_id": 0,
+        "position": 0,
+        "reactions": null,
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        },
+        "max_permission": 2
+      },
+      "elapsed_s": 0.002184722000000022
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/projects/3",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+        "id": 3,
+        "title": "Study project",
+        "description": "<p>Fixture description</p>",
+        "identifier": "STUDY",
+        "hex_color": "336699",
+        "parent_project_id": 0,
+        "owner": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        },
+        "is_archived": false,
+        "background_information": null,
+        "background_blur_hash": "",
+        "is_favorite": false,
+        "position": 65536,
+        "views": [
+          {
+            "id": 17,
+            "title": "List",
+            "project_id": 3,
+            "view_kind": "list",
+            "filter": {
+              "s": "",
+              "sort_by": null,
+              "order_by": null,
+              "filter": "done = false",
+              "filter_include_nulls": false
+            },
+            "position": 100,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 18,
+            "title": "Gantt",
+            "project_id": 3,
+            "view_kind": "gantt",
+            "filter": null,
+            "position": 200,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 19,
+            "title": "Table",
+            "project_id": 3,
+            "view_kind": "table",
+            "filter": null,
+            "position": 300,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 20,
+            "title": "Kanban",
+            "project_id": 3,
+            "view_kind": "kanban",
+            "filter": null,
+            "position": 400,
+            "bucket_configuration_mode": "manual",
+            "bucket_configuration": null,
+            "default_bucket_id": 13,
+            "done_bucket_id": 15,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          }
+        ],
+        "max_permission": 2,
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z"
+      },
+      "elapsed_s": 0.001484217000000001
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v2/tasks/1",
+      "body": [
+        {
+          "op": "add",
+          "path": "/title",
+          "value": "Ordinary task"
+        },
+        {
+          "op": "add",
+          "path": "/description",
+          "value": "<p>Edited ordinary description</p>"
+        },
+        {
+          "op": "add",
+          "path": "/done",
+          "value": false
+        },
+        {
+          "op": "add",
+          "path": "/due_date",
+          "value": "2027-01-15T12:00:00Z"
+        },
+        {
+          "op": "add",
+          "path": "/start_date",
+          "value": "2027-01-01T12:00:00Z"
+        },
+        {
+          "op": "add",
+          "path": "/end_date",
+          "value": "2027-01-14T12:00:00Z"
+        },
+        {
+          "op": "add",
+          "path": "/priority",
+          "value": 2
+        },
+        {
+          "op": "add",
+          "path": "/hex_color",
+          "value": "336699"
+        },
+        {
+          "op": "add",
+          "path": "/percent_done",
+          "value": 0.25
+        },
+        {
+          "op": "add",
+          "path": "/repeat_after",
+          "value": 0
+        },
+        {
+          "op": "add",
+          "path": "/repeat_mode",
+          "value": 0
+        },
+        {
+          "op": "add",
+          "path": "/is_favorite",
+          "value": false
+        },
+        {
+          "op": "add",
+          "path": "/bucket_id",
+          "value": 0
+        },
+        {
+          "op": "add",
+          "path": "/project_id",
+          "value": 3
+        },
+        {
+          "op": "add",
+          "path": "/reminders",
+          "value": []
+        },
+        {
+          "op": "add",
+          "path": "/cover_image_attachment_id",
+          "value": 0
+        }
+      ],
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/Task.json",
+        "id": 1,
+        "title": "Ordinary task",
+        "description": "<p>Edited ordinary description</p>",
+        "project_id": 3,
+        "done": false,
+        "done_at": "0001-01-01T00:00:00Z",
+        "due_date": "2027-01-15T12:00:00Z",
+        "reminders": null,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "priority": 2,
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "assignees": [],
+        "labels": null,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "identifier": "STUDY-1",
+        "index": 1,
+        "related_tasks": {},
+        "attachments": null,
+        "cover_image_attachment_id": 0,
+        "is_favorite": false,
+        "subscription": {
+          "id": 1,
+          "entity": "task",
+          "entity_id": 1,
+          "created": "2026-11-10T21:49:32Z"
+        },
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z",
+        "bucket_id": 0,
+        "position": 0,
+        "reactions": null,
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        }
+      },
+      "elapsed_s": 0.0033864740000000212
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/tasks/1",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/TaskReadOneBody.json",
+        "id": 1,
+        "title": "Ordinary task",
+        "description": "<p>Edited ordinary description</p>",
+        "project_id": 3,
+        "done": false,
+        "done_at": "0001-01-01T00:00:00Z",
+        "due_date": "2027-01-15T12:00:00Z",
+        "reminders": null,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "priority": 2,
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "assignees": null,
+        "labels": null,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "identifier": "STUDY-1",
+        "index": 1,
+        "related_tasks": {},
+        "attachments": null,
+        "cover_image_attachment_id": 0,
+        "is_favorite": false,
+        "subscription": {
+          "id": 1,
+          "entity": "task",
+          "entity_id": 1,
+          "created": "2026-11-10T21:49:32Z"
+        },
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z",
+        "bucket_id": 0,
+        "position": 0,
+        "reactions": null,
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        },
+        "max_permission": 2
+      },
+      "elapsed_s": 0.0019342850000000453
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/projects/3",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+        "id": 3,
+        "title": "Study project",
+        "description": "<p>Fixture description</p>",
+        "identifier": "STUDY",
+        "hex_color": "336699",
+        "parent_project_id": 0,
+        "owner": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:49:32Z",
+          "updated": "2026-11-10T21:49:32Z"
+        },
+        "is_archived": false,
+        "background_information": null,
+        "background_blur_hash": "",
+        "is_favorite": false,
+        "position": 65536,
+        "views": [
+          {
+            "id": 17,
+            "title": "List",
+            "project_id": 3,
+            "view_kind": "list",
+            "filter": {
+              "s": "",
+              "sort_by": null,
+              "order_by": null,
+              "filter": "done = false",
+              "filter_include_nulls": false
+            },
+            "position": 100,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 18,
+            "title": "Gantt",
+            "project_id": 3,
+            "view_kind": "gantt",
+            "filter": null,
+            "position": 200,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 19,
+            "title": "Table",
+            "project_id": 3,
+            "view_kind": "table",
+            "filter": null,
+            "position": 300,
+            "bucket_configuration_mode": "none",
+            "bucket_configuration": null,
+            "default_bucket_id": 0,
+            "done_bucket_id": 0,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          },
+          {
+            "id": 20,
+            "title": "Kanban",
+            "project_id": 3,
+            "view_kind": "kanban",
+            "filter": null,
+            "position": 400,
+            "bucket_configuration_mode": "manual",
+            "bucket_configuration": null,
+            "default_bucket_id": 13,
+            "done_bucket_id": 15,
+            "updated": "2026-11-10T21:49:32Z",
+            "created": "2026-11-10T21:49:32Z"
+          }
+        ],
+        "max_permission": 2,
+        "created": "2026-11-10T21:49:32Z",
+        "updated": "2026-11-10T21:49:32Z"
+      },
+      "elapsed_s": 0.0016098510000000488
+    }
+  ],
+  "forms": [],
+  "native_requests": [],
+  "timing": {
+    "setup_s": 0.340911712,
+    "producer_s": 0.01966963599999997,
+    "continuation_s": 0.009219205999999985
+  },
+  "instance": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/VikunjaInfos.json",
+    "version": "v2.8.0",
+    "frontend_url": "http://127.0.0.1:18080/",
+    "motd": "",
+    "link_sharing_enabled": true,
+    "max_file_size": "20MB",
+    "max_items_per_page": 50,
+    "available_migrators": [
+      "vikunja-file",
+      "ticktick",
+      "wekan",
+      "csv",
+      "planka"
+    ],
+    "task_attachments_enabled": true,
+    "enabled_background_providers": [
+      "upload"
+    ],
+    "totp_enabled": true,
+    "legal": {
+      "imprint_url": "",
+      "privacy_policy_url": "",
+      "links": []
+    },
+    "caldav_enabled": true,
+    "auth": {
+      "local": {
+        "enabled": true,
+        "registration_enabled": true
+      },
+      "ldap": {
+        "enabled": false
+      },
+      "openid_connect": {
+        "enabled": false,
+        "providers": null
+      }
+    },
+    "email_reminders_enabled": true,
+    "user_deletion_enabled": true,
+    "task_comments_enabled": true,
+    "demo_mode_enabled": false,
+    "webhooks_enabled": true,
+    "public_teams_enabled": false,
+    "allow_icon_changes": false,
+    "enabled_pro_features": [],
+    "concurrent_writes": false
+  },
+  "actor": {
+    "id": 2,
+    "username": "study-actor",
+    "is_admin": false
+  },
+  "fixture_created": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/Project.json",
+    "id": 3,
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "identifier": "STUDY",
+    "hex_color": "336699",
+    "parent_project_id": 0,
+    "owner": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "0001-01-01T00:00:00Z",
+      "updated": "0001-01-01T00:00:00Z"
+    },
+    "is_archived": false,
+    "background_information": null,
+    "background_blur_hash": "",
+    "is_favorite": false,
+    "position": 65536,
+    "views": [
+      {
+        "id": 17,
+        "title": "List",
+        "project_id": 3,
+        "view_kind": "list",
+        "filter": {
+          "s": "",
+          "sort_by": null,
+          "order_by": null,
+          "filter": "done = false",
+          "filter_include_nulls": false
+        },
+        "position": 100,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32.847981192Z",
+        "created": "2026-11-10T21:49:32.847952278Z"
+      },
+      {
+        "id": 18,
+        "title": "Gantt",
+        "project_id": 3,
+        "view_kind": "gantt",
+        "filter": null,
+        "position": 200,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32.848456699Z",
+        "created": "2026-11-10T21:49:32.848421606Z"
+      },
+      {
+        "id": 19,
+        "title": "Table",
+        "project_id": 3,
+        "view_kind": "table",
+        "filter": null,
+        "position": 300,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32.848835099Z",
+        "created": "2026-11-10T21:49:32.848808509Z"
+      },
+      {
+        "id": 20,
+        "title": "Kanban",
+        "project_id": 3,
+        "view_kind": "kanban",
+        "filter": null,
+        "position": 400,
+        "bucket_configuration_mode": "manual",
+        "bucket_configuration": null,
+        "default_bucket_id": 13,
+        "done_bucket_id": 15,
+        "updated": "2026-11-10T21:49:32.849448283Z",
+        "created": "2026-11-10T21:49:32.849174891Z"
+      }
+    ],
+    "max_permission": null,
+    "created": "2026-11-10T21:49:32.847756483Z",
+    "updated": "2026-11-10T21:49:32.847837405Z"
+  },
+  "fixture_initial": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+    "id": 3,
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "identifier": "STUDY",
+    "hex_color": "336699",
+    "parent_project_id": 0,
+    "owner": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:49:32Z",
+      "updated": "2026-11-10T21:49:32Z"
+    },
+    "is_archived": false,
+    "background_information": null,
+    "background_blur_hash": "",
+    "is_favorite": false,
+    "position": 65536,
+    "views": [
+      {
+        "id": 17,
+        "title": "List",
+        "project_id": 3,
+        "view_kind": "list",
+        "filter": {
+          "s": "",
+          "sort_by": null,
+          "order_by": null,
+          "filter": "done = false",
+          "filter_include_nulls": false
+        },
+        "position": 100,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 18,
+        "title": "Gantt",
+        "project_id": 3,
+        "view_kind": "gantt",
+        "filter": null,
+        "position": 200,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 19,
+        "title": "Table",
+        "project_id": 3,
+        "view_kind": "table",
+        "filter": null,
+        "position": 300,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 20,
+        "title": "Kanban",
+        "project_id": 3,
+        "view_kind": "kanban",
+        "filter": null,
+        "position": 400,
+        "bucket_configuration_mode": "manual",
+        "bucket_configuration": null,
+        "default_bucket_id": 13,
+        "done_bucket_id": 15,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      }
+    ],
+    "max_permission": 2,
+    "created": "2026-11-10T21:49:32Z",
+    "updated": "2026-11-10T21:49:32Z"
+  },
+  "initial_raw": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/PaginatedTask.json",
+    "items": [],
+    "total": 0,
+    "page": 1,
+    "per_page": 50,
+    "total_pages": 0
+  },
+  "initial_business_state": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/PaginatedTask.json",
+    "items": [],
+    "total": 0,
+    "page": 1,
+    "per_page": 50,
+    "total_pages": 0
+  },
+  "producer_body": {
+    "title": "Ordinary task",
+    "description": "<p>Ordinary description</p>",
+    "done": false,
+    "due_date": "2027-01-15T12:00:00Z",
+    "start_date": "2027-01-01T12:00:00Z",
+    "end_date": "2027-01-14T12:00:00Z",
+    "priority": 2,
+    "hex_color": "336699",
+    "percent_done": 0.25,
+    "repeat_after": 0,
+    "repeat_mode": 0,
+    "is_favorite": false,
+    "bucket_id": 0,
+    "reminders": [],
+    "cover_image_attachment_id": 0,
+    "project_id": 3
+  },
+  "producer_status": 201,
+  "prefix": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/TaskReadOneBody.json",
+    "id": 1,
+    "title": "Ordinary task",
+    "description": "<p>Ordinary description</p>",
+    "project_id": 3,
+    "done": false,
+    "done_at": "0001-01-01T00:00:00Z",
+    "due_date": "2027-01-15T12:00:00Z",
+    "reminders": null,
+    "repeat_after": 0,
+    "repeat_mode": 0,
+    "priority": 2,
+    "start_date": "2027-01-01T12:00:00Z",
+    "end_date": "2027-01-14T12:00:00Z",
+    "assignees": null,
+    "labels": null,
+    "hex_color": "336699",
+    "percent_done": 0.25,
+    "identifier": "STUDY-1",
+    "index": 1,
+    "related_tasks": {},
+    "attachments": null,
+    "cover_image_attachment_id": 0,
+    "is_favorite": false,
+    "subscription": {
+      "id": 1,
+      "entity": "task",
+      "entity_id": 1,
+      "created": "2026-11-10T21:49:32Z"
+    },
+    "created": "2026-11-10T21:49:32Z",
+    "updated": "2026-11-10T21:49:32Z",
+    "bucket_id": 0,
+    "position": 0,
+    "reactions": null,
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:49:32Z",
+      "updated": "2026-11-10T21:49:32Z"
+    },
+    "max_permission": 2
+  },
+  "prefix_business": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/TaskReadOneBody.json",
+    "id": 1,
+    "title": "Ordinary task",
+    "description": "<p>Ordinary description</p>",
+    "project_id": 3,
+    "done": false,
+    "done_at": "0001-01-01T00:00:00Z",
+    "due_date": "2027-01-15T12:00:00Z",
+    "reminders": null,
+    "repeat_after": 0,
+    "repeat_mode": 0,
+    "priority": 2,
+    "start_date": "2027-01-01T12:00:00Z",
+    "end_date": "2027-01-14T12:00:00Z",
+    "assignees": null,
+    "labels": null,
+    "hex_color": "336699",
+    "percent_done": 0.25,
+    "identifier": "STUDY-1",
+    "index": 1,
+    "related_tasks": {},
+    "attachments": null,
+    "cover_image_attachment_id": 0,
+    "is_favorite": false,
+    "subscription": {
+      "id": 1,
+      "entity": "task",
+      "entity_id": 1
+    },
+    "bucket_id": 0,
+    "position": 0,
+    "reactions": null,
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor"
+    },
+    "max_permission": 2
+  },
+  "fixture_prefix": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+    "id": 3,
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "identifier": "STUDY",
+    "hex_color": "336699",
+    "parent_project_id": 0,
+    "owner": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:49:32Z",
+      "updated": "2026-11-10T21:49:32Z"
+    },
+    "is_archived": false,
+    "background_information": null,
+    "background_blur_hash": "",
+    "is_favorite": false,
+    "position": 65536,
+    "views": [
+      {
+        "id": 17,
+        "title": "List",
+        "project_id": 3,
+        "view_kind": "list",
+        "filter": {
+          "s": "",
+          "sort_by": null,
+          "order_by": null,
+          "filter": "done = false",
+          "filter_include_nulls": false
+        },
+        "position": 100,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 18,
+        "title": "Gantt",
+        "project_id": 3,
+        "view_kind": "gantt",
+        "filter": null,
+        "position": 200,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 19,
+        "title": "Table",
+        "project_id": 3,
+        "view_kind": "table",
+        "filter": null,
+        "position": 300,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 20,
+        "title": "Kanban",
+        "project_id": 3,
+        "view_kind": "kanban",
+        "filter": null,
+        "position": 400,
+        "bucket_configuration_mode": "manual",
+        "bucket_configuration": null,
+        "default_bucket_id": 13,
+        "done_bucket_id": 15,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      }
+    ],
+    "max_permission": 2,
+    "created": "2026-11-10T21:49:32Z",
+    "updated": "2026-11-10T21:49:32Z"
+  },
+  "fixture_business": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+    "id": 3,
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "identifier": "STUDY",
+    "hex_color": "336699",
+    "parent_project_id": 0,
+    "owner": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor"
+    },
+    "is_archived": false,
+    "background_information": null,
+    "background_blur_hash": "",
+    "is_favorite": false,
+    "position": 65536,
+    "views": [
+      {
+        "id": 17,
+        "title": "List",
+        "project_id": 3,
+        "view_kind": "list",
+        "filter": {
+          "s": "",
+          "sort_by": null,
+          "order_by": null,
+          "filter": "done = false",
+          "filter_include_nulls": false
+        },
+        "position": 100,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0
+      },
+      {
+        "id": 18,
+        "title": "Gantt",
+        "project_id": 3,
+        "view_kind": "gantt",
+        "filter": null,
+        "position": 200,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0
+      },
+      {
+        "id": 19,
+        "title": "Table",
+        "project_id": 3,
+        "view_kind": "table",
+        "filter": null,
+        "position": 300,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0
+      },
+      {
+        "id": 20,
+        "title": "Kanban",
+        "project_id": 3,
+        "view_kind": "kanban",
+        "filter": null,
+        "position": 400,
+        "bucket_configuration_mode": "manual",
+        "bucket_configuration": null,
+        "default_bucket_id": 13,
+        "done_bucket_id": 15
+      }
+    ],
+    "max_permission": 2
+  },
+  "continuation_status": 200,
+  "final": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/TaskReadOneBody.json",
+    "id": 1,
+    "title": "Ordinary task",
+    "description": "<p>Edited ordinary description</p>",
+    "project_id": 3,
+    "done": false,
+    "done_at": "0001-01-01T00:00:00Z",
+    "due_date": "2027-01-15T12:00:00Z",
+    "reminders": null,
+    "repeat_after": 0,
+    "repeat_mode": 0,
+    "priority": 2,
+    "start_date": "2027-01-01T12:00:00Z",
+    "end_date": "2027-01-14T12:00:00Z",
+    "assignees": null,
+    "labels": null,
+    "hex_color": "336699",
+    "percent_done": 0.25,
+    "identifier": "STUDY-1",
+    "index": 1,
+    "related_tasks": {},
+    "attachments": null,
+    "cover_image_attachment_id": 0,
+    "is_favorite": false,
+    "subscription": {
+      "id": 1,
+      "entity": "task",
+      "entity_id": 1,
+      "created": "2026-11-10T21:49:32Z"
+    },
+    "created": "2026-11-10T21:49:32Z",
+    "updated": "2026-11-10T21:49:32Z",
+    "bucket_id": 0,
+    "position": 0,
+    "reactions": null,
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:49:32Z",
+      "updated": "2026-11-10T21:49:32Z"
+    },
+    "max_permission": 2
+  },
+  "final_business": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/TaskReadOneBody.json",
+    "id": 1,
+    "title": "Ordinary task",
+    "description": "<p>Edited ordinary description</p>",
+    "project_id": 3,
+    "done": false,
+    "done_at": "0001-01-01T00:00:00Z",
+    "due_date": "2027-01-15T12:00:00Z",
+    "reminders": null,
+    "repeat_after": 0,
+    "repeat_mode": 0,
+    "priority": 2,
+    "start_date": "2027-01-01T12:00:00Z",
+    "end_date": "2027-01-14T12:00:00Z",
+    "assignees": null,
+    "labels": null,
+    "hex_color": "336699",
+    "percent_done": 0.25,
+    "identifier": "STUDY-1",
+    "index": 1,
+    "related_tasks": {},
+    "attachments": null,
+    "cover_image_attachment_id": 0,
+    "is_favorite": false,
+    "subscription": {
+      "id": 1,
+      "entity": "task",
+      "entity_id": 1
+    },
+    "bucket_id": 0,
+    "position": 0,
+    "reactions": null,
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor"
+    },
+    "max_permission": 2
+  },
+  "fixture_final": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/ProjectReadBody.json",
+    "id": 3,
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "identifier": "STUDY",
+    "hex_color": "336699",
+    "parent_project_id": 0,
+    "owner": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:49:32Z",
+      "updated": "2026-11-10T21:49:32Z"
+    },
+    "is_archived": false,
+    "background_information": null,
+    "background_blur_hash": "",
+    "is_favorite": false,
+    "position": 65536,
+    "views": [
+      {
+        "id": 17,
+        "title": "List",
+        "project_id": 3,
+        "view_kind": "list",
+        "filter": {
+          "s": "",
+          "sort_by": null,
+          "order_by": null,
+          "filter": "done = false",
+          "filter_include_nulls": false
+        },
+        "position": 100,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 18,
+        "title": "Gantt",
+        "project_id": 3,
+        "view_kind": "gantt",
+        "filter": null,
+        "position": 200,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 19,
+        "title": "Table",
+        "project_id": 3,
+        "view_kind": "table",
+        "filter": null,
+        "position": 300,
+        "bucket_configuration_mode": "none",
+        "bucket_configuration": null,
+        "default_bucket_id": 0,
+        "done_bucket_id": 0,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      },
+      {
+        "id": 20,
+        "title": "Kanban",
+        "project_id": 3,
+        "view_kind": "kanban",
+        "filter": null,
+        "position": 400,
+        "bucket_configuration_mode": "manual",
+        "bucket_configuration": null,
+        "default_bucket_id": 13,
+        "done_bucket_id": 15,
+        "updated": "2026-11-10T21:49:32Z",
+        "created": "2026-11-10T21:49:32Z"
+      }
+    ],
+    "max_permission": 2,
+    "created": "2026-11-10T21:49:32Z",
+    "updated": "2026-11-10T21:49:32Z"
+  },
+  "browser_cleanup_confirmed": true
+}
