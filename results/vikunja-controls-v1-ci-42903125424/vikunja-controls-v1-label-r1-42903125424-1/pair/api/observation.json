@@ -1,0 +1,325 @@
+{
+  "kind": "vikunja_ordinary_control_v1",
+  "workflow": "label",
+  "channel": "api",
+  "status": "ordinary_control_passed",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v2/info",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/VikunjaInfos.json",
+        "version": "v2.8.0",
+        "frontend_url": "http://127.0.0.1:18080/",
+        "motd": "",
+        "link_sharing_enabled": true,
+        "max_file_size": "20MB",
+        "max_items_per_page": 50,
+        "available_migrators": [
+          "vikunja-file",
+          "ticktick",
+          "wekan",
+          "csv",
+          "planka"
+        ],
+        "task_attachments_enabled": true,
+        "enabled_background_providers": [
+          "upload"
+        ],
+        "totp_enabled": true,
+        "legal": {
+          "imprint_url": "",
+          "privacy_policy_url": "",
+          "links": []
+        },
+        "caldav_enabled": true,
+        "auth": {
+          "local": {
+            "enabled": true,
+            "registration_enabled": true
+          },
+          "ldap": {
+            "enabled": false
+          },
+          "openid_connect": {
+            "enabled": false,
+            "providers": null
+          }
+        },
+        "email_reminders_enabled": true,
+        "user_deletion_enabled": true,
+        "task_comments_enabled": true,
+        "demo_mode_enabled": false,
+        "webhooks_enabled": true,
+        "public_teams_enabled": false,
+        "allow_icon_changes": false,
+        "enabled_pro_features": [],
+        "concurrent_writes": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/user",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/UserInfoBody.json",
+        "id": 2,
+        "name": "",
+        "username": "study-actor",
+        "created": "2026-11-10T21:18:55Z",
+        "updated": "2026-11-10T21:18:55Z",
+        "settings": {
+          "name": "",
+          "email_reminders_enabled": false,
+          "discoverable_by_name": false,
+          "discoverable_by_email": false,
+          "overdue_tasks_reminders_enabled": true,
+          "overdue_tasks_reminders_time": "9:00",
+          "default_project_id": 2,
+          "week_start": 0,
+          "language": "en",
+          "timezone": "GMT",
+          "frontend_settings": null,
+          "extra_settings_links": null
+        },
+        "deletion_scheduled_at": "0001-01-01T00:00:00Z",
+        "is_local_user": true,
+        "auth_provider": "local",
+        "is_admin": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/labels",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/PaginatedLabelWithTaskID.json",
+        "items": [],
+        "total": 0,
+        "page": 1,
+        "per_page": 50,
+        "total_pages": 0
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/v2/labels",
+      "body": {
+        "title": "Ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699"
+      },
+      "status": 201,
+      "response": {
+        "id": 1,
+        "title": "Ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699",
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "0001-01-01T00:00:00Z",
+          "updated": "0001-01-01T00:00:00Z"
+        },
+        "created": "2026-11-10T21:18:55.430738287Z",
+        "updated": "2026-11-10T21:18:55.430742585Z"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/labels/1",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/LabelReadBody.json",
+        "id": 1,
+        "title": "Ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699",
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:18:55Z",
+          "updated": "2026-11-10T21:18:55Z"
+        },
+        "created": "2026-11-10T21:18:55Z",
+        "updated": "2026-11-10T21:18:55Z",
+        "max_permission": 2
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v2/labels/1",
+      "body": {
+        "title": "Edited ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699"
+      },
+      "status": 200,
+      "response": {
+        "id": 1,
+        "title": "Edited ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699",
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:18:55Z",
+          "updated": "2026-11-10T21:18:55Z"
+        },
+        "created": "2026-11-10T21:18:55Z",
+        "updated": "2026-11-10T21:18:55Z"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/labels/1",
+      "status": 200,
+      "response": {
+        "$schema": "http://127.0.0.1:18080/api/v2/schemas/LabelReadBody.json",
+        "id": 1,
+        "title": "Edited ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699",
+        "created_by": {
+          "id": 2,
+          "name": "",
+          "username": "study-actor",
+          "created": "2026-11-10T21:18:55Z",
+          "updated": "2026-11-10T21:18:55Z"
+        },
+        "created": "2026-11-10T21:18:55Z",
+        "updated": "2026-11-10T21:18:55Z",
+        "max_permission": 2
+      }
+    }
+  ],
+  "forms": [],
+  "native_requests": [],
+  "instance": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/VikunjaInfos.json",
+    "version": "v2.8.0",
+    "frontend_url": "http://127.0.0.1:18080/",
+    "motd": "",
+    "link_sharing_enabled": true,
+    "max_file_size": "20MB",
+    "max_items_per_page": 50,
+    "available_migrators": [
+      "vikunja-file",
+      "ticktick",
+      "wekan",
+      "csv",
+      "planka"
+    ],
+    "task_attachments_enabled": true,
+    "enabled_background_providers": [
+      "upload"
+    ],
+    "totp_enabled": true,
+    "legal": {
+      "imprint_url": "",
+      "privacy_policy_url": "",
+      "links": []
+    },
+    "caldav_enabled": true,
+    "auth": {
+      "local": {
+        "enabled": true,
+        "registration_enabled": true
+      },
+      "ldap": {
+        "enabled": false
+      },
+      "openid_connect": {
+        "enabled": false,
+        "providers": null
+      }
+    },
+    "email_reminders_enabled": true,
+    "user_deletion_enabled": true,
+    "task_comments_enabled": true,
+    "demo_mode_enabled": false,
+    "webhooks_enabled": true,
+    "public_teams_enabled": false,
+    "allow_icon_changes": false,
+    "enabled_pro_features": [],
+    "concurrent_writes": false
+  },
+  "actor": {
+    "id": 2,
+    "username": "study-actor",
+    "is_admin": false
+  },
+  "initial_business_state": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/PaginatedLabelWithTaskID.json",
+    "items": [],
+    "total": 0,
+    "page": 1,
+    "per_page": 50,
+    "total_pages": 0
+  },
+  "prefix": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/LabelReadBody.json",
+    "id": 1,
+    "title": "Ordinary label",
+    "description": "<p>Ordinary description</p>",
+    "hex_color": "336699",
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:18:55Z",
+      "updated": "2026-11-10T21:18:55Z"
+    },
+    "created": "2026-11-10T21:18:55Z",
+    "updated": "2026-11-10T21:18:55Z",
+    "max_permission": 2
+  },
+  "prefix_business": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/LabelReadBody.json",
+    "id": 1,
+    "title": "Ordinary label",
+    "description": "<p>Ordinary description</p>",
+    "hex_color": "336699",
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor"
+    },
+    "max_permission": 2
+  },
+  "final": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/LabelReadBody.json",
+    "id": 1,
+    "title": "Edited ordinary label",
+    "description": "<p>Ordinary description</p>",
+    "hex_color": "336699",
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor",
+      "created": "2026-11-10T21:18:55Z",
+      "updated": "2026-11-10T21:18:55Z"
+    },
+    "created": "2026-11-10T21:18:55Z",
+    "updated": "2026-11-10T21:18:55Z",
+    "max_permission": 2
+  },
+  "final_business": {
+    "$schema": "http://127.0.0.1:18080/api/v2/schemas/LabelReadBody.json",
+    "id": 1,
+    "title": "Edited ordinary label",
+    "description": "<p>Ordinary description</p>",
+    "hex_color": "336699",
+    "created_by": {
+      "id": 2,
+      "name": "",
+      "username": "study-actor"
+    },
+    "max_permission": 2
+  },
+  "browser_cleanup_confirmed": true
+}

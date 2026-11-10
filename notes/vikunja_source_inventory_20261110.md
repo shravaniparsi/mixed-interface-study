@@ -47,3 +47,9 @@ client/queries/taskMutations.ts supplies sixteen writable fields, trims supplied
 pkg/models/tasks.go limits new/changed titles to1000 runes, validates repeat_after within ten years, and declares priority unrestricted. Do not invent priority range violations from a finite UI selector. Percent_done is documented0..1; enforcement must be established separately. Frontend normalization maps missing/null collections to empty arrays and missing scalar values to defaults; qualification must expose which values the actual pinned API returns before comparator rules are fixed.
 
 v2/richtext.go confirms default HTML on both transports. Markdown conversion occurs only on explicit format=markdown or X-Vikunja-Format: markdown. Its documented lossy conversion is not an unseen defect. utils/normalize_hex.go strips a leading hash and truncates to six characters, after the API's schema/model validation. All these source facts precede any Vikunja boundary experiment.
+
+## Ordinary attempt1 and version2 correction
+
+Run42903125424 at source5ca1e3c retained four API/native pairs. Independent verification finds0qualified pairs. Each API ordinary branch passed; each native branch failed before browser startup because the adapter requested a repository-local playwright module, while the pinned CI installer uses PLAYWRIGHT_MODULE_PATH. Version2 uses the installer-provided module and CHROME_EXECUTABLE, matching already-qualified app adapters.
+
+The raw initial project inventory also exposes generated timestamps in seeded Inbox/views. Version2 applies the already-declared named timestamp projection to each initial collection item and preserves the full initial response. It does not remove arbitrary fields or change within-branch preservation rules. This is ordinary qualification calibration before boundary registration. The four version1 pairs remain immutable and are not replaced in the archive.
