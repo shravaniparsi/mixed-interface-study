@@ -185,3 +185,12 @@ Registered memos-memo-probe-v1.json: one synthetic empty-editor probe inside a f
 
 
 Synthetic memo probe dispatched as run42899599065 at5f4bdef, behind calibration42899404684. Expected artifact memos-memo-probe-v1-memo-empty-probe-42899599065-1; archive results/memos-memo-probe-v1-ci-42899599065; verify_memos_memo_probe_v1.py. Shared manual concurrency now has this pending slot; do not enqueue a third run while the calibration remains live.
+
+
+## Preference fields qualified; empty editor representation correction
+
+Run42899404684 passed both preference pairs and four native views, independently reconstructed in manifests/memos-preference-attempt5-v1.json; all raw artifacts archived. Actual locale/theme/visibility option inventories and selected English/Paper/Protected values qualified with trigger-based dismissal.
+
+Synthetic memo run42899599065 failed its strict innerText empty assertion: the emptied rich editor reports newline, while Update is disabled and no target RPC was seen before the assertion. This is a measurement representation issue. Raw archive results/memos-memo-probe-v1-ci-42899599065 and proof manifests/memos-memo-probe-attempt1-v1.json retain both branches. It did not reach the failed-write/preservation or restoration checks, so the probe remains unqualified.
+
+Registered v2 retains raw innerText, adds textContent and HTML, and requires textContent empty plus innerText either empty or exactly one newline. It does not trim arbitrary whitespace. Fresh synthetic probe still must show no request after force-targeting disabled Update, unchanged stored record, and restored ordinary save. Prior runtime unchanged; no boundary observations yet. Remaining gates include preference invalid-membership adapter checks and finite executor registration.

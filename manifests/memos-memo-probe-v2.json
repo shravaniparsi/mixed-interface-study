@@ -1,0 +1,37 @@
+{
+  "kind": "memos_synthetic_empty_editor_probe_v2",
+  "version": "26.11.0",
+  "source_commit": "b40d8a7b573774c52b022c8d6537d6baf2129dc0",
+  "image": "neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034",
+  "image_id": "sha256:d336b87dc571eddcd421628e40590d121f9e6d2a691f7e7de1ed900917fde9f5",
+  "units": [
+    {
+      "id": "memo-empty-probe",
+      "workflow": "memo",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_memos_memo_probe_v2.py": "2e8945847cd26e5986101e573b042c5c9dc7dd14824d9fbdf99c5605b97ff096",
+    "scripts/extension/memos_memo_probe_v2.mjs": "0364638c8b064ec1644d2948ff7aabe4e2c61231210e88e110102698e30c5f58",
+    "scripts/extension/memos_memo_wire_v1.mjs": "d52212f8c572532ec42fad1e3d11406d4c3cc9540e55ce48b0f7dc754c98fcb2",
+    ".github/workflows/memos_memo_probe_v2.yml": "78713e8ee6a34891d3d79a25329f57272f94e4097c88342440f0900b5a9bf2d4",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495"
+  },
+  "qualification_sha256": {
+    "manifests/memos-preference-attempt3-v1.json": "fdb11d635383d44830dd45db5ce1d222cd14c5cc7ca7a5b830054a3aa6ef5606",
+    "manifests/memos-memo-attempt1-v1.json": "18e8e24c5049f573b9a4e24e7de4d05f552042c39490e7fb7109a2cd10bc4c6f",
+    "manifests/memos-memo-probe-attempt1-v1.json": "d80ff3c54b74a80349d4025fe32b73aaa3559bd26242c28f95a3cf3a93d3f7e9"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_job_minutes": 25,
+  "maximum_parallel_jobs": 1,
+  "paid_model_calls": 0,
+  "interpretation": "Deliberate UI-only empty-editor negative control inside an ordinary pair. Observe disabled Update, force-target native click, zero mutation requests for1500ms and unchanged API readback; restore ordinary text and complete the ordinary native visibility edit. Synthetic probe is not a natural defect.",
+  "correction": "Raw innerText of emptied rich editor was newline; retain it and additionally require empty textContent with HTML capture. Only empty or single-newline innerText is permitted, no general trim normalization."
+}
