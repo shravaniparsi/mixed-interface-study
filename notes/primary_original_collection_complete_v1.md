@@ -1,0 +1,9 @@
+# Original diagnostic collection completed
+
+The frozen original collection is complete: 75 initial units, 13 second repetitions and 13 third repetitions. Hosted runs 42780444191, 42788532818 and 42790709785 completed successfully. Every retained unit was independently reconstructed. There were 184 sealed paired observations and two native-only observations, containing 370 branch intervals. Three initial semantic halts preserved their unstarted references; no unit was replaced or resumed.
+
+The measurement-audited initial comparison categories are 26 with neither assigned continuation showing a mismatch, 26 rejected prefixes, 12 unresolved outcomes, one native-UI-only assigned mismatch, eight measurement-invalid Quartz comparisons and two native-only controls. The original literal terminal classifications remain in the report and archive.
+
+The nine literal completed-mismatch signatures remained stable across three observations with clean references. Eight of these are affected by the Quartz form-extraction error and cannot establish application failures. The remaining PetClinic case, `owner_first_name_hyphen`, consistently accepts the owner and address edit through the API while the native editor disables submission of the address edit. Retained screenshots and raw form fields corroborate this behavior. It is one exposed check-level finding, not an independently adjudicated new defect. Two incomparable and two application-response-failure cases remained semantically unresolved after their registered repetitions.
+
+`manifests/primary-results-v1.json` contains the full per-entry interpretation, exposure strata, assigned and shared component signals, phase accounting and separated timing measurements. `scripts/verify_primary_results_v1.py` reconstructs all three archives and refuses completion if a selected phase is absent. The separate corrected Quartz cohort remains additional exposed evidence and is not pooled with these observations.

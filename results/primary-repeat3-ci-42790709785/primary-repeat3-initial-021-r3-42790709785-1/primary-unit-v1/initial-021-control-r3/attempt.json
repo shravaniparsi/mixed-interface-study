@@ -1,0 +1,248 @@
+{
+  "attempt_id": "initial-021-control-r3",
+  "target_pair_id": "realworld_development::article-update-duplicate-partial",
+  "entry_pair_id": "realworld_development::article-update-unique-partial",
+  "role": "reference_control",
+  "repetition": 3,
+  "entry_kind": "pair",
+  "runtime": {
+    "profile": "rw_legacy",
+    "runner": "scripts/run_realworld_legacy_job_v8.py",
+    "loader": "realworld_legacy_jobs_v10",
+    "registry_path": null,
+    "registry": {
+      "schema_version": 1,
+      "kind": "exposed_legacy_job_selection_v8",
+      "source": "manifests/realworld-boundary-registry-v1.json",
+      "source_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+      "primary_freeze_complete": false,
+      "cases": [
+        {
+          "candidate_id": "article-valid",
+          "workflow": "article-create-edit",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "title": "Boundary pilot article",
+            "description": "Boundary control description",
+            "body": "Body before continuation.",
+            "tagList": [
+              "pilot"
+            ]
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+            "statement": "All required nonempty fields supplied."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+        },
+        {
+          "candidate_id": "article-update-unique-partial",
+          "workflow": "article-update-comment",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "body": "Updated body before comment."
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+            "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+          "target_fixture": "base"
+        },
+        {
+          "candidate_id": "article-title-150",
+          "workflow": "article-create-edit",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+            "description": "Boundary control description",
+            "body": "Body before continuation.",
+            "tagList": [
+              "pilot"
+            ]
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+            "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+        },
+        {
+          "candidate_id": "article-title-151",
+          "workflow": "article-create-edit",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+            "description": "Boundary control description",
+            "body": "Body before continuation.",
+            "tagList": [
+              "pilot"
+            ]
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+            "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+        },
+        {
+          "candidate_id": "article-title-whitespace",
+          "workflow": "article-create-edit",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "title": "   ",
+            "description": "Boundary control description",
+            "body": "Body before continuation.",
+            "tagList": [
+              "pilot"
+            ]
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "unknown",
+            "category": "unresolved",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L51",
+            "statement": "Truthiness checks allow whitespace; slugification may produce an empty consumer reference. Probe, not predetermined defect."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+        },
+        {
+          "candidate_id": "article-update-duplicate-partial",
+          "workflow": "article-update-comment",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "body": "Updated body before comment."
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+            "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+          "target_fixture": "duplicate"
+        },
+        {
+          "candidate_id": "article-update-duplicate-full",
+          "workflow": "article-update-comment",
+          "prefix_interface": "api",
+          "prefix_payload": {
+            "title": "Duplicate fixture title",
+            "description": "Duplicate fixture description",
+            "body": "Updated body before comment.",
+            "tagList": []
+          },
+          "continuations": [
+            "api",
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L370",
+            "statement": "Partial article updates are supported; consume the returned identity to retrieve the updated resource and add a comment."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations.",
+          "target_fixture": "duplicate"
+        },
+        {
+          "candidate_id": "comment-native-control",
+          "workflow": "comment-create-delete",
+          "prefix_interface": "ui",
+          "prefix_payload": {
+            "body": "Comment before deletion."
+          },
+          "continuations": [
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/components/ArticleDetailCommentsForm.vue#L65",
+            "statement": "Native UI creates the comment then performs native deletion."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+        },
+        {
+          "candidate_id": "profile-native-control",
+          "workflow": "profile-update-edit",
+          "prefix_interface": "ui",
+          "prefix_payload": {
+            "bio": "Bio before continuation."
+          },
+          "continuations": [
+            "ui"
+          ],
+          "expectation": {
+            "outcome": "accept",
+            "category": "implementation_control",
+            "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/pages/Settings.vue#L102",
+            "statement": "Native UI updates the bio before a second meaningful native settings edit."
+          },
+          "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+        }
+      ]
+    },
+    "job": {
+      "job_id": "legacy-001",
+      "candidate_id": "article-update-unique-partial",
+      "entry_kind": "pair",
+      "source_case_sha256": "77f0ec2fe655edd9cc2798adb1bc73e3a19b207b15615416a563cf510f0e66ac",
+      "repetition": 1,
+      "reference_control": "article-update-unique-partial",
+      "branches": [
+        {
+          "case_id": "article-update-unique-partial-ui-r1",
+          "continuation": "ui",
+          "fresh_reset_required": true
+        },
+        {
+          "case_id": "article-update-unique-partial-api-r1",
+          "continuation": "api",
+          "fresh_reset_required": true
+        }
+      ]
+    },
+    "context": {},
+    "source_case_sha256": {
+      "ui": "77f0ec2fe655edd9cc2798adb1bc73e3a19b207b15615416a563cf510f0e66ac",
+      "api": "77f0ec2fe655edd9cc2798adb1bc73e3a19b207b15615416a563cf510f0e66ac"
+    },
+    "branch_order": [
+      "ui",
+      "api"
+    ]
+  },
+  "binding_sha256": "bf4dfe5405c674dce29c502777eaa8676e4b72d1206e41016e27a09e2bab2e6e"
+}
