@@ -155,3 +155,10 @@ Memos v3 preference run42897766418 dispatched atcc10ef3. Expected artifacts memo
 Run42897766418 succeeded. Both fresh paired controls independently reconstructed in manifests/memos-preference-attempt3-v1.json; raw archive results/memos-preference-controls-v3-ci-42897766418. Full four-field API mask/body checks passed, native binary request independently decoded to the single save_media_metadata mask, and all stored preferences preserved except the requested boolean edit. Four native views across two UI branches; one loaded screenshot visually inspected with English/Paper/Protected and metadata toggle off. Zero boundary results. Prior two failed attempts remain preserved. No application jobs currently pending from this run.
 
 Added a separate unqualified memo audience-update decoder and local fixtures, preserving frozen preference decoder. It supports the pinned native name/content/visibility patch with visibility-only mask and fails on extra fields; broader memo updates are not silently normalized. Live memo control adapter, complete mutable-field API comparison, raw record inventory, source-bound UI readings and actual execution remain next.
+
+
+## Memos memo ordinary controls dispatched
+
+Run42898310104 at54e4cbc executes two memo pairs with reversed branch order. Full mutable-field REST PATCH includes the ten supported paths (snake_case query masks), explicit original timestamps and nullable absence. Seed ordinary personal memo uses deterministic ID and timestamps; full returned prefix/final records compared across resets and all fields except visibility preserved within each branch. Native actual article More→Edit→audience→Update path; raw request bytes before strict decoding. No API or native failure is a boundary finding at this stage.
+
+Artifacts memos-memo-controls-v1-{memo-r1,memo-r2}-42898310104-1; archive results/memos-memo-controls-v1-ci-42898310104; independent verifier verify_memos_memo_controls_v1.py reconstructs exact full-field API request, native binary audience edit, full readbacks and three native views. Capture/preserve any failures before corrections. No other manual workflow pending.
