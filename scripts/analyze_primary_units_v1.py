@@ -61,6 +61,16 @@ def analyze(initial_manifest,second_manifest=None,third_manifest=None):
             row['assigned_overlap'].update(category='unresolved',unit_acceptance='not_qualified')
     result['assigned_overlap_counts']=dict(Counter(r['assigned_overlap']['category'] for r in result['rows']))
     result['by_application']={app:dict(Counter(r['assigned_overlap']['category'] for r in result['rows'] if r['application']==app)) for app in sorted({r['application'] for r in result['rows']})}
+    result['by_prior_exposure']={exposure:dict(Counter(r['assigned_overlap']['category'] for r in result['rows'] if r['prior_exposure']==exposure)) for exposure in sorted({r['prior_exposure'] for r in result['rows']})}
+    result['phase_accounting']={mode:{
+        'units_retained':len(phase['records']),
+        'unit_statuses':dict(Counter(record['status'] for record in phase['records'].values())),
+        'units_with_qualified_observations':sum(v['qualified_observations'] for v in phase['verification'].values()),
+        'attempts_started':sum(len(record['started']) for record in phase['records'].values()),
+        'sealed_pair_observations':sum(o['entry_kind']=='pair' for record in phase['records'].values() for o in record['observations']),
+        'sealed_singleton_observations':sum(o['entry_kind']=='singleton' for record in phase['records'].values() for o in record['observations']),
+        'sealed_branch_intervals':sum(t['mode']==mode for t in times)
+    } for mode,phase in phases.items()}
     result['timing_measurements']=times;result['separately_recorded_setup']=setup
     strata=defaultdict(list)
     for t in times:strata[(t['profile'],t['image_version'],t['platform'],t['channel'],t['role'],t['workflow_id'],t['pair_id'],t['runtime_context_sha256'])].append(t['branch_total_s'])
