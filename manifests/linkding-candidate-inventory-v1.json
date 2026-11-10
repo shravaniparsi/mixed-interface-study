@@ -1,0 +1,846 @@
+{
+  "kind": "linkding_candidate_inventory_v1",
+  "seed": "production-extension-v1:linkding:20261110",
+  "source_commit": "24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f",
+  "sources": {
+    "bookmarks/forms.py": "https://github.com/sissbruecker/linkding/blob/24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f/bookmarks/forms.py",
+    "bookmarks/models.py": "https://github.com/sissbruecker/linkding/blob/24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f/bookmarks/models.py",
+    "bookmarks/validators.py": "https://github.com/sissbruecker/linkding/blob/24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f/bookmarks/validators.py",
+    "bookmarks/api/serializers.py": "https://github.com/sissbruecker/linkding/blob/24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f/bookmarks/api/serializers.py"
+  },
+  "constraints": {
+    "bookmark.url": {
+      "family": "required_url",
+      "required": true,
+      "nullable": false,
+      "max_length": 2048,
+      "native": "BookmarkForm.url with BookmarkURLValidator; inherited model validation on save",
+      "api": "Bookmark.url model and BookmarkSerializer",
+      "source_paths": [
+        "bookmarks/forms.py",
+        "bookmarks/models.py",
+        "bookmarks/validators.py",
+        "bookmarks/api/serializers.py"
+      ]
+    },
+    "bookmark.title": {
+      "family": "optional_length",
+      "required": false,
+      "nullable": false,
+      "max_length": 512,
+      "omitted_default": "",
+      "native": "BookmarkForm.title max_length=512 required=False",
+      "api": "Bookmark.title blank=True and BookmarkSerializer",
+      "source_paths": [
+        "bookmarks/forms.py",
+        "bookmarks/models.py",
+        "bookmarks/api/serializers.py"
+      ]
+    },
+    "bundle.name": {
+      "family": "required_length",
+      "required": true,
+      "nullable": false,
+      "max_length": 256,
+      "native": "BookmarkBundleForm.name max_length=256",
+      "api": "BookmarkBundle.name and BookmarkBundleSerializer",
+      "source_paths": [
+        "bookmarks/forms.py",
+        "bookmarks/models.py",
+        "bookmarks/api/serializers.py"
+      ]
+    },
+    "bundle.any_tags": {
+      "family": "optional_length",
+      "required": false,
+      "nullable": false,
+      "max_length": 1024,
+      "omitted_default": "",
+      "native": "BookmarkBundleForm.any_tags optional; inherited model validation",
+      "api": "BookmarkBundle.any_tags and BookmarkBundleSerializer",
+      "source_paths": [
+        "bookmarks/forms.py",
+        "bookmarks/models.py",
+        "bookmarks/api/serializers.py"
+      ]
+    },
+    "bundle.filter_unread": {
+      "family": "enum",
+      "required": false,
+      "nullable": false,
+      "options": [
+        "off",
+        "yes",
+        "no"
+      ],
+      "omitted_default": "off",
+      "native": "BookmarkBundleForm.filter_unread ChoiceField",
+      "api": "BookmarkBundle.FILTER_UNREAD_CHOICES and BookmarkBundleSerializer",
+      "source_paths": [
+        "bookmarks/forms.py",
+        "bookmarks/models.py",
+        "bookmarks/api/serializers.py"
+      ]
+    },
+    "bundle.filter_shared": {
+      "family": "enum",
+      "required": false,
+      "nullable": false,
+      "options": [
+        "off",
+        "yes",
+        "no"
+      ],
+      "omitted_default": "off",
+      "native": "BookmarkBundleForm.filter_shared ChoiceField",
+      "api": "BookmarkBundle.FILTER_SHARED_CHOICES and BookmarkBundleSerializer",
+      "source_paths": [
+        "bookmarks/forms.py",
+        "bookmarks/models.py",
+        "bookmarks/api/serializers.py"
+      ]
+    }
+  },
+  "selection": "Family round robin; seeded SHA256 ordering within family; first 12 per workflow. All unselected candidates retained.",
+  "validation_layer_note": "Django ModelForm validation executes on the native form POST endpoint. It is not browser-only validation. DOM attributes will be measured separately; source constraints alone do not establish browser enforcement.",
+  "source_only_registration": true,
+  "execution_authorized": false,
+  "qualification_required": "Ordinary paired controls plus constraint-specific violating adapter controls, frozen runtime and cost bound must pass before scientific execution.",
+  "excluded_fields": {
+    "bookmark.description": "Prescribed unrelated continuation edit",
+    "bookmark.notes": "No declared length/range constraint in pinned source",
+    "bundle.search": "Prescribed unrelated continuation edit",
+    "bundle.all_tags": "Same constraint family as any_tags; field variant does not add a workflow",
+    "bundle.excluded_tags": "Same constraint family as any_tags; field variant does not add a workflow"
+  },
+  "normalization_policy": "Compare continuations to persisted prefix. Report producer normalization separately. No observed state change automatically constitutes a defect.",
+  "selected_boundary_cases": [
+    {
+      "id": "bookmark-title-null",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "null",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": null,
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-url-empty",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "empty",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-omitted",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "omitted",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-length-2047",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "length-2047",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "https://example.invalid/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-title-length-512",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "length-512",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-length-2049",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "length-2049",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "https://example.invalid/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-length-511",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "length-511",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-null",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "null",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": null,
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-length-513",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "length-513",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-url-omitted",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "omitted",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-empty",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "empty",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-length-2048",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "length-2048",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "https://example.invalid/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-filter_unread-invalid-option",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "variant": "invalid-option",
+      "constraint": "bundle.filter_unread",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "not-an-option",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-any_tags-length-1023",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "length-1023",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-length-257",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "length-257",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_unread-empty",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "variant": "empty",
+      "constraint": "bundle.filter_unread",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "unknown"
+    },
+    {
+      "id": "bundle-any_tags-omitted",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "omitted",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-empty",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "empty",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_shared-null",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "variant": "null",
+      "constraint": "bundle.filter_shared",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": null
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-any_tags-length-1024",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "length-1024",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-omitted",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "omitted",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_shared-invalid-option",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "variant": "invalid-option",
+      "constraint": "bundle.filter_shared",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "not-an-option"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-any_tags-null",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "null",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": null,
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-name-length-256",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "length-256",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    }
+  ],
+  "unselected_boundary_cases": [
+    {
+      "id": "bookmark-url-invalid-url",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "invalid-url",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "not-a-url",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_shared-omitted",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "variant": "omitted",
+      "constraint": "bundle.filter_shared",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-any_tags-empty",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "empty",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-null",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "null",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": null,
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_shared-empty",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "variant": "empty",
+      "constraint": "bundle.filter_shared",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": ""
+      },
+      "constraint_consistency_prediction": "unknown"
+    },
+    {
+      "id": "bundle-any_tags-length-1025",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "length-1025",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-name-length-255",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "length-255",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-filter_unread-omitted",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "variant": "omitted",
+      "constraint": "bundle.filter_unread",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-filter_unread-null",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "variant": "null",
+      "constraint": "bundle.filter_unread",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": null,
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    }
+  ],
+  "valid_controls": [
+    {
+      "id": "bookmark-valid-1",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-valid-2",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Interior title",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-valid-3",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-valid-4",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/second",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-1",
+      "workflow": "bundle",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-2",
+      "workflow": "bundle",
+      "payload": {
+        "name": "Interior bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-3",
+      "workflow": "bundle",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-4",
+      "workflow": "bundle",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "yes",
+        "filter_shared": "no"
+      },
+      "constraint_consistency_prediction": "compatible"
+    }
+  ],
+  "counts": {
+    "generated_boundary": 33,
+    "selected_boundary": 24,
+    "unselected_boundary": 9,
+    "valid_controls": 8
+  }
+}

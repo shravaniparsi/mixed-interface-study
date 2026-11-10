@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/build_linkding_candidates_v1.py',
+    'manifests/linkding-candidate-inventory-v1.json',
+    'manifests/production-extension-screen-attempt2-v1.json',
+
     'scripts/extension/run_linkding_controls_v2.py',
     'scripts/extension/verify_linkding_controls_v2.py',
     '.github/workflows/linkding_extension_controls_v2.yml',
