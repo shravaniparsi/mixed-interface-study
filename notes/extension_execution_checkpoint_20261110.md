@@ -194,3 +194,6 @@ Run42899404684 passed both preference pairs and four native views, independently
 Synthetic memo run42899599065 failed its strict innerText empty assertion: the emptied rich editor reports newline, while Update is disabled and no target RPC was seen before the assertion. This is a measurement representation issue. Raw archive results/memos-memo-probe-v1-ci-42899599065 and proof manifests/memos-memo-probe-attempt1-v1.json retain both branches. It did not reach the failed-write/preservation or restoration checks, so the probe remains unqualified.
 
 Registered v2 retains raw innerText, adds textContent and HTML, and requires textContent empty plus innerText either empty or exactly one newline. It does not trim arbitrary whitespace. Fresh synthetic probe still must show no request after force-targeting disabled Update, unchanged stored record, and restored ordinary save. Prior runtime unchanged; no boundary observations yet. Remaining gates include preference invalid-membership adapter checks and finite executor registration.
+
+
+Corrected empty-editor probe run42900023617 dispatched at9ed6a87. Expected memos-memo-probe-v2-memo-empty-probe-42900023617-1; archive results/memos-memo-probe-v2-ci-42900023617; analyze verify_memos_memo_probe_v2.py. No other manual application workflow pending.
