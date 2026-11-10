@@ -127,3 +127,10 @@ Run 42894961954 succeeded. All thirteen artifacts and 52 paired reports are pres
 The separate nine-pair exploratory energy cohort is also complete. Together these results support reproducibility of observed differences, but do not establish Q1 readiness or novel defect prevalence. Next work is Memos ordinary qualification, then fixed remaining application coverage.
 
 Added memos_general_wire_v1.mjs and local fixture checks as an unqualified measurement component. It decodes only the pinned GENERAL update request, preserves proto3 scalar defaults, and fails on unexpected/duplicate fields or nonqualified content types. It does not yet decode memo updates or prove live transport compatibility. The harness must preserve raw bytes and qualify the decoder against a real ordinary native save before any boundary results.
+
+
+## Memos preference ordinary controls dispatched
+
+Registered two pairs (four fresh containers), reversed branch order, as run42896860622 at source9c309ad. Workflow memos_preference_controls_v1.yml; artifacts memos-preference-controls-v1-{preferences-r1,preferences-r2}-42896860622-1. Fixed image and source hashes, ordinary USER actor, four-field API mask, native metadata switch, complete GENERAL readback, actual binary native request retained before decode. 25minute cap per job, two jobs, zero paid calls. No boundary inputs or memo-workflow qualification yet.
+
+Retrieve completed artifacts under results/memos-preference-controls-v1-ci-42896860622 and reconstruct with verify_memos_preference_controls_v1.py. Keep all failures and version any runtime correction. Native selector values beyond the boolean switch are currently recorded as combobox text; source-bound representation policy and calibration are still required before boundary experiments. No qualification result is asserted at dispatch.
