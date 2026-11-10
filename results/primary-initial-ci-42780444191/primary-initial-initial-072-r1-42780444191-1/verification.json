@@ -1,0 +1,792 @@
+{
+  "verified_retention": true,
+  "qualified_observations": true,
+  "batch_id": "initial-072-r1",
+  "status": "completed_observations",
+  "run_identity": "42780444191:1",
+  "mode": "initial",
+  "source_commit": "569e73dcd520213757e618154182e30b20044c92",
+  "observations": 2,
+  "ledger": {
+    "batch_id": "initial-072-r1",
+    "status": "completed_observations",
+    "started": [
+      "initial-072-candidate-r1",
+      "initial-072-control-r1"
+    ],
+    "observations": [
+      {
+        "attempt_id": "initial-072-candidate-r1",
+        "entry_kind": "pair",
+        "branch_total_s": {
+          "ui": 12.90602383,
+          "api": 8.97847263
+        },
+        "runtime_result_sha256": "ad89c3f9e1506c3c450dd6392ce4404caa2b74aa726e9b7921fad97e6cfb0cc0",
+        "receipt_sha256": "7865722939948990f8e3e55569fa1c20c678a77c215752395152b2f064ef0686",
+        "terminal": {
+          "schema_version": 2,
+          "policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+          "kind": "clean_observation",
+          "outcome": {
+            "job_id": "initial-072-candidate-r1",
+            "execution": "complete",
+            "prefix": "accepted",
+            "channel_discrepancy": false,
+            "check_failure": false,
+            "cleanup_confirmed": true,
+            "observation_signature": {
+              "branches": {
+                "ui": {
+                  "prefix": {
+                    "kind": "response",
+                    "status": 201
+                  },
+                  "continuation": {
+                    "kind": "response",
+                    "status": 200
+                  },
+                  "checks": {
+                    "immediate_response": [
+                      {
+                        "id": "producer_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "producer_native_controls": [],
+                    "prefix_state_reads": [
+                      {
+                        "id": "producer_response_matches_persisted_job",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "producer_business_fields",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "single_stored_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "assigned_api_continuation": [],
+                    "assigned_native_continuation": [
+                      {
+                        "id": "consumer_ui_loaded_bound_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "native_PUT_payload_matches_bound_intent",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "continuation_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "shared_post_continuation_api_readback": [
+                      {
+                        "id": "final_business_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "update_response_matches_persisted",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_single_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "shared_final_native_read": [
+                      {
+                        "id": "fresh_native_final_read",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "environment_reset_cleanup": [
+                      {
+                        "id": "initial_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "post_producer_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "no_unregistered_browser_request",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "unresolved_policy": []
+                  },
+                  "actor": {
+                    "username": "admin",
+                    "authorities": [
+                      {
+                        "authority": "ROLE_ADMIN"
+                      }
+                    ]
+                  },
+                  "initial_state": {
+                    "scheduler": {
+                      "name": "example",
+                      "instanceId": "NON_CLUSTERED",
+                      "status": "STOPPED",
+                      "triggerKeys": [],
+                      "quartzVersion": "2.5.2",
+                      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+                      "jobStoreSupportsPersistence": false,
+                      "clustered": false,
+                      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+                      "threadPoolSize": 1,
+                      "runningSince": null,
+                      "numberOfJobsExecuted": 0
+                    },
+                    "jobs": [],
+                    "triggers": []
+                  },
+                  "producer_command": {
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "jobDataMap": {},
+                    "requestsRecovery": true
+                  },
+                  "bound_command": {
+                    "source": "accepted producer response",
+                    "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+                    "command": {
+                      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                      "description": "Description after meaningful continuation.",
+                      "durable": true,
+                      "requestsRecovery": true,
+                      "jobDataMap": {}
+                    }
+                  },
+                  "stored_prefix": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "requestsRecovery": true,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  },
+                  "final_job": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description after meaningful continuation.",
+                    "durable": true,
+                    "requestsRecovery": true,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  }
+                },
+                "api": {
+                  "prefix": {
+                    "kind": "response",
+                    "status": 201
+                  },
+                  "continuation": {
+                    "kind": "response",
+                    "status": 200
+                  },
+                  "checks": {
+                    "immediate_response": [
+                      {
+                        "id": "producer_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "producer_native_controls": [],
+                    "prefix_state_reads": [
+                      {
+                        "id": "producer_response_matches_persisted_job",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "producer_business_fields",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "single_stored_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "assigned_api_continuation": [
+                      {
+                        "id": "consumer_api_loaded_bound_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "continuation_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "assigned_native_continuation": [],
+                    "shared_post_continuation_api_readback": [
+                      {
+                        "id": "final_business_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "update_response_matches_persisted",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_single_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "shared_final_native_read": [
+                      {
+                        "id": "fresh_native_final_read",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "environment_reset_cleanup": [
+                      {
+                        "id": "initial_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "post_producer_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "no_unregistered_browser_request",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "unresolved_policy": []
+                  },
+                  "actor": {
+                    "username": "admin",
+                    "authorities": [
+                      {
+                        "authority": "ROLE_ADMIN"
+                      }
+                    ]
+                  },
+                  "initial_state": {
+                    "scheduler": {
+                      "name": "example",
+                      "instanceId": "NON_CLUSTERED",
+                      "status": "STOPPED",
+                      "triggerKeys": [],
+                      "quartzVersion": "2.5.2",
+                      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+                      "jobStoreSupportsPersistence": false,
+                      "clustered": false,
+                      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+                      "threadPoolSize": 1,
+                      "runningSince": null,
+                      "numberOfJobsExecuted": 0
+                    },
+                    "jobs": [],
+                    "triggers": []
+                  },
+                  "producer_command": {
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "jobDataMap": {},
+                    "requestsRecovery": true
+                  },
+                  "bound_command": {
+                    "source": "accepted producer response",
+                    "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+                    "command": {
+                      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                      "description": "Description after meaningful continuation.",
+                      "durable": true,
+                      "requestsRecovery": true,
+                      "jobDataMap": {}
+                    }
+                  },
+                  "stored_prefix": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "requestsRecovery": true,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  },
+                  "final_job": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description after meaningful continuation.",
+                    "durable": true,
+                    "requestsRecovery": true,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  }
+                }
+              },
+              "comparability": {
+                "same_initial_state": true,
+                "same_actor": true,
+                "independent_jvm": true,
+                "same_observed_prefix_command": true,
+                "same_prefix_response": true,
+                "same_prefix_business_state": true,
+                "same_bound_intent": true
+              },
+              "terminal_branches": {
+                "ui": {
+                  "kind": "clean_observation",
+                  "error": null
+                },
+                "api": {
+                  "kind": "clean_observation",
+                  "error": null
+                }
+              }
+            }
+          },
+          "evidence": {
+            "runtime_terminal": "8d759f6f784726c004b4f3aae9c2788619cb997e0aed71434fc31c1e9ce6b7bd",
+            "attempt_receipt": "7865722939948990f8e3e55569fa1c20c678a77c215752395152b2f064ef0686"
+          }
+        }
+      },
+      {
+        "attempt_id": "initial-072-control-r1",
+        "entry_kind": "pair",
+        "branch_total_s": {
+          "ui": 11.287429896,
+          "api": 9.107229450999998
+        },
+        "runtime_result_sha256": "cd0065746068152ab1018f99b34e208755d8fe453eb372fedd13fc65f50f6ab0",
+        "receipt_sha256": "1fcbd93de9e98c0153701f9723ac71ad5b65041897e7ae10e33969d8e68f976c",
+        "terminal": {
+          "schema_version": 2,
+          "policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+          "kind": "clean_observation",
+          "outcome": {
+            "job_id": "initial-072-control-r1",
+            "execution": "complete",
+            "prefix": "accepted",
+            "channel_discrepancy": false,
+            "check_failure": false,
+            "cleanup_confirmed": true,
+            "observation_signature": {
+              "branches": {
+                "ui": {
+                  "prefix": {
+                    "kind": "response",
+                    "status": 201
+                  },
+                  "continuation": {
+                    "kind": "response",
+                    "status": 200
+                  },
+                  "checks": {
+                    "immediate_response": [
+                      {
+                        "id": "producer_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "producer_native_controls": [],
+                    "prefix_state_reads": [
+                      {
+                        "id": "producer_response_matches_persisted_job",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "producer_business_fields",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "single_stored_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "assigned_api_continuation": [],
+                    "assigned_native_continuation": [
+                      {
+                        "id": "consumer_ui_loaded_bound_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "native_PUT_payload_matches_bound_intent",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "continuation_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "shared_post_continuation_api_readback": [
+                      {
+                        "id": "final_business_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "update_response_matches_persisted",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_single_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "shared_final_native_read": [
+                      {
+                        "id": "fresh_native_final_read",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "environment_reset_cleanup": [
+                      {
+                        "id": "initial_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "post_producer_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "no_unregistered_browser_request",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "unresolved_policy": []
+                  },
+                  "actor": {
+                    "username": "admin",
+                    "authorities": [
+                      {
+                        "authority": "ROLE_ADMIN"
+                      }
+                    ]
+                  },
+                  "initial_state": {
+                    "scheduler": {
+                      "name": "example",
+                      "instanceId": "NON_CLUSTERED",
+                      "status": "STOPPED",
+                      "triggerKeys": [],
+                      "quartzVersion": "2.5.2",
+                      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+                      "jobStoreSupportsPersistence": false,
+                      "clustered": false,
+                      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+                      "threadPoolSize": 1,
+                      "runningSince": null,
+                      "numberOfJobsExecuted": 0
+                    },
+                    "jobs": [],
+                    "triggers": []
+                  },
+                  "producer_command": {
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "jobDataMap": {},
+                    "requestsRecovery": false
+                  },
+                  "bound_command": {
+                    "source": "accepted producer response",
+                    "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+                    "command": {
+                      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                      "description": "Description after meaningful continuation.",
+                      "durable": true,
+                      "requestsRecovery": false,
+                      "jobDataMap": {}
+                    }
+                  },
+                  "stored_prefix": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "requestsRecovery": false,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  },
+                  "final_job": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description after meaningful continuation.",
+                    "durable": true,
+                    "requestsRecovery": false,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  }
+                },
+                "api": {
+                  "prefix": {
+                    "kind": "response",
+                    "status": 201
+                  },
+                  "continuation": {
+                    "kind": "response",
+                    "status": 200
+                  },
+                  "checks": {
+                    "immediate_response": [
+                      {
+                        "id": "producer_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "producer_native_controls": [],
+                    "prefix_state_reads": [
+                      {
+                        "id": "producer_response_matches_persisted_job",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "producer_business_fields",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "single_stored_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "assigned_api_continuation": [
+                      {
+                        "id": "consumer_api_loaded_bound_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "continuation_status",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "assigned_native_continuation": [],
+                    "shared_post_continuation_api_readback": [
+                      {
+                        "id": "final_business_state",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "update_response_matches_persisted",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_single_resource",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "shared_final_native_read": [
+                      {
+                        "id": "fresh_native_final_read",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "environment_reset_cleanup": [
+                      {
+                        "id": "initial_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "post_producer_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "final_state_inactive_scheduler",
+                        "passed": true,
+                        "scope": "requirement"
+                      },
+                      {
+                        "id": "no_unregistered_browser_request",
+                        "passed": true,
+                        "scope": "requirement"
+                      }
+                    ],
+                    "unresolved_policy": []
+                  },
+                  "actor": {
+                    "username": "admin",
+                    "authorities": [
+                      {
+                        "authority": "ROLE_ADMIN"
+                      }
+                    ]
+                  },
+                  "initial_state": {
+                    "scheduler": {
+                      "name": "example",
+                      "instanceId": "NON_CLUSTERED",
+                      "status": "STOPPED",
+                      "triggerKeys": [],
+                      "quartzVersion": "2.5.2",
+                      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+                      "jobStoreSupportsPersistence": false,
+                      "clustered": false,
+                      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+                      "threadPoolSize": 1,
+                      "runningSince": null,
+                      "numberOfJobsExecuted": 0
+                    },
+                    "jobs": [],
+                    "triggers": []
+                  },
+                  "producer_command": {
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "jobDataMap": {},
+                    "requestsRecovery": false
+                  },
+                  "bound_command": {
+                    "source": "accepted producer response",
+                    "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+                    "command": {
+                      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                      "description": "Description after meaningful continuation.",
+                      "durable": true,
+                      "requestsRecovery": false,
+                      "jobDataMap": {}
+                    }
+                  },
+                  "stored_prefix": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description before continuation.",
+                    "durable": true,
+                    "requestsRecovery": false,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  },
+                  "final_job": {
+                    "jobKeyDTO": {
+                      "name": "pilot-job",
+                      "group": "RESEARCH"
+                    },
+                    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+                    "description": "Description after meaningful continuation.",
+                    "durable": true,
+                    "requestsRecovery": false,
+                    "jobDataMap": {},
+                    "triggerKeys": []
+                  }
+                }
+              },
+              "comparability": {
+                "same_initial_state": true,
+                "same_actor": true,
+                "independent_jvm": true,
+                "same_observed_prefix_command": true,
+                "same_prefix_response": true,
+                "same_prefix_business_state": true,
+                "same_bound_intent": true
+              },
+              "terminal_branches": {
+                "ui": {
+                  "kind": "clean_observation",
+                  "error": null
+                },
+                "api": {
+                  "kind": "clean_observation",
+                  "error": null
+                }
+              }
+            }
+          },
+          "evidence": {
+            "runtime_terminal": "ba919cc09bf98e7cebb026a5e97c83ec54b11ee3bfb1795f5bcd177577d76de6",
+            "attempt_receipt": "1fcbd93de9e98c0153701f9723ac71ad5b65041897e7ae10e33969d8e68f976c"
+          }
+        }
+      }
+    ],
+    "independent_sample_size": null
+  },
+  "primary_freeze_complete": true
+}

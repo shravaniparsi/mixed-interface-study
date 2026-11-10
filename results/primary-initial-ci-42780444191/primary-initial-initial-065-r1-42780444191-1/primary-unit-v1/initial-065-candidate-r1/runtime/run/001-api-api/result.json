@@ -1,0 +1,1179 @@
+{
+  "schema_version": 1,
+  "kind": "quartz_generated_case",
+  "case_id": "quartz-stored-job-create-description-edit-v2::payload-mutation::dc7ad264e6d1c219a7b18fa1",
+  "route": "api-api",
+  "intervention": "payload_mutation",
+  "mutation": {
+    "constraint_id": "create-job-data-map",
+    "input_path": [
+      "jobDataMap"
+    ],
+    "kind": "enum",
+    "operation_id": "create_stored_job",
+    "representation": {
+      "action": "set_json_value",
+      "supported": true
+    },
+    "transformation_id": "job-map-value-null"
+  },
+  "expected_producer": {
+    "category": "implementation_control",
+    "outcome": "accept",
+    "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/services/JobService.java#L132",
+    "statement": "The DTO accepts Map<String, ?> and JobService copies it into JobDataMap. The native loader classifies null, number, boolean, object/array JSON and string values; its serializer has the corresponding branches. This finite JSON value is expected to be stored and preserved through a description-only continuation; execution and external persistence are outside scope."
+  },
+  "policy_unresolved": false,
+  "started_at": "2026-11-10T09:00:12.526Z",
+  "status": "source_expectation_mismatch",
+  "phase": "teardown",
+  "eligible": true,
+  "attempted": true,
+  "accepted_prefix": true,
+  "reached_continuation": true,
+  "completed": true,
+  "blocked": false,
+  "timed_out": false,
+  "defect_adjudication": "not_performed",
+  "registered_inputs": [
+    {
+      "input": {
+        "description": "Description before continuation.",
+        "durable": true,
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "jobDataMap": {
+          "sample": null
+        },
+        "requestsRecovery": false
+      },
+      "interface": "api",
+      "operation_id": "create_stored_job"
+    },
+    {
+      "input": {
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "jobDataMap": {},
+        "requestsRecovery": false
+      },
+      "interface": "api",
+      "operation_id": "edit_job_description"
+    }
+  ],
+  "trace": [
+    {
+      "sequence": 1,
+      "elapsed_ms": 692,
+      "phase": "authentication",
+      "source": "direct_api",
+      "method": "POST",
+      "path": "/quartz-manager/auth/login",
+      "request": "[synthetic credentials omitted]",
+      "status": 200,
+      "response": "[authentication response omitted]"
+    },
+    {
+      "sequence": 2,
+      "elapsed_ms": 1051,
+      "phase": "authentication",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/auth/whoami",
+      "request": null,
+      "status": 200,
+      "response": {
+        "username": "admin",
+        "authorities": [
+          {
+            "authority": "ROLE_ADMIN"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 3,
+      "elapsed_ms": 1082,
+      "phase": "reset_verification",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/scheduler",
+      "request": null,
+      "status": 200,
+      "response": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "sequence": 4,
+      "elapsed_ms": 1096,
+      "phase": "reset_verification",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 5,
+      "elapsed_ms": 1109,
+      "phase": "reset_verification",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/triggers",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 6,
+      "elapsed_ms": 1336,
+      "phase": "producer",
+      "source": "direct_api",
+      "method": "POST",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+      "request": {
+        "description": "Description before continuation.",
+        "durable": true,
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "jobDataMap": {
+          "sample": null
+        },
+        "requestsRecovery": false
+      },
+      "status": 201,
+      "response": {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description before continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    },
+    {
+      "sequence": 7,
+      "elapsed_ms": 1348,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/scheduler",
+      "request": null,
+      "status": 200,
+      "response": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "sequence": 8,
+      "elapsed_ms": 1354,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs",
+      "request": null,
+      "status": 200,
+      "response": [
+        {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description before continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      ]
+    },
+    {
+      "sequence": 9,
+      "elapsed_ms": 1362,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/triggers",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 10,
+      "elapsed_ms": 1377,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+      "request": null,
+      "status": 200,
+      "response": {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description before continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    },
+    {
+      "sequence": 11,
+      "elapsed_ms": 1389,
+      "phase": "continuation",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+      "request": null,
+      "status": 200,
+      "response": {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description before continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    },
+    {
+      "sequence": 12,
+      "elapsed_ms": 1401,
+      "phase": "continuation",
+      "source": "direct_api",
+      "method": "PUT",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+      "request": {
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        }
+      },
+      "status": 200,
+      "response": {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    },
+    {
+      "sequence": 13,
+      "elapsed_ms": 1413,
+      "phase": "final_read",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+      "request": null,
+      "status": 200,
+      "response": {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    },
+    {
+      "sequence": 14,
+      "elapsed_ms": 3262,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/auth/whoami",
+      "url": "http://127.0.0.1:19965/quartz-manager/auth/whoami",
+      "request": null,
+      "status": 401,
+      "response": {}
+    },
+    {
+      "sequence": 15,
+      "elapsed_ms": 3596,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "POST",
+      "path": "/quartz-manager/auth/login",
+      "url": "http://127.0.0.1:19965/quartz-manager/auth/login",
+      "request": null,
+      "status": 200,
+      "response": "[authentication response omitted]"
+    },
+    {
+      "sequence": 16,
+      "elapsed_ms": 3614,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/auth/whoami",
+      "url": "http://127.0.0.1:19965/quartz-manager/auth/whoami",
+      "request": null,
+      "status": 200,
+      "response": {
+        "username": "admin",
+        "authorities": [
+          {
+            "authority": "ROLE_ADMIN"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 17,
+      "elapsed_ms": 4808,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/scheduler",
+      "url": "http://127.0.0.1:19965/quartz-manager/scheduler",
+      "request": null,
+      "status": 200,
+      "response": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "sequence": 18,
+      "elapsed_ms": 4809,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/triggers",
+      "url": "http://127.0.0.1:19965/quartz-manager/triggers",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 19,
+      "elapsed_ms": 4809,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/jobs",
+      "url": "http://127.0.0.1:19965/quartz-manager/jobs",
+      "request": null,
+      "status": 200,
+      "response": [
+        {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      ]
+    },
+    {
+      "sequence": 20,
+      "elapsed_ms": 4809,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/calendars",
+      "url": "http://127.0.0.1:19965/quartz-manager/calendars",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 21,
+      "elapsed_ms": 4809,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/job-classes",
+      "url": "http://127.0.0.1:19965/quartz-manager/job-classes",
+      "request": null,
+      "status": 200,
+      "response": [
+        "it.fabioformosa.quartzmanager.jobs.tests.MisfireTestJob",
+        "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob"
+      ]
+    },
+    {
+      "sequence": 22,
+      "elapsed_ms": 4878,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/logs/info",
+      "url": "http://127.0.0.1:19965/quartz-manager/logs/info?access_token=%5BREDACTED%5D&t=1794301217320",
+      "request": null,
+      "status": 200,
+      "response": {
+        "entropy": 1357474191,
+        "origins": [
+          "*:*"
+        ],
+        "cookie_needed": true,
+        "websocket": true
+      }
+    },
+    {
+      "sequence": 23,
+      "elapsed_ms": 4879,
+      "phase": "final_read",
+      "source": "ui_network",
+      "method": "GET",
+      "path": "/quartz-manager/progress/info",
+      "url": "http://127.0.0.1:19965/quartz-manager/progress/info?access_token=%5BREDACTED%5D&t=1794301217324",
+      "request": null,
+      "status": 200,
+      "response": {
+        "entropy": 464182650,
+        "origins": [
+          "*:*"
+        ],
+        "cookie_needed": true,
+        "websocket": true
+      }
+    },
+    {
+      "sequence": 24,
+      "elapsed_ms": 5726,
+      "phase": "final_read",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/scheduler",
+      "request": null,
+      "status": 200,
+      "response": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "sequence": 25,
+      "elapsed_ms": 5736,
+      "phase": "final_read",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs",
+      "request": null,
+      "status": 200,
+      "response": [
+        {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      ]
+    },
+    {
+      "sequence": 26,
+      "elapsed_ms": 5748,
+      "phase": "final_read",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/triggers",
+      "request": null,
+      "status": 200,
+      "response": []
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_state_inactive_scheduler",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "id": "post_producer_state_inactive_scheduler",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "id": "producer_status",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "actual": 201,
+        "expected": 201
+      }
+    },
+    {
+      "id": "producer_response_matches_persisted_job",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "response": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description before continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        },
+        "stored": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description before continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      }
+    },
+    {
+      "id": "producer_business_fields",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "expected": {
+          "jobKeyDTO": {
+            "group": "RESEARCH",
+            "name": "pilot-job"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description before continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        },
+        "actual": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description before continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      }
+    },
+    {
+      "id": "single_stored_resource",
+      "passed": true,
+      "scope": "requirement",
+      "detail": [
+        {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description before continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      ]
+    },
+    {
+      "id": "consumer_api_loaded_bound_state",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description before continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    },
+    {
+      "id": "continuation_status",
+      "passed": true,
+      "scope": "requirement",
+      "detail": 200
+    },
+    {
+      "id": "final_business_state",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "expected": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        },
+        "actual": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      }
+    },
+    {
+      "id": "update_response_matches_persisted",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "response": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        },
+        "persisted": {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      }
+    },
+    {
+      "id": "fresh_native_final_read",
+      "passed": false,
+      "scope": "requirement",
+      "detail": {
+        "actual": {
+          "group": "RESEARCH",
+          "name": "pilot-job",
+          "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {}
+        },
+        "expected": {
+          "group": "RESEARCH",
+          "name": "pilot-job",
+          "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          }
+        }
+      }
+    },
+    {
+      "id": "final_state_inactive_scheduler",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "id": "final_single_resource",
+      "passed": true,
+      "scope": "requirement",
+      "detail": [
+        {
+          "jobKeyDTO": {
+            "name": "pilot-job",
+            "group": "RESEARCH"
+          },
+          "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+          "description": "Description after meaningful continuation.",
+          "durable": true,
+          "requestsRecovery": false,
+          "jobDataMap": {
+            "sample": null
+          },
+          "triggerKeys": []
+        }
+      ]
+    },
+    {
+      "id": "no_unregistered_browser_request",
+      "passed": true,
+      "scope": "requirement",
+      "detail": []
+    }
+  ],
+  "ui_forms": [
+    {
+      "label": "fresh_final_native_read",
+      "values": {
+        "group": "RESEARCH",
+        "name": "pilot-job",
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {}
+      },
+      "typed_entries": [],
+      "preview_text": "{\n  \"sample\": null\n}"
+    }
+  ],
+  "actors": [
+    {
+      "interface": "api",
+      "principal": {
+        "username": "admin",
+        "authorities": [
+          {
+            "authority": "ROLE_ADMIN"
+          }
+        ]
+      }
+    },
+    {
+      "interface": "ui",
+      "phase": "final_read",
+      "principal": {
+        "username": "admin",
+        "authorities": [
+          {
+            "authority": "ROLE_ADMIN"
+          }
+        ]
+      }
+    }
+  ],
+  "page_errors": [],
+  "blocked_requests": [],
+  "consumption_observations": [
+    {
+      "consumer_interface": "api",
+      "resource_identity": {
+        "name": "pilot-job",
+        "group": "RESEARCH"
+      },
+      "fields_read": [
+        "jobKeyDTO",
+        "jobClassName",
+        "description",
+        "durable",
+        "requestsRecovery",
+        "jobDataMap",
+        "triggerKeys"
+      ],
+      "source": "consumer GET before PUT"
+    }
+  ],
+  "phase_cost_ms": {
+    "authentication": 1050.945117,
+    "reset_verification": 61.18646699999999,
+    "producer": 224.26225799999997,
+    "producer_state": 41.02824600000008,
+    "continuation": 23.265124000000014,
+    "final_read": 4347.666665000001,
+    "teardown": 132.2197669999996
+  },
+  "comparison_scope": {
+    "description": "Requested meaningful edit after accepted continuation; original producer description before it.",
+    "environment": [
+      "scheduler.status",
+      "scheduler.jobStoreClass",
+      "scheduler.jobStoreSupportsPersistence",
+      "scheduler.numberOfJobsExecuted",
+      "scheduler.triggerKeys",
+      "job_count",
+      "trigger_count"
+    ],
+    "fields": [
+      "jobKeyDTO.group",
+      "jobKeyDTO.name",
+      "jobClassName",
+      "description",
+      "durable",
+      "requestsRecovery",
+      "jobDataMap",
+      "triggerKeys"
+    ],
+    "normalization": "JSON object-key order only for persisted business-state comparisons. Apply the separately declared null-description-to-empty UI display projection and omitted/null-map-to-empty stored normalization at their specified stages. Do not trim raw keys or collapse post-trim duplicates in oracle input. This scope does not compare every scheduler response field.",
+    "scheduler_fields_outside_declared_comparison": [
+      "name",
+      "instanceId",
+      "quartzVersion",
+      "clustered",
+      "threadPoolClass",
+      "threadPoolSize",
+      "runningSince"
+    ],
+    "variant_policy": "For accepted/normalization variants, compare raw persisted producer fields to variant_semantics and project only documented UI display representations; after continuation compare bound non-edited fields plus requested description. For unresolved key-policy variants, retain raw map keys and record differences or UI blocking separately without a binary key-policy verdict. Compare only the listed business and environment fields."
+  },
+  "api_actor": {
+    "username": "admin",
+    "authorities": [
+      {
+        "authority": "ROLE_ADMIN"
+      }
+    ]
+  },
+  "initial_state": {
+    "scheduler": {
+      "name": "example",
+      "instanceId": "NON_CLUSTERED",
+      "status": "STOPPED",
+      "triggerKeys": [],
+      "quartzVersion": "2.5.2",
+      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+      "jobStoreSupportsPersistence": false,
+      "clustered": false,
+      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+      "threadPoolSize": 1,
+      "runningSince": null,
+      "numberOfJobsExecuted": 0
+    },
+    "jobs": [],
+    "triggers": []
+  },
+  "initial_state_sha256": "101ff2f4831b94661ece2486276e53437ccb74e4d5cc3465772e26b58cbd2658",
+  "producer": {
+    "kind": "response",
+    "status": 201,
+    "body": {
+      "jobKeyDTO": {
+        "name": "pilot-job",
+        "group": "RESEARCH"
+      },
+      "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+      "description": "Description before continuation.",
+      "durable": true,
+      "requestsRecovery": false,
+      "jobDataMap": {
+        "sample": null
+      },
+      "triggerKeys": []
+    },
+    "request": {
+      "description": "Description before continuation.",
+      "durable": true,
+      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+      "jobDataMap": {
+        "sample": null
+      },
+      "requestsRecovery": false
+    }
+  },
+  "producer_response_class": "2xx",
+  "post_producer_state": {
+    "scheduler": {
+      "name": "example",
+      "instanceId": "NON_CLUSTERED",
+      "status": "STOPPED",
+      "triggerKeys": [],
+      "quartzVersion": "2.5.2",
+      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+      "jobStoreSupportsPersistence": false,
+      "clustered": false,
+      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+      "threadPoolSize": 1,
+      "runningSince": null,
+      "numberOfJobsExecuted": 0
+    },
+    "jobs": [
+      {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description before continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    ],
+    "triggers": []
+  },
+  "post_producer_state_sha256": "8d0df673b8fbb4a3c20097ee37a71baf5f420ac3c00715479aa660da5617d45a",
+  "bindings": {
+    "source": "accepted producer response",
+    "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+    "command": {
+      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+      "description": "Description after meaningful continuation.",
+      "durable": true,
+      "requestsRecovery": false,
+      "jobDataMap": {
+        "sample": null
+      }
+    }
+  },
+  "stored_prefix": {
+    "jobKeyDTO": {
+      "name": "pilot-job",
+      "group": "RESEARCH"
+    },
+    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+    "description": "Description before continuation.",
+    "durable": true,
+    "requestsRecovery": false,
+    "jobDataMap": {
+      "sample": null
+    },
+    "triggerKeys": []
+  },
+  "continuation": {
+    "kind": "response",
+    "status": 200,
+    "body": {
+      "jobKeyDTO": {
+        "name": "pilot-job",
+        "group": "RESEARCH"
+      },
+      "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+      "description": "Description after meaningful continuation.",
+      "durable": true,
+      "requestsRecovery": false,
+      "jobDataMap": {
+        "sample": null
+      },
+      "triggerKeys": []
+    },
+    "request": {
+      "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+      "description": "Description after meaningful continuation.",
+      "durable": true,
+      "requestsRecovery": false,
+      "jobDataMap": {
+        "sample": null
+      }
+    }
+  },
+  "final_job": {
+    "jobKeyDTO": {
+      "name": "pilot-job",
+      "group": "RESEARCH"
+    },
+    "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+    "description": "Description after meaningful continuation.",
+    "durable": true,
+    "requestsRecovery": false,
+    "jobDataMap": {
+      "sample": null
+    },
+    "triggerKeys": []
+  },
+  "browser_marker": "--codex-study-case=1808baf5ec54043144ac",
+  "browser_pid": 3024,
+  "browser_version": "151.0.7922.34",
+  "final_state": {
+    "scheduler": {
+      "name": "example",
+      "instanceId": "NON_CLUSTERED",
+      "status": "STOPPED",
+      "triggerKeys": [],
+      "quartzVersion": "2.5.2",
+      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+      "jobStoreSupportsPersistence": false,
+      "clustered": false,
+      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+      "threadPoolSize": 1,
+      "runningSince": null,
+      "numberOfJobsExecuted": 0
+    },
+    "jobs": [
+      {
+        "jobKeyDTO": {
+          "name": "pilot-job",
+          "group": "RESEARCH"
+        },
+        "jobClassName": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "requestsRecovery": false,
+        "jobDataMap": {
+          "sample": null
+        },
+        "triggerKeys": []
+      }
+    ],
+    "triggers": []
+  },
+  "final_state_sha256": "ddd820fb47cf016fb298429b7589753ea881dfae0608843f3b9d89658820a657",
+  "elapsed_ms": 5880.627907,
+  "ended_at": "2026-11-10T09:00:18.406Z"
+}

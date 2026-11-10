@@ -1,0 +1,102 @@
+{
+  "kind": "prospective_runner_engineering_controls",
+  "source_registry": "manifests/realworld-boundary-registry-v1.json",
+  "source_registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+  "cases": [
+    {
+      "candidate_id": "profile-bio-valid",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "bio": "Bio before continuation."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Partial fields are optional; null bio becomes blank internally and null in output."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-username-null",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "username": null
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "reject",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-username-empty",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "username": ""
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "reject",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/schemas.py#L141",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-username-length60",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "profile-username-length61",
+      "workflow": "profile-update-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "unknown",
+        "category": "unresolved",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/accounts/models.py#L35",
+        "statement": "Null/empty username explicitly rejected. Model length60 is not expressed as a maxLength in the public update request schema."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    }
+  ]
+}

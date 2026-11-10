@@ -1,0 +1,1014 @@
+{
+  "schema_version": 1,
+  "case_id": "realworld-article-create-body-edit-v1::payload-mutation::d57482ce4512d41caf675871",
+  "route": [
+    "api",
+    "ui"
+  ],
+  "status": "completed",
+  "trace": [
+    {
+      "sequence": 1,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 1,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/users/login",
+      "payload": {
+        "user": {
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 1,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/users/login",
+      "status": 200,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 2,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 4,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 2,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [],
+        "articlesCount": 0
+      }
+    },
+    {
+      "sequence": 5,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 3,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user"
+    },
+    {
+      "sequence": 6,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 3,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/user",
+      "status": 200,
+      "data": {
+        "user": {
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "username": "pilotresearch",
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 4,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 8,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 4,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [],
+        "articlesCount": 0
+      }
+    },
+    {
+      "sequence": 9,
+      "phase": "setup",
+      "type": "request",
+      "request_id": 5,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags"
+    },
+    {
+      "sequence": 10,
+      "phase": "setup",
+      "type": "response",
+      "request_id": 5,
+      "source": "state_probe",
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "data": {
+        "tags": []
+      }
+    },
+    {
+      "sequence": 11,
+      "phase": "producer",
+      "type": "request",
+      "request_id": 6,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/articles",
+      "payload": {
+        "article": {
+          "body": "Body before continuation.",
+          "description": "Boundary control description",
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 12,
+      "phase": "producer",
+      "type": "response",
+      "request_id": 6,
+      "source": "api",
+      "method": "POST",
+      "path": "/api/articles",
+      "status": 201,
+      "data": {
+        "article": {
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "createdAt": "2026-11-10T08:50:42.519Z",
+          "updatedAt": "2026-11-10T08:50:42.519Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": null,
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 13,
+      "phase": "consumer",
+      "type": "blocked_external_resource",
+      "url": "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    },
+    {
+      "sequence": 14,
+      "phase": "consumer",
+      "type": "blocked_external_resource",
+      "url": "http://fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic"
+    },
+    {
+      "sequence": 15,
+      "phase": "consumer",
+      "type": "blocked_external_resource",
+      "url": "http://demo.realworld.io/main.css"
+    },
+    {
+      "sequence": 16,
+      "phase": "consumer",
+      "type": "ui_request",
+      "capture_request_id": "page-1:1",
+      "context_id": "page-1",
+      "method": "POST",
+      "path": "/api/users/login",
+      "request_phase": "consumer",
+      "payload": {
+        "user": {
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 17,
+      "phase": "consumer",
+      "type": "ui_request",
+      "capture_request_id": "page-1:2",
+      "context_id": "page-1",
+      "method": "GET",
+      "path": "/api/articles",
+      "request_phase": "consumer",
+      "payload": null
+    },
+    {
+      "sequence": 18,
+      "phase": "consumer",
+      "type": "ui_request",
+      "capture_request_id": "page-1:3",
+      "context_id": "page-1",
+      "method": "GET",
+      "path": "/api/tags",
+      "request_phase": "consumer",
+      "payload": null
+    },
+    {
+      "sequence": 19,
+      "phase": "consumer",
+      "type": "ui_response",
+      "capture_request_id": "page-1:1",
+      "context_id": "page-1",
+      "method": "POST",
+      "path": "/api/users/login",
+      "request_phase": "consumer",
+      "status": 200,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 20,
+      "phase": "consumer",
+      "type": "ui_response",
+      "capture_request_id": "page-1:3",
+      "context_id": "page-1",
+      "method": "GET",
+      "path": "/api/tags",
+      "request_phase": "consumer",
+      "status": 200,
+      "data": {
+        "tags": []
+      }
+    },
+    {
+      "sequence": 21,
+      "phase": "consumer",
+      "type": "ui_request",
+      "capture_request_id": "page-1:4",
+      "context_id": "page-1",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article",
+      "request_phase": "consumer",
+      "payload": null
+    },
+    {
+      "sequence": 22,
+      "phase": "consumer",
+      "type": "ui_response",
+      "capture_request_id": "page-1:2",
+      "context_id": "page-1",
+      "method": "GET",
+      "path": "/api/articles",
+      "request_phase": "consumer",
+      "status": 200,
+      "data": {
+        "articles": [
+          {
+            "description": "Boundary control description",
+            "createdAt": "2026-11-10T08:50:42.519Z",
+            "updatedAt": "2026-11-10T08:50:42.519Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "following": false,
+              "bio": null,
+              "image": null,
+              "username": "pilotresearch"
+            },
+            "tagList": [],
+            "slug": "boundary-pilot-article",
+            "title": "Boundary pilot article"
+          }
+        ],
+        "articlesCount": 1
+      }
+    },
+    {
+      "sequence": 23,
+      "phase": "consumer",
+      "type": "ui_response",
+      "capture_request_id": "page-1:4",
+      "context_id": "page-1",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article",
+      "request_phase": "consumer",
+      "status": 200,
+      "data": {
+        "article": {
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "createdAt": "2026-11-10T08:50:42.519Z",
+          "updatedAt": "2026-11-10T08:50:42.519Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": null,
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 24,
+      "phase": "consumer",
+      "type": "consumed_dependency",
+      "field": "article.slug",
+      "interface": "ui",
+      "via": "native_editor_GET",
+      "reference": "boundary-pilot-article",
+      "status": 200
+    },
+    {
+      "sequence": 25,
+      "phase": "consumer",
+      "type": "ui_request",
+      "capture_request_id": "page-1:5",
+      "context_id": "page-1",
+      "method": "PUT",
+      "path": "/api/articles/boundary-pilot-article",
+      "request_phase": "consumer",
+      "payload": {
+        "article": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body after meaningful continuation.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 26,
+      "phase": "consumer",
+      "type": "declared_ui_request",
+      "method": "PUT",
+      "path": "/api/articles/boundary-pilot-article",
+      "payload": {
+        "article": {
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body after meaningful continuation.",
+          "tagList": []
+        }
+      }
+    },
+    {
+      "sequence": 27,
+      "phase": "consumer",
+      "type": "ui_response",
+      "capture_request_id": "page-1:5",
+      "context_id": "page-1",
+      "method": "PUT",
+      "path": "/api/articles/boundary-pilot-article",
+      "request_phase": "consumer",
+      "status": 200,
+      "data": {
+        "article": {
+          "description": "Boundary control description",
+          "body": "Body after meaningful continuation.",
+          "createdAt": "2026-11-10T08:50:42.519Z",
+          "updatedAt": "2026-11-10T08:50:44.257Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": null,
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 28,
+      "phase": "consumer",
+      "type": "consumed_dependency",
+      "field": "article.editable_state",
+      "interface": "ui",
+      "via": "declared_consumer_PUT",
+      "bound_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body after meaningful continuation.",
+        "tagList": []
+      }
+    },
+    {
+      "sequence": 29,
+      "phase": "oracle",
+      "type": "request",
+      "request_id": 7,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article"
+    },
+    {
+      "sequence": 30,
+      "phase": "oracle",
+      "type": "response",
+      "request_id": 7,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article",
+      "status": 200,
+      "data": {
+        "article": {
+          "description": "Boundary control description",
+          "body": "Body after meaningful continuation.",
+          "createdAt": "2026-11-10T08:50:42.519Z",
+          "updatedAt": "2026-11-10T08:50:44.257Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": null,
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 31,
+      "phase": "oracle",
+      "type": "capture_drain",
+      "context_id": "page-1",
+      "admitted": 5,
+      "completed": 5,
+      "failures": 0,
+      "timed_out": false,
+      "outstanding": [],
+      "complete": true,
+      "reason": "context_replacement"
+    },
+    {
+      "sequence": 32,
+      "phase": "oracle",
+      "type": "blocked_external_resource",
+      "url": "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    },
+    {
+      "sequence": 33,
+      "phase": "oracle",
+      "type": "blocked_external_resource",
+      "url": "http://fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic"
+    },
+    {
+      "sequence": 34,
+      "phase": "oracle",
+      "type": "blocked_external_resource",
+      "url": "http://demo.realworld.io/main.css"
+    },
+    {
+      "sequence": 35,
+      "phase": "oracle",
+      "type": "ui_request",
+      "capture_request_id": "page-2:1",
+      "context_id": "page-2",
+      "method": "POST",
+      "path": "/api/users/login",
+      "request_phase": "oracle",
+      "payload": {
+        "user": {
+          "email": "pilot@example.com",
+          "password": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 36,
+      "phase": "oracle",
+      "type": "ui_request",
+      "capture_request_id": "page-2:2",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/articles",
+      "request_phase": "oracle",
+      "payload": null
+    },
+    {
+      "sequence": 37,
+      "phase": "oracle",
+      "type": "ui_request",
+      "capture_request_id": "page-2:3",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/tags",
+      "request_phase": "oracle",
+      "payload": null
+    },
+    {
+      "sequence": 38,
+      "phase": "oracle",
+      "type": "ui_response",
+      "capture_request_id": "page-2:1",
+      "context_id": "page-2",
+      "method": "POST",
+      "path": "/api/users/login",
+      "request_phase": "oracle",
+      "status": 200,
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null,
+          "token": "[REDACTED]"
+        }
+      }
+    },
+    {
+      "sequence": 39,
+      "phase": "oracle",
+      "type": "ui_response",
+      "capture_request_id": "page-2:3",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/tags",
+      "request_phase": "oracle",
+      "status": 200,
+      "data": {
+        "tags": []
+      }
+    },
+    {
+      "sequence": 40,
+      "phase": "oracle",
+      "type": "ui_request",
+      "capture_request_id": "page-2:4",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article",
+      "request_phase": "oracle",
+      "payload": null
+    },
+    {
+      "sequence": 41,
+      "phase": "oracle",
+      "type": "ui_request",
+      "capture_request_id": "page-2:5",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article/comments",
+      "request_phase": "oracle",
+      "payload": null
+    },
+    {
+      "sequence": 42,
+      "phase": "oracle",
+      "type": "ui_response",
+      "capture_request_id": "page-2:2",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/articles",
+      "request_phase": "oracle",
+      "status": 200,
+      "data": {
+        "articles": [
+          {
+            "description": "Boundary control description",
+            "createdAt": "2026-11-10T08:50:42.519Z",
+            "updatedAt": "2026-11-10T08:50:44.257Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "following": false,
+              "bio": null,
+              "image": null,
+              "username": "pilotresearch"
+            },
+            "tagList": [],
+            "slug": "boundary-pilot-article",
+            "title": "Boundary pilot article"
+          }
+        ],
+        "articlesCount": 1
+      }
+    },
+    {
+      "sequence": 43,
+      "phase": "oracle",
+      "type": "ui_response",
+      "capture_request_id": "page-2:5",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article/comments",
+      "request_phase": "oracle",
+      "status": 200,
+      "data": {
+        "comments": []
+      }
+    },
+    {
+      "sequence": 44,
+      "phase": "oracle",
+      "type": "ui_request",
+      "capture_request_id": "page-2:6",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/profiles/pilotresearch",
+      "request_phase": "oracle",
+      "payload": null
+    },
+    {
+      "sequence": 45,
+      "phase": "oracle",
+      "type": "ui_response",
+      "capture_request_id": "page-2:4",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/articles/boundary-pilot-article",
+      "request_phase": "oracle",
+      "status": 200,
+      "data": {
+        "article": {
+          "description": "Boundary control description",
+          "body": "Body after meaningful continuation.",
+          "createdAt": "2026-11-10T08:50:42.519Z",
+          "updatedAt": "2026-11-10T08:50:44.257Z",
+          "favorited": false,
+          "favoritesCount": 0,
+          "author": {
+            "following": false,
+            "bio": null,
+            "image": null,
+            "username": "pilotresearch"
+          },
+          "tagList": [],
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article"
+        }
+      }
+    },
+    {
+      "sequence": 46,
+      "phase": "oracle",
+      "type": "ui_response",
+      "capture_request_id": "page-2:6",
+      "context_id": "page-2",
+      "method": "GET",
+      "path": "/api/profiles/pilotresearch",
+      "request_phase": "oracle",
+      "status": 200,
+      "data": {
+        "profile": {
+          "following": false,
+          "bio": null,
+          "image": null,
+          "username": "pilotresearch"
+        }
+      }
+    },
+    {
+      "sequence": 47,
+      "phase": "oracle",
+      "type": "request",
+      "request_id": 8,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch"
+    },
+    {
+      "sequence": 48,
+      "phase": "oracle",
+      "type": "response",
+      "request_id": 8,
+      "source": "api",
+      "method": "GET",
+      "path": "/api/articles?author=pilotresearch",
+      "status": 200,
+      "data": {
+        "articles": [
+          {
+            "description": "Boundary control description",
+            "createdAt": "2026-11-10T08:50:42.519Z",
+            "updatedAt": "2026-11-10T08:50:44.257Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "following": false,
+              "bio": null,
+              "image": null,
+              "username": "pilotresearch"
+            },
+            "tagList": [],
+            "slug": "boundary-pilot-article",
+            "title": "Boundary pilot article"
+          }
+        ],
+        "articlesCount": 1
+      }
+    },
+    {
+      "sequence": 49,
+      "phase": "oracle",
+      "type": "capture_drain",
+      "context_id": "page-2",
+      "admitted": 6,
+      "completed": 6,
+      "failures": 0,
+      "timed_out": false,
+      "outstanding": [],
+      "complete": true,
+      "reason": "final_shutdown"
+    }
+  ],
+  "checks": [
+    {
+      "name": "producer_fields",
+      "passed": true
+    },
+    {
+      "name": "consumer_loaded_state",
+      "passed": true
+    },
+    {
+      "name": "native_form_loaded",
+      "passed": true,
+      "observed": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body before continuation."
+      }
+    },
+    {
+      "name": "consumer_actual_payload",
+      "passed": true,
+      "expected": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body after meaningful continuation.",
+        "tagList": []
+      },
+      "observed": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body after meaningful continuation.",
+        "tagList": []
+      }
+    },
+    {
+      "name": "persisted_business_state",
+      "passed": true
+    },
+    {
+      "name": "shared_ui_read",
+      "passed": true
+    },
+    {
+      "name": "shared_ui_render",
+      "passed": true
+    },
+    {
+      "name": "one_article",
+      "passed": true
+    }
+  ],
+  "coverage": {
+    "reached_operations": [
+      "create_article",
+      "edit_article_body"
+    ],
+    "data_consumed": true,
+    "state_consumed": true
+  },
+  "capture_integrity": {
+    "version": 1,
+    "helper_sha256": "e47c6c4e6e6db85ef129c4b5aa49f97922c795c1269ef88eb6f6214209b3e8be",
+    "complete": true,
+    "contexts": [
+      {
+        "context_id": "page-1",
+        "admitted": 5,
+        "completed": 5,
+        "failures": 0,
+        "timed_out": false,
+        "outstanding": [],
+        "complete": true,
+        "reason": "context_replacement"
+      },
+      {
+        "context_id": "page-2",
+        "admitted": 6,
+        "completed": 6,
+        "failures": 0,
+        "timed_out": false,
+        "outstanding": [],
+        "complete": true,
+        "reason": "final_shutdown"
+      }
+    ]
+  },
+  "integrity": {
+    "version": 1,
+    "helper_sha256": "52931ae9de55c4381add538576f49885bd7731694b67e4f356ad20ebcbf70566",
+    "guards": [
+      {
+        "name": "pre_state_readable",
+        "stage": "setup",
+        "source": "shared_api",
+        "expected": true,
+        "observed": true,
+        "passed": true
+      },
+      {
+        "name": "submitted_command",
+        "stage": "prefix",
+        "source": "api",
+        "expected": {
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        "observed": {
+          "method": "POST",
+          "path": "/api/articles",
+          "payload": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "title": "Boundary pilot article"
+            }
+          }
+        },
+        "passed": true
+      },
+      {
+        "name": "loaded_article_binding",
+        "stage": "continuation",
+        "source": "ui",
+        "expected": {
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [],
+          "author": "pilotresearch"
+        },
+        "observed": {
+          "slug": "boundary-pilot-article",
+          "title": "Boundary pilot article",
+          "description": "Boundary control description",
+          "body": "Body before continuation.",
+          "tagList": [],
+          "author": "pilotresearch"
+        },
+        "passed": true
+      },
+      {
+        "name": "submitted_command",
+        "stage": "continuation",
+        "source": "ui",
+        "expected": {
+          "method": "PUT",
+          "path": "/api/articles/boundary-pilot-article",
+          "payload": {
+            "article": {
+              "title": "Boundary pilot article",
+              "description": "Boundary control description",
+              "body": "Body after meaningful continuation.",
+              "tagList": []
+            }
+          }
+        },
+        "observed": {
+          "method": "PUT",
+          "path": "/api/articles/boundary-pilot-article",
+          "payload": {
+            "article": {
+              "title": "Boundary pilot article",
+              "description": "Boundary control description",
+              "body": "Body after meaningful continuation.",
+              "tagList": []
+            }
+          }
+        },
+        "passed": true
+      }
+    ],
+    "before": {
+      "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+      "readable": true,
+      "reads": [
+        {
+          "path": "/api/user",
+          "status": 200,
+          "data": {
+            "user": {
+              "email": "pilot@example.com",
+              "bio": null,
+              "image": null,
+              "username": "pilotresearch",
+              "token": "[REDACTED]"
+            }
+          },
+          "response_sequence": 6
+        },
+        {
+          "path": "/api/articles?author=pilotresearch",
+          "status": 200,
+          "data": {
+            "articles": [],
+            "articlesCount": 0
+          },
+          "response_sequence": 8
+        },
+        {
+          "path": "/api/tags",
+          "status": 200,
+          "data": {
+            "tags": []
+          },
+          "response_sequence": 10
+        }
+      ],
+      "data": {
+        "user": {
+          "username": "pilotresearch",
+          "email": "pilot@example.com",
+          "bio": null,
+          "image": null
+        },
+        "articles": [],
+        "tags": []
+      }
+    },
+    "rejection": null
+  },
+  "prefix_status": 201,
+  "accepted_producer": {
+    "title": "Boundary pilot article",
+    "description": "Boundary control description",
+    "body": "Body before continuation.",
+    "tagList": [],
+    "author": "pilotresearch"
+  },
+  "resource_reference": "boundary-pilot-article",
+  "resolved_consumer_input": {
+    "article": {
+      "title": "Boundary pilot article",
+      "description": "Boundary control description",
+      "body": "Body after meaningful continuation.",
+      "tagList": []
+    }
+  },
+  "browser_version": "151.0.7922.34",
+  "consumer_status": 200,
+  "final_state": {
+    "title": "Boundary pilot article",
+    "description": "Boundary control description",
+    "body": "Body after meaningful continuation.",
+    "tagList": [],
+    "author": "pilotresearch"
+  },
+  "application_outcome": "passed",
+  "finished_at": "2026-11-10T08:50:45.334Z"
+}

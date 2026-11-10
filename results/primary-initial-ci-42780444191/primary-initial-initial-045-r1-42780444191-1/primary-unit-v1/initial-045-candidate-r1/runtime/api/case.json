@@ -1,0 +1,94 @@
+{
+  "case_id": "realworld-article-create-body-edit-v1::payload-mutation::9f93177e2f70f60b075ba325",
+  "estimated_cost_s": 1.0,
+  "expectation": {
+    "category": "contract",
+    "outcome": "reject",
+    "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+    "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+  },
+  "expectation_scope": {
+    "kind": "operation",
+    "operation_id": "create_article"
+  },
+  "intervention": "payload_mutation",
+  "mutation": {
+    "constraint_id": "create-article-body",
+    "input_path": [
+      "article",
+      "body"
+    ],
+    "kind": "null",
+    "operation_id": "create_article",
+    "representation": {
+      "action": "set_json_value",
+      "supported": true
+    },
+    "transformation_id": "article-body-null"
+  },
+  "operations": [
+    {
+      "input": {
+        "article": {
+          "body": null,
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "api",
+      "operation_id": "create_article"
+    },
+    {
+      "input": {
+        "article": {
+          "body": "Body after meaningful continuation.",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "api",
+      "operation_id": "edit_article_body"
+    }
+  ],
+  "selection_targets": {
+    "dependencies": [
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article"
+      },
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article"
+      }
+    ],
+    "obligations": [
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "api",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article",
+        "producer_interface": "api"
+      },
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "api",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article",
+        "producer_interface": "api"
+      }
+    ]
+  },
+  "substitutions": 2
+}

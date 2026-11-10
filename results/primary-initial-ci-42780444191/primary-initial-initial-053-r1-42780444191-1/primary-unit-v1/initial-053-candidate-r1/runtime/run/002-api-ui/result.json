@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "kind": "quartz_generated_case",
+  "case_id": "quartz-stored-job-create-description-edit-v2::payload-mutation::dc4297162dd0cdde291edeff",
+  "route": "api-ui",
+  "intervention": "payload_mutation",
+  "mutation": {
+    "constraint_id": "create-job-class",
+    "input_path": [
+      "jobClass"
+    ],
+    "kind": "empty",
+    "operation_id": "create_stored_job",
+    "representation": {
+      "action": "set_json_value",
+      "supported": true
+    },
+    "transformation_id": "job-class-empty"
+  },
+  "expected_producer": {
+    "category": "implementation_control",
+    "outcome": "reject",
+    "source": "https://github.com/fabioformosa/quartz-manager/blob/71bc29df2a98490b436094666249b3a2a1207cc4/quartz-manager-parent/quartz-manager-starter-api/src/main/java/it/fabioformosa/quartzmanager/api/dto/ScheduledJobInputDTO.java#L17",
+    "statement": "ScheduledJobInputDTO.jobClass has @NotBlank, and JobController.createJob validates the request with @Valid. The declared expectation is rejection of an absent, null, empty or whitespace-only jobClass. This is a source-level validation expectation, not an observed candidate outcome or independent defect label."
+  },
+  "policy_unresolved": false,
+  "started_at": "2026-11-10T08:52:39.861Z",
+  "status": "pass",
+  "phase": "teardown",
+  "eligible": true,
+  "attempted": true,
+  "accepted_prefix": false,
+  "reached_continuation": false,
+  "completed": true,
+  "blocked": false,
+  "timed_out": false,
+  "defect_adjudication": "not_performed",
+  "registered_inputs": [
+    {
+      "input": {
+        "description": "Description before continuation.",
+        "durable": true,
+        "jobClass": "",
+        "jobDataMap": {},
+        "requestsRecovery": false
+      },
+      "interface": "api",
+      "operation_id": "create_stored_job"
+    },
+    {
+      "input": {
+        "description": "Description after meaningful continuation.",
+        "durable": true,
+        "jobClass": "it.fabioformosa.quartzmanager.jobs.myjobs.SampleJob",
+        "jobDataMap": {},
+        "requestsRecovery": false
+      },
+      "interface": "ui",
+      "operation_id": "edit_job_description"
+    }
+  ],
+  "trace": [
+    {
+      "sequence": 1,
+      "elapsed_ms": 402,
+      "phase": "authentication",
+      "source": "direct_api",
+      "method": "POST",
+      "path": "/quartz-manager/auth/login",
+      "request": "[synthetic credentials omitted]",
+      "status": 200,
+      "response": "[authentication response omitted]"
+    },
+    {
+      "sequence": 2,
+      "elapsed_ms": 615,
+      "phase": "authentication",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/auth/whoami",
+      "request": null,
+      "status": 200,
+      "response": {
+        "username": "admin",
+        "authorities": [
+          {
+            "authority": "ROLE_ADMIN"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 3,
+      "elapsed_ms": 653,
+      "phase": "reset_verification",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/scheduler",
+      "request": null,
+      "status": 200,
+      "response": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "sequence": 4,
+      "elapsed_ms": 665,
+      "phase": "reset_verification",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 5,
+      "elapsed_ms": 674,
+      "phase": "reset_verification",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/triggers",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 6,
+      "elapsed_ms": 811,
+      "phase": "producer",
+      "source": "direct_api",
+      "method": "POST",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job",
+      "request": {
+        "description": "Description before continuation.",
+        "durable": true,
+        "jobClass": "",
+        "jobDataMap": {},
+        "requestsRecovery": false
+      },
+      "status": 400,
+      "response": {
+        "timestamp": "2026-11-10T08:52:40.654Z",
+        "status": 400,
+        "error": "Bad Request",
+        "path": "/quartz-manager/jobs/RESEARCH/pilot-job"
+      }
+    },
+    {
+      "sequence": 7,
+      "elapsed_ms": 835,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/scheduler",
+      "request": null,
+      "status": 200,
+      "response": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "sequence": 8,
+      "elapsed_ms": 845,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/jobs",
+      "request": null,
+      "status": 200,
+      "response": []
+    },
+    {
+      "sequence": 9,
+      "elapsed_ms": 853,
+      "phase": "producer_state",
+      "source": "direct_api",
+      "method": "GET",
+      "path": "/quartz-manager/triggers",
+      "request": null,
+      "status": 200,
+      "response": []
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_state_inactive_scheduler",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "id": "post_producer_state_inactive_scheduler",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "name": "example",
+        "instanceId": "NON_CLUSTERED",
+        "status": "STOPPED",
+        "triggerKeys": [],
+        "quartzVersion": "2.5.2",
+        "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+        "jobStoreSupportsPersistence": false,
+        "clustered": false,
+        "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+        "threadPoolSize": 1,
+        "runningSince": null,
+        "numberOfJobsExecuted": 0
+      }
+    },
+    {
+      "id": "rejected_prefix_left_empty_store",
+      "passed": true,
+      "scope": "requirement",
+      "detail": []
+    },
+    {
+      "id": "rejected_prefix_full_state_unchanged",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "initial_hash": "101ff2f4831b94661ece2486276e53437ccb74e4d5cc3465772e26b58cbd2658",
+        "after_hash": "101ff2f4831b94661ece2486276e53437ccb74e4d5cc3465772e26b58cbd2658"
+      }
+    },
+    {
+      "id": "producer_expectation",
+      "passed": true,
+      "scope": "requirement",
+      "detail": {
+        "expected": "reject",
+        "actual": {
+          "kind": "response",
+          "status": 400,
+          "body": {
+            "timestamp": "2026-11-10T08:52:40.654Z",
+            "status": 400,
+            "error": "Bad Request",
+            "path": "/quartz-manager/jobs/RESEARCH/pilot-job"
+          },
+          "request": {
+            "description": "Description before continuation.",
+            "durable": true,
+            "jobClass": "",
+            "jobDataMap": {},
+            "requestsRecovery": false
+          }
+        }
+      }
+    },
+    {
+      "id": "no_unregistered_browser_request",
+      "passed": true,
+      "scope": "requirement",
+      "detail": []
+    }
+  ],
+  "ui_forms": [],
+  "actors": [
+    {
+      "interface": "api",
+      "principal": {
+        "username": "admin",
+        "authorities": [
+          {
+            "authority": "ROLE_ADMIN"
+          }
+        ]
+      }
+    }
+  ],
+  "page_errors": [],
+  "blocked_requests": [],
+  "consumption_observations": [],
+  "phase_cost_ms": {
+    "authentication": 615.349195,
+    "reset_verification": 61.57218999999998,
+    "producer": 134.49629200000004,
+    "producer_state": 45.88003000000003,
+    "teardown": 3.8522899999999254
+  },
+  "comparison_scope": {
+    "description": "Requested meaningful edit after accepted continuation; original producer description before it.",
+    "environment": [
+      "scheduler.status",
+      "scheduler.jobStoreClass",
+      "scheduler.jobStoreSupportsPersistence",
+      "scheduler.numberOfJobsExecuted",
+      "scheduler.triggerKeys",
+      "job_count",
+      "trigger_count"
+    ],
+    "fields": [
+      "jobKeyDTO.group",
+      "jobKeyDTO.name",
+      "jobClassName",
+      "description",
+      "durable",
+      "requestsRecovery",
+      "jobDataMap",
+      "triggerKeys"
+    ],
+    "normalization": "JSON object-key order only for persisted business-state comparisons. Apply the separately declared null-description-to-empty UI display projection and omitted/null-map-to-empty stored normalization at their specified stages. Do not trim raw keys or collapse post-trim duplicates in oracle input. This scope does not compare every scheduler response field.",
+    "scheduler_fields_outside_declared_comparison": [
+      "name",
+      "instanceId",
+      "quartzVersion",
+      "clustered",
+      "threadPoolClass",
+      "threadPoolSize",
+      "runningSince"
+    ],
+    "variant_policy": "For accepted/normalization variants, compare raw persisted producer fields to variant_semantics and project only documented UI display representations; after continuation compare bound non-edited fields plus requested description. For unresolved key-policy variants, retain raw map keys and record differences or UI blocking separately without a binary key-policy verdict. Compare only the listed business and environment fields."
+  },
+  "api_actor": {
+    "username": "admin",
+    "authorities": [
+      {
+        "authority": "ROLE_ADMIN"
+      }
+    ]
+  },
+  "initial_state": {
+    "scheduler": {
+      "name": "example",
+      "instanceId": "NON_CLUSTERED",
+      "status": "STOPPED",
+      "triggerKeys": [],
+      "quartzVersion": "2.5.2",
+      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+      "jobStoreSupportsPersistence": false,
+      "clustered": false,
+      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+      "threadPoolSize": 1,
+      "runningSince": null,
+      "numberOfJobsExecuted": 0
+    },
+    "jobs": [],
+    "triggers": []
+  },
+  "initial_state_sha256": "101ff2f4831b94661ece2486276e53437ccb74e4d5cc3465772e26b58cbd2658",
+  "producer": {
+    "kind": "response",
+    "status": 400,
+    "body": {
+      "timestamp": "2026-11-10T08:52:40.654Z",
+      "status": 400,
+      "error": "Bad Request",
+      "path": "/quartz-manager/jobs/RESEARCH/pilot-job"
+    },
+    "request": {
+      "description": "Description before continuation.",
+      "durable": true,
+      "jobClass": "",
+      "jobDataMap": {},
+      "requestsRecovery": false
+    }
+  },
+  "producer_response_class": "4xx",
+  "post_producer_state": {
+    "scheduler": {
+      "name": "example",
+      "instanceId": "NON_CLUSTERED",
+      "status": "STOPPED",
+      "triggerKeys": [],
+      "quartzVersion": "2.5.2",
+      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+      "jobStoreSupportsPersistence": false,
+      "clustered": false,
+      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+      "threadPoolSize": 1,
+      "runningSince": null,
+      "numberOfJobsExecuted": 0
+    },
+    "jobs": [],
+    "triggers": []
+  },
+  "post_producer_state_sha256": "101ff2f4831b94661ece2486276e53437ccb74e4d5cc3465772e26b58cbd2658",
+  "continuation": {
+    "attempted": false,
+    "reason": "producer_not_accepted"
+  },
+  "final_state": {
+    "scheduler": {
+      "name": "example",
+      "instanceId": "NON_CLUSTERED",
+      "status": "STOPPED",
+      "triggerKeys": [],
+      "quartzVersion": "2.5.2",
+      "jobStoreClass": "org.quartz.simpl.RAMJobStore",
+      "jobStoreSupportsPersistence": false,
+      "clustered": false,
+      "threadPoolClass": "org.quartz.simpl.SimpleThreadPool",
+      "threadPoolSize": 1,
+      "runningSince": null,
+      "numberOfJobsExecuted": 0
+    },
+    "jobs": [],
+    "triggers": []
+  },
+  "elapsed_ms": 861.18092,
+  "ended_at": "2026-11-10T08:52:40.722Z"
+}

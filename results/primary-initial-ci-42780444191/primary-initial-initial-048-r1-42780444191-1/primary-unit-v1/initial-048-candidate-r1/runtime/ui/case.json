@@ -1,0 +1,91 @@
+{
+  "case_id": "realworld-article-create-body-edit-v1::payload-mutation::d57482ce4512d41caf675871",
+  "estimated_cost_s": 1.0,
+  "expectation": {
+    "category": "implementation_control",
+    "outcome": "accept",
+    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+    "statement": "Omitted optional tagList is explicitly tested as valid."
+  },
+  "expectation_scope": {
+    "kind": "operation",
+    "operation_id": "create_article"
+  },
+  "intervention": "payload_mutation",
+  "mutation": {
+    "constraint_id": "create-article-taglist",
+    "input_path": [
+      "article",
+      "tagList"
+    ],
+    "kind": "omit",
+    "operation_id": "create_article",
+    "representation": {
+      "action": "omit_json_property",
+      "supported": true
+    },
+    "transformation_id": "article-tags-omitted"
+  },
+  "operations": [
+    {
+      "input": {
+        "article": {
+          "body": "Body before continuation.",
+          "description": "Boundary control description",
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "api",
+      "operation_id": "create_article"
+    },
+    {
+      "input": {
+        "article": {
+          "body": "Body after meaningful continuation.",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "ui",
+      "operation_id": "edit_article_body"
+    }
+  ],
+  "selection_targets": {
+    "dependencies": [
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article"
+      },
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article"
+      }
+    ],
+    "obligations": [
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "ui",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article",
+        "producer_interface": "api"
+      },
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "ui",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article",
+        "producer_interface": "api"
+      }
+    ]
+  },
+  "substitutions": 1
+}

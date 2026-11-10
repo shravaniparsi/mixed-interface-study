@@ -1,0 +1,317 @@
+{
+  "batch_id": "initial-073-r1",
+  "status": "completed_observations",
+  "started": [
+    "initial-073-candidate-r1"
+  ],
+  "observations": [
+    {
+      "attempt_id": "initial-073-candidate-r1",
+      "entry_kind": "singleton",
+      "branch_total_s": {
+        "ui": 4.098375726
+      },
+      "runtime_result_sha256": "3d321aad6b4e36d5e6c77a4a46adb78d6ecd63826f3d4b9cc0cd6b5ce956d6cf",
+      "receipt_sha256": "b9deea9c6c28fcc9f657c8d9ab98204492edd3b9f95e9686b7e56d3c09eaa081",
+      "paired_comparison_eligible": false,
+      "branch": {
+        "kind": "clean_observation",
+        "issues": [],
+        "components": {
+          "case_id": "comment-native-control-ui-r1",
+          "candidate_id": "comment-native-control",
+          "workflow": "comment-create-delete",
+          "route": "ui-ui",
+          "accepted_prefix": true,
+          "assigned_continuation_reached": true,
+          "execution_evidence_complete": true,
+          "evidence_issues": [],
+          "components": {
+            "immediate_response": {
+              "checks": [
+                {
+                  "id": "prefix_comment_matches_input",
+                  "passed": true,
+                  "scope": "recorded_source_observation",
+                  "evidence": {
+                    "name": "prefix_comment_matches_input",
+                    "passed": true
+                  }
+                },
+                {
+                  "id": "declared_acceptance_expectation",
+                  "passed": true,
+                  "scope": "implementation_control",
+                  "evidence": {
+                    "expectation": {
+                      "outcome": "accept",
+                      "category": "implementation_control",
+                      "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/components/ArticleDetailCommentsForm.vue#L65",
+                      "statement": "Native UI creates the comment then performs native deletion."
+                    },
+                    "actual_status": 201
+                  }
+                }
+              ],
+              "failed_check_ids": [],
+              "observations": [
+                {
+                  "id": "producer_http_status",
+                  "status": 201,
+                  "classification": "accepted"
+                },
+                {
+                  "id": "producer_response",
+                  "source": "ui",
+                  "method": "POST",
+                  "path": "/api/articles/unique-fixture-article/comments",
+                  "status": 201,
+                  "data": {
+                    "comment": {
+                      "body": "Comment before deletion.",
+                      "createdAt": "2026-11-10T09:06:19.741Z",
+                      "updatedAt": "2026-11-10T09:06:19.741Z",
+                      "author": {
+                        "following": false,
+                        "bio": "Baseline profile biography.",
+                        "image": null,
+                        "username": "pilotresearch"
+                      },
+                      "id": 1
+                    }
+                  }
+                }
+              ],
+              "mismatch_observed": false,
+              "comparison_eligible": true,
+              "status": "no_check_mismatch_observed"
+            },
+            "producer_native_controls": {
+              "checks": [
+                {
+                  "id": "integrity:submitted_command",
+                  "passed": true,
+                  "scope": "execution_comparability_observation_not_adjudicated_defect",
+                  "evidence": {
+                    "name": "submitted_command",
+                    "stage": "prefix",
+                    "source": "ui",
+                    "expected": {
+                      "method": "POST",
+                      "path": "/api/articles/unique-fixture-article/comments",
+                      "payload": {
+                        "comment": {
+                          "body": "Comment before deletion."
+                        }
+                      }
+                    },
+                    "observed": {
+                      "method": "POST",
+                      "path": "/api/articles/unique-fixture-article/comments",
+                      "payload": {
+                        "comment": {
+                          "body": "Comment before deletion."
+                        }
+                      }
+                    },
+                    "passed": true
+                  }
+                }
+              ],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": true,
+              "status": "no_check_mismatch_observed"
+            },
+            "prefix_state_reads": {
+              "checks": [],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": false,
+              "status": "not_reached_or_not_applicable"
+            },
+            "assigned_api_continuation": {
+              "checks": [],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": false,
+              "status": "not_assigned"
+            },
+            "assigned_native_continuation": {
+              "checks": [
+                {
+                  "id": "comment_loaded_in_parent",
+                  "passed": true,
+                  "scope": "recorded_source_observation",
+                  "evidence": {
+                    "name": "comment_loaded_in_parent",
+                    "passed": true
+                  }
+                },
+                {
+                  "id": "consumer_write_http_status",
+                  "passed": true,
+                  "scope": "http_observation",
+                  "evidence": {
+                    "status": 204
+                  }
+                },
+                {
+                  "id": "integrity:loaded_comment_binding",
+                  "passed": true,
+                  "scope": "execution_comparability_observation_not_adjudicated_defect",
+                  "evidence": {
+                    "name": "loaded_comment_binding",
+                    "stage": "continuation",
+                    "source": "ui",
+                    "expected": [
+                      {
+                        "id": 1,
+                        "body": "Comment before deletion.",
+                        "author": "pilotresearch"
+                      }
+                    ],
+                    "observed": [
+                      {
+                        "id": 1,
+                        "body": "Comment before deletion.",
+                        "author": "pilotresearch"
+                      }
+                    ],
+                    "passed": true
+                  }
+                },
+                {
+                  "id": "integrity:singleton_delete_target",
+                  "passed": true,
+                  "scope": "execution_comparability_observation_not_adjudicated_defect",
+                  "evidence": {
+                    "name": "singleton_delete_target",
+                    "stage": "continuation",
+                    "source": "ui",
+                    "expected": 1,
+                    "observed": 1,
+                    "passed": true
+                  }
+                },
+                {
+                  "id": "integrity:unique_native_delete_control",
+                  "passed": true,
+                  "scope": "execution_comparability_observation_not_adjudicated_defect",
+                  "evidence": {
+                    "name": "unique_native_delete_control",
+                    "stage": "continuation",
+                    "source": "ui",
+                    "expected": 1,
+                    "observed": 1,
+                    "passed": true
+                  }
+                },
+                {
+                  "id": "integrity:submitted_command",
+                  "passed": true,
+                  "scope": "execution_comparability_observation_not_adjudicated_defect",
+                  "evidence": {
+                    "name": "submitted_command",
+                    "stage": "continuation",
+                    "source": "ui",
+                    "expected": {
+                      "method": "DELETE",
+                      "path": "/api/articles/unique-fixture-article/comments/1",
+                      "payload": null
+                    },
+                    "observed": {
+                      "method": "DELETE",
+                      "path": "/api/articles/unique-fixture-article/comments/1",
+                      "payload": null
+                    },
+                    "passed": true
+                  }
+                }
+              ],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": true,
+              "status": "no_check_mismatch_observed"
+            },
+            "shared_post_continuation_api_readback": {
+              "checks": [
+                {
+                  "id": "deletion_persisted",
+                  "passed": true,
+                  "scope": "recorded_source_observation",
+                  "evidence": {
+                    "name": "deletion_persisted",
+                    "passed": true
+                  }
+                },
+                {
+                  "id": "parent_article_preserved",
+                  "passed": true,
+                  "scope": "recorded_source_observation",
+                  "evidence": {
+                    "name": "parent_article_preserved",
+                    "passed": true
+                  }
+                }
+              ],
+              "failed_check_ids": [],
+              "observations": [],
+              "assigned_action_interface": "ui",
+              "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+              "mismatch_observed": false,
+              "comparison_eligible": true,
+              "status": "no_check_mismatch_observed"
+            },
+            "shared_final_native_read": {
+              "checks": [],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": false,
+              "status": "not_reached_or_not_applicable"
+            },
+            "environment_reset_cleanup": {
+              "checks": [
+                {
+                  "id": "integrity:pre_state_readable",
+                  "passed": true,
+                  "scope": "execution_comparability_observation_not_adjudicated_defect",
+                  "evidence": {
+                    "name": "pre_state_readable",
+                    "stage": "setup",
+                    "source": "shared_api",
+                    "expected": true,
+                    "observed": true,
+                    "passed": true
+                  }
+                }
+              ],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": true,
+              "status": "no_check_mismatch_observed"
+            },
+            "unresolved_policy": {
+              "checks": [],
+              "failed_check_ids": [],
+              "observations": [],
+              "mismatch_observed": false,
+              "comparison_eligible": false,
+              "status": "not_applicable"
+            }
+          },
+          "policy_unresolved": false,
+          "unclassified_checks": [],
+          "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion."
+        }
+      }
+    }
+  ],
+  "independent_sample_size": null
+}

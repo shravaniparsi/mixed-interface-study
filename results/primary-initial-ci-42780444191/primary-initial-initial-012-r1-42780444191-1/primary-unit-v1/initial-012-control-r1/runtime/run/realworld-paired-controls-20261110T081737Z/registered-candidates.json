@@ -1,0 +1,201 @@
+{
+  "kind": "prospective_runner_engineering_controls",
+  "primary_freeze_complete": false,
+  "scope": "Two positive references and seven previously exposed article/comment variants; no untouched boundaries.",
+  "source_registry_sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2",
+  "cases": [
+    {
+      "candidate_id": "article-valid",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body before continuation.",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "All required nonempty fields supplied."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "comment-body-valid",
+      "workflow": "comment-create-delete",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": "Comment before deletion."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/comments/schemas.py#L10",
+        "statement": "Comment creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-body-whitespace",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "   ",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-tags-omitted",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "Body before continuation."
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+        "statement": "Omitted optional tagList is explicitly tested as valid."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "comment-body-whitespace",
+      "workflow": "comment-create-delete",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": "   "
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "accept",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/comments/schemas.py#L10",
+        "statement": "Comment creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-body-null",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": null,
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "reject",
+        "category": "contract",
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "article-body-empty",
+      "workflow": "article-create-edit",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "title": "Boundary pilot article",
+        "description": "Boundary control description",
+        "body": "",
+        "tagList": [
+          "pilot"
+        ]
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "reject",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "comment-body-null",
+      "workflow": "comment-create-delete",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": null
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "reject",
+        "category": "contract",
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L582",
+        "statement": "Comment creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    },
+    {
+      "candidate_id": "comment-body-empty",
+      "workflow": "comment-create-delete",
+      "prefix_interface": "api",
+      "prefix_payload": {
+        "body": ""
+      },
+      "continuations": [
+        "api",
+        "ui"
+      ],
+      "expectation": {
+        "outcome": "reject",
+        "category": "implementation_control",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/comments/schemas.py#L10",
+        "statement": "Comment creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "mutation_representation": "Explicit JSON input; omitted/null API properties are not assumed to have native UI representations."
+    }
+  ]
+}

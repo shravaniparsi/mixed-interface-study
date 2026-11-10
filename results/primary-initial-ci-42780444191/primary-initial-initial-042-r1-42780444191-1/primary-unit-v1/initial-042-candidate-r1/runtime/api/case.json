@@ -1,0 +1,79 @@
+{
+  "case_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+  "estimated_cost_s": 1.0,
+  "expectation": {
+    "category": "implementation_control",
+    "outcome": "accept",
+    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+    "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+  },
+  "expectation_scope": {
+    "kind": "workflow"
+  },
+  "intervention": "route_only",
+  "operations": [
+    {
+      "input": {
+        "article": {
+          "body": "Body before continuation.",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "ui",
+      "operation_id": "create_article"
+    },
+    {
+      "input": {
+        "article": {
+          "body": "Body after meaningful continuation.",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "api",
+      "operation_id": "edit_article_body"
+    }
+  ],
+  "selection_targets": {
+    "dependencies": [
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article"
+      },
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article"
+      }
+    ],
+    "obligations": [
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "api",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article",
+        "producer_interface": "ui"
+      },
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "api",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article",
+        "producer_interface": "ui"
+      }
+    ]
+  },
+  "substitutions": 1
+}

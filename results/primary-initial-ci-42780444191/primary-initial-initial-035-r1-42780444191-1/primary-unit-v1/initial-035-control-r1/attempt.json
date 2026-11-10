@@ -1,0 +1,45 @@
+{
+  "attempt_id": "initial-035-control-r1",
+  "target_pair_id": "petclinic_development::pet_omit_name",
+  "entry_pair_id": "petclinic_development::pet_valid",
+  "role": "reference_control",
+  "repetition": 1,
+  "entry_kind": "pair",
+  "runtime": {
+    "profile": "petclinic_v4",
+    "runner": "scripts/run_petclinic_pair_job_v4.mjs",
+    "loader": "petclinic_timed_jobs_v4",
+    "registry_path": "manifests/petclinic-candidates-v1.json",
+    "job": {
+      "job_id": "initial-000",
+      "pair_id": "pet_valid",
+      "target_pair_id": "pet_valid",
+      "role": "initial",
+      "repetition": 1,
+      "branches": [
+        {
+          "case_id": "pet_valid-api-r1",
+          "continuation": "api",
+          "fresh_reset_required": true
+        },
+        {
+          "case_id": "pet_valid-ui-r1",
+          "continuation": "ui",
+          "fresh_reset_required": true
+        }
+      ]
+    },
+    "context": {
+      "batch": "pets"
+    },
+    "source_case_sha256": {
+      "api": "75c540a9dd7d5c62fde30f44da4e4c10dfd417484e1c0214cb00f17c40b1199e",
+      "ui": "75c540a9dd7d5c62fde30f44da4e4c10dfd417484e1c0214cb00f17c40b1199e"
+    },
+    "branch_order": [
+      "api",
+      "ui"
+    ]
+  },
+  "binding_sha256": "7bc0360fb03b4b756924026a73dacfe7a5366a0993c2007cde3d466e4a9ff7ee"
+}
