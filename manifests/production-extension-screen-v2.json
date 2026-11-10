@@ -1,0 +1,88 @@
+{
+  "kind": "production_application_extension_screen_v2",
+  "registered_date": "2026-11-10",
+  "selection_rule": "Purposive diversity sample of six self-hosted production applications with native web UI and API; latest stable releases at registration. No case outcomes inspected. Includes source/documentation search exposure; not a random sample or a prevalence denominator.",
+  "phase": "second_deployment_attempt_only",
+  "case_execution_authorized": false,
+  "maximum_screen_attempts_per_app": 2,
+  "maximum_job_minutes": 20,
+  "maximum_parallel_jobs": 3,
+  "applications": [
+    {
+      "repo": "go-vikunja/vikunja",
+      "release": "v2.8.0",
+      "commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+      "license": "AGPL-3.0",
+      "published_at": "2026-11-05T20:44:21Z",
+      "url": "https://github.com/go-vikunja/vikunja/releases/tag/v2.8.0",
+      "id": "vikunja",
+      "domain": "task_management",
+      "image": "vikunja/vikunja@sha256:35d937baf3b5d5803bed6b9e11d007448b7b536df9e4346dc35551e1072636c3",
+      "port": 3456,
+      "path": "/api/v1/info",
+      "env": {
+        "VIKUNJA_DATABASE_TYPE": "sqlite",
+        "VIKUNJA_DATABASE_PATH": "/tmp/study-vikunja.db",
+        "VIKUNJA_SERVICE_PUBLICURL": "http://127.0.0.1:18080/",
+        "VIKUNJA_FILES_BASEPATH": "/tmp/study-files"
+      },
+      "prior_failure_report": "results/production-extension-screen-ci-42874085809/production-screen-vikunja-42874085809-1/report.json",
+      "prior_failure_sha256": "171d0d4ad15dcc5936782682c3ff07fde26da288da330c782e0fde5d4377fa2a"
+    },
+    {
+      "repo": "paperless-ngx/paperless-ngx",
+      "release": "v3.4.2",
+      "commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+      "license": "GPL-3.0",
+      "published_at": "2026-11-03T21:57:15Z",
+      "url": "https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.4.2",
+      "id": "paperless",
+      "domain": "document_management",
+      "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+      "port": 8000,
+      "path": "/",
+      "env": {
+        "PAPERLESS_DBENGINE": "sqlite",
+        "PAPERLESS_REDIS": "redis://study-broker:6379",
+        "PAPERLESS_URL": "http://127.0.0.1:18080",
+        "PAPERLESS_OCR_LANGUAGE": "eng"
+      },
+      "dependency": {
+        "image": "valkey/valkey@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b",
+        "name": "study-broker"
+      },
+      "prior_failure_report": "results/production-extension-screen-ci-42874085809/production-screen-paperless-42874085809-1/report.json",
+      "prior_failure_sha256": "19dea7c27982877941dee772f5ee996fed324ad7b9472828399cdb77c0ac73a8",
+      "ephemeral_env_names": [
+        "PAPERLESS_SECRET_KEY"
+      ]
+    },
+    {
+      "repo": "grocy/grocy",
+      "release": "v4.7.1",
+      "commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+      "license": "MIT",
+      "published_at": "2026-09-04T15:57:06Z",
+      "url": "https://github.com/grocy/grocy/releases/tag/v4.7.1",
+      "id": "grocy",
+      "domain": "household_inventory",
+      "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+      "port": 80,
+      "path": "/",
+      "env": {
+        "PUID": "1000",
+        "PGID": "1000",
+        "TZ": "UTC"
+      },
+      "prior_failure_report": "results/production-extension-screen-ci-42874085809/production-screen-grocy-42874085809-1/report.json",
+      "prior_failure_sha256": "1639c0f6ef6345f0022b75b8e1ad7752e19b5ae91b68d7bb55e29e97b36474a0"
+    }
+  ],
+  "parent_registry_sha256": "fea858b235ba5bc6d6dbf5a5f3dc69124e474f3fed41bde6c2c0efb68f4a8112",
+  "first_attempt_manifest_sha256": "ef960fc70de5cf5cef9dbe88c5187456b15f367043ef75941700b2c96b5a0a7c",
+  "corrections": {
+    "vikunja": "Use a writable ephemeral files.basepath for the image uid 1000.",
+    "paperless": "Generate a unique process-only secret key at startup; redact it from retained command/inspection output.",
+    "grocy": "Resolve the correctly named v4.7.1 release tag to a digest; first tag did not exist."
+  }
+}

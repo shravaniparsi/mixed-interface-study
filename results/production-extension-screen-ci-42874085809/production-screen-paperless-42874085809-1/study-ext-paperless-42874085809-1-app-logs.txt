@@ -1,0 +1,84 @@
+[init-start] paperless-ngx docker container starting...
+[init-start] paperless-ngx docker container starting init as root
+[env-init] Checking for environment from files
+[env-init] No *_FILE environment found
+[init-redis-wait] Waiting for Redis to report ready
+[init-db-wait] Database is ready
+[init-tesseract-langs] Checking if additional teseract languages needed
+[init-tesseract-langs] No additional installs requested
+[init-user] No UID changes for paperless
+[init-user] No GID changes for paperless
+[init-folders] Running with root privileges, adjusting directories and permissions
+mkdir: created directory '/tmp/paperless'
+mkdir: created directory '/usr/src/paperless/data/index'
+mkdir: created directory '/usr/src/paperless/media/documents'
+mkdir: created directory '/usr/src/paperless/media/documents/originals'
+mkdir: created directory '/usr/src/paperless/media/documents/thumbnails'
+changed ownership of '/usr/src/paperless/data/index' from root:root to paperless:paperless
+changed ownership of '/usr/src/paperless/media/documents' from root:root to paperless:paperless
+changed ownership of '/usr/src/paperless/media/documents/originals' from root:root to paperless:paperless
+changed ownership of '/usr/src/paperless/media/documents/thumbnails' from root:root to paperless:paperless
+changed ownership of '/tmp/paperless' from root:root to paperless:paperless
+[init-compile-bytecode] Compiling bytecode for: /usr/src/paperless/src /usr/local/lib/python3.14/site-packages/django /usr/local/lib/python3.14/site-packages/celery /usr/local/lib/python3.14/site-packages/kombu /usr/local/lib/python3.14/site-packages/rest_framework /usr/local/lib/python3.14/site-packages/django_filters /usr/local/lib/python3.14/site-packages/whitenoise /usr/local/lib/python3.14/site-packages/corsheaders /usr/local/lib/python3.14/site-packages/django_extensions /usr/local/lib/python3.14/site-packages/guardian /usr/local/lib/python3.14/site-packages/allauth /usr/local/lib/python3.14/site-packages/drf_spectacular /usr/local/lib/python3.14/site-packages/drf_spectacular_sidecar /usr/local/lib/python3.14/site-packages/treenode /usr/local/lib/python3.14/site-packages/compression_middleware
+Waiting for Redis...
+Connected to Redis broker.
+[init-redis-wait] Redis ready
+[init-compile-bytecode] Done in 4s
+[init-migrations] Apply database migrations...
+Traceback (most recent call last):
+  File "/usr/src/paperless/src/manage.py", line 10, in <module>
+    execute_from_command_line(sys.argv)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+    ~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/core/management/base.py", line 412, in run_from_argv
+    parser = self.create_parser(argv[0], argv[1])
+  File "/usr/local/lib/python3.14/site-packages/django/core/management/base.py", line 375, in create_parser
+    self.add_arguments(parser)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/core/management/commands/check.py", line 47, in add_arguments
+    choices=tuple(connections),
+            ~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/utils/connection.py", line 73, in __iter__
+    return iter(self.settings)
+                ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/utils/connection.py", line 45, in settings
+    self._settings = self.configure_settings(self._settings)
+                     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/db/utils.py", line 148, in configure_settings
+    databases = super().configure_settings(databases)
+  File "/usr/local/lib/python3.14/site-packages/django/utils/connection.py", line 50, in configure_settings
+    settings = getattr(django_settings, self.settings_name)
+  File "/usr/local/lib/python3.14/site-packages/django/conf/__init__.py", line 81, in __getattr__
+    self._setup(name)
+    ~~~~~~~~~~~^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/conf/__init__.py", line 68, in _setup
+    self._wrapped = Settings(settings_module)
+                    ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/django/conf/__init__.py", line 166, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/local/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 763, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/usr/src/paperless/src/paperless/settings/__init__.py", line 508, in <module>
+    raise ImproperlyConfigured(
+    ...<3 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: PAPERLESS_SECRET_KEY is not set or is the default 'change-me' value. A unique, secret key is required for secure operation. Generate one with: python3 -c "import secrets; print(secrets.token_urlsafe(64))"
+s6-rc: warning: unable to start service init-migrations: command exited 1
+/run/s6/basedir/scripts/rc.init: warning: s6-rc failed to properly bring all the services up! Check your logs (in /run/uncaught-logs/current if you have in-container logging) for more information.
+/run/s6/basedir/scripts/rc.init: fatal: stopping the container.
+s6-rc: warning: service s6rc-oneshot-runner is marked as essential, not stopping it

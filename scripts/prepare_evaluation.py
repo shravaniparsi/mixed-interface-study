@@ -28,6 +28,15 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/deployment_screen_v2.py',
+    'scripts/extension/verify_deployment_screen_v2.py',
+    '.github/workflows/production_extension_screen_v2.yml',
+    'tests/test_production_extension_screen_v2.py',
+    'manifests/production-extension-screen-attempt1-v1.json',
+    'manifests/production-extension-screen-v2.json',
+    'manifests/grocy-image-resolution-v1.json',
+    'notes/production_extension_screen_20261110.md',
+
     'scripts/extension/verify_deployment_screen_v1.py',
     'scripts/extension/verify_linkding_controls_v1.py',
     'scripts/extension/linkding_control_v1.mjs',
