@@ -1,0 +1,109 @@
+{
+  "kind": "vikunja_task_ordinary_controls_v1",
+  "version": "v2.8.0",
+  "source_commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+  "image": "vikunja/vikunja@sha256:35d937baf3b5d5803bed6b9e11d007448b7b536df9e4346dc35551e1072636c3",
+  "image_id": "sha256:a5e3816da40bbb9bab752ff1efc2067008b8d1397238e8f2ffb91170514d7786",
+  "environment": {
+    "VIKUNJA_DATABASE_TYPE": "sqlite",
+    "VIKUNJA_DATABASE_PATH": "/tmp/study-vikunja.db",
+    "VIKUNJA_SERVICE_PUBLICURL": "http://127.0.0.1:18080/",
+    "VIKUNJA_FILES_BASEPATH": "/tmp/study-files"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_parallel_jobs": 3,
+  "maximum_job_minutes": 25,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "task-r1",
+      "workflow": "task",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-r2",
+      "workflow": "task",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "task",
+      "collection": "/api/v2/tasks",
+      "fields": [
+        "title",
+        "description",
+        "done",
+        "due_date",
+        "start_date",
+        "end_date",
+        "priority",
+        "hex_color",
+        "percent_done",
+        "repeat_after",
+        "repeat_mode",
+        "is_favorite",
+        "bucket_id",
+        "project_id",
+        "reminders",
+        "cover_image_attachment_id"
+      ],
+      "payload": {
+        "title": "Ordinary task",
+        "description": "<p>Ordinary description</p>",
+        "done": false,
+        "due_date": "2027-01-15T12:00:00Z",
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "priority": 2,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "is_favorite": false,
+        "bucket_id": 0,
+        "reminders": [],
+        "cover_image_attachment_id": 0
+      },
+      "owner_field": "created_by",
+      "edit_value": "<p>Edited ordinary description</p>"
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/vikunja_control_v1.mjs": "9d67123fb9f04443e278d7f6cb28c08ede9afbe6d03566d0df304d9fc25b84c4",
+    "scripts/extension/run_vikunja_controls_v1.py": "4d4bbd3ea13a64a0a0824a770a101e038a619dc6ca5a41173f581596415833f4",
+    ".github/workflows/vikunja_controls_v1.yml": "a4b8721a861cb3ce88e97b26676895e947b77ef934ec294d5299efd38dbc6079",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/extension/vikunja_control_v2.mjs": "d346e4460ffcad11f675bde1e9de9e864696867570cb087b4496b766212925a7",
+    "scripts/extension/run_vikunja_controls_v2.py": "576e26f0f546fdc265c2ca9918094ab57e7064cdeab8b8a3576beac620ff6639",
+    ".github/workflows/vikunja_controls_v2.yml": "1bb997e6aa363d666a83e4d9e22df25bb5f019ce55bd5f1a5b89bcae2b195b34",
+    "scripts/extension/vikunja_task_control_v1.mjs": "1376afddac79293457dedd36e4beb4935fa4afc27ea2b30f84d97d0224087aa7",
+    "scripts/extension/run_vikunja_task_controls_v1.py": "5c2830fe0a6631bf2f95816f366859a840a15bb281b466b277ca596d5ae6a36e",
+    ".github/workflows/vikunja_task_controls_v1.yml": "7df025ba8ddc01b8456c3fcb73af51371ecc86f537d00a138005b8b73fb613ba"
+  },
+  "qualification_sha256": {
+    "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-vikunja-42876848117-1/report.json": "d8e33c02b4d7ea7a12488952220dac3bb03f7f625c0ea12ae41c50e46c2370c8",
+    "manifests/vikunja-controls-v1.json": "77e52e5925d18a7c9c069b5f612f648b4884d66d6c8586966dde8b712f54a344"
+  },
+  "metadata_policy": "Full raw records retained. Within branch only root updated is excluded from preservation; root created and nested metadata remain exact. Across resets exclude root created/updated and owner/created_by created/updated and direct views created/updated only. No other state normalization. Initial collection items use the same named timestamp projection; full initial response retained.",
+  "project_fixture": {
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "hex_color": "336699",
+    "identifier": "STUDY",
+    "parent_project_id": 0,
+    "is_archived": false,
+    "is_favorite": false,
+    "position": 65536
+  },
+  "interpretation": "Ordinary task description edit only. API sends all sixteen native writable fields via JSON Patch, retaining loaded title and all other values. Null reminders use empty array on both writes as defined by native normalizer; final stored preservation is still exact except root updated. Native capture starts before editing because description autosaves after five seconds. No boundary cases authorized."
+}
