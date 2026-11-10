@@ -1,3 +1,7 @@
+# Latest: generated mutation preparation v3
+
+The seven generated mutation pairs plus one API-producer reference now have a fixed bounded plan, transport loader and terminal driver. Eight synthetic tests cover fourteen acceptance branches, expected rejection, unreadable post-rejection state, unexpected acceptance, unknown policies, early/final halts and executor errors. No application runs or readiness promotions were added. See `protocol/realworld-generated-mutations-v3.md`. Next: real execution runner and independent completed-or-halted reconstruction.
+
 # Latest: live generated reference qualification
 
 Two exposed generated reference pairs (four branches) passed hosted execution and independent hosted/local reconstruction. Reset databases, raw evidence, cleanup and timing are archived. No mutations or primary samples were run; the evidence-entry count remains 49 because these references already had historical evidence. See `notes/realworld_generated_runtime_integration.md`. Next: separately versioned preparation for seven generated mutation pairs.
