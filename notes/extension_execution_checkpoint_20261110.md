@@ -118,3 +118,12 @@ Followups dispatched as run42894961954 at7efd556cf179171f79fcd8fb0b8b497eec82caf
 Run 42894136994 completed successfully. All nine raw artifacts are preserved under results/grocy-energy-v1-ci-42894136994 and independently reconstructed in manifests/grocy-energy-results-v1.json. Three explicit-zero pairs preserve zero in both channels. All three omitted and three explicit-null pairs preserve null through the full-record API rename, whereas native editing loads 1 and saves 1 during that same rename. Calories is the sole additional changed business field. All three cross-condition comparisons confirm matching fixtures and non-energy starting fields. This is one reproducible exploratory mechanism; no new-defect adjudication or population frequency follows. No extra outcome-triggered repetitions are scheduled.
 
 Followup run 42894961954 remains queued at the latest API status check. Retain its existing dispatch; do not create a duplicate. Memos source and binary transport qualification remains next independent work.
+
+
+## Grocy registered followups complete
+
+Run 42894961954 succeeded. All thirteen artifacts and 52 paired reports are preserved under results/grocy-followups-v1-ci-42894961954; independent reconstruction is manifests/grocy-followup-results-v1.json. All26 linked ordinary controls clean. All26 boundary repeats show channel differences, with shared baseline overlap both in all26. Their exact channel outcomes and overlap match the initial observations in all26 comparisons. This completes the fixed original-plus-two-repeat rule for all13 triggered cases; no further Grocy boundary repetitions remain. These variants/repetitions are not independent mechanisms. Prospective native-only initial/repeated findings remain zero.
+
+The separate nine-pair exploratory energy cohort is also complete. Together these results support reproducibility of observed differences, but do not establish Q1 readiness or novel defect prevalence. Next work is Memos ordinary qualification, then fixed remaining application coverage.
+
+Added memos_general_wire_v1.mjs and local fixture checks as an unqualified measurement component. It decodes only the pinned GENERAL update request, preserves proto3 scalar defaults, and fails on unexpected/duplicate fields or nonqualified content types. It does not yet decode memo updates or prove live transport compatibility. The harness must preserve raw bytes and qualify the decoder against a real ordinary native save before any boundary results.

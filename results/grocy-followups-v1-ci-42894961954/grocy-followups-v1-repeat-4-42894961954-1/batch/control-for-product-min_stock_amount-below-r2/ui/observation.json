@@ -1,0 +1,1552 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "product-valid-1",
+  "workflow": "product",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.039966341999999995
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.016587293000000003
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:27:08",
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.015250502999999995
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/locations",
+      "body": {
+        "name": "Study location",
+        "description": "Fixture location",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "3"
+      },
+      "elapsed_s": 0.04206178
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Piece",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:27:08",
+          "name_plural": "Pieces",
+          "plural_forms": null,
+          "active": 1
+        },
+        {
+          "id": 3,
+          "name": "Pack",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:27:08",
+          "name_plural": "Packs",
+          "plural_forms": null,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.01059078599999998
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/quantity_units",
+      "body": {
+        "name": "Study unit",
+        "name_plural": "Study units",
+        "description": "Fixture unit",
+        "active": 1
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "4"
+      },
+      "elapsed_s": 0.010681901000000011
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/products",
+      "body": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": 3,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "qu_id_consume": 4,
+        "qu_id_price": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.04359875499999998
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary product",
+        "description": "Original description",
+        "product_group_id": null,
+        "active": 1,
+        "location_id": 3,
+        "shopping_location_id": null,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "default_best_before_days_after_open": 0,
+        "default_best_before_days_after_freezing": 0,
+        "default_best_before_days_after_thawing": 0,
+        "picture_file_name": null,
+        "enable_tare_weight_handling": 0,
+        "tare_weight": 0,
+        "not_check_stock_fulfillment_for_recipes": 0,
+        "parent_product_id": null,
+        "calories": 0,
+        "cumulate_min_stock_amount_of_sub_products": 0,
+        "due_type": 1,
+        "quick_consume_amount": 1,
+        "hide_on_stock_overview": 0,
+        "default_stock_label_type": 0,
+        "should_not_be_frozen": 0,
+        "treat_opened_as_out_of_stock": 1,
+        "no_own_stock": 0,
+        "default_consume_location_id": null,
+        "move_on_open": 0,
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "qu_id_consume": 4,
+        "auto_reprint_stock_label": 0,
+        "quick_open_amount": 1,
+        "qu_id_price": 4,
+        "disable_open": 0,
+        "default_purchase_price_type": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.009432429999999983
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": "Study location",
+        "description": "Fixture location",
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.009791178000000003
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units/4",
+      "status": 200,
+      "response": {
+        "id": 4,
+        "name": "Study unit",
+        "description": "Fixture unit",
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "name_plural": "Study units",
+        "plural_forms": null,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.008938541000000015
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units/4",
+      "status": 200,
+      "response": {
+        "id": 4,
+        "name": "Study unit",
+        "description": "Fixture unit",
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "name_plural": "Study units",
+        "plural_forms": null,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.008700531000000013
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units/4",
+      "status": 200,
+      "response": {
+        "id": 4,
+        "name": "Study unit",
+        "description": "Fixture unit",
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "name_plural": "Study units",
+        "plural_forms": null,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.008716083999999995
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units/4",
+      "status": 200,
+      "response": {
+        "id": 4,
+        "name": "Study unit",
+        "description": "Fixture unit",
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "name_plural": "Study units",
+        "plural_forms": null,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.009391438999999991
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/objects/products/1",
+      "body": {
+        "name": "Edited ordinary product",
+        "active": "1",
+        "description": "Original description",
+        "location_id": "3",
+        "default_consume_location_id": "",
+        "shopping_location_id": "",
+        "min_stock_amount": "0",
+        "treat_opened_as_out_of_stock": "1",
+        "due_type": "1",
+        "default_best_before_days": "0",
+        "default_best_before_days_after_open": "0",
+        "default_best_before_days_after_freezing": "0",
+        "default_best_before_days_after_thawing": "0",
+        "product_group_id": "",
+        "qu_id_stock": "4",
+        "qu_id_purchase": "4",
+        "qu_id_consume": "4",
+        "qu_id_price": "4",
+        "calories": "0",
+        "quick_consume_amount": "1",
+        "quick_open_amount": "1",
+        "default_purchase_price_type": "1",
+        "move_on_open": "0",
+        "cumulate_min_stock_amount_of_sub_products": "0",
+        "should_not_be_frozen": "0",
+        "enable_tare_weight_handling": "0",
+        "not_check_stock_fulfillment_for_recipes": "0",
+        "disable_open": "0",
+        "hide_on_stock_overview": "0",
+        "no_own_stock": "0",
+        "parent_product_id": ""
+      },
+      "status": 204
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Edited ordinary product",
+        "description": "Original description",
+        "product_group_id": null,
+        "active": 1,
+        "location_id": 3,
+        "shopping_location_id": null,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "default_best_before_days_after_open": 0,
+        "default_best_before_days_after_freezing": 0,
+        "default_best_before_days_after_thawing": 0,
+        "picture_file_name": null,
+        "enable_tare_weight_handling": 0,
+        "tare_weight": 0,
+        "not_check_stock_fulfillment_for_recipes": 0,
+        "parent_product_id": null,
+        "calories": 0,
+        "cumulate_min_stock_amount_of_sub_products": 0,
+        "due_type": 1,
+        "quick_consume_amount": 1,
+        "hide_on_stock_overview": 0,
+        "default_stock_label_type": 0,
+        "should_not_be_frozen": 0,
+        "treat_opened_as_out_of_stock": 1,
+        "no_own_stock": 0,
+        "default_consume_location_id": null,
+        "move_on_open": 0,
+        "row_created_timestamp": "2026-11-10 20:27:09",
+        "qu_id_consume": 4,
+        "auto_reprint_stock_label": 0,
+        "quick_open_amount": 1,
+        "qu_id_price": 4,
+        "disable_open": 0,
+        "default_purchase_price_type": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.01662650600000006
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "Ordinary product",
+          "expected": "Ordinary product",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "location_id",
+          "selector": "#location_id",
+          "count": 1,
+          "value": "3",
+          "expected": "3",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Fridge",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Study location",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_purchase",
+          "selector": "#qu_id_purchase",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_stock",
+          "selector": "#qu_id_stock",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_consume",
+          "selector": "#qu_id_consume",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_price",
+          "selector": "#qu_id_price",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "min_stock_amount",
+          "selector": "#min_stock_amount",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "default_best_before_days",
+          "selector": "#default_best_before_days",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": "-1",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "calories",
+          "selector": "#calories",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": true
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "Edited ordinary product",
+          "expected": "Edited ordinary product",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "location_id",
+          "selector": "#location_id",
+          "count": 1,
+          "value": "3",
+          "expected": "3",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Fridge",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Study location",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_purchase",
+          "selector": "#qu_id_purchase",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_stock",
+          "selector": "#qu_id_stock",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_consume",
+          "selector": "#qu_id_consume",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_price",
+          "selector": "#qu_id_price",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "min_stock_amount",
+          "selector": "#min_stock_amount",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "default_best_before_days",
+          "selector": "#default_best_before_days",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": "-1",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "calories",
+          "selector": "#calories",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": true
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "Edited ordinary product",
+          "expected": "Edited ordinary product",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "location_id",
+          "selector": "#location_id",
+          "count": 1,
+          "value": "3",
+          "expected": "3",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Fridge",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Study location",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_purchase",
+          "selector": "#qu_id_purchase",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_stock",
+          "selector": "#qu_id_stock",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_consume",
+          "selector": "#qu_id_consume",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "qu_id_price",
+          "selector": "#qu_id_price",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "3",
+                "label": "Pack",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Piece",
+                "selected": false
+              },
+              {
+                "value": "4",
+                "label": "Study unit",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "min_stock_amount",
+          "selector": "#min_stock_amount",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "default_best_before_days",
+          "selector": "#default_best_before_days",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": "-1",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "calories",
+          "selector": "#calories",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": true
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.2356346820000002,
+    "continuation_s": 1.0439129649999999
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/products": [],
+      "/api/objects/locations": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "/api/objects/quantity_units": [
+        {
+          "id": 2,
+          "name": "Piece",
+          "description": null,
+          "name_plural": "Pieces",
+          "plural_forms": null,
+          "active": 1
+        },
+        {
+          "id": 3,
+          "name": "Pack",
+          "description": null,
+          "name_plural": "Packs",
+          "plural_forms": null,
+          "active": 1
+        }
+      ]
+    }
+  },
+  "fixture_ids": {
+    "location": 3,
+    "unit": 4
+  },
+  "resolved_payload": {
+    "name": "Ordinary product",
+    "description": "Original description",
+    "active": 1,
+    "location_id": 3,
+    "qu_id_purchase": 4,
+    "qu_id_stock": 4,
+    "qu_id_consume": 4,
+    "qu_id_price": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0,
+    "calories": 0
+  },
+  "producer_status": 200,
+  "resource_id": 1,
+  "prefix": {
+    "name": "Ordinary product",
+    "description": "Original description",
+    "product_group_id": null,
+    "active": 1,
+    "location_id": 3,
+    "shopping_location_id": null,
+    "qu_id_purchase": 4,
+    "qu_id_stock": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0,
+    "default_best_before_days_after_open": 0,
+    "default_best_before_days_after_freezing": 0,
+    "default_best_before_days_after_thawing": 0,
+    "picture_file_name": null,
+    "enable_tare_weight_handling": 0,
+    "tare_weight": 0,
+    "not_check_stock_fulfillment_for_recipes": 0,
+    "parent_product_id": null,
+    "calories": 0,
+    "cumulate_min_stock_amount_of_sub_products": 0,
+    "due_type": 1,
+    "quick_consume_amount": 1,
+    "hide_on_stock_overview": 0,
+    "default_stock_label_type": 0,
+    "should_not_be_frozen": 0,
+    "treat_opened_as_out_of_stock": 1,
+    "no_own_stock": 0,
+    "default_consume_location_id": null,
+    "move_on_open": 0,
+    "qu_id_consume": 4,
+    "auto_reprint_stock_label": 0,
+    "quick_open_amount": 1,
+    "qu_id_price": 4,
+    "disable_open": 0,
+    "default_purchase_price_type": 1
+  },
+  "immutable_before": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-10 20:27:09",
+    "userfields": null
+  },
+  "producer_normalizations": {},
+  "persisted_contract_violations": [],
+  "reference_checks": [
+    {
+      "field": "location_id",
+      "value": 3,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    },
+    {
+      "field": "default_consume_location_id",
+      "value": null,
+      "valid": true,
+      "reason": "nullable_absent"
+    },
+    {
+      "field": "qu_id_purchase",
+      "value": 4,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    },
+    {
+      "field": "qu_id_stock",
+      "value": 4,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    },
+    {
+      "field": "qu_id_consume",
+      "value": 4,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    },
+    {
+      "field": "qu_id_price",
+      "value": 4,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    },
+    {
+      "field": "product_group_id",
+      "value": null,
+      "valid": true,
+      "reason": "nullable_absent"
+    },
+    {
+      "field": "shopping_location_id",
+      "value": null,
+      "valid": true,
+      "reason": "nullable_absent"
+    },
+    {
+      "field": "parent_product_id",
+      "value": null,
+      "valid": true,
+      "reason": "nullable_absent"
+    }
+  ],
+  "native_submission": {
+    "form_valid": true,
+    "observation_window_ms": 20000,
+    "attempts": [
+      {
+        "method": "PUT",
+        "path": "/api/objects/products/1",
+        "body": {
+          "name": "Edited ordinary product",
+          "active": "1",
+          "description": "Original description",
+          "location_id": "3",
+          "default_consume_location_id": "",
+          "shopping_location_id": "",
+          "min_stock_amount": "0",
+          "treat_opened_as_out_of_stock": "1",
+          "due_type": "1",
+          "default_best_before_days": "0",
+          "default_best_before_days_after_open": "0",
+          "default_best_before_days_after_freezing": "0",
+          "default_best_before_days_after_thawing": "0",
+          "product_group_id": "",
+          "qu_id_stock": "4",
+          "qu_id_purchase": "4",
+          "qu_id_consume": "4",
+          "qu_id_price": "4",
+          "calories": "0",
+          "quick_consume_amount": "1",
+          "quick_open_amount": "1",
+          "default_purchase_price_type": "1",
+          "move_on_open": "0",
+          "cumulate_min_stock_amount_of_sub_products": "0",
+          "should_not_be_frozen": "0",
+          "enable_tare_weight_handling": "0",
+          "not_check_stock_fulfillment_for_recipes": "0",
+          "disable_open": "0",
+          "hide_on_stock_overview": "0",
+          "no_own_stock": "0",
+          "parent_product_id": ""
+        }
+      }
+    ]
+  },
+  "final": {
+    "name": "Edited ordinary product",
+    "description": "Original description",
+    "product_group_id": null,
+    "active": 1,
+    "location_id": 3,
+    "shopping_location_id": null,
+    "qu_id_purchase": 4,
+    "qu_id_stock": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0,
+    "default_best_before_days_after_open": 0,
+    "default_best_before_days_after_freezing": 0,
+    "default_best_before_days_after_thawing": 0,
+    "picture_file_name": null,
+    "enable_tare_weight_handling": 0,
+    "tare_weight": 0,
+    "not_check_stock_fulfillment_for_recipes": 0,
+    "parent_product_id": null,
+    "calories": 0,
+    "cumulate_min_stock_amount_of_sub_products": 0,
+    "due_type": 1,
+    "quick_consume_amount": 1,
+    "hide_on_stock_overview": 0,
+    "default_stock_label_type": 0,
+    "should_not_be_frozen": 0,
+    "treat_opened_as_out_of_stock": 1,
+    "no_own_stock": 0,
+    "default_consume_location_id": null,
+    "move_on_open": 0,
+    "qu_id_consume": 4,
+    "auto_reprint_stock_label": 0,
+    "quick_open_amount": 1,
+    "qu_id_price": 4,
+    "disable_open": 0,
+    "default_purchase_price_type": 1
+  },
+  "immutable_after": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-10 20:27:09",
+    "userfields": null
+  },
+  "native_representation_discrepancies": [],
+  "additional_field_changes": {},
+  "browser_cleanup_confirmed": true
+}

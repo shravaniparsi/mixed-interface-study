@@ -1,0 +1,412 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "location-name-empty",
+  "workflow": "location",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.04316334900000001
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:25:45",
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.015696545
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/locations",
+      "body": {
+        "name": "",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "3"
+      },
+      "elapsed_s": 0.041562120999999994
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": null,
+        "description": "Original description",
+        "row_created_timestamp": "2026-11-10 20:25:46",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.011463951000000009
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": null,
+        "description": "Original description",
+        "row_created_timestamp": "2026-11-10 20:25:46",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.012675996999999824
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "",
+          "expected": "",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": false,
+            "valueMissing": true,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "is_freezer",
+          "selector": "#is_freezer",
+          "count": 1,
+          "value": false,
+          "expected": false,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": false
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "",
+          "expected": "",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": false,
+            "valueMissing": true,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "is_freezer",
+          "selector": "#is_freezer",
+          "count": 1,
+          "value": false,
+          "expected": false,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": false
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "",
+          "expected": "",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": false,
+            "valueMissing": true,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "is_freezer",
+          "selector": "#is_freezer",
+          "count": 1,
+          "value": false,
+          "expected": false,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": false
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.1883365219999997,
+    "continuation_s": 1.858501531
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "blocked_native_validation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 1,
+    "seed_collections": {
+      "/api/objects/locations": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "is_freezer": 0,
+          "active": 1
+        }
+      ]
+    }
+  },
+  "fixture_ids": {},
+  "resolved_payload": {
+    "name": "",
+    "description": "Original description",
+    "active": 1,
+    "is_freezer": 0
+  },
+  "producer_status": 200,
+  "resource_id": 3,
+  "prefix": {
+    "name": null,
+    "description": "Original description",
+    "is_freezer": 0,
+    "active": 1
+  },
+  "immutable_before": {
+    "id": 3,
+    "row_created_timestamp": "2026-11-10 20:25:46",
+    "userfields": null
+  },
+  "producer_normalizations": {
+    "name": {
+      "input": "",
+      "persisted": null
+    }
+  },
+  "persisted_contract_violations": [
+    "name"
+  ],
+  "reference_checks": [],
+  "native_submission": {
+    "form_valid": false,
+    "observation_window_ms": 1500,
+    "attempts": []
+  },
+  "final": {
+    "name": null,
+    "description": "Original description",
+    "is_freezer": 0,
+    "active": 1
+  },
+  "immutable_after": {
+    "id": 3,
+    "row_created_timestamp": "2026-11-10 20:25:46",
+    "userfields": null
+  },
+  "native_representation_discrepancies": [],
+  "additional_field_changes": {},
+  "browser_cleanup_confirmed": true
+}

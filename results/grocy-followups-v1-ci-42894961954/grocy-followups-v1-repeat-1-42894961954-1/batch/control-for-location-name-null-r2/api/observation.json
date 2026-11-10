@@ -1,0 +1,165 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "location-valid-1",
+  "workflow": "location",
+  "channel": "api",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.05463313199999999
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:25:31",
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.020457078999999993
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/locations",
+      "body": {
+        "name": "Ordinary location",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "3"
+      },
+      "elapsed_s": 0.05522445499999999
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": "Ordinary location",
+        "description": "Original description",
+        "row_created_timestamp": "2026-11-10 20:25:32",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.016139083999999998
+    },
+    {
+      "channel": "api",
+      "method": "PUT",
+      "path": "/api/objects/locations/3",
+      "body": {
+        "name": "Ordinary location",
+        "description": "Edited ordinary description",
+        "is_freezer": 0,
+        "active": 1
+      },
+      "status": 204,
+      "response": null,
+      "elapsed_s": 0.015092467
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": "Ordinary location",
+        "description": "Edited ordinary description",
+        "row_created_timestamp": "2026-11-10 20:25:32",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.011561613999999991
+    }
+  ],
+  "forms": [],
+  "timing": {
+    "continuation_s": 0.027910571000000006
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 1,
+    "seed_collections": {
+      "/api/objects/locations": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "is_freezer": 0,
+          "active": 1
+        }
+      ]
+    }
+  },
+  "fixture_ids": {},
+  "resolved_payload": {
+    "name": "Ordinary location",
+    "description": "Original description",
+    "active": 1,
+    "is_freezer": 0
+  },
+  "producer_status": 200,
+  "resource_id": 3,
+  "prefix": {
+    "name": "Ordinary location",
+    "description": "Original description",
+    "is_freezer": 0,
+    "active": 1
+  },
+  "immutable_before": {
+    "id": 3,
+    "row_created_timestamp": "2026-11-10 20:25:32",
+    "userfields": null
+  },
+  "producer_normalizations": {},
+  "persisted_contract_violations": [],
+  "reference_checks": [],
+  "final": {
+    "name": "Ordinary location",
+    "description": "Edited ordinary description",
+    "is_freezer": 0,
+    "active": 1
+  },
+  "immutable_after": {
+    "id": 3,
+    "row_created_timestamp": "2026-11-10 20:25:32",
+    "userfields": null
+  },
+  "additional_field_changes": {},
+  "browser_cleanup_confirmed": true
+}
