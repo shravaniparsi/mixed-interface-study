@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""Fresh common generated controls; no mutations or repeats."""
+import os,sys,shutil,json,subprocess,time,socket
+from pathlib import Path
+from urllib.request import Request,urlopen
+from realworld_generated_runtime_v2 import ROOT,read
+from run_common_petclinic_v1 import SOURCES as COMMON_SOURCES,BINDINGS
+from common_generated_qualification_v1 import plan,drive
+from common_generated_adapter_v1 import Adapter
+from mixed_interface.common_execution_v1 import execute as execute_common
+SOURCES=sorted(set(COMMON_SOURCES+['scripts/common_generated_adapter_v1.py','scripts/common_generated_qualification_v1.py',
+    'scripts/run_common_generated_v1.py','scripts/validate_common_generated_v1.py',
+    '.github/workflows/common_generated_v1.yml','protocol/common-generated-v1.md']))
+from realworld_generated_bindings_v1 import case_for,extract
+from realworld_generated_loader_v1 import sha
+from realworld_generated_terminal_v1 import compare
+from realworld_case_worker import cleanup_browser
+from run_realworld_pilot import wait_http
+sys.path.insert(0,str(ROOT/'scripts/ci'))
+from owned_process_scope import stop_owned_group,defer_stop_signals,interruption_as_exception
+
+def write(p,v):Path(p).write_text(json.dumps(v,indent=2)+'\n')
+def closed():
+    with socket.socket() as s:return s.connect_ex(('127.0.0.1',18765))!=0
+
+def main():
+    artifact=Path(os.environ['CI_ARTIFACT_DIR']);out=artifact/'common-generated-v1';out.mkdir()
+    runtime=Path(os.environ['STUDY_RUNTIME'])/'common-generated-v1';runtime.mkdir()
+    bootstrap=read(artifact/'realworld-bootstrap.json');subject=Path(bootstrap['subject']);python=bootstrap['python'];node=bootstrap['node'];frontend=subject/'fronts/vue3-realworld-example-app'
+    for name in ('realworld-bootstrap.json','runtime-versions.json','browser.json'):shutil.copyfile(artifact/name,out/name)
+    for source in SOURCES:
+        dest=out/'sources'/source;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(ROOT/source,dest)
+    for repo,expected in ((subject,bootstrap['backend_commit']),(frontend,bootstrap['frontend_commit'])):
+        assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==expected
+        subprocess.run(['git','diff','--exit-code','HEAD','--'],cwd=repo,check=True,timeout=20)
+    write(out/'plan.json',{'plan':plan(),'run_identity':os.environ['GITHUB_RUN_ID']+':'+os.environ['GITHUB_RUN_ATTEMPT'],'sources':{s:sha(ROOT/s) for s in SOURCES},'source_commit':os.environ['GITHUB_SHA'],'worker_timeout_s':80,'outer_timeout_s':600,'primary_freeze_complete':False})
+    database=runtime/'active.sqlite3';fixture=out/'fixture.sqlite3'
+    env=dict(os.environ,DEBUG='True',DATABASE_URL='file:'+str(database),TZ='UTC',PYTHONDONTWRITEBYTECODE='1')
+    backend=preview=None;handles=[];report={'status':'incomplete','completed_jobs':[],'new_primary_samples':0,'primary_freeze_complete':False};started=time.monotonic()
+    try:
+        assert closed(),'Backend port occupied'
+        with (out/'migrate.log').open('w') as log:subprocess.run([python,'manage.py','migrate','--noinput'],cwd=subject,env=env,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=60)
+        def launch(cmd,cwd,name):
+            log=(out/name).open('w');handles.append(log)
+            return subprocess.Popen(cmd,cwd=cwd,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+        backend=launch([python,'manage.py','runserver','127.0.0.1:18765','--noreload'],subject,'setup-backend.log');wait_http('http://127.0.0.1:18765/api/tags',backend)
+        request=Request('http://127.0.0.1:18765/api/users',data=json.dumps({'user':{'username':'pilotresearch','email':'pilot@example.com','password':'Pilot-Research-123!'}}).encode(),headers={'Content-Type':'application/json'},method='POST')
+        with urlopen(request,timeout=10) as response:assert response.status==201
+        cleanup=stop_owned_group(backend);assert cleanup['exit_confirmed'] and not cleanup['errors'];backend=None
+        shutil.copyfile(database,fixture);fixture_sha=sha(fixture)
+        config={'subject':str(subject),'python':python,'node':node,'case_runner':str(ROOT/'scripts/realworld_generated_case.mjs'),'fixture':str(fixture),'database':str(database),'fixture_sha256':fixture_sha}
+        write(runtime/'environment.json',config)
+        preview=launch([node,'node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','18766','--strictPort'],frontend,'frontend.log');wait_http('http://127.0.0.1:18766',preview)
+        report['common_setup_s']=time.monotonic()-started
+        def execute(job):
+            for source in SOURCES:
+                assert sha(ROOT/source)==read(out/'plan.json')['sources'][source],'Source changed'
+            binding=next(b for b in BINDINGS['bindings'] if b['pair_id']==job['pair_id'])
+            adapter=Adapter(binding['profile'],runtime/'environment.json',env,fixture_sha)
+            return execute_common(out,BINDINGS,plan()['preflight'],job,adapter,os.environ['GITHUB_RUN_ID']+':'+os.environ['GITHUB_RUN_ATTEMPT'])
+        campaign=drive(execute,lambda value:write(out/'campaign.json',value))
+        report['status']=campaign['status'];report['completed_jobs']=campaign['completed']
+    except BaseException as error:
+        report['error']=type(error).__name__+': '+str(error)
+    finally:
+        with defer_stop_signals():
+            for label,process in [('setup_backend',backend),('frontend',preview)]:
+                if process is not None:
+                    result=stop_owned_group(process);report[label+'_cleanup']=result
+                    if not result['exit_confirmed'] or result['errors']:report['status']='incomplete'
+            for log in handles:log.close()
+            write(out/'report.json',report)
+    return 0 if report['status']=='completed_bounded_diagnostic' else 1
+
+if __name__=='__main__':
+    with interruption_as_exception():raise SystemExit(main())
