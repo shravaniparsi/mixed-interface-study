@@ -1,0 +1,1174 @@
+{
+  "kind": "linkding_finite_execution_v1",
+  "registered_date": "2026-11-10",
+  "version": "1.47.0",
+  "source_commit": "24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f",
+  "image": "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522",
+  "image_id": "sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3",
+  "deployment_report": "results/production-extension-screen-ci-42874085809/production-screen-linkding-42874085809-1/report.json",
+  "deployment_report_sha256": "5a11797ce3445357102744178f9133b860a5e73c085203fc381abeed4bc3dfe2",
+  "scope": "24 frozen boundary inputs and eight valid controls; synthetic probes excluded. Full-object API PUT comparison against native edit/save.",
+  "workflows": [
+    {
+      "id": "bookmark",
+      "collection": "/api/bookmarks/",
+      "create_query": "?disable_scraping&disable_html_snapshot",
+      "edit_path": "/bookmarks/{id}/edit",
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "form_fields": [
+        "url",
+        "title",
+        "description",
+        "notes",
+        "unread"
+      ],
+      "fields": [
+        "url",
+        "title",
+        "description",
+        "notes",
+        "tag_names",
+        "unread",
+        "shared",
+        "is_archived"
+      ]
+    },
+    {
+      "id": "bundle",
+      "collection": "/api/bundles/",
+      "create_query": "",
+      "edit_path": "/bundles/{id}/edit",
+      "edit_field": "search",
+      "edit_value": "edited-search",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "form_fields": [
+        "name",
+        "search",
+        "any_tags",
+        "all_tags",
+        "excluded_tags",
+        "filter_unread",
+        "filter_shared"
+      ],
+      "fields": [
+        "name",
+        "search",
+        "any_tags",
+        "all_tags",
+        "excluded_tags",
+        "filter_unread",
+        "filter_shared"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/linkding_case_v1.mjs": "40bdcd49f28b1eac57a71aa7001901b053fe84b75ae8c15b5145b95512ed8424",
+    "scripts/extension/run_linkding_cases_v1.py": "eb966ff02780b444e47e52e96bd22c66981b7f04f115cf2164fe399a12a7c2d6",
+    "scripts/extension/run_linkding_batch_v1.py": "13307ca4159cbfcec062507020d2c9a8f556e511d34cfbfd0d4abfd079ff0a1b",
+    ".github/workflows/linkding_cases_v1.yml": "210f16429256fc1f9e19d4eea7c7d2da29009638effafc2bd8d3f98456d6a80d",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "execution_authorized": true,
+  "cases": [
+    {
+      "id": "bookmark-valid-1",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-valid-2",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Interior title",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-valid-3",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-valid-4",
+      "workflow": "bookmark",
+      "payload": {
+        "url": "https://example.invalid/second",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-1",
+      "workflow": "bundle",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-2",
+      "workflow": "bundle",
+      "payload": {
+        "name": "Interior bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-3",
+      "workflow": "bundle",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-valid-4",
+      "workflow": "bundle",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "yes",
+        "filter_shared": "no"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-title-null",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "null",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": null,
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-url-empty",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "empty",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-omitted",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "omitted",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-length-2047",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "length-2047",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "https://example.invalid/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-title-length-512",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "length-512",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-length-2049",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "length-2049",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "https://example.invalid/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-length-511",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "length-511",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-null",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "null",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": null,
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-length-513",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "length-513",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-url-omitted",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "omitted",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bookmark-title-empty",
+      "workflow": "bookmark",
+      "field": "title",
+      "variant": "empty",
+      "constraint": "bookmark.title",
+      "family": "optional_length",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bookmark-url-length-2048",
+      "workflow": "bookmark",
+      "field": "url",
+      "variant": "length-2048",
+      "constraint": "bookmark.url",
+      "family": "required_url",
+      "payload": {
+        "url": "https://example.invalid/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-filter_unread-invalid-option",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "variant": "invalid-option",
+      "constraint": "bundle.filter_unread",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "not-an-option",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-any_tags-length-1023",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "length-1023",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-length-257",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "length-257",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_unread-empty",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "variant": "empty",
+      "constraint": "bundle.filter_unread",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "unknown"
+    },
+    {
+      "id": "bundle-any_tags-omitted",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "omitted",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-empty",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "empty",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_shared-null",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "variant": "null",
+      "constraint": "bundle.filter_shared",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": null
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-any_tags-length-1024",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "length-1024",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    },
+    {
+      "id": "bundle-name-omitted",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "omitted",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-filter_shared-invalid-option",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "variant": "invalid-option",
+      "constraint": "bundle.filter_shared",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "not-an-option"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-any_tags-null",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "variant": "null",
+      "constraint": "bundle.any_tags",
+      "family": "optional_length",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": null,
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "violation"
+    },
+    {
+      "id": "bundle-name-length-256",
+      "workflow": "bundle",
+      "field": "name",
+      "variant": "length-256",
+      "constraint": "bundle.name",
+      "family": "required_length",
+      "payload": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "constraint_consistency_prediction": "compatible"
+    }
+  ],
+  "units": [
+    {
+      "id": "bookmark-valid-1-r1",
+      "case_id": "bookmark-valid-1",
+      "workflow": "bookmark",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-valid-2-r1",
+      "case_id": "bookmark-valid-2",
+      "workflow": "bookmark",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-valid-3-r1",
+      "case_id": "bookmark-valid-3",
+      "workflow": "bookmark",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-valid-4-r1",
+      "case_id": "bookmark-valid-4",
+      "workflow": "bookmark",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-valid-1-r1",
+      "case_id": "bundle-valid-1",
+      "workflow": "bundle",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-valid-2-r1",
+      "case_id": "bundle-valid-2",
+      "workflow": "bundle",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-valid-3-r1",
+      "case_id": "bundle-valid-3",
+      "workflow": "bundle",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-valid-4-r1",
+      "case_id": "bundle-valid-4",
+      "workflow": "bundle",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-title-null-r1",
+      "case_id": "bookmark-title-null",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-url-empty-r1",
+      "case_id": "bookmark-url-empty",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-title-omitted-r1",
+      "case_id": "bookmark-title-omitted",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-url-length-2047-r1",
+      "case_id": "bookmark-url-length-2047",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-title-length-512-r1",
+      "case_id": "bookmark-title-length-512",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-url-length-2049-r1",
+      "case_id": "bookmark-url-length-2049",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-title-length-511-r1",
+      "case_id": "bookmark-title-length-511",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-url-null-r1",
+      "case_id": "bookmark-url-null",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-title-length-513-r1",
+      "case_id": "bookmark-title-length-513",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-url-omitted-r1",
+      "case_id": "bookmark-url-omitted",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bookmark-title-empty-r1",
+      "case_id": "bookmark-title-empty",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-url-length-2048-r1",
+      "case_id": "bookmark-url-length-2048",
+      "workflow": "bookmark",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-filter_unread-invalid-option-r1",
+      "case_id": "bundle-filter_unread-invalid-option",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-any_tags-length-1023-r1",
+      "case_id": "bundle-any_tags-length-1023",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-name-length-257-r1",
+      "case_id": "bundle-name-length-257",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-filter_unread-empty-r1",
+      "case_id": "bundle-filter_unread-empty",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-any_tags-omitted-r1",
+      "case_id": "bundle-any_tags-omitted",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-name-empty-r1",
+      "case_id": "bundle-name-empty",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-filter_shared-null-r1",
+      "case_id": "bundle-filter_shared-null",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-any_tags-length-1024-r1",
+      "case_id": "bundle-any_tags-length-1024",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-name-omitted-r1",
+      "case_id": "bundle-name-omitted",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-filter_shared-invalid-option-r1",
+      "case_id": "bundle-filter_shared-invalid-option",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-any_tags-null-r1",
+      "case_id": "bundle-any_tags-null",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-name-length-256-r1",
+      "case_id": "bundle-name-length-256",
+      "workflow": "bundle",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "id": "valid-0",
+      "unit_ids": [
+        "bookmark-valid-1-r1",
+        "bookmark-valid-2-r1",
+        "bookmark-valid-3-r1",
+        "bookmark-valid-4-r1"
+      ]
+    },
+    {
+      "id": "valid-1",
+      "unit_ids": [
+        "bundle-valid-1-r1",
+        "bundle-valid-2-r1",
+        "bundle-valid-3-r1",
+        "bundle-valid-4-r1"
+      ]
+    },
+    {
+      "id": "boundary-0",
+      "unit_ids": [
+        "bookmark-title-null-r1",
+        "bookmark-url-empty-r1",
+        "bookmark-title-omitted-r1",
+        "bookmark-url-length-2047-r1"
+      ]
+    },
+    {
+      "id": "boundary-1",
+      "unit_ids": [
+        "bookmark-title-length-512-r1",
+        "bookmark-url-length-2049-r1",
+        "bookmark-title-length-511-r1",
+        "bookmark-url-null-r1"
+      ]
+    },
+    {
+      "id": "boundary-2",
+      "unit_ids": [
+        "bookmark-title-length-513-r1",
+        "bookmark-url-omitted-r1",
+        "bookmark-title-empty-r1",
+        "bookmark-url-length-2048-r1"
+      ]
+    },
+    {
+      "id": "boundary-3",
+      "unit_ids": [
+        "bundle-filter_unread-invalid-option-r1",
+        "bundle-any_tags-length-1023-r1",
+        "bundle-name-length-257-r1",
+        "bundle-filter_unread-empty-r1"
+      ]
+    },
+    {
+      "id": "boundary-4",
+      "unit_ids": [
+        "bundle-any_tags-omitted-r1",
+        "bundle-name-empty-r1",
+        "bundle-filter_shared-null-r1",
+        "bundle-any_tags-length-1024-r1"
+      ]
+    },
+    {
+      "id": "boundary-5",
+      "unit_ids": [
+        "bundle-name-omitted-r1",
+        "bundle-filter_shared-invalid-option-r1",
+        "bundle-any_tags-null-r1",
+        "bundle-name-length-256-r1"
+      ]
+    }
+  ],
+  "response_contracts": {
+    "bookmark": {
+      "url": {
+        "type": "string",
+        "max_length": 2048
+      },
+      "title": {
+        "type": "string",
+        "max_length": 512
+      },
+      "description": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "tag_names": {
+        "type": "array"
+      },
+      "unread": {
+        "type": "boolean"
+      },
+      "shared": {
+        "type": "boolean"
+      },
+      "is_archived": {
+        "type": "boolean"
+      }
+    },
+    "bundle": {
+      "name": {
+        "type": "string",
+        "max_length": 256
+      },
+      "search": {
+        "type": "string",
+        "max_length": 256
+      },
+      "any_tags": {
+        "type": "string",
+        "max_length": 1024
+      },
+      "all_tags": {
+        "type": "string",
+        "max_length": 1024
+      },
+      "excluded_tags": {
+        "type": "string",
+        "max_length": 1024
+      },
+      "filter_unread": {
+        "type": "string",
+        "options": [
+          "off",
+          "yes",
+          "no"
+        ]
+      },
+      "filter_shared": {
+        "type": "string",
+        "options": [
+          "off",
+          "yes",
+          "no"
+        ]
+      }
+    }
+  },
+  "baseline_definition": {
+    "immediate": "HTTP status and source-derived response contract for the declared business fields; not a full OpenAPI conformance certification.",
+    "api_semantic": "Read persisted prefix, PUT the complete declared business state with only the continuation field changed, read back edited and preserved fields, including after rejection.",
+    "native": "Actual editor load, field agreement, unrelated edit, pre-submit measurement, native submit, persisted readback and fresh editor view.",
+    "predictor": "Frozen source-qualified constraint compatibility; not itself a defect and not necessarily browser-only enforcement."
+  },
+  "qualification_note": "Four ordinary pairs passed. Six source-field synthetic probes verified measurement and native request propagation; three returned 422, three returned 500. Each retained successful probe verified no persisted change after rejection/error. The HTTP 500 cases are synthetic-cohort server errors, not natural API-produced findings. One additional identical three-probe run followed a transport failure; both attempts retained.",
+  "gate": "All eight valid controls execute first using this exact runtime and full-object PUT. Boundary jobs depend on every valid control preserving state and passing the response contract.",
+  "resource_bound": {
+    "initial_pairs": 32,
+    "initial_batches": 8,
+    "max_parallel_jobs": 3,
+    "job_timeout_minutes": 20,
+    "initial_max_runner_minutes": 160,
+    "repeat_rule": "Two repeats with original ordinary control for each difference, preservation discrepancy or execution uncertainty; separate precomputed dispatch inventory after initial reconstruction.",
+    "max_followup_pairs": 128,
+    "total_max_runner_minutes_including_followups": 800,
+    "paid_model_calls": 0,
+    "runner_type": "standard public ubuntu-24.04"
+  },
+  "qualification_sha256": {
+    "manifests/linkding-candidate-inventory-v1.json": "e5a09c4dbc61110f57639e5e084408de75679fe973da982f8f776ca9602b2cb3",
+    "manifests/linkding-extension-controls-attempt3-v1.json": "d27ac95e27eb2dd576f479fe4ecf232509785981e122b57dddf50b1568859df9",
+    "manifests/linkding-extension-probes-attempt1-v1.json": "d7a722b1ff10192a6c7218202bae8bf07ab1aecd93b7e9deb73505b6c0af55b4",
+    "manifests/linkding-extension-probes-attempt2-v1.json": "0031866a92401a7e3f5e304922903c39ccd3a9e77b168204e1ce8a69a08e1714",
+    "manifests/linkding-extension-probes-attempt2-retry-v1.json": "0206af23481792a3d67b7e5226c6a7dd9f3906d440daeb0c6b8828cd72e6a629"
+  }
+}

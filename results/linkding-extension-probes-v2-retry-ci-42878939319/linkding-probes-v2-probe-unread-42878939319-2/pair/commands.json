@@ -1,0 +1,149 @@
+[
+  {
+    "args": [
+      "docker",
+      "pull",
+      "--platform",
+      "linux/amd64",
+      "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522"
+    ],
+    "returncode": 0,
+    "output": "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522: Pulling from sissbruecker/linkding\n8c7716127147: Pulling fs layer\n31fd2a94d723: Pulling fs layer\n66b685f2f76b: Pulling fs layer\n7d456e82f89b: Pulling fs layer\n1cf3cf7f997d: Pulling fs layer\necdec5a59776: Pulling fs layer\nca91edf04030: Pulling fs layer\ndae87baf8a83: Pulling fs layer\nbd10e08ec792: Pulling fs layer\n833e87f2cd14: Pulling fs layer\n8ab1a076d1f8: Pulling fs layer\n09766fc6a993: Pulling fs layer\ndae87baf8a83: Waiting\nbd10e08ec792: Waiting\n7d456e82f89b: Waiting\n833e87f2cd14: Waiting\n1cf3cf7f997d: Waiting\necdec5a59776: Waiting\n8ab1a076d1f8: Waiting\nca91edf04030: Waiting\n09766fc6a993: Waiting\n31fd2a94d723: Verifying Checksum\n31fd2a94d723: Download complete\n66b685f2f76b: Download complete\n7d456e82f89b: Verifying Checksum\n7d456e82f89b: Download complete\n8c7716127147: Verifying Checksum\n8c7716127147: Download complete\necdec5a59776: Verifying Checksum\necdec5a59776: Download complete\ndae87baf8a83: Verifying Checksum\ndae87baf8a83: Download complete\nca91edf04030: Verifying Checksum\nca91edf04030: Download complete\nbd10e08ec792: Verifying Checksum\nbd10e08ec792: Download complete\n833e87f2cd14: Verifying Checksum\n833e87f2cd14: Download complete\n8ab1a076d1f8: Verifying Checksum\n8ab1a076d1f8: Download complete\n09766fc6a993: Verifying Checksum\n09766fc6a993: Download complete\n8c7716127147: Pull complete\n1cf3cf7f997d: Verifying Checksum\n1cf3cf7f997d: Download complete\n31fd2a94d723: Pull complete\n66b685f2f76b: Pull complete\n7d456e82f89b: Pull complete\n1cf3cf7f997d: Pull complete\necdec5a59776: Pull complete\nca91edf04030: Pull complete\ndae87baf8a83: Pull complete\nbd10e08ec792: Pull complete\n833e87f2cd14: Pull complete\n8ab1a076d1f8: Pull complete\n09766fc6a993: Pull complete\nDigest: sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522\nStatus: Downloaded newer image for ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522\nghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522\n",
+    "elapsed_s": 9.524113683999985
+  },
+  {
+    "args": [
+      "docker",
+      "image",
+      "inspect",
+      "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522"
+    ],
+    "returncode": 0,
+    "output": "[\n    {\n        \"Id\": \"sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3\",\n        \"RepoTags\": [],\n        \"RepoDigests\": [\n            \"ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522\"\n        ],\n        \"Parent\": \"\",\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-09-13T16:03:57.849088031Z\",\n        \"DockerVersion\": \"\",\n        \"Author\": \"\",\n        \"Config\": {\n            \"Hostname\": \"\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"9090/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/etc/linkding/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\",\n                \"PYTHON_VERSION=3.13.7\",\n                \"PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a\",\n                \"VIRTUAL_ENV=/etc/linkding/.venv\",\n                \"UWSGI_MAX_FD=4096\"\n            ],\n            \"Cmd\": [\n                \"./bootstrap.sh\"\n            ],\n            \"Healthcheck\": {\n                \"Test\": [\n                    \"CMD-SHELL\",\n                    \"curl -f http://localhost:${LD_SERVER_PORT:-9090}/${LD_CONTEXT_PATH}health || exit 1\"\n                ],\n                \"Interval\": 30000000000,\n                \"Timeout\": 1000000000,\n                \"Retries\": 3\n            },\n            \"ArgsEscaped\": true,\n            \"Image\": \"\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"/etc/linkding\",\n            \"Entrypoint\": null,\n            \"OnBuild\": null,\n            \"Labels\": {\n                \"org.opencontainers.image.source\": \"https://github.com/sissbruecker/linkding\"\n            }\n        },\n        \"Architecture\": \"amd64\",\n        \"Os\": \"linux\",\n        \"Size\": 391670272,\n        \"GraphDriver\": {\n            \"Data\": {\n                \"LowerDir\": \"/var/lib/docker/overlay2/fa2fd60cda372580cc92e48147b86b938aead08fcf494f57f901b3dbc6d6f27d/diff:/var/lib/docker/overlay2/bef2d914fab7575614504953f6816a8d63c64c298ee3b8c70f8d9febcbdadfee/diff:/var/lib/docker/overlay2/f0060aef5086f7aa80e382f32bd2f7950b23e90c82ecc837e265bc5722d0cd46/diff:/var/lib/docker/overlay2/731c4b7319e7b2294ac01409adae864951bef7ffa6bb144c88f026a3b011ee59/diff:/var/lib/docker/overlay2/d6936aa54f854fc81e09160dc1149b5a2ab8f2782a35326a0569c0a939c4a7b9/diff:/var/lib/docker/overlay2/d718caa41a6d84bd08037ada7570d005608de1187f4e1ac40a7fad412fe909cb/diff:/var/lib/docker/overlay2/e5454595374597c81ba16bc2628060d8c42afd9ce1c00696b3a2d6e447b971c1/diff:/var/lib/docker/overlay2/fc55008e208a65f062d07678a16e0da4c0829ece12e3dc60cce830c63c899750/diff:/var/lib/docker/overlay2/6c3b8f3475891a45c4fdd89583216ab4d6b4b4a393e234f1989239c7bbd44167/diff:/var/lib/docker/overlay2/8bf44119e0efb27ad36f7d62ed6a148fb67dde223b7302ab090cad8d5630da79/diff:/var/lib/docker/overlay2/ca925417f67fa37014dee244cf9d529153cbd24e8c0bee8c318e5f651de1e9af/diff\",\n                \"MergedDir\": \"/var/lib/docker/overlay2/ca048cea14a853266783528687199bed2c2966e2b9df384f2fd285f8cfa299d8/merged\",\n                \"UpperDir\": \"/var/lib/docker/overlay2/ca048cea14a853266783528687199bed2c2966e2b9df384f2fd285f8cfa299d8/diff\",\n                \"WorkDir\": \"/var/lib/docker/overlay2/ca048cea14a853266783528687199bed2c2966e2b9df384f2fd285f8cfa299d8/work\"\n            },\n            \"Name\": \"overlay2\"\n        },\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:1d46119d249f7719e1820e24a311aa7c453f166f714969cffe89504678eaa447\",\n                \"sha256:719555a13b081583ca7e72d73a241a9d645ac7f9cc091e71a59a20440a68bd80\",\n                \"sha256:bf773f5071520d5506837835680b877584730be9a5fef09561d08edef505aebe\",\n                \"sha256:93945efa8b227b275f052ff615858752bc795063a64da631a0c016bc5771111a\",\n                \"sha256:22c0f8d73c8be7f8db46036ea2a4bf3237db7567f19323573ee7607c49f6f6c9\",\n                \"sha256:ccd6ce6ebe21b740d439f87d70748248613d40e275cd221228c62f74ede21330\",\n                \"sha256:3591328ac0475a49d9b3d0a72fe4c2db7cd22ea248c70512d13dba0ca10559d7\",\n                \"sha256:736c9ff5b09360721c7197878fc1cd582b0acbf605dac18483fbd6e6649ac4ce\",\n                \"sha256:4cb8d199348689b9e48edd5bd95aefb10ea79097d305eb6c9dccf32367eea1ab\",\n                \"sha256:6fd9f43be635c6798e5156060a44e089d80cd2e24b8aad22634c346a4cf389c3\",\n                \"sha256:f900de470f8cea78d17b52267faac654dc7aa5c3e3198e382bdb483ff8c37f6d\",\n                \"sha256:15a1dd5064927941effc8ad39b52759020325ab97e886c0791ac3aa9b00dac06\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"0001-01-01T00:00:00Z\"\n        }\n    }\n]\n",
+    "elapsed_s": 0.019662299000003713
+  },
+  {
+    "args": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "study-linkding-42878939319-probe-unread-api",
+      "-p",
+      "127.0.0.1:18080:9090",
+      "-e",
+      "LD_DISABLE_BACKGROUND_TASKS=True",
+      "sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3"
+    ],
+    "returncode": 0,
+    "output": "c8be67df97549d4252b8ef68f7c6f04252e3fcceb12b0d4daf156cb93d73bf78\n",
+    "elapsed_s": 0.23890574299997525
+  },
+  {
+    "args": [
+      "docker",
+      "exec",
+      "-i",
+      "study-linkding-42878939319-probe-unread-api",
+      "python",
+      "manage.py",
+      "shell",
+      "-c",
+      "import json,sys; from django.contrib.auth.models import User; from bookmarks.models import ApiToken; d=json.load(sys.stdin); u=User.objects.create_user(username=d['username'],password=d['password']); t=ApiToken.objects.create(user=u,name='study-control'); print('STUDY_AUTH='+json.dumps({'username':u.username,'token':t.key,'password':d['password']}))"
+    ],
+    "returncode": 0,
+    "output": "[ephemeral authentication output omitted]",
+    "elapsed_s": 0.8475383890000217
+  },
+  {
+    "args": [
+      "node",
+      "scripts/extension/linkding_probe_v2.mjs",
+      "--registry",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/linkding-extension-probes-v2.json",
+      "--workflow",
+      "bundle",
+      "--channel",
+      "api",
+      "--out",
+      "/home/runner/work/_temp/linkding-controls/pair/api"
+    ],
+    "returncode": 0,
+    "output": "",
+    "elapsed_s": 0.35677232199998343
+  },
+  {
+    "args": [
+      "docker",
+      "rm",
+      "-f",
+      "-v",
+      "study-linkding-42878939319-probe-unread-api"
+    ],
+    "returncode": 0,
+    "output": "study-linkding-42878939319-probe-unread-api\n",
+    "elapsed_s": 0.20932797000000392
+  },
+  {
+    "args": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "study-linkding-42878939319-probe-unread-ui",
+      "-p",
+      "127.0.0.1:18080:9090",
+      "-e",
+      "LD_DISABLE_BACKGROUND_TASKS=True",
+      "sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3"
+    ],
+    "returncode": 0,
+    "output": "94d46807001ef41890c381a7fa0d655432c94c86879484365f3f5187c1f249de\n",
+    "elapsed_s": 0.17447985600000493
+  },
+  {
+    "args": [
+      "docker",
+      "exec",
+      "-i",
+      "study-linkding-42878939319-probe-unread-ui",
+      "python",
+      "manage.py",
+      "shell",
+      "-c",
+      "import json,sys; from django.contrib.auth.models import User; from bookmarks.models import ApiToken; d=json.load(sys.stdin); u=User.objects.create_user(username=d['username'],password=d['password']); t=ApiToken.objects.create(user=u,name='study-control'); print('STUDY_AUTH='+json.dumps({'username':u.username,'token':t.key,'password':d['password']}))"
+    ],
+    "returncode": 0,
+    "output": "[ephemeral authentication output omitted]",
+    "elapsed_s": 0.8764656120000041
+  },
+  {
+    "args": [
+      "node",
+      "scripts/extension/linkding_probe_v2.mjs",
+      "--registry",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/linkding-extension-probes-v2.json",
+      "--workflow",
+      "bundle",
+      "--channel",
+      "ui",
+      "--out",
+      "/home/runner/work/_temp/linkding-controls/pair/ui"
+    ],
+    "returncode": 0,
+    "output": "",
+    "elapsed_s": 2.4640670189999696
+  },
+  {
+    "args": [
+      "docker",
+      "rm",
+      "-f",
+      "-v",
+      "study-linkding-42878939319-probe-unread-ui"
+    ],
+    "returncode": 0,
+    "output": "study-linkding-42878939319-probe-unread-ui\n",
+    "elapsed_s": 0.20161160899999686
+  }
+]
