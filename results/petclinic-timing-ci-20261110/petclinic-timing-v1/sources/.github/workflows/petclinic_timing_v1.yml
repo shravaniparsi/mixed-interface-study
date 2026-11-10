@@ -1,0 +1,64 @@
+name: PetClinic timing qualification v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONPATH: src
+      TZ: UTC
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Initialize evidence directory
+        run: |
+          mkdir -p "$RUNNER_TEMP/study-artifacts" "$RUNNER_TEMP/study-runtime"
+          printf 'CI_ARTIFACT_DIR=%s\nSTUDY_RUNTIME=%s\n' "$RUNNER_TEMP/study-artifacts" "$RUNNER_TEMP/study-runtime" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17.0.2+8'
+          cache-jdk: false
+          overwrite-settings: false
+      - name: Record runtime versions
+        run: python scripts/ci/capture_versions.py --output "$CI_ARTIFACT_DIR/runtime-versions.json"
+      - name: Install pinned browser
+        timeout-minutes: 4
+        run: bash scripts/ci/install_browser.sh 2>&1 | tee "$CI_ARTIFACT_DIR/browser-install.log"
+      - name: Prepare pinned PetClinic
+        timeout-minutes: 6
+        run: python scripts/ci/prepare_petclinic.py 2>&1 | tee "$CI_ARTIFACT_DIR/application-bootstrap.log"
+      - name: Execute bounded timing qualification
+        timeout-minutes: 16
+        run: |
+          timeout --signal=TERM --kill-after=20s 900s python scripts/run_petclinic_timing_qualification_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/application-run.log"
+      - name: Independently reconstruct timing and semantics
+        if: ${{ always() }}
+        run: python scripts/validate_petclinic_timing_qualification_v1.py "$CI_ARTIFACT_DIR/petclinic-timing-v1"
+      - name: Retain every attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: petclinic-timing-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/study-artifacts/
+          retention-days: 7
+          if-no-files-found: warn
+          include-hidden-files: true

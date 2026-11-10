@@ -1,0 +1,200 @@
+{
+  "source_commit": "34a7e65e8366cfd5440853ed2479d6ef537aa750",
+  "plan": {
+    "kind": "exposed_petclinic_timing_qualification_v1",
+    "slots": [
+      {
+        "slot_id": "cost-000",
+        "batch": "owner_required",
+        "job": {
+          "job_id": "initial-000",
+          "pair_id": "owner_telephone_10",
+          "target_pair_id": "owner_telephone_10",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_telephone_10-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_telephone_10-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        "expected_kind": "clean_observation"
+      },
+      {
+        "slot_id": "cost-001",
+        "batch": "owner_required",
+        "job": {
+          "job_id": "initial-001",
+          "pair_id": "owner_omit_firstName",
+          "target_pair_id": "owner_omit_firstName",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "owner_omit_firstName-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "owner_omit_firstName-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        "expected_kind": "matched_rejection"
+      },
+      {
+        "slot_id": "cost-002",
+        "batch": "pets",
+        "job": {
+          "job_id": "initial-000",
+          "pair_id": "pet_valid",
+          "target_pair_id": "pet_valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "pet_valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "pet_valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        "expected_kind": "clean_observation"
+      },
+      {
+        "slot_id": "cost-003",
+        "batch": "pets",
+        "job": {
+          "job_id": "initial-001",
+          "pair_id": "pet_omit_name",
+          "target_pair_id": "pet_omit_name",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "pet_omit_name-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "pet_omit_name-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        "expected_kind": "matched_rejection"
+      },
+      {
+        "slot_id": "cost-004",
+        "batch": "visits",
+        "job": {
+          "job_id": "initial-000",
+          "pair_id": "visit_valid",
+          "target_pair_id": "visit_valid",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "visit_valid-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "visit_valid-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        "expected_kind": "clean_observation"
+      },
+      {
+        "slot_id": "cost-005",
+        "batch": "visits",
+        "job": {
+          "job_id": "initial-001",
+          "pair_id": "visit_omit_date",
+          "target_pair_id": "visit_omit_date",
+          "role": "initial",
+          "repetition": 1,
+          "branches": [
+            {
+              "case_id": "visit_omit_date-ui-r1",
+              "continuation": "ui",
+              "fresh_reset_required": true
+            },
+            {
+              "case_id": "visit_omit_date-api-r1",
+              "continuation": "api",
+              "fresh_reset_required": true
+            }
+          ]
+        },
+        "expected_kind": "matched_rejection"
+      }
+    ],
+    "pair_timeout_s": 120,
+    "outer_timeout_s": 900,
+    "automatic_repeats": false,
+    "resume": false,
+    "primary_freeze_complete": false
+  },
+  "sources": {
+    ".github/workflows/petclinic_timing_v1.yml": "54c37efdf94f630f385d90fafcd888bbc5d48153d1fcc67091b8a43ee6eb7599",
+    ".github/workflows/petclinic_v3.yml": "e9ba6217ec0e3ff3eec35d27cc8a2c8d20a8b8ba72f9148e82a8bc1d273c6cfe",
+    "manifests/petclinic-candidates-v1.json": "2c08ddeebdab4f3bd5594c85256831a569e2a381b4d1bad948b10572cd17a693",
+    "manifests/petclinic-expanded-batches-v3.json": "716c5ffeed77f00146038441324a9ba6f4a863681cdd3b1c9e7c23cd9b50800d",
+    "manifests/petclinic-prefix-policy-v3.json": "95a1c08e7a62b72c19031ffec84ef5602e2553fd7c67bbde432656febd6faf9e",
+    "protocol/petclinic-expanded-dispatch-v3.md": "0c86ea6fb2c642771519dd4653e626405edf1f101f4c4cf8aabde414e4197429",
+    "protocol/petclinic-timing-qualification-v1.md": "3ef42b6296b50fa6be763bdb4f40655c21539053855b7e254b5972e630b0a23c",
+    "scripts/ci/owned_process_scope.py": "c94c516788613f13c44d3e72a257064f5d6ce7177a288f06bd4ef6b5262b5bb0",
+    "scripts/ci/prepare_petclinic.py": "a118d07e548f6464a3c541b15bcd957b9567ede3b1043e9a5f66aad5b02fd051",
+    "scripts/petclinic_branch_cost_v1.mjs": "7554463914743ab9a963059f53b72b5aaa6cda08b7b0b98e82c15b428ea4015a",
+    "scripts/petclinic_branch_cost_validation_v1.py": "afecca16db576930165d2b8a8c1e19c4c58d00ed7ca4218404c9fc964c94775a",
+    "scripts/petclinic_cleanup.mjs": "a30e5b89c813b67b37e537b0b4c1aac3caa3892d13ff14dad547d3780be01e3c",
+    "scripts/petclinic_expanded_campaign.py": "555e1c23565302c0718cd09c7add1b9519681ffbe682f9adf1b7eb504179b260",
+    "scripts/petclinic_integrity.mjs": "60d5f484a3f4939753bf68d5a581a220dd727681beda8cc2989cb18969df6bc1",
+    "scripts/petclinic_job_binding_v3.mjs": "1395bbfe1869cae656ddc00b5ed5d43712e319354296a642b67b3d060df2d6db",
+    "scripts/petclinic_prefix_outcomes_v3.py": "30f375fe6cc099725fd9d227dd0dfd958acaff49f056e82bbe5225b8c2ca427d",
+    "scripts/petclinic_response_capture.mjs": "db710ed6d36aac38405b4cc746d5e0ee1c95a54e76e7d2860477f5c24f7d5868",
+    "scripts/petclinic_terminal_outcomes.py": "2a18771c861e1e9628107a20cdb06b092e762b6931f63079f3c839ffdeca1f81",
+    "scripts/petclinic_timed_jobs_v4.py": "786f6e1bdc401e3d21c62f3cf6e650bbf538c4786665e8135616c9886d7fdfae",
+    "scripts/petclinic_timing_qualification_v1.py": "b28875e4ff312eb2fb4850045753d4ece4a44775268a92d54b71d802cb4092f6",
+    "scripts/run_petclinic_expanded_campaign.py": "67b6e7467b024ea16b1d86159e100e8fe25e31bc46d197a37e80fc65549aab3f",
+    "scripts/run_petclinic_pair_job_v3.mjs": "cf25ca3bcd0c977023c729469c11ec55a405f304e6c6c62decc7b60c7447afc9",
+    "scripts/run_petclinic_pair_job_v4.mjs": "bb0c3c407734d61a2cd00d14a104ccfcff3776648b9a85435ec99c1968dc8a29",
+    "scripts/run_petclinic_timing_qualification_v1.py": "53975682cfd23a87f3702ba1ddb8580198eb5e123e895e4e6cd4c7b528a35cb3",
+    "scripts/summarize_petclinic_integrity_components.py": "b275004631c141530aa92470bd21dfb1dcd052a9de28172af9a39f8c1b98af20",
+    "scripts/summarize_petclinic_oracle_components.py": "7c97bb49033345b9274df6e1f976571d8234b426d29266daa0a596a8b289f4c9",
+    "scripts/validate_petclinic_expanded_campaign.py": "4f34c479b3761b3ed798d0397f1c079ee22fcdb3b56f67e81d09becdd73e9fec",
+    "scripts/validate_petclinic_integrity.py": "0e1d27a4ed20b043b910192e8adb22438cb3184391bfc07e3d3beefe23ffcde1",
+    "scripts/validate_petclinic_timing_qualification_v1.py": "03420cf243e0918e38e41be3c0d8a68e4be7f578690b3605d74f32495addc6b0",
+    "src/mixed_interface/campaign_v2.py": "6fd70dd013ff24a04d41c2bd8f082aa9f5e00ae9b5cf08e6856067ca28483a59",
+    "src/mixed_interface/repetition.py": "487d66a051bae2b76c8673b6f9e9cc93b04a5f046636f97b0901262344fbc542",
+    "src/mixed_interface/terminal_outcomes.py": "8559a6a9c30f4269853a1d7f1347c938ac2974f6858c744f49d20ca09f1b4a20"
+  },
+  "environment": {
+    "petclinic-bootstrap.json": "26be6d5e7689bde8ce1420d58f09a3f7f50c1792e288c05bb521603e5881f235",
+    "runtime-versions.json": "32016e3d0248b2cdf4d2afc845045428028489a889c0e6f80cd6acd681a1744c",
+    "browser.json": "62b0aecfb63570b07063206f6626d74e788a3eea21d05ca215fd87f5eb529c02"
+  },
+  "pair_timeout_s": 120,
+  "outer_timeout_s": 900,
+  "primary_freeze_complete": false,
+  "new_primary_samples": 0
+}

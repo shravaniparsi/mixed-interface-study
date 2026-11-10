@@ -1,0 +1,48 @@
+{
+  "slot": {
+    "slot_id": "cost-002",
+    "batch": "pets",
+    "job": {
+      "job_id": "initial-000",
+      "pair_id": "pet_valid",
+      "target_pair_id": "pet_valid",
+      "role": "initial",
+      "repetition": 1,
+      "branches": [
+        {
+          "case_id": "pet_valid-api-r1",
+          "continuation": "api",
+          "fresh_reset_required": true
+        },
+        {
+          "case_id": "pet_valid-ui-r1",
+          "continuation": "ui",
+          "fresh_reset_required": true
+        }
+      ]
+    },
+    "expected_kind": "clean_observation"
+  },
+  "command": [
+    "node",
+    "/home/runner/work/mixed-interface-study/mixed-interface-study/scripts/run_petclinic_pair_job_v4.mjs",
+    "--registry",
+    "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/petclinic-candidates-v1.json",
+    "--controls",
+    "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/petclinic-expanded-batches-v3.json",
+    "--batch",
+    "pets",
+    "--job",
+    "/home/runner/work/_temp/study-artifacts/petclinic-timing-v1/cost-002/job.json",
+    "--output",
+    "/home/runner/work/_temp/study-artifacts/petclinic-timing-v1/cost-002/run",
+    "--jar",
+    "/home/runner/work/_temp/study-runtime/petclinic/backend/target/spring-petclinic-rest-4.0.2.jar",
+    "--java",
+    "/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.2-8/x64/bin/java",
+    "--playwright-module",
+    "/home/runner/work/_temp/study-node-tools/node_modules/playwright",
+    "--chrome-executable",
+    "/home/runner/work/_temp/study-playwright-browsers/chromium-1234/chrome-linux64/chrome"
+  ]
+}

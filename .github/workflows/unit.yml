@@ -110,6 +110,8 @@ jobs:
         run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
       - name: Verify live reference readiness reconciliation
         run: python scripts/prepare_corpus_review_v5.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v5.log"
+      - name: Verify live PetClinic timing archive
+        run: python scripts/verify_petclinic_timing_archive_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-timing-runtime-v1.log"
       - name: Verify PetClinic branch-cost preparation
         run: python scripts/prepare_petclinic_branch_cost_v1.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-branch-cost-v1.log"
       - name: Verify generated corpus readiness reconciliation
