@@ -1,0 +1,632 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "task-name-empty",
+  "workflow": "task",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.053027319999999996
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.023352015000000007
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.019795420000000008
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/task_categories",
+      "body": {
+        "name": "Study category",
+        "description": "Fixture category",
+        "active": 1
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.062083973999999986
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/tasks",
+      "body": {
+        "name": "",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": 1,
+        "assigned_to_user_id": 2
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.014708315
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": null,
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "done_timestamp": null,
+        "category_id": 1,
+        "assigned_to_user_id": 2,
+        "row_created_timestamp": "2026-11-10 20:19:17",
+        "userfields": null
+      },
+      "elapsed_s": 0.010936740999999984
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Study category",
+        "description": "Fixture category",
+        "row_created_timestamp": "2026-11-10 20:19:17",
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.011722871999999995
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/users",
+      "status": 200,
+      "response": [
+        {
+          "id": 1,
+          "username": "admin",
+          "first_name": null,
+          "last_name": null,
+          "row_created_timestamp": "2026-11-10 20:19:16",
+          "display_name": "admin",
+          "picture_file_name": null
+        },
+        {
+          "id": 2,
+          "username": "study_actor",
+          "first_name": "Study",
+          "last_name": "Actor",
+          "row_created_timestamp": "2026-11-10 20:19:17",
+          "display_name": "Study Actor",
+          "picture_file_name": null
+        }
+      ],
+      "elapsed_s": 0.009873522999999978
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": null,
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "done_timestamp": null,
+        "category_id": 1,
+        "assigned_to_user_id": 2,
+        "row_created_timestamp": "2026-11-10 20:19:17",
+        "userfields": null
+      },
+      "elapsed_s": 0.014427433000000291
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "",
+          "expected": "",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": false,
+            "valueMissing": true,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "due_date",
+          "selector": "#due_date input",
+          "count": 1,
+          "value": "2027-01-15",
+          "expected": "2027-01-15",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "category_id",
+          "selector": "#category_id",
+          "count": 1,
+          "value": "1",
+          "expected": "1",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "1",
+                "label": "Study category",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "assigned_to_user_id",
+          "selector": "#user_id",
+          "count": 1,
+          "value": "2",
+          "expected": "2",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "1",
+                "label": "admin",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Study Actor",
+                "selected": true
+              }
+            ]
+          }
+        }
+      ],
+      "form_valid": false
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "",
+          "expected": "",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": false,
+            "valueMissing": true,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "due_date",
+          "selector": "#due_date input",
+          "count": 1,
+          "value": "2027-01-15",
+          "expected": "2027-01-15",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "category_id",
+          "selector": "#category_id",
+          "count": 1,
+          "value": "1",
+          "expected": "1",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "1",
+                "label": "Study category",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "assigned_to_user_id",
+          "selector": "#user_id",
+          "count": 1,
+          "value": "2",
+          "expected": "2",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "1",
+                "label": "admin",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Study Actor",
+                "selected": true
+              }
+            ]
+          }
+        }
+      ],
+      "form_valid": false
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "",
+          "expected": "",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": false,
+            "valueMissing": true,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "due_date",
+          "selector": "#due_date input",
+          "count": 1,
+          "value": "2027-01-15",
+          "expected": "2027-01-15",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "category_id",
+          "selector": "#category_id",
+          "count": 1,
+          "value": "1",
+          "expected": "1",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "1",
+                "label": "Study category",
+                "selected": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "assigned_to_user_id",
+          "selector": "#user_id",
+          "count": 1,
+          "value": "2",
+          "expected": "2",
+          "agrees": true,
+          "details": {
+            "tag": "SELECT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": [
+              {
+                "value": "",
+                "label": "",
+                "selected": false
+              },
+              {
+                "value": "1",
+                "label": "admin",
+                "selected": false
+              },
+              {
+                "value": "2",
+                "label": "Study Actor",
+                "selected": true
+              }
+            ]
+          }
+        }
+      ],
+      "form_valid": false
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.403885364,
+    "continuation_s": 2.006439523
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "blocked_native_validation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/tasks": [],
+      "/api/objects/task_categories": []
+    }
+  },
+  "fixture_ids": {
+    "category": 1
+  },
+  "resolved_payload": {
+    "name": "",
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "producer_status": 200,
+  "resource_id": 1,
+  "prefix": {
+    "name": null,
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "done_timestamp": null,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "immutable_before": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-10 20:19:17",
+    "userfields": null
+  },
+  "producer_normalizations": {
+    "name": {
+      "input": "",
+      "persisted": null
+    }
+  },
+  "persisted_contract_violations": [
+    "name"
+  ],
+  "reference_checks": [
+    {
+      "field": "category_id",
+      "value": 1,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    },
+    {
+      "field": "assigned_to_user_id",
+      "value": 2,
+      "status": 200,
+      "valid": true,
+      "reason": "exists"
+    }
+  ],
+  "native_submission": {
+    "form_valid": false,
+    "observation_window_ms": 1500,
+    "attempts": []
+  },
+  "final": {
+    "name": null,
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "done_timestamp": null,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "immutable_after": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-10 20:19:17",
+    "userfields": null
+  },
+  "native_representation_discrepancies": [],
+  "additional_field_changes": {},
+  "browser_cleanup_confirmed": true
+}

@@ -1,0 +1,200 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "product-qu_id_stock-omitted",
+  "workflow": "product",
+  "channel": "api",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.045522576
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.012969051000000007
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:17:29",
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.012306811999999993
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/locations",
+      "body": {
+        "name": "Study location",
+        "description": "Fixture location",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "3"
+      },
+      "elapsed_s": 0.04600641899999999
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Piece",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:17:29",
+          "name_plural": "Pieces",
+          "plural_forms": null,
+          "active": 1
+        },
+        {
+          "id": 3,
+          "name": "Pack",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:17:29",
+          "name_plural": "Packs",
+          "plural_forms": null,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.011805036999999999
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/quantity_units",
+      "body": {
+        "name": "Study unit",
+        "name_plural": "Study units",
+        "description": "Fixture unit",
+        "active": 1
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "4"
+      },
+      "elapsed_s": 0.015445373000000017
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/products",
+      "body": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": 3,
+        "qu_id_purchase": 4,
+        "qu_id_consume": 4,
+        "qu_id_price": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "status": 400,
+      "response": {
+        "error_message": "SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: products.qu_id_stock"
+      },
+      "elapsed_s": 0.042935894000000016
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.010522871999999978
+    }
+  ],
+  "forms": [],
+  "timing": {},
+  "prefix_status": "rejected_without_visible_write",
+  "continuation": "not_attempted",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/products": [],
+      "/api/objects/locations": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "/api/objects/quantity_units": [
+        {
+          "id": 2,
+          "name": "Piece",
+          "description": null,
+          "name_plural": "Pieces",
+          "plural_forms": null,
+          "active": 1
+        },
+        {
+          "id": 3,
+          "name": "Pack",
+          "description": null,
+          "name_plural": "Packs",
+          "plural_forms": null,
+          "active": 1
+        }
+      ]
+    }
+  },
+  "fixture_ids": {
+    "location": 3,
+    "unit": 4
+  },
+  "resolved_payload": {
+    "name": "Ordinary product",
+    "description": "Original description",
+    "active": 1,
+    "location_id": 3,
+    "qu_id_purchase": 4,
+    "qu_id_consume": 4,
+    "qu_id_price": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0,
+    "calories": 0
+  },
+  "producer_status": 400,
+  "failed_producer_collection_unchanged": true,
+  "browser_cleanup_confirmed": true
+}
