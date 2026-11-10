@@ -1,0 +1,251 @@
+{
+  "kind": "synthetic_paperless_adapter_probes_v1",
+  "version": "3.4.2",
+  "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+  "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+  "image_id": "sha256:1135cf639679fb573eabf9af76d87dc1a74868f5830291ae3287e5c6992aedc5",
+  "broker_image": "valkey/valkey@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-paperless-42876848117-1/report.json",
+  "deployment_report_sha256": "5fea82ce4a3a04af0f98335ade04113c9878eb1e627eb60c1d4631bf4c84de0d",
+  "scope": "Four synthetic measurement/constraint controls, never natural API-producer boundary outcomes. MatchingModel controls shared by correspondent/document type/tag; color checked on tag.",
+  "boundary_execution_authorized": false,
+  "workflows": [
+    {
+      "id": "correspondent",
+      "collection": "/api/correspondents/",
+      "list_path": "/attributes/correspondents",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "match",
+      "edit_value": "edited-pattern",
+      "edit_selector": "[formcontrolname=\"match\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "document-type",
+      "collection": "/api/document_types/",
+      "list_path": "/attributes/documenttypes",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "match",
+      "edit_value": "edited-pattern",
+      "edit_selector": "[formcontrolname=\"match\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "tag",
+      "collection": "/api/tags/",
+      "list_path": "/attributes/tags",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "color",
+        "is_inbox_tag",
+        "parent",
+        "owner"
+      ],
+      "edit_field": "match",
+      "edit_value": "edited-pattern",
+      "edit_selector": "[formcontrolname=\"match\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox"
+        },
+        {
+          "field": "color",
+          "selector": "[formcontrolname=\"color\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "is_inbox_tag",
+          "selector": "[formcontrolname=\"is_inbox_tag\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "algorithm_labels": {
+    "0": "None: Disable matching",
+    "1": "Any: Document contains any of these words (space separated)",
+    "2": "All: Document contains all of these words",
+    "3": "Exact: Document contains this string",
+    "4": "Regular expression: Document matches this regular expression",
+    "5": "Fuzzy: Document contains a word similar to this word",
+    "6": "Auto: Learn matching automatically"
+  },
+  "units": [
+    {
+      "id": "probe-match-length",
+      "workflow": "correspondent",
+      "probe": "match-length",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-regex",
+      "workflow": "correspondent",
+      "probe": "regex",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-color",
+      "workflow": "tag",
+      "probe": "color",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-enum",
+      "workflow": "correspondent",
+      "probe": "enum",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/paperless_probe_v1.mjs": "700876a030b62d58b3724ccdb96b66ef2703aed7dbd8d37ef4b2d166d33d0302",
+    "scripts/extension/run_paperless_probes_v1.py": "5fbb1cc937bb115c1ed05d5027ac74b2ac7a0f74db2c9f51106f623e4ae48460",
+    ".github/workflows/paperless_extension_probes_v1.yml": "1e096896b409fd60d8ee18fb6dfc0252160001c51bed81edfe9e4a5f0f9ede2c",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "probes": [
+    {
+      "id": "match-length",
+      "workflow": "correspondent",
+      "kind": "native_rejection",
+      "field": "match",
+      "selector": "[formcontrolname=\"match\"] input",
+      "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "id": "regex",
+      "workflow": "correspondent",
+      "kind": "native_rejection",
+      "field": "match",
+      "selector": "[formcontrolname=\"match\"] input",
+      "value": "[",
+      "algorithm": 4
+    },
+    {
+      "id": "color",
+      "workflow": "tag",
+      "kind": "native_rejection",
+      "field": "color",
+      "selector": "[formcontrolname=\"color\"] input",
+      "value": "#gggggg"
+    },
+    {
+      "id": "enum",
+      "workflow": "correspondent",
+      "kind": "enum_inventory",
+      "invalid_value": "not-an-option"
+    }
+  ]
+}
