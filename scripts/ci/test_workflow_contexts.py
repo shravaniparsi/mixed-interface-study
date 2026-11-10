@@ -42,7 +42,7 @@ class WorkflowContextTests(unittest.TestCase):
 
     def test_checked_in_workflows_do_not_use_runner_in_job_env(self):
         paths = sorted((PROJECT / ".github/workflows").glob("*.yml"))
-        self.assertEqual({path.name for path in paths}, {"unit.yml", "applications.yml", "petclinic_v3.yml", "realworld_v5.yml", "realworld_v6.yml", "realworld_identity_db.yml", "realworld_v7.yml", "realworld_v8.yml", "realworld_article_db.yml", "realworld_v9.yml"})
+        self.assertEqual({path.name for path in paths}, {"unit.yml", "applications.yml", "petclinic_v3.yml", "realworld_v5.yml", "realworld_v6.yml", "realworld_identity_db.yml", "realworld_v7.yml", "realworld_v8.yml", "realworld_article_db.yml", "realworld_v9.yml", "realworld_generated_v2.yml"})
         for path in paths:
             self.assertEqual(invalid_job_env_contexts(path.read_text()), [], path.name)
 
