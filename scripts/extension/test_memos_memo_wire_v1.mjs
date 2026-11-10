@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {decodeMemoAudienceUpdate as decode} from './memos_memo_wire_v1.mjs';
+const field=(tag,b)=>Buffer.concat([Buffer.from([tag,b.length]),b]);
+const text=(tag,s)=>field(tag,Buffer.from(s));
+const memo=Buffer.concat([text(10,'memos/control'),text(34,'Ordinary memo'),Buffer.from([48,2])]);
+const mask=field(18,text(10,'visibility'));
+const bytes=Buffer.concat([field(10,memo),mask]);
+assert.deepEqual(decode(bytes,'application/proto'),{memo:{name:'memos/control',content:'Ordinary memo',visibility:2},updateMask:{paths:['visibility']}});
+assert.throws(()=>decode(Buffer.concat([field(10,Buffer.concat([memo,Buffer.from([48,3])])),mask]),'application/proto'));
+assert.throws(()=>decode(Buffer.concat([field(10,Buffer.concat([memo,Buffer.from([56,1])])),mask]),'application/proto'));
+assert.throws(()=>decode(Buffer.concat([field(10,memo),field(18,text(10,'content'))]),'application/proto'));
+assert.throws(()=>decode(bytes.subarray(0,-1),'application/proto'));
+assert.throws(()=>decode(bytes,'application/json'));
+console.log('Audience-only decoder fixtures passed; real native qualification remains required');

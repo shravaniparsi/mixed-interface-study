@@ -148,3 +148,10 @@ Cause: API harness used camelCase mask values. Pinned generated user_service.pb.
 
 
 Memos v3 preference run42897766418 dispatched atcc10ef3. Expected artifacts memos-preference-controls-v3-{preferences-r1,preferences-r2}-42897766418-1; archive results/memos-preference-controls-v3-ci-42897766418; independent verify_memos_preference_controls_v3.py. No other pending manual application workflow.
+
+
+## Memos preferences qualified
+
+Run42897766418 succeeded. Both fresh paired controls independently reconstructed in manifests/memos-preference-attempt3-v1.json; raw archive results/memos-preference-controls-v3-ci-42897766418. Full four-field API mask/body checks passed, native binary request independently decoded to the single save_media_metadata mask, and all stored preferences preserved except the requested boolean edit. Four native views across two UI branches; one loaded screenshot visually inspected with English/Paper/Protected and metadata toggle off. Zero boundary results. Prior two failed attempts remain preserved. No application jobs currently pending from this run.
+
+Added a separate unqualified memo audience-update decoder and local fixtures, preserving frozen preference decoder. It supports the pinned native name/content/visibility patch with visibility-only mask and fails on extra fields; broader memo updates are not silently normalized. Live memo control adapter, complete mutable-field API comparison, raw record inventory, source-bound UI readings and actual execution remain next.
