@@ -31,3 +31,14 @@ Inspect pinned creation/update helpers, preference defaults/fallbacks, route con
 `proto/api/instance_service.proto` exposes `/api/instance/profile` with version, build commit, demo flag and needs_setup. `web/src/router/routes.ts` resolves auth to `/auth` and settings to `/setting`; `pages/Setting.tsx` selects its section from the hash. `PasswordSignInForm.tsx` and `CredentialFields.tsx` identify `#signin-username`, `#signin-password` and the form submit button. All authentication RPCs must remain outside retained request traces.
 
 `server/api/memo_create_helpers.go` validates audience and placement, checks content quota, rebuilds the memo payload, and resolves attachments and relations before mutation. It does not itself establish the complete content-validity contract; quota and payload helper behavior remain dependencies to inspect. In particular, the UI's trimmed-content rule must not be labeled API-absent merely because it is not visible in this helper.
+
+
+## Preference display policy and actor bootstrap
+
+Further pinned-source inspection establishes `/setting#preference` as a basic-user section (`settingSections.ts`). `PreferencesSection.tsx` exposes the server-backed media-metadata switch with a translated aria-label, disables it while updating, and sends only the save_media_metadata mask. The API comparator should separately exercise the complete four-field GENERAL update and check preservation of locale, theme and memo_visibility.
+
+`utils/theme.ts` declares system/default/default-dark/paper. Invalid theme resolution deliberately falls back to default; user-preference selection falls through valid localStorage and then system. `utils/i18n.ts` similarly falls through valid localStorage and browser-language matching; loadLocale validates and normalizes for local display. These helpers modify device storage/display, not by themselves the server preference. Fresh browser contexts, fixed browser locale and color scheme are required for paired observations. Record persisted strings, selector state and resolved display separately; an intended display fallback alone is not an unrequested persisted edit or a confirmed defect.
+
+`server/api/user_service.go::CreateUser` validates username/password/email, assigns the first account ADMIN, and lets an authenticated ADMIN create a separately specified USER. Test accounts must be bootstrapped privately, then ordinary resource operations authenticated as that USER. `proto/api/common.proto` declares NORMAL and ARCHIVED lifecycle states. `user_service_converters.go` copies stored GENERAL strings and boolean directly when the setting exists, falling back to getDefaultUserGeneralSetting only when absent. The default helper's definition still needs inspection before registration.
+
+No boundary candidates or results are added by this source inspection. Native binary payload decoding remains unqualified.
