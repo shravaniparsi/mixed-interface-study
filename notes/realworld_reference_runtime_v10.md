@@ -1,0 +1,11 @@
+# Prospective reference-comparison runtime qualification
+
+Source commit `dbd73458aa2945ec9de932deee73ec54f716fa2f` passed unit run 42764333787. The single bounded application run 42764442019 completed seven exposed jobs, comprising five pairs and two native-only controls, for twelve branches. Both hosted and local independent reconstruction passed. All 267 artifact files are preserved unchanged under `results/realworld-reference-runtime-ci-20261110`.
+
+The ordinary create/edit and unique update/comment references were clean. The full duplicate-update pair was individually clean on both branches, and the new local reference proof established that each branch loaded and commented on its own returned article. Its prospective terminal is clean, while the literal incomparable terminal and original gates remain attached. This removes a comparison failure caused by differing generated references, without discarding content, payload, actor, reset or operation-order checks.
+
+Whitespace-title creation still yields an empty reference, and the partial duplicate update still yields a reference that cannot be resolved. These two pairs remain incomparable; their incomplete continuations are not turned into clean evidence. Both native-only controls remain clean singletons with no paired discrepancy result. The final ledger contains five clean jobs and two incomparable jobs; its repeat recommendations were recorded but no repeats were dispatched.
+
+The original v9 archive and separate retrospective replay remain unchanged. This new attempt qualifies the bounded prospective loader, terminal bridge, scheduler and verifier on the observed paths. It does not establish primary-campaign readiness, qualify mismatch generalization or add an independent defect. The source-frozen preparation record correctly continues to describe the earlier offline replay; this separate runtime record supplies the later evidence.
+
+Next reconcile this exact runtime qualification with the readiness map, retaining the seven legacy primary-campaign requirements and unresolved observations. Common campaign integration, unexpected-acceptance paths, cost instrumentation/calibration and primary freeze remain open. No untouched primary boundary was executed.
