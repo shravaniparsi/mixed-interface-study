@@ -1,0 +1,89 @@
+{
+  "Id": "sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3",
+  "RepoTags": [
+    "ghcr.io/sissbruecker/linkding:1.47.0"
+  ],
+  "RepoDigests": [
+    "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522"
+  ],
+  "Parent": "",
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-09-13T16:03:57.849088031Z",
+  "DockerVersion": "",
+  "Author": "",
+  "Config": {
+    "Hostname": "",
+    "Domainname": "",
+    "User": "",
+    "AttachStdin": false,
+    "AttachStdout": false,
+    "AttachStderr": false,
+    "ExposedPorts": {
+      "9090/tcp": {}
+    },
+    "Tty": false,
+    "OpenStdin": false,
+    "StdinOnce": false,
+    "Env": [
+      "PATH=/etc/linkding/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+      "PYTHON_VERSION=3.13.7",
+      "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+      "VIRTUAL_ENV=/etc/linkding/.venv",
+      "UWSGI_MAX_FD=4096"
+    ],
+    "Cmd": [
+      "./bootstrap.sh"
+    ],
+    "Healthcheck": {
+      "Test": [
+        "CMD-SHELL",
+        "curl -f http://localhost:${LD_SERVER_PORT:-9090}/${LD_CONTEXT_PATH}health || exit 1"
+      ],
+      "Interval": 30000000000,
+      "Timeout": 1000000000,
+      "Retries": 3
+    },
+    "ArgsEscaped": true,
+    "Image": "",
+    "Volumes": null,
+    "WorkingDir": "/etc/linkding",
+    "Entrypoint": null,
+    "OnBuild": null,
+    "Labels": {
+      "org.opencontainers.image.source": "https://github.com/sissbruecker/linkding"
+    }
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 391670272,
+  "GraphDriver": {
+    "Data": {
+      "LowerDir": "/var/lib/docker/overlay2/e2bc453bc41e381154d9064bfd93d2b34a26616aa47babf2847a6d7c30c1e115/diff:/var/lib/docker/overlay2/f8fbce2e83488723d3fef766b249e51d3f6129a4259a09c9fc209c3730cabe14/diff:/var/lib/docker/overlay2/c4b29edfcd5a7f8601c26745eb66a6334666998eccb58391323b6022432c798e/diff:/var/lib/docker/overlay2/5f0e18c3054b7c98621a1d688a53276a3ccad0926b2cb28688fad95f8f57d22e/diff:/var/lib/docker/overlay2/5ed6f87a669d50f89a4eb63ae09614de570b6047eaa33aeb9581d5f24799634c/diff:/var/lib/docker/overlay2/dee5d386e2206543f728577221a3190274b8f90e694f657401ffc75c2743a533/diff:/var/lib/docker/overlay2/96205480ffb65598655a7f708210c5e06c69b752a44aa4130258f68e5ae4d894/diff:/var/lib/docker/overlay2/264a3102b196394c43fea9511589bff1efe017d590cface1388f0e2ca48a62b5/diff:/var/lib/docker/overlay2/5c90eef376e1912b188d24cf9f49f81277b798f978bd869e307af4809198c863/diff:/var/lib/docker/overlay2/220649ff5b901b3473f0f46f48ae4a2ea647f6415c0efcfcd587741e5eeaf1f0/diff:/var/lib/docker/overlay2/c1ff3514f83d54ee007ea5f05b2d218d1464d551d8755f736744dfcc1cc5b807/diff",
+      "MergedDir": "/var/lib/docker/overlay2/9bdf40d36b0dd27a6e8db82e583360644db2f764ca2a4548d1a4b1c85a8a81d1/merged",
+      "UpperDir": "/var/lib/docker/overlay2/9bdf40d36b0dd27a6e8db82e583360644db2f764ca2a4548d1a4b1c85a8a81d1/diff",
+      "WorkDir": "/var/lib/docker/overlay2/9bdf40d36b0dd27a6e8db82e583360644db2f764ca2a4548d1a4b1c85a8a81d1/work"
+    },
+    "Name": "overlay2"
+  },
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:1d46119d249f7719e1820e24a311aa7c453f166f714969cffe89504678eaa447",
+      "sha256:719555a13b081583ca7e72d73a241a9d645ac7f9cc091e71a59a20440a68bd80",
+      "sha256:bf773f5071520d5506837835680b877584730be9a5fef09561d08edef505aebe",
+      "sha256:93945efa8b227b275f052ff615858752bc795063a64da631a0c016bc5771111a",
+      "sha256:22c0f8d73c8be7f8db46036ea2a4bf3237db7567f19323573ee7607c49f6f6c9",
+      "sha256:ccd6ce6ebe21b740d439f87d70748248613d40e275cd221228c62f74ede21330",
+      "sha256:3591328ac0475a49d9b3d0a72fe4c2db7cd22ea248c70512d13dba0ca10559d7",
+      "sha256:736c9ff5b09360721c7197878fc1cd582b0acbf605dac18483fbd6e6649ac4ce",
+      "sha256:4cb8d199348689b9e48edd5bd95aefb10ea79097d305eb6c9dccf32367eea1ab",
+      "sha256:6fd9f43be635c6798e5156060a44e089d80cd2e24b8aad22634c346a4cf389c3",
+      "sha256:f900de470f8cea78d17b52267faac654dc7aa5c3e3198e382bdb483ff8c37f6d",
+      "sha256:15a1dd5064927941effc8ad39b52759020325ab97e886c0791ac3aa9b00dac06"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "0001-01-01T00:00:00Z"
+  }
+}
