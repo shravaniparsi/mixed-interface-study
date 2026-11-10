@@ -1,0 +1,195 @@
+{
+  "kind": "synthetic_linkding_adapter_probes_v1",
+  "registered_date": "2026-11-10",
+  "version": "1.47.0",
+  "source_commit": "24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f",
+  "image": "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522",
+  "image_id": "sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3",
+  "deployment_report": "results/production-extension-screen-ci-42874085809/production-screen-linkding-42874085809-1/report.json",
+  "deployment_report_sha256": "5a11797ce3445357102744178f9133b860a5e73c085203fc381abeed4bc3dfe2",
+  "scope": "Six ordinary pairs followed by synthetic native field injection; these are adapter controls, never natural boundary cases.",
+  "workflows": [
+    {
+      "id": "bookmark",
+      "collection": "/api/bookmarks/",
+      "create_query": "?disable_scraping&disable_html_snapshot",
+      "edit_path": "/bookmarks/{id}/edit",
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "form_fields": [
+        "url",
+        "title",
+        "description",
+        "notes",
+        "unread"
+      ],
+      "fields": [
+        "url",
+        "title",
+        "description",
+        "notes",
+        "tag_names",
+        "unread",
+        "shared",
+        "is_archived"
+      ]
+    },
+    {
+      "id": "bundle",
+      "collection": "/api/bundles/",
+      "create_query": "",
+      "edit_path": "/bundles/{id}/edit",
+      "edit_field": "search",
+      "edit_value": "edited-search",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "form_fields": [
+        "name",
+        "search",
+        "any_tags",
+        "all_tags",
+        "excluded_tags",
+        "filter_unread",
+        "filter_shared"
+      ],
+      "fields": [
+        "name",
+        "search",
+        "any_tags",
+        "all_tags",
+        "excluded_tags",
+        "filter_unread",
+        "filter_shared"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "probe-url",
+      "workflow": "bookmark",
+      "probe": "url",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-title",
+      "workflow": "bookmark",
+      "probe": "title",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-name",
+      "workflow": "bundle",
+      "probe": "name",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-tags",
+      "workflow": "bundle",
+      "probe": "tags",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-unread",
+      "workflow": "bundle",
+      "probe": "unread",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "probe-shared",
+      "workflow": "bundle",
+      "probe": "shared",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/linkding_probe_v1.mjs": "59b58582d3f163622b72bf503a4bb617f70f815d069bccb45046816049206414",
+    "scripts/extension/run_linkding_probes_v1.py": "d2e6b0ddca2704e7766817d619bcaf3c5a634840687c25e4df530088cf6066b5",
+    ".github/workflows/linkding_extension_probes_v1.yml": "313838ad43032c1af23c1b3fd34cb0b9e9b519096ee07944a110e9dae93ba0a5",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "boundary_execution_authorized": false,
+  "amendment": {
+    "reason": "Qualify native field measurement, submission and rejection before running the frozen boundary inventory."
+  },
+  "probes": [
+    {
+      "id": "url",
+      "workflow": "bookmark",
+      "field": "url",
+      "value": "not-a-url"
+    },
+    {
+      "id": "title",
+      "workflow": "bookmark",
+      "field": "title",
+      "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "id": "name",
+      "workflow": "bundle",
+      "field": "name",
+      "value": ""
+    },
+    {
+      "id": "tags",
+      "workflow": "bundle",
+      "field": "any_tags",
+      "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "id": "unread",
+      "workflow": "bundle",
+      "field": "filter_unread",
+      "value": "not-an-option"
+    },
+    {
+      "id": "shared",
+      "workflow": "bundle",
+      "field": "filter_shared",
+      "value": "not-an-option"
+    }
+  ]
+}
