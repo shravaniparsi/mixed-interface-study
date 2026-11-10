@@ -1,0 +1,85 @@
+{
+  "kind": "gitea_issue_ordinary_controls_v1",
+  "version": "28.3.0",
+  "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+  "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+  "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+  "environment": {
+    "GITEA__database__DB_TYPE": "sqlite3",
+    "GITEA__security__INSTALL_LOCK": "true",
+    "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+    "GITEA__server__DISABLE_SSH": "true"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_job_minutes": 25,
+  "maximum_parallel_jobs": 3,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "issue-r1",
+      "workflow": "issue",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "issue-r2",
+      "workflow": "issue",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "issue",
+      "collection": "issues",
+      "payload": {
+        "title": "Ordinary issue",
+        "body": "Ordinary body",
+        "ref": "",
+        "assignees": [],
+        "milestone": 0,
+        "labels": [],
+        "projects": [],
+        "closed": false
+      },
+      "edit_value": "Edited ordinary body",
+      "fields": [
+        "title",
+        "body",
+        "ref",
+        "assignees",
+        "milestone",
+        "projects",
+        "state",
+        "due_date",
+        "unset_due_date",
+        "content_version"
+      ]
+    }
+  ],
+  "repository": {
+    "name": "study-repo",
+    "description": "Synthetic study fixture",
+    "private": true,
+    "auto_init": false
+  },
+  "source_sha256": {
+    "scripts/extension/gitea_issue_control_v1.mjs": "546e6d30f7965b7269e55e98953fbadad783675ed0122e2ac4d9ed725dbc8db6",
+    "scripts/extension/gitea_form_wire_v1.mjs": "7a5684841af3b6fa7a2c8a0a99e38b5c7d6324f65156805b7508b9248a8cc8ab",
+    "scripts/extension/run_gitea_issue_controls_v1.py": "fa9a8cef264a82d51c46b3bb42c6c545552ff92400436e39b811b2d1a469511f",
+    ".github/workflows/gitea_issue_controls_v1.yml": "2ad3f9bb67d0dff457642c53e2fe94b432b7867c59f3ccbf39d21870f4f4b6ea",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495"
+  },
+  "qualification_sha256": {
+    "manifests/gitea-attempt3-v1.json": "dee6625c11f4186f8f9ab06843372f83ffb7a7d53beb2e5b637d063a07a1adf2"
+  },
+  "metadata_policy": "Full returned issue preserved except updated_at and expected content_version increment by exactly one. Across resets additionally remove root created_at and embedded user created/last_login only. Labels/assets/assignees/projects empty, milestone/due_date null, ref empty are explicitly qualified fixture scope. All raw records retained.",
+  "interpretation": "Two reversed-order ordinary issue-body edits. Native editor is field-local and does not resubmit title; full API PATCH includes all nondeprecated writable fields including exact content_version. Labels use a separate endpoint and must stay unchanged. No invalid writes authorized; title creation constraints are not transferred to the body editor."
+}

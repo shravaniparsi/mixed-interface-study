@@ -29,6 +29,8 @@ SOURCES = {
 }
 ARTIFACTS = [
     'manifests/gitea-controls-v3.json',
+    'manifests/gitea-attempt3-v1.json',
+    'manifests/gitea-issue-controls-v1.json',
     'manifests/gitea-attempt2-v1.json',
     'manifests/vikunja-followup-results-v1.json',
     'manifests/vikunja-title-mechanism-v1.json',
