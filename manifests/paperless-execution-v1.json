@@ -1,0 +1,1688 @@
+{
+  "kind": "paperless_finite_execution_v1",
+  "version": "3.4.2",
+  "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+  "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+  "image_id": "sha256:1135cf639679fb573eabf9af76d87dc1a74868f5830291ae3287e5c6992aedc5",
+  "broker_image": "valkey/valkey@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-paperless-42876848117-1/report.json",
+  "deployment_report_sha256": "5fea82ce4a3a04af0f98335ade04113c9878eb1e627eb60c1d4631bf4c84de0d",
+  "scope": "36 prospectively selected boundary cases and 12 valid controls; synthetic probes excluded. Three resources share one backend MatchingModel.",
+  "workflows": [
+    {
+      "id": "correspondent",
+      "collection": "/api/correspondents/",
+      "list_path": "/attributes/correspondents",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Renamed ordinary correspondent",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-type",
+      "collection": "/api/document_types/",
+      "list_path": "/attributes/documenttypes",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Renamed ordinary document-type",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tag",
+      "collection": "/api/tags/",
+      "list_path": "/attributes/tags",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "fields": [
+        "name",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "color",
+        "is_inbox_tag",
+        "parent",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Renamed ordinary tag",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        },
+        {
+          "field": "color",
+          "selector": "[formcontrolname=\"color\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "is_inbox_tag",
+          "selector": "[formcontrolname=\"is_inbox_tag\"] input",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "algorithm_labels": {
+    "0": "None: Disable matching",
+    "1": "Any: Document contains any of these words (space separated)",
+    "2": "All: Document contains all of these words (space separated)",
+    "3": "Exact: Document contains this string",
+    "4": "Regular expression: Document matches this regular expression",
+    "5": "Fuzzy: Document contains a word similar to this word",
+    "6": "Auto: Learn matching automatically"
+  },
+  "units": [
+    {
+      "id": "correspondent-valid-1-r1",
+      "case_id": "correspondent-valid-1",
+      "workflow": "correspondent",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-valid-2-r1",
+      "case_id": "correspondent-valid-2",
+      "workflow": "correspondent",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-valid-3-r1",
+      "case_id": "correspondent-valid-3",
+      "workflow": "correspondent",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-valid-4-r1",
+      "case_id": "correspondent-valid-4",
+      "workflow": "correspondent",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-valid-1-r1",
+      "case_id": "document-type-valid-1",
+      "workflow": "document-type",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-valid-2-r1",
+      "case_id": "document-type-valid-2",
+      "workflow": "document-type",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-valid-3-r1",
+      "case_id": "document-type-valid-3",
+      "workflow": "document-type",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-valid-4-r1",
+      "case_id": "document-type-valid-4",
+      "workflow": "document-type",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-valid-1-r1",
+      "case_id": "tag-valid-1",
+      "workflow": "tag",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-valid-2-r1",
+      "case_id": "tag-valid-2",
+      "workflow": "tag",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-valid-3-r1",
+      "case_id": "tag-valid-3",
+      "workflow": "tag",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-valid-4-r1",
+      "case_id": "tag-valid-4",
+      "workflow": "tag",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-match-valid-regex-r1",
+      "case_id": "correspondent-match-valid-regex",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-matching_algorithm-value--1-r1",
+      "case_id": "correspondent-matching_algorithm-value--1",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-match-length-257-r1",
+      "case_id": "correspondent-match-length-257",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-match-invalid-regex-r1",
+      "case_id": "correspondent-match-invalid-regex",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-matching_algorithm-null-r1",
+      "case_id": "correspondent-matching_algorithm-null",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-match-omitted-r1",
+      "case_id": "correspondent-match-omitted",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-matching_algorithm-value-6-r1",
+      "case_id": "correspondent-matching_algorithm-value-6",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-match-length-255-r1",
+      "case_id": "correspondent-match-length-255",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-matching_algorithm-omitted-r1",
+      "case_id": "correspondent-matching_algorithm-omitted",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-match-null-r1",
+      "case_id": "correspondent-match-null",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "correspondent-matching_algorithm-value-0-r1",
+      "case_id": "correspondent-matching_algorithm-value-0",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "correspondent-match-length-256-r1",
+      "case_id": "correspondent-match-length-256",
+      "workflow": "correspondent",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-match-invalid-regex-r1",
+      "case_id": "document-type-match-invalid-regex",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-matching_algorithm-omitted-r1",
+      "case_id": "document-type-matching_algorithm-omitted",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-match-null-r1",
+      "case_id": "document-type-match-null",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-match-valid-regex-r1",
+      "case_id": "document-type-match-valid-regex",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-matching_algorithm-value-0-r1",
+      "case_id": "document-type-matching_algorithm-value-0",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-match-empty-r1",
+      "case_id": "document-type-match-empty",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-matching_algorithm-value-6-r1",
+      "case_id": "document-type-matching_algorithm-value-6",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-match-omitted-r1",
+      "case_id": "document-type-match-omitted",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-matching_algorithm-value--1-r1",
+      "case_id": "document-type-matching_algorithm-value--1",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-match-length-257-r1",
+      "case_id": "document-type-match-length-257",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "document-type-matching_algorithm-null-r1",
+      "case_id": "document-type-matching_algorithm-null",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "document-type-match-length-256-r1",
+      "case_id": "document-type-match-length-256",
+      "workflow": "document-type",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-match-invalid-regex-r1",
+      "case_id": "tag-match-invalid-regex",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-matching_algorithm-omitted-r1",
+      "case_id": "tag-matching_algorithm-omitted",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-color-invalid-hex-r1",
+      "case_id": "tag-color-invalid-hex",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-match-length-257-r1",
+      "case_id": "tag-match-length-257",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-match-valid-regex-r1",
+      "case_id": "tag-match-valid-regex",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-matching_algorithm-value-6-r1",
+      "case_id": "tag-matching_algorithm-value-6",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-color-omitted-r1",
+      "case_id": "tag-color-omitted",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-matching_algorithm-value-0-r1",
+      "case_id": "tag-matching_algorithm-value-0",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-match-omitted-r1",
+      "case_id": "tag-match-omitted",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-matching_algorithm-null-r1",
+      "case_id": "tag-matching_algorithm-null",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "tag-match-length-255-r1",
+      "case_id": "tag-match-length-255",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "tag-matching_algorithm-value--1-r1",
+      "case_id": "tag-matching_algorithm-value--1",
+      "workflow": "tag",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/paperless_case_v1.mjs": "c2f28671d3c96254bb4658b2ea55e82ac684a4b124cd4c6805c22d5bd6322faf",
+    "scripts/extension/run_paperless_cases_v1.py": "4e890b465ee3c425707ed80d43afa7d783cd1a59941272622fea3485d5e5dff9",
+    "scripts/extension/run_paperless_batch_v1.py": "5289c278071fb941d36fa9e629d6bd1e379f4f5d6b706b3a1952dfa265d1dba2",
+    ".github/workflows/paperless_cases_v1.yml": "500c94cc539f15ed0ba266b2fc1db62a7469667cda8dc94878acd551735c3e31",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "execution_authorized": true,
+  "cases": [
+    {
+      "id": "correspondent-valid-1",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-valid-2",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-valid-3",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-valid-4",
+      "workflow": "correspondent",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-1",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-2",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-3",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "document-type-valid-4",
+      "workflow": "document-type",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-1",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-2",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-3",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "tag-valid-4",
+      "workflow": "tag",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible"
+    },
+    {
+      "id": "correspondent-match-valid-regex",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "valid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-value--1",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value--1",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": -1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-length-257",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "length-257",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-match-invalid-regex",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "invalid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-null",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "null",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": null,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-omitted",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-value-6",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value-6",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-length-255",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "length-255",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-omitted",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "omitted",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-null",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "null",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": null,
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "correspondent-matching_algorithm-value-0",
+      "workflow": "correspondent",
+      "field": "matching_algorithm",
+      "variant": "value-0",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "correspondent-match-length-256",
+      "workflow": "correspondent",
+      "field": "match",
+      "variant": "length-256",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-match-invalid-regex",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "invalid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-omitted",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "omitted",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-null",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "null",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": null,
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-match-valid-regex",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "valid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value-0",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value-0",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-empty",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "empty",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value-6",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value-6",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-omitted",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-value--1",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "value--1",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": -1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-length-257",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "length-257",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "document-type-matching_algorithm-null",
+      "workflow": "document-type",
+      "field": "matching_algorithm",
+      "variant": "null",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "original-pattern",
+        "matching_algorithm": null,
+        "is_insensitive": true
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "document-type-match-length-256",
+      "workflow": "document-type",
+      "field": "match",
+      "variant": "length-256",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary document-type",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-invalid-regex",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "invalid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-omitted",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "omitted",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-color-invalid-hex",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "invalid-hex",
+      "family": "format",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#gggggg",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-length-257",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "length-257",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-match-valid-regex",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "valid-regex",
+      "family": "cross_field",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "^ordinary.*$",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value-6",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value-6",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 6,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-color-omitted",
+      "workflow": "tag",
+      "field": "color",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value-0",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value-0",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": 0,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-match-omitted",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "omitted",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-null",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "null",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": null,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    },
+    {
+      "id": "tag-match-length-255",
+      "workflow": "tag",
+      "field": "match",
+      "variant": "length-255",
+      "family": "length",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "compatible",
+      "validation_layer": "shared_API_endpoint"
+    },
+    {
+      "id": "tag-matching_algorithm-value--1",
+      "workflow": "tag",
+      "field": "matching_algorithm",
+      "variant": "value--1",
+      "family": "enum",
+      "payload": {
+        "name": "Ordinary tag",
+        "match": "original-pattern",
+        "matching_algorithm": -1,
+        "is_insensitive": true,
+        "color": "#a6cee3",
+        "is_inbox_tag": false,
+        "parent": null
+      },
+      "contract_prediction": "violation",
+      "validation_layer": "browser_enum_and_shared_API"
+    }
+  ],
+  "batches": [
+    {
+      "id": "valid-0",
+      "unit_ids": [
+        "correspondent-valid-1-r1",
+        "correspondent-valid-2-r1",
+        "correspondent-valid-3-r1",
+        "correspondent-valid-4-r1"
+      ]
+    },
+    {
+      "id": "valid-1",
+      "unit_ids": [
+        "document-type-valid-1-r1",
+        "document-type-valid-2-r1",
+        "document-type-valid-3-r1",
+        "document-type-valid-4-r1"
+      ]
+    },
+    {
+      "id": "valid-2",
+      "unit_ids": [
+        "tag-valid-1-r1",
+        "tag-valid-2-r1",
+        "tag-valid-3-r1",
+        "tag-valid-4-r1"
+      ]
+    },
+    {
+      "id": "boundary-0",
+      "unit_ids": [
+        "correspondent-match-valid-regex-r1",
+        "correspondent-matching_algorithm-value--1-r1",
+        "correspondent-match-length-257-r1",
+        "correspondent-match-invalid-regex-r1"
+      ]
+    },
+    {
+      "id": "boundary-1",
+      "unit_ids": [
+        "correspondent-matching_algorithm-null-r1",
+        "correspondent-match-omitted-r1",
+        "correspondent-matching_algorithm-value-6-r1",
+        "correspondent-match-length-255-r1"
+      ]
+    },
+    {
+      "id": "boundary-2",
+      "unit_ids": [
+        "correspondent-matching_algorithm-omitted-r1",
+        "correspondent-match-null-r1",
+        "correspondent-matching_algorithm-value-0-r1",
+        "correspondent-match-length-256-r1"
+      ]
+    },
+    {
+      "id": "boundary-3",
+      "unit_ids": [
+        "document-type-match-invalid-regex-r1",
+        "document-type-matching_algorithm-omitted-r1",
+        "document-type-match-null-r1",
+        "document-type-match-valid-regex-r1"
+      ]
+    },
+    {
+      "id": "boundary-4",
+      "unit_ids": [
+        "document-type-matching_algorithm-value-0-r1",
+        "document-type-match-empty-r1",
+        "document-type-matching_algorithm-value-6-r1",
+        "document-type-match-omitted-r1"
+      ]
+    },
+    {
+      "id": "boundary-5",
+      "unit_ids": [
+        "document-type-matching_algorithm-value--1-r1",
+        "document-type-match-length-257-r1",
+        "document-type-matching_algorithm-null-r1",
+        "document-type-match-length-256-r1"
+      ]
+    },
+    {
+      "id": "boundary-6",
+      "unit_ids": [
+        "tag-match-invalid-regex-r1",
+        "tag-matching_algorithm-omitted-r1",
+        "tag-color-invalid-hex-r1",
+        "tag-match-length-257-r1"
+      ]
+    },
+    {
+      "id": "boundary-7",
+      "unit_ids": [
+        "tag-match-valid-regex-r1",
+        "tag-matching_algorithm-value-6-r1",
+        "tag-color-omitted-r1",
+        "tag-matching_algorithm-value-0-r1"
+      ]
+    },
+    {
+      "id": "boundary-8",
+      "unit_ids": [
+        "tag-match-omitted-r1",
+        "tag-matching_algorithm-null-r1",
+        "tag-match-length-255-r1",
+        "tag-matching_algorithm-value--1-r1"
+      ]
+    }
+  ],
+  "response_contracts": {
+    "correspondent": {
+      "name": {
+        "type": "string",
+        "max_length": 128
+      },
+      "match": {
+        "type": "string",
+        "max_length": 256
+      },
+      "matching_algorithm": {
+        "type": "number",
+        "integer": true,
+        "options": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "is_insensitive": {
+        "type": "boolean"
+      },
+      "owner": {
+        "type": "number",
+        "integer": true
+      }
+    },
+    "document-type": {
+      "name": {
+        "type": "string",
+        "max_length": 128
+      },
+      "match": {
+        "type": "string",
+        "max_length": 256
+      },
+      "matching_algorithm": {
+        "type": "number",
+        "integer": true,
+        "options": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "is_insensitive": {
+        "type": "boolean"
+      },
+      "owner": {
+        "type": "number",
+        "integer": true
+      }
+    },
+    "tag": {
+      "name": {
+        "type": "string",
+        "max_length": 128
+      },
+      "match": {
+        "type": "string",
+        "max_length": 256
+      },
+      "matching_algorithm": {
+        "type": "number",
+        "integer": true,
+        "options": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "is_insensitive": {
+        "type": "boolean"
+      },
+      "color": {
+        "type": "string",
+        "max_length": 7,
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "is_inbox_tag": {
+        "type": "boolean"
+      },
+      "parent": {
+        "type": "number",
+        "integer": true,
+        "nullable": true
+      },
+      "owner": {
+        "type": "number",
+        "integer": true
+      }
+    }
+  },
+  "baseline_definition": {
+    "immediate": "HTTP response status, identity/readback agreement and source-derived business-field type/length/enum/color contract; not full OpenAPI or Python-regex conformance certification.",
+    "api_semantic": "API version 10, read persisted state, PUT all declared business fields with only name changed, read back edited and preserved fields including after rejection.",
+    "native": "Native object editor, calibrated labels, conditional field visibility, rename, pre-submit measurement, native PUT at API version 10, persisted readback and fresh editor.",
+    "shared_signals": "A response-contract or producer-response/readback discrepancy is shared evidence. It cannot be credited as incremental native detection.",
+    "constraint_predictor": "Frozen source-qualified constraints distinguish browser enum options from shared API-endpoint validation."
+  },
+  "gate": "All 12 valid controls execute first on this exact runtime. Boundary jobs depend on every control preserving state and satisfying the response contract. Modes 0 and 6 intentionally hide match/is_insensitive; absent inputs are not failures and persisted fields must remain unchanged.",
+  "qualification_note": "Six ordinary API/native pairs verified. Three negative native requests received 400 and left persisted fields unchanged; one enum probe verified all seven calibrated options, absence of the invalid choice and unchanged persisted state. Earlier timing and label-map failures remain archived. No synthetic probe is a natural boundary case.",
+  "resource_bound": {
+    "initial_pairs": 48,
+    "initial_batches": 12,
+    "max_parallel_jobs": 3,
+    "job_timeout_minutes": 20,
+    "initial_max_runner_minutes": 240,
+    "repeat_rule": "Two repeats with original ordinary control for every channel difference, preservation discrepancy, execution/policy uncertainty or shared response-contract/readback discrepancy. The last category explicitly includes uncertainty about the producer contract before outcomes are observed.",
+    "max_followup_pairs": 192,
+    "total_max_runner_minutes_including_followups": 1200,
+    "paid_model_calls": 0,
+    "runner_type": "standard public ubuntu-24.04"
+  },
+  "qualification_sha256": {
+    "manifests/paperless-candidate-inventory-v1.json": "601250b5a89ca58a008436853511953c0ead939be9cda89367b7a9aa61c3cd01",
+    "manifests/paperless-extension-controls-attempt2-v1.json": "9a6430ac23a8660a98a2271fac0260ef62b519ec8626f9573251598b1b62fe6e",
+    "manifests/paperless-extension-probes-attempt1-v1.json": "3cd0bbe7be548f0a74cc75f5c4c022ea3a9a1118d7ea8f6e3237f780928b2571",
+    "manifests/paperless-extension-probes-attempt2-v1.json": "e8eaa26ccd2a487ef755d8ceba0d1697f3f8715d6427a5038696b619863d1d83"
+  }
+}
