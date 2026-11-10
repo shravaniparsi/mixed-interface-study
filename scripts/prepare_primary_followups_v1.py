@@ -16,6 +16,12 @@ def prepare(initial_manifest,repetition,previous_manifest=None):
         require(previous_manifest is not None,'Repetition two evidence missing');previous=verify(previous_manifest)
         require(previous['mode']=='repeat2' and previous['freeze_sha256']==sha(FREEZE),'Wrong repetition two phase')
     schedule=followups(read(PREPARATION)['plan'],initial['records'],repetition,previous['records'] if previous else None)
+    for unit in schedule['batches']:
+        initial_id=unit['batch_id'][:-1]+'1'
+        require(initial['verification'][initial_id]['qualified_observations'],'A globally unqualified initial unit cannot authorize follow-ups')
+        if previous is not None:
+            second_id=unit['batch_id'][:-1]+'2'
+            require(previous['verification'][second_id]['qualified_observations'],'A globally unqualified second repetition cannot authorize a third')
     output=ROOT/f'manifests/primary-execution-repeat{repetition}-v1.json';require(not output.exists(),'Follow-up registration already exists')
     value={'preparation_sha256':sha(PREPARATION),'freeze_sha256':sha(FREEZE),'initial_manifest_sha256':sha(initial_manifest),
            'previous_manifest_sha256':sha(previous_manifest) if previous_manifest else None,
