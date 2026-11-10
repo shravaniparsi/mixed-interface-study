@@ -45,3 +45,9 @@ Run42908370077 at sourcef659611 retains all4attempted pairs,0qualified. Both bra
 Controls-v2 replaces read:user with write:user, retaining write:repository and write:issue. Actor role, resource payloads, native observer and preservation rules are unchanged. The original raw403s, command traces and qualification result remain archived. The broader self-user token scope does not make the actor an instance administrator.
 
 Independent control verifier v2 tightens the paired-state flag: missing prefix/final records can no longer compare equal merely because both are absent. Version1's failed bootstrap proof already qualified0pairs; its raw records and proof remain unchanged. The correction changes bookkeeping for incomplete attempts, not application outcomes or the ordinary qualification gate.
+
+## Ordinary attempt2: native response capture correction
+
+Run42909016411 at source9e58ce1 retains4pairs,0qualified. All4API branches pass. Milestone native writes return303 with Location=/study-actor/study-repo/milestones; attempting to read redirect bodies throws and caused an unhandled capture promise. Label native writes return200, but delayed body reads fail after the application's own navigation. Neither attempt reaches mandatory fresh-final DOM verification; successful HTTP alone does not qualify these pairs.
+
+Controls-v3 explicitly marks302/303body as not applicable and retains status/location. Nonredirect body reads begin immediately in the response callback, before file saves or form parsing. Capture errors are retained as ancillary response-body unavailability, while actual native request payload, three DOM views and complete stored preservation remain mandatory. Promise rejection is handled immediately and still propagated through awaited capture work. No target payload, actor, scope, or success/preservation criterion changes.
