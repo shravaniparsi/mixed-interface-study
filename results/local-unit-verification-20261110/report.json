@@ -1,0 +1,364 @@
+{
+  "source_commit": "03eef174d3aa5404b9a0c0dc68dfb2140df47ddb",
+  "scope": "Local execution of run steps from unit.yml; not hosted CI or a new application experiment",
+  "node": "/Users/shravaniparsi/.nvm/versions/node/v20.19.6/bin/node",
+  "steps": [
+    {
+      "name": "Record runtime versions",
+      "command": "python3 scripts/ci/capture_versions.py --output \"$CI_ARTIFACT_DIR/runtime-versions.json\"",
+      "exit_code": 0,
+      "elapsed_s": 0.394568625,
+      "log": "step-00.log"
+    },
+    {
+      "name": "Python harness tests",
+      "command": "python3 -m unittest discover -s tests -v 2>&1 | tee \"$CI_ARTIFACT_DIR/python3-tests.log\"",
+      "exit_code": 0,
+      "elapsed_s": 15.14083,
+      "log": "step-01.log"
+    },
+    {
+      "name": "Bootstrap helper tests",
+      "command": "python3 -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee \"$CI_ARTIFACT_DIR/bootstrap-tests.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.07549095900000147,
+      "log": "step-02.log"
+    },
+    {
+      "name": "Verify evaluation preparation provenance",
+      "command": "python3 scripts/prepare_evaluation.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/evaluation-preparation.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.188017125,
+      "log": "step-03.log"
+    },
+    {
+      "name": "Verify unified control analysis",
+      "command": "python3 scripts/build_control_analysis.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/unified-control-analysis.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.2346790409999997,
+      "log": "step-04.log"
+    },
+    {
+      "name": "Verify normalization control audit",
+      "command": "python3 scripts/audit_normalization_controls.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/normalization-controls.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.06703545899999952,
+      "log": "step-05.log"
+    },
+    {
+      "name": "Verify prospective RealWorld component analysis",
+      "command": "python3 scripts/summarize_realworld_paired_components.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-paired-components.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.09129829200000117,
+      "log": "step-06.log"
+    },
+    {
+      "name": "Replay RealWorld terminal classification",
+      "command": "python3 scripts/realworld_terminal_outcomes.py results/realworld-paired-controls-ci-20261107 > \"$CI_ARTIFACT_DIR/realworld-terminal-replay.json\"",
+      "exit_code": 0,
+      "elapsed_s": 0.08721479200000104,
+      "log": "step-07.log"
+    },
+    {
+      "name": "Verify Quartz repeat-policy planning",
+      "command": "python3 scripts/prepare_quartz_repeat_policy.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/quartz-repeat-policy.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.07591804099999777,
+      "log": "step-08.log"
+    },
+    {
+      "name": "Verify Quartz terminal integration archive",
+      "command": "python3 scripts/verify_quartz_terminal_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/quartz-terminal-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.11591829199999992,
+      "log": "step-09.log"
+    },
+    {
+      "name": "Verify RealWorld terminal integration archive",
+      "command": "python3 scripts/verify_realworld_terminal_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-terminal-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.12924737500000205,
+      "log": "step-10.log"
+    },
+    {
+      "name": "Verify expanded RealWorld integration archive",
+      "command": "python3 scripts/verify_realworld_expanded_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-expanded-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.1476485839999988,
+      "log": "step-11.log"
+    },
+    {
+      "name": "Verify RealWorld rejection integration archive",
+      "command": "python3 scripts/verify_realworld_rejection_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-rejection-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.14678508299999748,
+      "log": "step-12.log"
+    },
+    {
+      "name": "Verify PetClinic terminal extraction replay",
+      "command": "python3 scripts/prepare_petclinic_terminal.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/petclinic-terminal-replay.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.31030058400000016,
+      "log": "step-13.log"
+    },
+    {
+      "name": "Verify PetClinic terminal integration archive",
+      "command": "python3 scripts/verify_petclinic_terminal_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/petclinic-terminal-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.2757248340000018,
+      "log": "step-14.log"
+    },
+    {
+      "name": "Verify PetClinic prefix interpretation preparation",
+      "command": "python3 scripts/prepare_petclinic_prefix_v3.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/petclinic-prefix-v3.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.4273910000000001,
+      "log": "step-15.log"
+    },
+    {
+      "name": "Verify expanded PetClinic integration archive",
+      "command": "python3 scripts/verify_petclinic_expanded_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/petclinic-expanded-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 1.2164465,
+      "log": "step-16.log"
+    },
+    {
+      "name": "Verify RealWorld field integration archive",
+      "command": "python3 scripts/verify_realworld_field_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-field-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.23062062500000025,
+      "log": "step-17.log"
+    },
+    {
+      "name": "Verify halted RealWorld identity archive",
+      "command": "python3 scripts/verify_realworld_identity_halted_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-identity-halted-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.12978391600000094,
+      "log": "step-18.log"
+    },
+    {
+      "name": "Verify RealWorld identity database archive",
+      "command": "python3 scripts/verify_realworld_identity_database_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-identity-database-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.0866784590000016,
+      "log": "step-19.log"
+    },
+    {
+      "name": "Replay separate write observations",
+      "command": "python3 scripts/replay_write_observations.py > \"$CI_ARTIFACT_DIR/write-observations.json\"",
+      "exit_code": 0,
+      "elapsed_s": 0.10111058300000053,
+      "log": "step-20.log"
+    },
+    {
+      "name": "Replay paired identity measurements",
+      "command": "python3 scripts/replay_identity_measurements_v2.py > \"$CI_ARTIFACT_DIR/identity-measurements-v2.json\"",
+      "exit_code": 0,
+      "elapsed_s": 0.14595283299999906,
+      "log": "step-21.log"
+    },
+    {
+      "name": "Verify live paired database archive",
+      "command": "python3 scripts/verify_realworld_paired_database_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/paired-database-archive.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.14535212499999872,
+      "log": "step-22.log"
+    },
+    {
+      "name": "Verify isolated article database archive",
+      "command": "python3 scripts/verify_realworld_article_database_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-article-database.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.11473012500000124,
+      "log": "step-23.log"
+    },
+    {
+      "name": "Verify live reference comparison runtime archive",
+      "command": "python3 scripts/verify_realworld_reference_runtime_v10.py 2>&1 | tee \"$CI_ARTIFACT_DIR/reference-runtime-v10.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.16199895799999808,
+      "log": "step-24.log"
+    },
+    {
+      "name": "Verify prospective reference terminal integration",
+      "command": "python3 scripts/prepare_realworld_reference_integration_v2.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/reference-integration-v2.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.20211508299999892,
+      "log": "step-25.log"
+    },
+    {
+      "name": "Replay generated-reference comparison",
+      "command": "python3 scripts/replay_realworld_references_v1.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-reference-replay.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.15153854200000083,
+      "log": "step-26.log"
+    },
+    {
+      "name": "Verify fresh legacy v9 archive",
+      "command": "python3 scripts/verify_realworld_fresh_legacy_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-fresh-legacy.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.14116941600000033,
+      "log": "step-27.log"
+    },
+    {
+      "name": "Verify halted legacy v8 archive",
+      "command": "python3 scripts/verify_realworld_legacy_halted_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-legacy-halted.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.13015045799999925,
+      "log": "step-28.log"
+    },
+    {
+      "name": "Verify retained corpus bindings",
+      "command": "python3 scripts/prepare_corpus_coverage.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/corpus-coverage.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.09213837499999755,
+      "log": "step-29.log"
+    },
+    {
+      "name": "Verify generated mutation preparation",
+      "command": "python3 scripts/prepare_realworld_generated_mutations_v3.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-generated-mutations.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.07023966599999909,
+      "log": "step-30.log"
+    },
+    {
+      "name": "Verify live generated mutation archive",
+      "command": "python3 scripts/verify_realworld_generated_mutations_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-generated-mutations-runtime.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.20550758299999927,
+      "log": "step-31.log"
+    },
+    {
+      "name": "Verify live generated reference archive",
+      "command": "python3 scripts/verify_realworld_generated_runtime_archive.py 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-generated-runtime.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.113217290999998,
+      "log": "step-32.log"
+    },
+    {
+      "name": "Verify offline generated RealWorld bindings",
+      "command": "python3 scripts/prepare_realworld_generated_bindings_v1.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/realworld-generated-bindings.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.06904083300000252,
+      "log": "step-33.log"
+    },
+    {
+      "name": "Verify legacy and database readiness reconciliation",
+      "command": "python3 scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/corpus-review-v3.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.43783529199999904,
+      "log": "step-34.log"
+    },
+    {
+      "name": "Verify live reference readiness reconciliation",
+      "command": "python3 scripts/prepare_corpus_review_v5.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/corpus-review-v5.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.7163097920000006,
+      "log": "step-35.log"
+    },
+    {
+      "name": "Verify completion and analysis of original diagnostic collection",
+      "command": "python3 scripts/verify_primary_results_v1.py",
+      "exit_code": 0,
+      "elapsed_s": 9.561280417000003,
+      "log": "step-36.log"
+    },
+    {
+      "name": "Verify corrected Quartz reader qualification",
+      "command": "python3 scripts/verify_quartz_correction_freeze_v1.py",
+      "exit_code": 0,
+      "elapsed_s": 0.2580459169999969,
+      "log": "step-37.log"
+    },
+    {
+      "name": "Verify complete second primary repetition",
+      "command": "python3 scripts/verify_primary_collection_v1.py manifests/primary-repeat2-runtime-v1.json",
+      "exit_code": 0,
+      "elapsed_s": 1.3862748750000051,
+      "log": "step-38.log"
+    },
+    {
+      "name": "Verify complete initial primary collection",
+      "command": "python3 scripts/verify_primary_collection_v1.py manifests/primary-initial-runtime-v1.json",
+      "exit_code": 0,
+      "elapsed_s": 4.984510209,
+      "log": "step-39.log"
+    },
+    {
+      "name": "Verify primary freeze and clean smoke",
+      "command": "python3 scripts/verify_primary_freeze_v1.py",
+      "exit_code": 0,
+      "elapsed_s": 0.5353749169999986,
+      "log": "step-40.log"
+    },
+    {
+      "name": "Retain first primary smoke failure",
+      "command": "python3 scripts/verify_primary_smoke_attempt1.py",
+      "exit_code": 0,
+      "elapsed_s": 0.1272907920000037,
+      "log": "step-41.log"
+    },
+    {
+      "name": "Verify live common generated archive",
+      "command": "python3 scripts/verify_common_generated_archive_v1.py 2>&1 | tee \"$CI_ARTIFACT_DIR/common-generated-runtime-v1.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.2256642919999976,
+      "log": "step-42.log"
+    },
+    {
+      "name": "Verify live common executor archive",
+      "command": "python3 scripts/verify_common_petclinic_archive_v1.py 2>&1 | tee \"$CI_ARTIFACT_DIR/common-executor-runtime-v1.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.21848404100000351,
+      "log": "step-43.log"
+    },
+    {
+      "name": "Verify common engineering bindings",
+      "command": "python3 scripts/prepare_common_bindings_v1.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/common-bindings-v1.log\"",
+      "exit_code": 0,
+      "elapsed_s": 1.349270292,
+      "log": "step-44.log"
+    },
+    {
+      "name": "Verify live PetClinic timing archive",
+      "command": "python3 scripts/verify_petclinic_timing_archive_v1.py 2>&1 | tee \"$CI_ARTIFACT_DIR/petclinic-timing-runtime-v1.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.315133957999997,
+      "log": "step-45.log"
+    },
+    {
+      "name": "Verify PetClinic branch-cost preparation",
+      "command": "python3 scripts/prepare_petclinic_branch_cost_v1.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/petclinic-branch-cost-v1.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.05989100000000036,
+      "log": "step-46.log"
+    },
+    {
+      "name": "Verify generated corpus readiness reconciliation",
+      "command": "python3 scripts/prepare_corpus_review_v4.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/corpus-review-v4.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.6739856250000003,
+      "log": "step-47.log"
+    },
+    {
+      "name": "Verify reconciled corpus readiness",
+      "command": "python3 scripts/prepare_corpus_review_v2.py --verify 2>&1 | tee \"$CI_ARTIFACT_DIR/corpus-review-v2.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.2062651250000016,
+      "log": "step-48.log"
+    },
+    {
+      "name": "Pure Node adapter tests",
+      "command": "node --test tests/*.test.mjs 2>&1 | tee \"$CI_ARTIFACT_DIR/node-tests.log\"",
+      "exit_code": 0,
+      "elapsed_s": 0.6133727499999964,
+      "log": "step-49.log"
+    },
+    {
+      "name": "Syntax checks",
+      "command": "python3 -m compileall -q src scripts tests\nfor file in scripts/*.mjs scripts/ci/*.mjs; do node --check \"$file\"; done\nfor file in scripts/ci/*.sh; do bash -n \"$file\"; done",
+      "exit_code": 0,
+      "elapsed_s": 1.2568751250000005,
+      "log": "step-50.log"
+    }
+  ]
+}

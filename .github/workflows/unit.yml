@@ -110,6 +110,8 @@ jobs:
         run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
       - name: Verify live reference readiness reconciliation
         run: python scripts/prepare_corpus_review_v5.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v5.log"
+      - name: Verify never-started correction jobs and partial evidence
+        run: python scripts/retain_quartz_provider_failure_v1.py --verify
       - name: Verify completion and analysis of original diagnostic collection
         run: python scripts/verify_primary_results_v1.py
       - name: Verify corrected Quartz reader qualification

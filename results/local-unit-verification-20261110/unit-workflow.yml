@@ -1,0 +1,153 @@
+name: Unit checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONPATH: src
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Initialize evidence directory
+        run: |
+          ci_artifact_dir="$RUNNER_TEMP/study-artifacts"
+          mkdir -p "$ci_artifact_dir"
+          printf '%s\n' 'Automatic unit checks; no applications started.' > "$ci_artifact_dir/scope.txt"
+          printf 'CI_ARTIFACT_DIR=%s\n' "$ci_artifact_dir" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20'
+          package-manager-cache: false
+      - name: Record runtime versions
+        run: python scripts/ci/capture_versions.py --output "$CI_ARTIFACT_DIR/runtime-versions.json"
+      - name: Python harness tests
+        run: python -m unittest discover -s tests -v 2>&1 | tee "$CI_ARTIFACT_DIR/python-tests.log"
+      - name: Bootstrap helper tests
+        run: python -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"
+      - name: Verify evaluation preparation provenance
+        run: python scripts/prepare_evaluation.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/evaluation-preparation.log"
+      - name: Verify unified control analysis
+        run: python scripts/build_control_analysis.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/unified-control-analysis.log"
+      - name: Verify normalization control audit
+        run: python scripts/audit_normalization_controls.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/normalization-controls.log"
+      - name: Verify prospective RealWorld component analysis
+        run: python scripts/summarize_realworld_paired_components.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-paired-components.log"
+      - name: Replay RealWorld terminal classification
+        run: python scripts/realworld_terminal_outcomes.py results/realworld-paired-controls-ci-20261107 > "$CI_ARTIFACT_DIR/realworld-terminal-replay.json"
+      - name: Verify Quartz repeat-policy planning
+        run: python scripts/prepare_quartz_repeat_policy.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/quartz-repeat-policy.log"
+      - name: Verify Quartz terminal integration archive
+        run: python scripts/verify_quartz_terminal_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/quartz-terminal-archive.log"
+      - name: Verify RealWorld terminal integration archive
+        run: python scripts/verify_realworld_terminal_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-terminal-archive.log"
+      - name: Verify expanded RealWorld integration archive
+        run: python scripts/verify_realworld_expanded_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-expanded-archive.log"
+      - name: Verify RealWorld rejection integration archive
+        run: python scripts/verify_realworld_rejection_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-rejection-archive.log"
+      - name: Verify PetClinic terminal extraction replay
+        run: python scripts/prepare_petclinic_terminal.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-terminal-replay.log"
+      - name: Verify PetClinic terminal integration archive
+        run: python scripts/verify_petclinic_terminal_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-terminal-archive.log"
+      - name: Verify PetClinic prefix interpretation preparation
+        run: python scripts/prepare_petclinic_prefix_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-prefix-v3.log"
+      - name: Verify expanded PetClinic integration archive
+        run: python scripts/verify_petclinic_expanded_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-expanded-archive.log"
+      - name: Verify RealWorld field integration archive
+        run: python scripts/verify_realworld_field_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-field-archive.log"
+      - name: Verify halted RealWorld identity archive
+        run: python scripts/verify_realworld_identity_halted_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-identity-halted-archive.log"
+      - name: Verify RealWorld identity database archive
+        run: python scripts/verify_realworld_identity_database_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-identity-database-archive.log"
+      - name: Replay separate write observations
+        run: python scripts/replay_write_observations.py > "$CI_ARTIFACT_DIR/write-observations.json"
+      - name: Replay paired identity measurements
+        run: python scripts/replay_identity_measurements_v2.py > "$CI_ARTIFACT_DIR/identity-measurements-v2.json"
+      - name: Verify live paired database archive
+        run: python scripts/verify_realworld_paired_database_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/paired-database-archive.log"
+      - name: Verify isolated article database archive
+        run: python scripts/verify_realworld_article_database_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-article-database.log"
+      - name: Verify live reference comparison runtime archive
+        run: python scripts/verify_realworld_reference_runtime_v10.py 2>&1 | tee "$CI_ARTIFACT_DIR/reference-runtime-v10.log"
+      - name: Verify prospective reference terminal integration
+        run: python scripts/prepare_realworld_reference_integration_v2.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/reference-integration-v2.log"
+      - name: Replay generated-reference comparison
+        run: python scripts/replay_realworld_references_v1.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-reference-replay.log"
+      - name: Verify fresh legacy v9 archive
+        run: python scripts/verify_realworld_fresh_legacy_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-fresh-legacy.log"
+      - name: Verify halted legacy v8 archive
+        run: python scripts/verify_realworld_legacy_halted_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-legacy-halted.log"
+      - name: Verify retained corpus bindings
+        run: python scripts/prepare_corpus_coverage.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-coverage.log"
+      - name: Verify generated mutation preparation
+        run: python scripts/prepare_realworld_generated_mutations_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-mutations.log"
+      - name: Verify live generated mutation archive
+        run: python scripts/verify_realworld_generated_mutations_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-mutations-runtime.log"
+      - name: Verify live generated reference archive
+        run: python scripts/verify_realworld_generated_runtime_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-runtime.log"
+      - name: Verify offline generated RealWorld bindings
+        run: python scripts/prepare_realworld_generated_bindings_v1.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-bindings.log"
+      - name: Verify legacy and database readiness reconciliation
+        run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
+      - name: Verify live reference readiness reconciliation
+        run: python scripts/prepare_corpus_review_v5.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v5.log"
+      - name: Verify completion and analysis of original diagnostic collection
+        run: python scripts/verify_primary_results_v1.py
+      - name: Verify corrected Quartz reader qualification
+        run: python scripts/verify_quartz_correction_freeze_v1.py
+      - name: Verify complete second primary repetition
+        run: python scripts/verify_primary_collection_v1.py manifests/primary-repeat2-runtime-v1.json
+      - name: Verify complete initial primary collection
+        run: python scripts/verify_primary_collection_v1.py manifests/primary-initial-runtime-v1.json
+      - name: Verify primary freeze and clean smoke
+        run: python scripts/verify_primary_freeze_v1.py
+      - name: Retain first primary smoke failure
+        run: python scripts/verify_primary_smoke_attempt1.py
+      - name: Verify live common generated archive
+        run: python scripts/verify_common_generated_archive_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/common-generated-runtime-v1.log"
+      - name: Verify live common executor archive
+        run: python scripts/verify_common_petclinic_archive_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/common-executor-runtime-v1.log"
+      - name: Verify common engineering bindings
+        run: python scripts/prepare_common_bindings_v1.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/common-bindings-v1.log"
+      - name: Verify live PetClinic timing archive
+        run: python scripts/verify_petclinic_timing_archive_v1.py 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-timing-runtime-v1.log"
+      - name: Verify PetClinic branch-cost preparation
+        run: python scripts/prepare_petclinic_branch_cost_v1.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/petclinic-branch-cost-v1.log"
+      - name: Verify generated corpus readiness reconciliation
+        run: python scripts/prepare_corpus_review_v4.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v4.log"
+      - name: Verify reconciled corpus readiness
+        run: python scripts/prepare_corpus_review_v2.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v2.log"
+      - name: Pure Node adapter tests
+        run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
+      - name: Syntax checks
+        run: |
+          python -m compileall -q src scripts tests
+          for file in scripts/*.mjs scripts/ci/*.mjs; do node --check "$file"; done
+          for file in scripts/ci/*.sh; do bash -n "$file"; done
+      - name: Retain unit evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/study-artifacts/
+          retention-days: 7
+          if-no-files-found: warn
