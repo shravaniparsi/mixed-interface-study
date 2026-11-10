@@ -197,3 +197,12 @@ Registered v2 retains raw innerText, adds textContent and HTML, and requires tex
 
 
 Corrected empty-editor probe run42900023617 dispatched at9ed6a87. Expected memos-memo-probe-v2-memo-empty-probe-42900023617-1; archive results/memos-memo-probe-v2-ci-42900023617; analyze verify_memos_memo_probe_v2.py. No other manual application workflow pending.
+
+
+## Memos qualification complete for finite executor preparation
+
+Synthetic run42900023617 passed and was independently reconstructed in manifests/memos-memo-probe-attempt2-v1.json; full raw archive results/memos-memo-probe-v2-ci-42900023617 retained. Empty rich editor has innerText newline, textContent empty and an empty paragraph with filler br. Native Update disabled, force-target click produced zero memo RPCs during1500ms and full persisted record stayed unchanged. Restored ordinary text then completed native visibility save with full preservation. One synthetic probe; zero natural findings.
+
+Shared preference checker memos_preference_constraints_v1.py maps actual native option inventories to pinned source domains (46locales,4themes,3audiences). Offline qualification on all four ordinary views checks known valid preferences and a deliberately unsupported value for each field:12negative checks. Proof manifests/memos-preference-membership-qualification-v1.json records scope explicitly: membership measurement only, not invalid producer/continuation behavior. Only audience membership is an explicit server enum contract; unsupported theme/locale remain shared client-domain signals. Source maps from i18n.ts, utils/theme.ts and PreferencesSection.tsx, pinned commit.
+
+Next: implement exact finite runtime for the frozen16boundaries+8valids and independent reconstruction; register hashes and bounded initial/followup budget; gate every boundary batch on eight exact-runtime valid controls. Memo producer rejection must be verified with collection state; preference failed writes must compare original initialized record. Full readback and target-request capture precede assertions. Native empty editor uses explicit observed empty-paragraph representation, not general whitespace trimming. Preserve constraint-consistency versus API-contract versus observed native failure distinctions. No Memos scientific boundaries executed yet; no live manual app job remains.
