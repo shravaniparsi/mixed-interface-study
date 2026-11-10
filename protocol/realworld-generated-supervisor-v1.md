@@ -1,0 +1,11 @@
+# Generated supervisor preflight v1
+
+This preparation adds complete synthetic raw traces for API/API, API/UI, UI/API and UI/UI create/edit routes. The fixtures contain state-probe projections, submitted-command and loaded-resource guards, browser request/response IDs and capture-drain accounting. Both producer-specific pairs pass the existing terminal bridge. A synthetic file bundle passes the loader end to end; changing its response binding and recomputing its hashes still yields missing evidence. Missing writes, wrong loaded parents and changed resets cannot become clean pairs.
+
+The supervisor preflight launches only the fixed synthetic worker. That worker uses no network, backend, browser or child processes. It copies reset bytes, writes a synthetic observation, exits with a nonzero code or sleeps to exercise the external worker deadline. Output directories cannot be reused. The parent validates reset bytes and component evidence, stops its owned process group, confirms direct-child exit and persists the report even after timeout or interruption.
+
+The monotonic branch interval starts before worker launch and ends after validation and owned-child cleanup, before report serialization. Common input preparation is outside this interval. Worker deadlines are at most 30 seconds in preflight; cleanup has a 1.5-second reserve. Parent-side validation is measured and checked against the deadline after it returns, not forcibly preempted. A future outer job watchdog is therefore still required. Tests assert timing arithmetic and actual worker termination, not machine-specific execution speed.
+
+This is synthetic lifecycle qualification only. Direct-child exit does not establish detached browser cleanup; the record explicitly leaves that qualification false. No prior archive or readiness count changes. No application execution or primary sample is added. The existing synthetic-only loader remains unchanged.
+
+Next: separately version the real generated worker/supervisor integration, including backend/browser ownership, source capture, reset and timing records, and an outer job watchdog. Admit runtime evidence through a new loader version only after those records are checked. Then use a bounded exposed-control qualification; untouched primary boundaries remain unexecuted.
