@@ -1,0 +1,7 @@
+# Common executor: first live PetClinic qualification
+
+Hosted run [42772531704](https://github.com/shravaniparsi/mixed-interface-study/actions/runs/42772531704) completed successfully at source commit `695cfab8e72b8bb823e3fbc0a209b5cbd19110e7`, after source CI run 42772397682 passed. Hosted and local independent reconstruction agree on two exposed pairs and four branches. The valid owner control produced a clean observation; omitted first name produced matched rejection. All four branches have complete timing intervals and distinct backend process IDs. Both common attempts have distinct retained attempt identities, bindings and complete runtime-file receipts.
+
+The archive is `results/common-petclinic-ci-42772531704`; its full inventory and reconstructed results are recorded in `manifests/common-petclinic-runtime-v1.json`. CI verifies both immutable bytes and reconstruction from raw evidence. No primary samples, untouched cases or repeat attempts were executed. The full catalog and its unbound entries are unchanged.
+
+The run qualifies the PetClinic adapter for these two initial paths. Outer and inner job IDs happen to match in this selection; differing identifiers and authorized follow-up mapping are covered by synthetic raw-fixture tests, not by this application run. Generated RealWorld adapters, live differing-identity paths, live repeats and the remaining cases are still pending. Timings are individual engineering measurements, not performance estimates. Primary batching, calibration and freeze remain open.
