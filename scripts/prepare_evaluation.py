@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/build_grocy_candidates_v1.py',
+    'manifests/grocy-candidate-inventory-v1.json',
+    'manifests/grocy-extension-controls-attempt3-v1.json',
     'manifests/grocy-extension-probes-attempt1-v1.json',
     'scripts/extension/grocy_control_v3.mjs',
     'scripts/extension/run_grocy_controls_v3.py',

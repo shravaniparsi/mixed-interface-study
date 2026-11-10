@@ -1,0 +1,472 @@
+{
+  "kind": "grocy_ordinary_control_v1",
+  "workflow": "task",
+  "channel": "ui",
+  "status": "ordinary_control_passed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.059808851
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.018025281000000008
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.016754457000000004
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/task_categories",
+      "body": {
+        "name": "Study category",
+        "description": "Fixture category",
+        "active": 1
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.052207836999999986
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/tasks",
+      "body": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": 1,
+        "assigned_to_user_id": 2
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.013767031000000002
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "done_timestamp": null,
+        "category_id": 1,
+        "assigned_to_user_id": 2,
+        "row_created_timestamp": "2026-11-10 20:06:25",
+        "userfields": null
+      },
+      "elapsed_s": 0.010222061999999994
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Study category",
+        "description": "Fixture category",
+        "row_created_timestamp": "2026-11-10 20:06:25",
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.010896590000000003
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/users",
+      "status": 200,
+      "response": [
+        {
+          "id": 1,
+          "username": "admin",
+          "first_name": null,
+          "last_name": null,
+          "row_created_timestamp": "2026-11-10 20:06:24",
+          "display_name": "admin",
+          "picture_file_name": null
+        },
+        {
+          "id": 2,
+          "username": "study_actor",
+          "first_name": "Study",
+          "last_name": "Actor",
+          "row_created_timestamp": "2026-11-10 20:06:25",
+          "display_name": "Study Actor",
+          "picture_file_name": null
+        }
+      ],
+      "elapsed_s": 0.009492311000000002
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/objects/tasks/1",
+      "body": {
+        "name": "Ordinary task",
+        "description": "Edited ordinary description",
+        "category_id": "1",
+        "assigned_to_user_id": "2",
+        "due_date": "2027-01-15"
+      },
+      "status": 204
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/tasks/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary task",
+        "description": "Edited ordinary description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "done_timestamp": null,
+        "category_id": 1,
+        "assigned_to_user_id": 2,
+        "row_created_timestamp": "2026-11-10 20:06:25",
+        "userfields": null
+      },
+      "elapsed_s": 0.01809101899999996
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary task",
+          "expected": "Ordinary task",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "due_date",
+          "count": 1,
+          "value": "2027-01-15",
+          "expected": "2027-01-15",
+          "selector": "#due_date input",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "category_id",
+          "count": 1,
+          "value": "1",
+          "expected": "1",
+          "selector": "#category_id",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "assigned_to_user_id",
+          "count": 1,
+          "value": "2",
+          "expected": "2",
+          "selector": "#user_id",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary task",
+          "expected": "Ordinary task",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "due_date",
+          "count": 1,
+          "value": "2027-01-15",
+          "expected": "2027-01-15",
+          "selector": "#due_date input",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "category_id",
+          "count": 1,
+          "value": "1",
+          "expected": "1",
+          "selector": "#category_id",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "assigned_to_user_id",
+          "count": 1,
+          "value": "2",
+          "expected": "2",
+          "selector": "#user_id",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary task",
+          "expected": "Ordinary task",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "due_date",
+          "count": 1,
+          "value": "2027-01-15",
+          "expected": "2027-01-15",
+          "selector": "#due_date input",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "category_id",
+          "count": 1,
+          "value": "1",
+          "expected": "1",
+          "selector": "#category_id",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "assigned_to_user_id",
+          "count": 1,
+          "value": "2",
+          "expected": "2",
+          "selector": "#user_id",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.318462414,
+    "continuation_s": 0.6309254369999999
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/tasks": [],
+      "/api/objects/task_categories": []
+    }
+  },
+  "fixture_ids": {
+    "category": 1
+  },
+  "resolved_payload": {
+    "name": "Ordinary task",
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "prefix": {
+    "name": "Ordinary task",
+    "description": "Original description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "done_timestamp": null,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "immutable_before": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-10 20:06:25",
+    "userfields": null
+  },
+  "reference_checks": [
+    {
+      "field": "category_id",
+      "value": 1,
+      "exists": true
+    },
+    {
+      "field": "assigned_to_user_id",
+      "value": 2,
+      "exists": true
+    }
+  ],
+  "resource_id": 1,
+  "final": {
+    "name": "Ordinary task",
+    "description": "Edited ordinary description",
+    "due_date": "2027-01-15",
+    "done": 0,
+    "done_timestamp": null,
+    "category_id": 1,
+    "assigned_to_user_id": 2
+  },
+  "browser_cleanup_confirmed": true
+}
