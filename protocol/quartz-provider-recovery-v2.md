@@ -1,0 +1,7 @@
+# Public-host recovery
+
+This prospectively registered collection supersedes the unexecuted private-host recovery preparation v1. Neither preparation v1 nor any prior data is modified. The selected 16 cases, candidate/reference ordering, runtime v3 payloads, branch policy, time limits, and conditional repetition rules remain identical. The cases were rejected before receiving a runner in correction run 42791911582; the six executed cases are excluded.
+
+Execution requires independent verification of four successful public-host control pairs, eight nonempty form views, a successful Unit checks run at the release source commit, and an immutable dated release. The exact qualified public environment has four logical CPUs; other pinned image contexts, runtime versions, jars, browser, and reader are retained. The release verifier reconstructs provider evidence and the exact 16-case derivation. Repetitions are selected only from retained complete phases using the existing policy. All actual failures remain archived. No research results are replaced or silently resumed.
+
+Report this exposed public-host cohort separately from the six corrected cases on private hosts. Combined case coverage is a disjoint inventory, not pooling independent samples. Timing results identify the public four-core cohort and carry no cross-host efficacy claim. The original eight invalid nonempty-map measurements stay invalid regardless of corrected outcomes.

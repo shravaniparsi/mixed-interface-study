@@ -114,6 +114,10 @@ jobs:
         run: python scripts/retain_quartz_provider_failure_v1.py --verify
       - name: Verify completion and analysis of original diagnostic collection
         run: python scripts/verify_primary_results_v1.py
+      - name: Verify public host qualification and recovery preparation
+        run: |
+          python scripts/verify_quartz_public_qualification_freeze_v1.py
+          python -c "import sys; sys.path.insert(0,'scripts'); from verify_quartz_recovery_release_v2 import preparation_verified; print('Public recovery units:',len(preparation_verified()['plan']['initial_batches']))"
       - name: Verify corrected Quartz reader qualification
         run: python scripts/verify_quartz_correction_freeze_v1.py
       - name: Verify complete second primary repetition
