@@ -1,0 +1,120 @@
+{
+  "kind": "production_application_extension_screen_v1",
+  "registered_date": "2026-11-10",
+  "selection_rule": "Purposive diversity sample of six self-hosted production applications with native web UI and API; latest stable releases at registration. No case outcomes inspected. Includes source/documentation search exposure; not a random sample or a prevalence denominator.",
+  "phase": "deployment_screen_only",
+  "case_execution_authorized": false,
+  "maximum_screen_attempts_per_app": 2,
+  "maximum_job_minutes": 20,
+  "maximum_parallel_jobs": 3,
+  "applications": [
+    {
+      "repo": "sissbruecker/linkding",
+      "release": "v1.47.0",
+      "commit": "24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f",
+      "license": "MIT",
+      "published_at": "2026-09-13T17:47:41Z",
+      "url": "https://github.com/sissbruecker/linkding/releases/tag/v1.47.0",
+      "id": "linkding",
+      "domain": "bookmarks",
+      "image": "ghcr.io/sissbruecker/linkding:1.47.0",
+      "port": 9090,
+      "path": "/",
+      "env": {
+        "LD_DISABLE_BACKGROUND_TASKS": "True"
+      }
+    },
+    {
+      "repo": "go-vikunja/vikunja",
+      "release": "v2.8.0",
+      "commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+      "license": "AGPL-3.0",
+      "published_at": "2026-11-05T20:44:21Z",
+      "url": "https://github.com/go-vikunja/vikunja/releases/tag/v2.8.0",
+      "id": "vikunja",
+      "domain": "task_management",
+      "image": "vikunja/vikunja:2.8.0",
+      "port": 3456,
+      "path": "/api/v1/info",
+      "env": {
+        "VIKUNJA_DATABASE_TYPE": "sqlite",
+        "VIKUNJA_DATABASE_PATH": "/tmp/study-vikunja.db",
+        "VIKUNJA_SERVICE_PUBLICURL": "http://127.0.0.1:18080/"
+      }
+    },
+    {
+      "repo": "usememos/memos",
+      "release": "26.11.0",
+      "commit": "b40d8a7b573774c52b022c8d6537d6baf2129dc0",
+      "license": "MIT",
+      "published_at": "2026-11-01T14:04:41Z",
+      "url": "https://github.com/usememos/memos/releases/tag/26.11.0",
+      "id": "memos",
+      "domain": "notes",
+      "image": "neosmemo/memos:26.11.0",
+      "port": 5230,
+      "path": "/",
+      "env": {}
+    },
+    {
+      "repo": "go-gitea/gitea",
+      "release": "v28.3.0",
+      "commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+      "license": "MIT",
+      "published_at": "2026-11-01T09:55:07Z",
+      "url": "https://github.com/go-gitea/gitea/releases/tag/v28.3.0",
+      "id": "gitea",
+      "domain": "software_collaboration",
+      "image": "gitea/gitea:28.3.0",
+      "port": 3000,
+      "path": "/api/v1/version",
+      "env": {
+        "GITEA__database__DB_TYPE": "sqlite3",
+        "GITEA__security__INSTALL_LOCK": "true",
+        "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+        "GITEA__server__DISABLE_SSH": "true"
+      }
+    },
+    {
+      "repo": "paperless-ngx/paperless-ngx",
+      "release": "v3.4.2",
+      "commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+      "license": "GPL-3.0",
+      "published_at": "2026-11-03T21:57:15Z",
+      "url": "https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.4.2",
+      "id": "paperless",
+      "domain": "document_management",
+      "image": "ghcr.io/paperless-ngx/paperless-ngx:3.4.2",
+      "port": 8000,
+      "path": "/",
+      "env": {
+        "PAPERLESS_DBENGINE": "sqlite",
+        "PAPERLESS_REDIS": "redis://study-broker:6379",
+        "PAPERLESS_URL": "http://127.0.0.1:18080",
+        "PAPERLESS_OCR_LANGUAGE": "eng"
+      },
+      "dependency": {
+        "image": "docker.io/valkey/valkey:9-alpine",
+        "name": "study-broker"
+      }
+    },
+    {
+      "repo": "grocy/grocy",
+      "release": "v4.7.1",
+      "commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+      "license": "MIT",
+      "published_at": "2026-09-04T15:57:06Z",
+      "url": "https://github.com/grocy/grocy/releases/tag/v4.7.1",
+      "id": "grocy",
+      "domain": "household_inventory",
+      "image": "lscr.io/linuxserver/grocy:version-4.7.1",
+      "port": 80,
+      "path": "/",
+      "env": {
+        "PUID": "1000",
+        "PGID": "1000",
+        "TZ": "UTC"
+      }
+    }
+  ]
+}

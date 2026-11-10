@@ -1,0 +1,38 @@
+name: Production extension deployment screen v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  screen:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        app: [linkding, vikunja, memos, gitea, paperless, grocy]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      APP: ${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12.16'
+      - name: Screen isolated deployment
+        run: timeout --signal=TERM --kill-after=90s 900s python scripts/extension/deployment_screen_v1.py --app "$APP" --output "$RUNNER_TEMP/extension-screen"
+      - name: Retain every screening attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: production-screen-${{ matrix.app }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/extension-screen/
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: true

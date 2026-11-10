@@ -1,5 +1,22 @@
 # Mixed-interface workflow testing
 
+## Current status, 10 November 2026
+
+The original registered experiments and selected repetitions are complete. The corrected Quartz collection covers 22 cases: 14 clean observations, five matching rejections, three unresolved policy cases, and zero eligible check mismatches. Eight original Quartz measurements remain invalid. One original eligible UI-only PetClinic check mismatch remains, observed in three repetitions; repeats are not independent defects.
+
+[Completed results and evidence](notes/registered_experiments_complete_20261110.md) · [Machine-readable completion](manifests/experiment-completion-v3.json)
+
+The repository is now public. Heavy work uses standard public GitHub runners. The cash ceiling remains $100. No paid model calls are requested for the new extension.
+
+The active next stage is an outcome-independent production application extension: linkding, Vikunja, Memos, Gitea, Paperless-ngx, and Grocy. [Read the protocol](protocol/production-extension-v1.md) and [the independently checked prior-art limits](notes/extension_prior_art_verification_20261110.md). Their first deployment screen measures HTTP reachability only; it is not scientific case execution. Natural findings, known historical faults, injected controls, and engineering qualifications remain separate. Q1 readiness is not established.
+
+Reconstruct the completed package with `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 scripts/build_experiment_completion_v3.py --verify`.
+
+## Historical development notes
+
+The following text describes earlier stages, including superseded readiness and repository-visibility statements. Use the current summary and dated completion manifest above for present status.
+
+
 Research prototype and executed feasibility pilot, 6 November 2026 Pacific time (7 November UTC).
 
 Private source repository: [shravaniparsi/mixed-interface-study](https://github.com/shravaniparsi/mixed-interface-study). Git includes reviewed compact summaries; complete historical case evidence remains in the original workspace. [Evidence coverage and restoration prerequisites](results/README.md). Hosted runs follow the separate [CI portability amendment](protocol/ci-portability-v1.md).
