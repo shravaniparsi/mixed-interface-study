@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {installWriteObserver,collectWriteObserver} from './vikunja_fetch_observer_v1.mjs';
+globalThis.location=new URL('http://127.0.0.1:18080/');
+const forwarded=[];globalThis.window={fetch:(input,init)=>{forwarded.push({input,init});return Promise.resolve(new Response('{}',{status:200}))}};
+const page={addInitScript:async(fn,arg)=>fn(arg),evaluate:async fn=>fn()};
+await installWriteObserver(page,'/api/v2/projects/3','PUT');
+const body=JSON.stringify({title:'Ordinary project',description:'unchanged'}),request=new Request('http://127.0.0.1:18080/api/v2/projects/3',{method:'PUT',headers:{'Content-Type':'application/json'},body});
+const response=await window.fetch(request);assert.equal(response.status,200);assert.equal(forwarded[0].input,request);assert.equal(await request.text(),body);
+const records=await collectWriteObserver(page);assert.equal(records.length,1);assert.equal(records[0].body,body);assert.equal(records[0].status,200);
+await window.fetch(new Request('http://127.0.0.1:18080/api/v2/login',{method:'POST',body:'private-bootstrap'}));
+await window.fetch(new Request('https://example.invalid/api/v2/projects/3',{method:'PUT',body:'unrelated'}));
+assert.equal((await collectWriteObserver(page)).length,1);console.log('Scoped clone capture and original request forwarding passed.');

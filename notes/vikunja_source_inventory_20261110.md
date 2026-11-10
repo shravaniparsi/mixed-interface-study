@@ -57,3 +57,9 @@ The raw initial project inventory also exposes generated timestamps in seeded In
 ## Task ordinary registration
 
 vikunja-task-controls-v1.json registers two reversed-order ordinary task pairs, with an owned project fixture. Both branches edit only description. The API uses JSON Patch add operations for all sixteen native writable fields; native capture begins before input because the editor can autosave. Nondefault dates, priority, completion fraction and color expose silent defaulting. Null reminders are submitted as [] on both write paths, matching the frontend normalizer; persisted-record comparison remains exact except root updated. The actual native payload, readback and three loaded/before/fresh views must qualify before any task boundary experiment.
+
+## Ordinary attempt2 and streamed-body observation
+
+Run42904113495 at sourced269543 retained four pairs: all API branches pass, native edits return200 and preserve the expected final business states, but0pairs qualify. Chromium request.postData() returned null for every native streamed Fetch Request; the observer stopped before fresh-final DOM confirmation. Do not reinterpret null transport-observer output as an empty native request.
+
+Version3 retains those network records and adds a target-path/method/origin-scoped read-only fetch wrapper. It clones the selected Request to read its body and forwards the original input/init unchanged; it does not observe authentication. Actual network response and final stored GET remain independent evidence. A local Request test verifies clone-body capture, original-request identity/consumability, and exclusion of login/cross-origin writes. Live qualification remains necessary. Task-controls-v1 was committed but never dispatched; task-controls-v2 incorporates this observer before its first execution. Both registered versions remain retained.
