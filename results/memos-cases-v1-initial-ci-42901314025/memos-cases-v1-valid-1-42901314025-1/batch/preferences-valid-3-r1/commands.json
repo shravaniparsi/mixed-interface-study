@@ -1,0 +1,117 @@
+[
+  {
+    "args": [
+      "docker",
+      "pull",
+      "--platform",
+      "linux/amd64",
+      "neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034"
+    ],
+    "returncode": 0,
+    "output": "docker.io/neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034: Pulling from neosmemo/memos\nDigest: sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034\nStatus: Image is up to date for neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034\ndocker.io/neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034\n",
+    "elapsed_s": 0.0986735079999903
+  },
+  {
+    "args": [
+      "docker",
+      "image",
+      "inspect",
+      "neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034"
+    ],
+    "returncode": 0,
+    "output": "[\n    {\n        \"Id\": \"sha256:d336b87dc571eddcd421628e40590d121f9e6d2a691f7e7de1ed900917fde9f5\",\n        \"RepoTags\": [],\n        \"RepoDigests\": [\n            \"neosmemo/memos@sha256:087e7dc6b76b31fcd1107a5767398b2a310ced209adb791efd8760c745dc8034\"\n        ],\n        \"Parent\": \"\",\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-11-01T14:03:59.266425898Z\",\n        \"DockerVersion\": \"\",\n        \"Author\": \"\",\n        \"Config\": {\n            \"Hostname\": \"\",\n            \"Domainname\": \"\",\n            \"User\": \"root\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"5230/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"TZ=UTC\",\n                \"MEMOS_PORT=5230\"\n            ],\n            \"Cmd\": null,\n            \"Image\": \"\",\n            \"Volumes\": {\n                \"/var/opt/memos\": {}\n            },\n            \"WorkingDir\": \"/var/opt/memos\",\n            \"Entrypoint\": [\n                \"/usr/local/memos/entrypoint.sh\",\n                \"/usr/local/memos/memos\"\n            ],\n            \"OnBuild\": null,\n            \"Labels\": null\n        },\n        \"Architecture\": \"amd64\",\n        \"Os\": \"linux\",\n        \"Size\": 73059991,\n        \"GraphDriver\": {\n            \"Data\": {\n                \"LowerDir\": \"/var/lib/docker/overlay2/44790cd05411be5adf5088dbaf6ab325651bd9a013c18e70de384ce193d5c921/diff:/var/lib/docker/overlay2/d125ba8fcff72d31b0a4fba1fd808ab017f975321823192ea91148fc9fdc1fe5/diff:/var/lib/docker/overlay2/0d919cb326ba70e7bf8f00d18148cadf5306977224cf4c14222062d056c54a28/diff:/var/lib/docker/overlay2/fd12d5b55fa79f761311a44d906a3d0f358c3af54f6489e8623ae8a2ba66ff78/diff\",\n                \"MergedDir\": \"/var/lib/docker/overlay2/88a7496ea0f9ce883a997b9fb718e5ee0984ae738e748b612f457aaee0039f32/merged\",\n                \"UpperDir\": \"/var/lib/docker/overlay2/88a7496ea0f9ce883a997b9fb718e5ee0984ae738e748b612f457aaee0039f32/diff\",\n                \"WorkDir\": \"/var/lib/docker/overlay2/88a7496ea0f9ce883a997b9fb718e5ee0984ae738e748b612f457aaee0039f32/work\"\n            },\n            \"Name\": \"overlay2\"\n        },\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:41058dd4c122275500b8ee145e3ff1692ea26c7c568f55c00caf2878e7c61db0\",\n                \"sha256:bd57b4cbabf4c7cceb47ce70c1db8ade9d1c4df10fbbb2a1b367d40810c04d9e\",\n                \"sha256:fe275fd06666c2e9af60d0b54dad34747dbe629d2bd7adb71eab1ba5e83f48ce\",\n                \"sha256:3e0d1a685713de6b8d7b88a72f86d961e1a473bd224b29930ed1f53b4f444240\",\n                \"sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"0001-01-01T00:00:00Z\"\n        }\n    }\n]\n",
+    "elapsed_s": 0.016410172000007606
+  },
+  {
+    "args": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "study-memos-42901314025-preferences-valid-3-r1-api",
+      "-p",
+      "127.0.0.1:18080:5230",
+      "-e",
+      "TZ=UTC",
+      "sha256:d336b87dc571eddcd421628e40590d121f9e6d2a691f7e7de1ed900917fde9f5"
+    ],
+    "returncode": 0,
+    "output": "ccaf0a598d28a5f30c6643c194ae090505548a025f292c411d7a069aaf1371a4\n",
+    "elapsed_s": 0.14916255200000705
+  },
+  {
+    "args": [
+      "node",
+      "scripts/extension/memos_case_v1.mjs",
+      "--registry",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/memos-execution-v1.json",
+      "--channel",
+      "api",
+      "--out",
+      "/home/runner/work/_temp/memos-cases/batch/preferences-valid-3-r1/api",
+      "--case",
+      "preferences-valid-3"
+    ],
+    "returncode": 0,
+    "output": "",
+    "elapsed_s": 0.3935246449999852
+  },
+  {
+    "args": [
+      "docker",
+      "rm",
+      "-f",
+      "-v",
+      "study-memos-42901314025-preferences-valid-3-r1-api"
+    ],
+    "returncode": 0,
+    "output": "study-memos-42901314025-preferences-valid-3-r1-api\n",
+    "elapsed_s": 0.12625983499998483
+  },
+  {
+    "args": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "study-memos-42901314025-preferences-valid-3-r1-ui",
+      "-p",
+      "127.0.0.1:18080:5230",
+      "-e",
+      "TZ=UTC",
+      "sha256:d336b87dc571eddcd421628e40590d121f9e6d2a691f7e7de1ed900917fde9f5"
+    ],
+    "returncode": 0,
+    "output": "dd9d58d19d3cb52b2e29b11273db6a5893a0466295a1aecfb70d46bea8416832\n",
+    "elapsed_s": 0.1497505669999839
+  },
+  {
+    "args": [
+      "node",
+      "scripts/extension/memos_case_v1.mjs",
+      "--registry",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/memos-execution-v1.json",
+      "--channel",
+      "ui",
+      "--out",
+      "/home/runner/work/_temp/memos-cases/batch/preferences-valid-3-r1/ui",
+      "--case",
+      "preferences-valid-3"
+    ],
+    "returncode": 0,
+    "output": "",
+    "elapsed_s": 5.091715242000021
+  },
+  {
+    "args": [
+      "docker",
+      "rm",
+      "-f",
+      "-v",
+      "study-memos-42901314025-preferences-valid-3-r1-ui"
+    ],
+    "returncode": 0,
+    "output": "study-memos-42901314025-preferences-valid-3-r1-ui\n",
+    "elapsed_s": 0.13665502200001356
+  }
+]
