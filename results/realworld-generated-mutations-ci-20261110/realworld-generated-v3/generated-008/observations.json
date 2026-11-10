@@ -1,0 +1,721 @@
+{
+  "terminal": {
+    "schema_version": 2,
+    "policy_sha256": "22a339ef9ae3c77bc822d5ca61bb83958adc58316be73d6b46a83139b9ff3dbc",
+    "kind": "missing_evidence",
+    "outcome": {
+      "job_id": "generated-008",
+      "execution": "incomplete",
+      "prefix": "rejected",
+      "cleanup_confirmed": true,
+      "channel_discrepancy": null,
+      "check_failure": null,
+      "observation_signature": {
+        "branch_kinds": {
+          "api": "missing_evidence",
+          "ui": "missing_evidence"
+        },
+        "gates": {},
+        "checks": {
+          "api": {
+            "immediate_response": [
+              [
+                "producer_server_error",
+                false,
+                "http_observation_not_adjudicated_defect"
+              ],
+              [
+                "integrity:submitted_command",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "producer_native_controls": [],
+            "prefix_state_reads": [
+              [
+                "failed_prefix_followup_unreadable",
+                false,
+                "http_observation_not_proof_of_state_change"
+              ]
+            ],
+            "assigned_api_continuation": [],
+            "assigned_native_continuation": [],
+            "shared_post_continuation_api_readback": [],
+            "shared_final_native_read": [],
+            "environment_reset_cleanup": [
+              [
+                "integrity:pre_state_readable",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "unresolved_policy": []
+          },
+          "ui": {
+            "immediate_response": [
+              [
+                "producer_server_error",
+                false,
+                "http_observation_not_adjudicated_defect"
+              ],
+              [
+                "integrity:submitted_command",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "producer_native_controls": [],
+            "prefix_state_reads": [
+              [
+                "failed_prefix_followup_unreadable",
+                false,
+                "http_observation_not_proof_of_state_change"
+              ]
+            ],
+            "assigned_api_continuation": [],
+            "assigned_native_continuation": [],
+            "shared_post_continuation_api_readback": [],
+            "shared_final_native_read": [],
+            "environment_reset_cleanup": [
+              [
+                "integrity:pre_state_readable",
+                true,
+                "execution_comparability_observation_not_adjudicated_defect"
+              ]
+            ],
+            "unresolved_policy": []
+          }
+        }
+      }
+    },
+    "evidence": {
+      "api": "c232fd2a759369366d3cb9ad335f77228b4bf0ad64636e3ae5f33e7697dbbd7e",
+      "ui": "e741ba3dc4ca3fc7ad1942e80ea5ff2c7cbfbc940276e097fd90da09e5f508cf"
+    }
+  },
+  "branches": {
+    "api": {
+      "kind": "missing_evidence",
+      "issues": [
+        "rejected_state_not_readable"
+      ],
+      "components": {
+        "case_id": "realworld-article-create-body-edit-v1::payload-mutation::f30f58a8e59922c619eb6266",
+        "candidate_id": "realworld-article-create-body-edit-v1::payload-mutation::f30f58a8e59922c619eb6266",
+        "workflow": "article-create-edit",
+        "route": "api-api",
+        "accepted_prefix": false,
+        "assigned_continuation_reached": false,
+        "execution_evidence_complete": true,
+        "evidence_issues": [],
+        "components": {
+          "immediate_response": {
+            "checks": [
+              {
+                "id": "producer_server_error",
+                "passed": false,
+                "scope": "http_observation_not_adjudicated_defect",
+                "evidence": {
+                  "status": 500
+                }
+              },
+              {
+                "id": "integrity:submitted_command",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "submitted_command",
+                  "stage": "prefix",
+                  "source": "api",
+                  "expected": {
+                    "method": "POST",
+                    "path": "/api/articles",
+                    "payload": {
+                      "article": {
+                        "body": "Body before continuation.",
+                        "description": "Boundary control description",
+                        "tagList": [
+                          "pilot"
+                        ],
+                        "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+                      }
+                    }
+                  },
+                  "observed": {
+                    "method": "POST",
+                    "path": "/api/articles",
+                    "payload": {
+                      "article": {
+                        "body": "Body before continuation.",
+                        "description": "Boundary control description",
+                        "tagList": [
+                          "pilot"
+                        ],
+                        "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+                      }
+                    }
+                  },
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [
+              "producer_server_error"
+            ],
+            "observations": [
+              {
+                "id": "producer_http_status",
+                "status": 500,
+                "classification": "server_error"
+              },
+              {
+                "id": "producer_response",
+                "source": "api",
+                "method": "POST",
+                "path": "/api/articles",
+                "status": 500,
+                "data": {
+                  "non_json": true,
+                  "characters": 1358,
+                  "sha256": "7a1267e19e591b42ebde2ab8fd02b3590b38d119d4d478977f1ebc05ae61bc4c"
+                }
+              }
+            ],
+            "mismatch_observed": true,
+            "comparison_eligible": true,
+            "status": "check_mismatch_observed"
+          },
+          "producer_native_controls": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_or_not_applicable"
+          },
+          "prefix_state_reads": {
+            "checks": [
+              {
+                "id": "failed_prefix_followup_unreadable",
+                "passed": false,
+                "scope": "http_observation_not_proof_of_state_change",
+                "evidence": {
+                  "status": 500,
+                  "data": {
+                    "non_json": true,
+                    "characters": 1354,
+                    "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+                  }
+                }
+              }
+            ],
+            "failed_check_ids": [
+              "failed_prefix_followup_unreadable"
+            ],
+            "observations": [
+              {
+                "id": "failed_prefix_followup",
+                "evidence": {
+                  "status": 500,
+                  "data": {
+                    "non_json": true,
+                    "characters": 1354,
+                    "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+                  }
+                }
+              },
+              {
+                "id": "full_observable_rejection_state",
+                "classification": "unreadable",
+                "before": {
+                  "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+                  "readable": true,
+                  "reads": [
+                    {
+                      "path": "/api/user",
+                      "status": 200,
+                      "data": {
+                        "user": {
+                          "email": "pilot@example.com",
+                          "bio": null,
+                          "image": null,
+                          "username": "pilotresearch",
+                          "token": "[REDACTED]"
+                        }
+                      },
+                      "response_sequence": 6
+                    },
+                    {
+                      "path": "/api/articles?author=pilotresearch",
+                      "status": 200,
+                      "data": {
+                        "articles": [],
+                        "articlesCount": 0
+                      },
+                      "response_sequence": 8
+                    },
+                    {
+                      "path": "/api/tags",
+                      "status": 200,
+                      "data": {
+                        "tags": []
+                      },
+                      "response_sequence": 10
+                    }
+                  ],
+                  "data": {
+                    "user": {
+                      "username": "pilotresearch",
+                      "email": "pilot@example.com",
+                      "bio": null,
+                      "image": null
+                    },
+                    "articles": [],
+                    "tags": []
+                  }
+                },
+                "after": {
+                  "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+                  "readable": false,
+                  "reads": [
+                    {
+                      "path": "/api/user",
+                      "status": 200,
+                      "data": {
+                        "user": {
+                          "email": "pilot@example.com",
+                          "bio": null,
+                          "image": null,
+                          "username": "pilotresearch",
+                          "token": "[REDACTED]"
+                        }
+                      },
+                      "response_sequence": 16
+                    },
+                    {
+                      "path": "/api/articles?author=pilotresearch",
+                      "status": 500,
+                      "data": {
+                        "non_json": true,
+                        "characters": 1354,
+                        "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+                      },
+                      "response_sequence": 18
+                    },
+                    {
+                      "path": "/api/tags",
+                      "status": 200,
+                      "data": {
+                        "tags": [
+                          "pilot"
+                        ]
+                      },
+                      "response_sequence": 20
+                    }
+                  ],
+                  "error": "Article list unreadable"
+                }
+              }
+            ],
+            "limitations": [
+              "Snapshot covers current-user public fields, all listed own articles, global tag membership and their comments; excludes auth tokens and unobserved database state."
+            ],
+            "mismatch_observed": true,
+            "comparison_eligible": true,
+            "status": "check_mismatch_observed"
+          },
+          "assigned_api_continuation": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_prefix_unsuccessful"
+          },
+          "assigned_native_continuation": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_assigned"
+          },
+          "shared_post_continuation_api_readback": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "assigned_action_interface": null,
+            "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_prefix_unsuccessful"
+          },
+          "shared_final_native_read": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_prefix_unsuccessful"
+          },
+          "environment_reset_cleanup": {
+            "checks": [
+              {
+                "id": "integrity:pre_state_readable",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "pre_state_readable",
+                  "stage": "setup",
+                  "source": "shared_api",
+                  "expected": true,
+                  "observed": true,
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "unresolved_policy": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [
+              {
+                "expectation": {
+                  "category": "unresolved",
+                  "outcome": "unknown",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+                  "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+                },
+                "actual_status": 500
+              }
+            ],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "policy_observations_only"
+          }
+        },
+        "policy_unresolved": true,
+        "unclassified_checks": [],
+        "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion."
+      }
+    },
+    "ui": {
+      "kind": "missing_evidence",
+      "issues": [
+        "rejected_state_not_readable"
+      ],
+      "components": {
+        "case_id": "realworld-article-create-body-edit-v1::payload-mutation::4bdfc2bf645d19319328bd84",
+        "candidate_id": "realworld-article-create-body-edit-v1::payload-mutation::4bdfc2bf645d19319328bd84",
+        "workflow": "article-create-edit",
+        "route": "api-ui",
+        "accepted_prefix": false,
+        "assigned_continuation_reached": false,
+        "execution_evidence_complete": true,
+        "evidence_issues": [],
+        "components": {
+          "immediate_response": {
+            "checks": [
+              {
+                "id": "producer_server_error",
+                "passed": false,
+                "scope": "http_observation_not_adjudicated_defect",
+                "evidence": {
+                  "status": 500
+                }
+              },
+              {
+                "id": "integrity:submitted_command",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "submitted_command",
+                  "stage": "prefix",
+                  "source": "api",
+                  "expected": {
+                    "method": "POST",
+                    "path": "/api/articles",
+                    "payload": {
+                      "article": {
+                        "body": "Body before continuation.",
+                        "description": "Boundary control description",
+                        "tagList": [
+                          "pilot"
+                        ],
+                        "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+                      }
+                    }
+                  },
+                  "observed": {
+                    "method": "POST",
+                    "path": "/api/articles",
+                    "payload": {
+                      "article": {
+                        "body": "Body before continuation.",
+                        "description": "Boundary control description",
+                        "tagList": [
+                          "pilot"
+                        ],
+                        "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+                      }
+                    }
+                  },
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [
+              "producer_server_error"
+            ],
+            "observations": [
+              {
+                "id": "producer_http_status",
+                "status": 500,
+                "classification": "server_error"
+              },
+              {
+                "id": "producer_response",
+                "source": "api",
+                "method": "POST",
+                "path": "/api/articles",
+                "status": 500,
+                "data": {
+                  "non_json": true,
+                  "characters": 1358,
+                  "sha256": "7a1267e19e591b42ebde2ab8fd02b3590b38d119d4d478977f1ebc05ae61bc4c"
+                }
+              }
+            ],
+            "mismatch_observed": true,
+            "comparison_eligible": true,
+            "status": "check_mismatch_observed"
+          },
+          "producer_native_controls": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_or_not_applicable"
+          },
+          "prefix_state_reads": {
+            "checks": [
+              {
+                "id": "failed_prefix_followup_unreadable",
+                "passed": false,
+                "scope": "http_observation_not_proof_of_state_change",
+                "evidence": {
+                  "status": 500,
+                  "data": {
+                    "non_json": true,
+                    "characters": 1354,
+                    "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+                  }
+                }
+              }
+            ],
+            "failed_check_ids": [
+              "failed_prefix_followup_unreadable"
+            ],
+            "observations": [
+              {
+                "id": "failed_prefix_followup",
+                "evidence": {
+                  "status": 500,
+                  "data": {
+                    "non_json": true,
+                    "characters": 1354,
+                    "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+                  }
+                }
+              },
+              {
+                "id": "full_observable_rejection_state",
+                "classification": "unreadable",
+                "before": {
+                  "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+                  "readable": true,
+                  "reads": [
+                    {
+                      "path": "/api/user",
+                      "status": 200,
+                      "data": {
+                        "user": {
+                          "email": "pilot@example.com",
+                          "bio": null,
+                          "image": null,
+                          "username": "pilotresearch",
+                          "token": "[REDACTED]"
+                        }
+                      },
+                      "response_sequence": 6
+                    },
+                    {
+                      "path": "/api/articles?author=pilotresearch",
+                      "status": 200,
+                      "data": {
+                        "articles": [],
+                        "articlesCount": 0
+                      },
+                      "response_sequence": 8
+                    },
+                    {
+                      "path": "/api/tags",
+                      "status": 200,
+                      "data": {
+                        "tags": []
+                      },
+                      "response_sequence": 10
+                    }
+                  ],
+                  "data": {
+                    "user": {
+                      "username": "pilotresearch",
+                      "email": "pilot@example.com",
+                      "bio": null,
+                      "image": null
+                    },
+                    "articles": [],
+                    "tags": []
+                  }
+                },
+                "after": {
+                  "scope": "current user public fields, complete own-article list, global tag membership, and comments on every listed article; excludes auth tokens, not timestamps",
+                  "readable": false,
+                  "reads": [
+                    {
+                      "path": "/api/user",
+                      "status": 200,
+                      "data": {
+                        "user": {
+                          "email": "pilot@example.com",
+                          "bio": null,
+                          "image": null,
+                          "username": "pilotresearch",
+                          "token": "[REDACTED]"
+                        }
+                      },
+                      "response_sequence": 16
+                    },
+                    {
+                      "path": "/api/articles?author=pilotresearch",
+                      "status": 500,
+                      "data": {
+                        "non_json": true,
+                        "characters": 1354,
+                        "sha256": "fcedc9d09c6155269de51d80342eb868a134f42b4561a1da4e4064f887647119"
+                      },
+                      "response_sequence": 18
+                    },
+                    {
+                      "path": "/api/tags",
+                      "status": 200,
+                      "data": {
+                        "tags": [
+                          "pilot"
+                        ]
+                      },
+                      "response_sequence": 20
+                    }
+                  ],
+                  "error": "Article list unreadable"
+                }
+              }
+            ],
+            "limitations": [
+              "Snapshot covers current-user public fields, all listed own articles, global tag membership and their comments; excludes auth tokens and unobserved database state."
+            ],
+            "mismatch_observed": true,
+            "comparison_eligible": true,
+            "status": "check_mismatch_observed"
+          },
+          "assigned_api_continuation": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_assigned"
+          },
+          "assigned_native_continuation": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_prefix_unsuccessful"
+          },
+          "shared_post_continuation_api_readback": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "assigned_action_interface": null,
+            "observation_mechanism": "Direct API readback after assigned action; not native-only detection.",
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_prefix_unsuccessful"
+          },
+          "shared_final_native_read": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "not_reached_prefix_unsuccessful"
+          },
+          "environment_reset_cleanup": {
+            "checks": [
+              {
+                "id": "integrity:pre_state_readable",
+                "passed": true,
+                "scope": "execution_comparability_observation_not_adjudicated_defect",
+                "evidence": {
+                  "name": "pre_state_readable",
+                  "stage": "setup",
+                  "source": "shared_api",
+                  "expected": true,
+                  "observed": true,
+                  "passed": true
+                }
+              }
+            ],
+            "failed_check_ids": [],
+            "observations": [],
+            "mismatch_observed": false,
+            "comparison_eligible": true,
+            "status": "no_check_mismatch_observed"
+          },
+          "unresolved_policy": {
+            "checks": [],
+            "failed_check_ids": [],
+            "observations": [
+              {
+                "expectation": {
+                  "category": "unresolved",
+                  "outcome": "unknown",
+                  "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+                  "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+                },
+                "actual_status": 500
+              }
+            ],
+            "mismatch_observed": false,
+            "comparison_eligible": false,
+            "status": "policy_observations_only"
+          }
+        },
+        "policy_unresolved": true,
+        "unclassified_checks": [],
+        "interpretation": "Recorded source-check/HTTP observations only; no defect, root-cause, pair-validity or detection-overlap conclusion."
+      }
+    }
+  },
+  "comparability": {},
+  "runtime_dispatch_qualified": false,
+  "primary_freeze_complete": false
+}

@@ -1,0 +1,2175 @@
+{
+  "case_count": 18,
+  "cases": [
+    {
+      "case_id": "realworld-article-create-body-edit-v1::route-only::57b549b5817598956410ec92",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+      },
+      "expectation_scope": {
+        "kind": "workflow"
+      },
+      "intervention": "route_only",
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "ui"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "ui"
+          }
+        ]
+      },
+      "substitutions": 0
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::route-only::6418dd189b8181a42fca22ff",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+      },
+      "expectation_scope": {
+        "kind": "workflow"
+      },
+      "intervention": "route_only",
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::a10846da9ef94ee01fd6e26d",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "reject",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "empty",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-body-empty"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::baa403d57aa320cbb66b5a88",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "contract",
+        "outcome": "reject",
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "null",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-body-null"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": null,
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::9b9bb13f90b0f674bc1cd63a",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "contract",
+        "outcome": "reject",
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "omit",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "omit_json_property",
+          "supported": true
+        },
+        "transformation_id": "article-body-omitted"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::c43d5902a7ebee67f110f6fc",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "enum",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-body-whitespace"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "   ",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::d57482ce4512d41caf675871",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+        "statement": "Omitted optional tagList is explicitly tested as valid."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-taglist",
+        "input_path": [
+          "article",
+          "tagList"
+        ],
+        "kind": "omit",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "omit_json_property",
+          "supported": true
+        },
+        "transformation_id": "article-tags-omitted"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::64ab54711c0cdfa2d95cd885",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "unresolved",
+        "outcome": "unknown",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-title",
+        "input_path": [
+          "article",
+          "title"
+        ],
+        "kind": "boundary",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-title-150"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::4bdfc2bf645d19319328bd84",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "unresolved",
+        "outcome": "unknown",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-title",
+        "input_path": [
+          "article",
+          "title"
+        ],
+        "kind": "boundary",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-title-151"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "ui",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::route-only::f719627a0a07de652166ebab",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+      },
+      "expectation_scope": {
+        "kind": "workflow"
+      },
+      "intervention": "route_only",
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "ui",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "ui"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "ui"
+          }
+        ]
+      },
+      "substitutions": 1
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::route-only::f0cae76b045f5d9cbf671fcd",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+      },
+      "expectation_scope": {
+        "kind": "workflow"
+      },
+      "intervention": "route_only",
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::9993d3978fab21a870b4511e",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "reject",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "empty",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-body-empty"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::9f93177e2f70f60b075ba325",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "contract",
+        "outcome": "reject",
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "null",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-body-null"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": null,
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::1b9a0cd1ee1f9a38a272145d",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "contract",
+        "outcome": "reject",
+        "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "omit",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "omit_json_property",
+          "supported": true
+        },
+        "transformation_id": "article-body-omitted"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::c5e655f65c3891c0759039c9",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+        "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "kind": "enum",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-body-whitespace"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "   ",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::0430e1bc7b32976bfa809a57",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "implementation_control",
+        "outcome": "accept",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+        "statement": "Omitted optional tagList is explicitly tested as valid."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-taglist",
+        "input_path": [
+          "article",
+          "tagList"
+        ],
+        "kind": "omit",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "omit_json_property",
+          "supported": true
+        },
+        "transformation_id": "article-tags-omitted"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::f18e322bd0f4aeb781af4199",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "unresolved",
+        "outcome": "unknown",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-title",
+        "input_path": [
+          "article",
+          "title"
+        ],
+        "kind": "boundary",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-title-150"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    },
+    {
+      "case_id": "realworld-article-create-body-edit-v1::payload-mutation::f30f58a8e59922c619eb6266",
+      "estimated_cost_s": 1.0,
+      "expectation": {
+        "category": "unresolved",
+        "outcome": "unknown",
+        "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+        "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+      },
+      "expectation_scope": {
+        "kind": "operation",
+        "operation_id": "create_article"
+      },
+      "intervention": "payload_mutation",
+      "mutation": {
+        "constraint_id": "create-article-title",
+        "input_path": [
+          "article",
+          "title"
+        ],
+        "kind": "boundary",
+        "operation_id": "create_article",
+        "representation": {
+          "action": "set_json_value",
+          "supported": true
+        },
+        "transformation_id": "article-title-151"
+      },
+      "operations": [
+        {
+          "input": {
+            "article": {
+              "body": "Body before continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            }
+          },
+          "interface": "api",
+          "operation_id": "create_article"
+        },
+        {
+          "input": {
+            "article": {
+              "body": "Body after meaningful continuation.",
+              "description": "Boundary control description",
+              "tagList": [
+                "pilot"
+              ],
+              "title": "Boundary pilot article"
+            }
+          },
+          "interface": "api",
+          "operation_id": "edit_article_body"
+        }
+      ],
+      "selection_targets": {
+        "dependencies": [
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article"
+          },
+          {
+            "consumer": "edit_article_body",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article"
+          }
+        ],
+        "obligations": [
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.editable_state",
+            "kind": "state",
+            "producer": "create_article",
+            "producer_interface": "api"
+          },
+          {
+            "consumer": "edit_article_body",
+            "consumer_interface": "api",
+            "field_or_state": "article.slug",
+            "kind": "data",
+            "producer": "create_article",
+            "producer_interface": "api"
+          }
+        ]
+      },
+      "substitutions": 2
+    }
+  ],
+  "excluded_combinations": [
+    {
+      "constraint_id": "create-article-body",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-body-empty"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON null value is declared. This API input is not assumed equivalent to clearing a UI field.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-body-null"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-body-omitted"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-body-whitespace"
+    },
+    {
+      "constraint_id": "create-article-taglist",
+      "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-tags-omitted"
+    },
+    {
+      "constraint_id": "create-article-title",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-title-150"
+    },
+    {
+      "constraint_id": "create-article-title",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "ui"
+      },
+      "transformation_id": "article-title-151"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-body-empty"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON null value is declared. This API input is not assumed equivalent to clearing a UI field.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-body-null"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-body-omitted"
+    },
+    {
+      "constraint_id": "create-article-body",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-body-whitespace"
+    },
+    {
+      "constraint_id": "create-article-taglist",
+      "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-tags-omitted"
+    },
+    {
+      "constraint_id": "create-article-title",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-title-150"
+    },
+    {
+      "constraint_id": "create-article-title",
+      "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+      "routes": {
+        "create_article": "ui",
+        "edit_article_body": "api"
+      },
+      "transformation_id": "article-title-151"
+    }
+  ],
+  "kind": "offline_declared_candidate_registry",
+  "manifest": {
+    "bounds": {
+      "max_cases": 18,
+      "max_mutations": 1,
+      "max_substitutions": 2
+    },
+    "constraints": [
+      {
+        "applies_to_interfaces": [
+          "api"
+        ],
+        "constraint_id": "create-article-body",
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "operation_id": "create_article",
+        "transformations": [
+          {
+            "expectation": {
+              "category": "implementation_control",
+              "outcome": "reject",
+              "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+              "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+            },
+            "kind": "empty",
+            "representations": {
+              "api": {
+                "action": "set_json_value",
+                "supported": true
+              },
+              "ui": {
+                "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-body-empty",
+            "value": ""
+          },
+          {
+            "expectation": {
+              "category": "contract",
+              "outcome": "reject",
+              "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+              "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+            },
+            "kind": "null",
+            "representations": {
+              "api": {
+                "action": "set_json_value",
+                "supported": true
+              },
+              "ui": {
+                "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON null value is declared. This API input is not assumed equivalent to clearing a UI field.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-body-null",
+            "value": null
+          },
+          {
+            "expectation": {
+              "category": "contract",
+              "outcome": "reject",
+              "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+              "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+            },
+            "kind": "omit",
+            "representations": {
+              "api": {
+                "action": "omit_json_property",
+                "supported": true
+              },
+              "ui": {
+                "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-body-omitted"
+          },
+          {
+            "expectation": {
+              "category": "implementation_control",
+              "outcome": "accept",
+              "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L48",
+              "statement": "Creation requires a string body; local validator rejects empty but does not trim whitespace."
+            },
+            "kind": "enum",
+            "representations": {
+              "api": {
+                "action": "set_json_value",
+                "supported": true
+              },
+              "ui": {
+                "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-body-whitespace",
+            "value": "   "
+          }
+        ]
+      },
+      {
+        "applies_to_interfaces": [
+          "api"
+        ],
+        "constraint_id": "create-article-taglist",
+        "input_path": [
+          "article",
+          "tagList"
+        ],
+        "operation_id": "create_article",
+        "transformations": [
+          {
+            "expectation": {
+              "category": "implementation_control",
+              "outcome": "accept",
+              "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+              "statement": "Omitted optional tagList is explicitly tested as valid."
+            },
+            "kind": "omit",
+            "representations": {
+              "api": {
+                "action": "omit_json_property",
+                "supported": true
+              },
+              "ui": {
+                "reason": "Native controls bind complete typed form values; no action mapping to this exact JSON property omission is declared. This API input is not assumed equivalent to clearing a UI field.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-tags-omitted"
+          }
+        ]
+      },
+      {
+        "applies_to_interfaces": [
+          "api"
+        ],
+        "constraint_id": "create-article-title",
+        "input_path": [
+          "article",
+          "title"
+        ],
+        "operation_id": "create_article",
+        "transformations": [
+          {
+            "expectation": {
+              "category": "unresolved",
+              "outcome": "unknown",
+              "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+              "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+            },
+            "kind": "boundary",
+            "representations": {
+              "api": {
+                "action": "set_json_value",
+                "supported": true
+              },
+              "ui": {
+                "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-title-150",
+            "value": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+          },
+          {
+            "expectation": {
+              "category": "unresolved",
+              "outcome": "unknown",
+              "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+              "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+            },
+            "kind": "boundary",
+            "representations": {
+              "api": {
+                "action": "set_json_value",
+                "supported": true
+              },
+              "ui": {
+                "reason": "API-only v1 mutation adapter restriction. This literal may be representable with normal UI controls; exclusion does not claim inherent UI impossibility.",
+                "supported": false
+              }
+            },
+            "transformation_id": "article-title-151",
+            "value": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+          }
+        ]
+      }
+    ],
+    "cost_estimate": {
+      "includes": [
+        "operations",
+        "oracle",
+        "reset"
+      ],
+      "seconds": 1.0,
+      "source": "UNMEASURED PLACEHOLDER: uniform positive scalar required by the prototype selector; not a measured duration or runtime prediction. Replace with prospectively calibrated costs before any cost-aware comparison."
+    },
+    "dependencies": [
+      {
+        "consumer": "edit_article_body",
+        "evidence": {
+          "source": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/pages/EditArticle.vue#L120",
+          "statement": "The editor loads title, description, body and tagList, then submits the full form. Body editing preserves title, description and tagList from the accepted producer output."
+        },
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article"
+      },
+      {
+        "consumer": "edit_article_body",
+        "evidence": {
+          "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/api.py#L137",
+          "statement": "Article creation returns article.slug; update resolves the same resource through the returned slug path parameter. Native editor fetches and submits using route.params.slug."
+        },
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article"
+      }
+    ],
+    "manifest_id": "realworld-article-create-body-edit-v1",
+    "operations": [
+      {
+        "input": {
+          "article": {
+            "body": "Body before continuation.",
+            "description": "Boundary control description",
+            "tagList": [
+              "pilot"
+            ],
+            "title": "Boundary pilot article"
+          }
+        },
+        "interfaces": [
+          "api",
+          "ui"
+        ],
+        "operation_id": "create_article",
+        "reference_interface": "ui"
+      },
+      {
+        "input": {
+          "article": {
+            "body": "Body after meaningful continuation.",
+            "description": "Boundary control description",
+            "tagList": [
+              "pilot"
+            ],
+            "title": "Boundary pilot article"
+          }
+        },
+        "interfaces": [
+          "api",
+          "ui"
+        ],
+        "operation_id": "edit_article_body",
+        "reference_interface": "ui"
+      }
+    ],
+    "oracle": {
+      "business_state_comparison": {
+        "fields": [
+          "title",
+          "description",
+          "body",
+          "tagList",
+          "author.username"
+        ],
+        "ignored": [
+          "createdAt",
+          "updatedAt",
+          "favoritesCount",
+          "favorited"
+        ],
+        "slug": "runtime identity binding; not a cross-route business-equality field",
+        "tagList": "unordered set"
+      },
+      "cost_status": "unmeasured_uniform_placeholder",
+      "execution_conditions": [
+        "Restore the same synthetic actor fixture independently before each complete case; authenticate UI and API as that same actor.",
+        "Record producer rejection separately and do not execute or credit a consumer dependency when creation did not succeed.",
+        "For an accepted producer, retain the actual response and verify the resource exists before continuing; bind the returned slug without guessing it from the title.",
+        "Use the accepted producer output to bind title, description and tagList; preserve normalized omitted-tag output. For a native UI edit, verify loaded fields against those bindings, then change only body.",
+        "After editing, verify persisted title, description and tagList equal the bound values and body equals the requested new body; treat tagList as an unordered set.",
+        "Verify the authenticated owner and resource count against the reset fixture. Perform a fresh native UI GET and confirm the updated body is readable.",
+        "Only explicitly observed producer-to-consumer field/state consumption may be submitted as selector coverage; declared targets and attempted calls do not establish exercised edges."
+      ],
+      "input_semantics": "Operation inputs are templates. A future adapter must resolve the output bindings below before executing the consumer; it must not submit baseline template values over producer-mutated or normalized fields.",
+      "interpretation": {
+        "expectation_categories": "contract denotes a public request requirement; implementation_control denotes source-level behavior; unresolved denotes a probe without a declared verdict. These categories are retained from the registered cases.",
+        "reference_route": "UI/UI is only the zero-substitution generation reference. It supplies no inferred rules or defect labels.",
+        "title_boundaries": "The 150 and 151 character literals probe the declared model limit. Both remain unknown/unresolved; no request maxLength or predetermined defect is inferred.",
+        "whitespace_kind": "enum means one explicitly enumerated three-space literal in this finite generator catalog; it does not assert the article body has an API enum constraint."
+      },
+      "meaningful_edit": {
+        "input_path": [
+          "article",
+          "body"
+        ],
+        "operation_id": "edit_article_body",
+        "value": "Body after meaningful continuation."
+      },
+      "operation_mapping": {
+        "create_article": {
+          "api_method": "POST",
+          "api_path": "/api/articles",
+          "body_envelope": "article",
+          "ui_path": "/#/article/create"
+        },
+        "edit_article_body": {
+          "api_method": "PUT",
+          "api_path_template": "/api/articles/{bound_slug}",
+          "body_envelope": "article",
+          "ui_path_template": "/#/article/{bound_slug}/edit"
+        }
+      },
+      "output_bindings": [
+        {
+          "required_before_execution": true,
+          "source_operation": "create_article",
+          "source_path": [
+            "article",
+            "slug"
+          ],
+          "target": "resource_path_parameter",
+          "target_name": "bound_slug",
+          "target_operation": "edit_article_body"
+        },
+        {
+          "required_before_execution": true,
+          "source_operation": "create_article",
+          "source_path": [
+            "article",
+            "title"
+          ],
+          "target": "input",
+          "target_operation": "edit_article_body",
+          "target_path": [
+            "article",
+            "title"
+          ]
+        },
+        {
+          "required_before_execution": true,
+          "source_operation": "create_article",
+          "source_path": [
+            "article",
+            "description"
+          ],
+          "target": "input",
+          "target_operation": "edit_article_body",
+          "target_path": [
+            "article",
+            "description"
+          ]
+        },
+        {
+          "required_before_execution": true,
+          "source_operation": "create_article",
+          "source_path": [
+            "article",
+            "tagList"
+          ],
+          "target": "input",
+          "target_operation": "edit_article_body",
+          "target_path": [
+            "article",
+            "tagList"
+          ]
+        }
+      ],
+      "pinned_sources": {
+        "backend_commit": "87dd078c883a046f5ff20269df2fb004d8b5f83f",
+        "create_update_schemas": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+        "frontend_commit": "b14ba5011cf9cc97babfcd7ca99dcfbb058862e7",
+        "native_editor": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/pages/EditArticle.vue#L120",
+        "optional_tags_control": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/tests.py#L232",
+        "request_contract": "https://github.com/mutoe/vue3-realworld-example-app/blob/b14ba5011cf9cc97babfcd7ca99dcfbb058862e7/src/services/openapi.yml#L535",
+        "title_model_limit": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38"
+      },
+      "runner_integration": "The existing browser boundary batch does not consume this generated pool. Its case definitions supplied the explicit input variants only.",
+      "source_registry": {
+        "excluded_source_cases": {
+          "article-title-whitespace": "Outside this explicitly requested seven-mutation integration subset; no result-based exclusion."
+        },
+        "mutation_source_case_ids": [
+          "article-body-omitted",
+          "article-body-null",
+          "article-body-empty",
+          "article-body-whitespace",
+          "article-tags-omitted",
+          "article-title-150",
+          "article-title-151"
+        ],
+        "path": "manifests/realworld-boundary-registry-v1.json",
+        "registered_before_execution": true,
+        "route_only_producer_source_case": "article-valid",
+        "selection_basis": "Declared source-case inputs and expectations only; no execution results or defect labels used.",
+        "sha256": "dee2fee441d71283eddd68e1c5b23396d95d7a8c184d0e24468a1c5f7e1deab2"
+      },
+      "status": "declarative_adapter_contract_not_executed"
+    },
+    "reference_expectation": {
+      "category": "implementation_control",
+      "outcome": "accept",
+      "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/schemas.py#L42",
+      "statement": "Declared workflow control: valid complete article input followed by a full-field body edit. Create and update schemas accept the specified field types and nonempty strings. This is an implementation-based expectation, not independent defect truth or an observed execution result."
+    },
+    "schema_version": 1
+  },
+  "manifest_sha256": "1aaf5eb414dc0df3a3300b9b36b2be88e366f009454a3d9dfab14c146f10cb4b",
+  "schema_version": 1,
+  "semantic_discovery": false,
+  "status": "generated_not_executed"
+}

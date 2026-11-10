@@ -1,0 +1,94 @@
+{
+  "case_id": "realworld-article-create-body-edit-v1::payload-mutation::f30f58a8e59922c619eb6266",
+  "estimated_cost_s": 1.0,
+  "expectation": {
+    "category": "unresolved",
+    "outcome": "unknown",
+    "source": "https://github.com/c4ffein/realworld-django-ninja/blob/87dd078c883a046f5ff20269df2fb004d8b5f83f/apps/articles/models.py#L38",
+    "statement": "Model length limit is150; public request schema has no maxLength, so this is an implementation-limit probe."
+  },
+  "expectation_scope": {
+    "kind": "operation",
+    "operation_id": "create_article"
+  },
+  "intervention": "payload_mutation",
+  "mutation": {
+    "constraint_id": "create-article-title",
+    "input_path": [
+      "article",
+      "title"
+    ],
+    "kind": "boundary",
+    "operation_id": "create_article",
+    "representation": {
+      "action": "set_json_value",
+      "supported": true
+    },
+    "transformation_id": "article-title-151"
+  },
+  "operations": [
+    {
+      "input": {
+        "article": {
+          "body": "Body before continuation.",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+        }
+      },
+      "interface": "api",
+      "operation_id": "create_article"
+    },
+    {
+      "input": {
+        "article": {
+          "body": "Body after meaningful continuation.",
+          "description": "Boundary control description",
+          "tagList": [
+            "pilot"
+          ],
+          "title": "Boundary pilot article"
+        }
+      },
+      "interface": "api",
+      "operation_id": "edit_article_body"
+    }
+  ],
+  "selection_targets": {
+    "dependencies": [
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article"
+      },
+      {
+        "consumer": "edit_article_body",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article"
+      }
+    ],
+    "obligations": [
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "api",
+        "field_or_state": "article.editable_state",
+        "kind": "state",
+        "producer": "create_article",
+        "producer_interface": "api"
+      },
+      {
+        "consumer": "edit_article_body",
+        "consumer_interface": "api",
+        "field_or_state": "article.slug",
+        "kind": "data",
+        "producer": "create_article",
+        "producer_interface": "api"
+      }
+    ]
+  },
+  "substitutions": 2
+}

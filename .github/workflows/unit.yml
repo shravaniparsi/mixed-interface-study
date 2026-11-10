@@ -96,6 +96,8 @@ jobs:
         run: python scripts/prepare_corpus_coverage.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-coverage.log"
       - name: Verify generated mutation preparation
         run: python scripts/prepare_realworld_generated_mutations_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-mutations.log"
+      - name: Verify live generated mutation archive
+        run: python scripts/verify_realworld_generated_mutations_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-mutations-runtime.log"
       - name: Verify live generated reference archive
         run: python scripts/verify_realworld_generated_runtime_archive.py 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-runtime.log"
       - name: Verify offline generated RealWorld bindings
