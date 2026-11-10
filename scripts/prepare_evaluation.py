@@ -29,6 +29,8 @@ SOURCES = {
 }
 ARTIFACTS = [
     'manifests/gitea-controls-v3.json',
+    'manifests/gitea-initial-results-v1.json',
+    'manifests/gitea-followup-execution-v1.json',
     'manifests/memos-content-mechanism-v1.json',
     'manifests/grocy-counterfactuals-v1.json',
     'manifests/gitea-probe-results-v1.json',

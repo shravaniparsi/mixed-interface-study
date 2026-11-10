@@ -1,0 +1,197 @@
+[
+  {
+    "args": [
+      "docker",
+      "pull",
+      "--platform",
+      "linux/amd64",
+      "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d"
+    ],
+    "returncode": 0,
+    "output": "docker.io/gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d: Pulling from gitea/gitea\nDigest: sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d\nStatus: Image is up to date for gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d\ndocker.io/gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d\n",
+    "elapsed_s": 0.05680113399998277
+  },
+  {
+    "args": [
+      "docker",
+      "image",
+      "inspect",
+      "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d"
+    ],
+    "returncode": 0,
+    "output": "[\n    {\n        \"Id\": \"sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77\",\n        \"RepoTags\": [],\n        \"RepoDigests\": [\n            \"gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d\"\n        ],\n        \"Parent\": \"\",\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-11-01T08:35:12.666434073Z\",\n        \"DockerVersion\": \"\",\n        \"Author\": \"\",\n        \"Config\": {\n            \"Hostname\": \"\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"22/tcp\": {},\n                \"3000/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"USER=git\",\n                \"GITEA_CUSTOM=/data/gitea\"\n            ],\n            \"Cmd\": [\n                \"/usr/bin/s6-svscan\",\n                \"/etc/s6\"\n            ],\n            \"ArgsEscaped\": true,\n            \"Image\": \"\",\n            \"Volumes\": {\n                \"/data\": {}\n            },\n            \"WorkingDir\": \"/\",\n            \"Entrypoint\": [\n                \"/usr/bin/entrypoint\"\n            ],\n            \"OnBuild\": null,\n            \"Labels\": null\n        },\n        \"Architecture\": \"amd64\",\n        \"Os\": \"linux\",\n        \"Size\": 186792294,\n        \"GraphDriver\": {\n            \"Data\": {\n                \"LowerDir\": \"/var/lib/docker/overlay2/276e870554dfbde3694185a5fb97cdf0d33f68d8ddd0eae122c22cd61545a3fe/diff:/var/lib/docker/overlay2/7de2268e8f25645869d90aea55c56770b7cb0a583151057f1c936215ca59843b/diff:/var/lib/docker/overlay2/c160c3e4fd450921a0dbc7de3b64aac0292f5956b8e498d684938936c06006aa/diff:/var/lib/docker/overlay2/520459d2cab4ecd01cbd61266ee7763ac4902afb8ec9cd90521f83e750b9b695/diff\",\n                \"MergedDir\": \"/var/lib/docker/overlay2/83db4fec76b0f0b6567d15d55a7ef86bd3c29f721bda82b10a5782fb0dd7bb9a/merged\",\n                \"UpperDir\": \"/var/lib/docker/overlay2/83db4fec76b0f0b6567d15d55a7ef86bd3c29f721bda82b10a5782fb0dd7bb9a/diff\",\n                \"WorkDir\": \"/var/lib/docker/overlay2/83db4fec76b0f0b6567d15d55a7ef86bd3c29f721bda82b10a5782fb0dd7bb9a/work\"\n            },\n            \"Name\": \"overlay2\"\n        },\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba\",\n                \"sha256:81f5cfe62efab22ffe2f4f0daecaf2fa339dee30c1a944213b9dac9340865cf3\",\n                \"sha256:430d09cec430f507a7c8ced15c349e712dbab0f901318360b623c3fcc521d0d0\",\n                \"sha256:b05115fe8b7714b41177f2172aef3dd47b8278fdcf7225d09ae874ba0b129966\",\n                \"sha256:5b116ae17c6767bed578df74ee66e05221a4719e81d7f9aefd590256ace77229\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"0001-01-01T00:00:00Z\"\n        }\n    }\n]\n",
+    "elapsed_s": 0.013398358999978655
+  },
+  {
+    "args": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "study-gitea-42911846583-issue-valid-3-api",
+      "-p",
+      "127.0.0.1:18080:3000",
+      "-e",
+      "TZ=UTC",
+      "-e",
+      "GITEA__database__DB_TYPE=sqlite3",
+      "-e",
+      "GITEA__security__INSTALL_LOCK=true",
+      "-e",
+      "GITEA__server__ROOT_URL=http://127.0.0.1:18080/",
+      "-e",
+      "GITEA__server__DISABLE_SSH=true",
+      "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77"
+    ],
+    "returncode": 0,
+    "output": "41f8b5c32fb167eeb1fc4e46b80d721ba31e2528c57fe3f54a5988944e15c904\n",
+    "elapsed_s": 0.12704213999998615
+  },
+  {
+    "args": [
+      "docker",
+      "exec",
+      "--user",
+      "git",
+      "-i",
+      "study-gitea-42911846583-issue-valid-3-api",
+      "sh",
+      "-c",
+      "IFS= read -r study_password; exec /usr/local/bin/gitea --config /data/gitea/conf/app.ini admin user create --password \"$study_password\" --must-change-password=false --username study-bootstrap --email study-bootstrap@example.invalid --admin"
+    ],
+    "returncode": 0,
+    "output": "[ephemeral authentication output omitted]",
+    "elapsed_s": 0.12319924900000956
+  },
+  {
+    "args": [
+      "docker",
+      "exec",
+      "--user",
+      "git",
+      "-i",
+      "study-gitea-42911846583-issue-valid-3-api",
+      "sh",
+      "-c",
+      "IFS= read -r study_password; exec /usr/local/bin/gitea --config /data/gitea/conf/app.ini admin user create --password \"$study_password\" --must-change-password=false --username study-actor --email study-actor@example.invalid --access-token --access-token-name study-observer --access-token-scopes write:repository,write:issue,write:user"
+    ],
+    "returncode": 0,
+    "output": "[ephemeral authentication output omitted]",
+    "elapsed_s": 0.12978847499999802
+  },
+  {
+    "args": [
+      "node",
+      "scripts/extension/gitea_issue_control_v2.mjs",
+      "--registry",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/gitea-execution-v1.json",
+      "--workflow",
+      "issue",
+      "--channel",
+      "api",
+      "--out",
+      "/home/runner/work/_temp/gitea-controls/pair/issue-valid-3/api"
+    ],
+    "returncode": 0,
+    "output": "",
+    "elapsed_s": 1.0604474870000047
+  },
+  {
+    "args": [
+      "docker",
+      "rm",
+      "-f",
+      "-v",
+      "study-gitea-42911846583-issue-valid-3-api"
+    ],
+    "returncode": 0,
+    "output": "study-gitea-42911846583-issue-valid-3-api\n",
+    "elapsed_s": 0.15821852300001638
+  },
+  {
+    "args": [
+      "docker",
+      "run",
+      "-d",
+      "--name",
+      "study-gitea-42911846583-issue-valid-3-ui",
+      "-p",
+      "127.0.0.1:18080:3000",
+      "-e",
+      "TZ=UTC",
+      "-e",
+      "GITEA__database__DB_TYPE=sqlite3",
+      "-e",
+      "GITEA__security__INSTALL_LOCK=true",
+      "-e",
+      "GITEA__server__ROOT_URL=http://127.0.0.1:18080/",
+      "-e",
+      "GITEA__server__DISABLE_SSH=true",
+      "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77"
+    ],
+    "returncode": 0,
+    "output": "67b29730051f1b34b8224abfea4d707de7156775e66bda41badae933c3174c9c\n",
+    "elapsed_s": 0.21020496899998875
+  },
+  {
+    "args": [
+      "docker",
+      "exec",
+      "--user",
+      "git",
+      "-i",
+      "study-gitea-42911846583-issue-valid-3-ui",
+      "sh",
+      "-c",
+      "IFS= read -r study_password; exec /usr/local/bin/gitea --config /data/gitea/conf/app.ini admin user create --password \"$study_password\" --must-change-password=false --username study-bootstrap --email study-bootstrap@example.invalid --admin"
+    ],
+    "returncode": 0,
+    "output": "[ephemeral authentication output omitted]",
+    "elapsed_s": 0.12342435700000465
+  },
+  {
+    "args": [
+      "docker",
+      "exec",
+      "--user",
+      "git",
+      "-i",
+      "study-gitea-42911846583-issue-valid-3-ui",
+      "sh",
+      "-c",
+      "IFS= read -r study_password; exec /usr/local/bin/gitea --config /data/gitea/conf/app.ini admin user create --password \"$study_password\" --must-change-password=false --username study-actor --email study-actor@example.invalid --access-token --access-token-name study-observer --access-token-scopes write:repository,write:issue,write:user"
+    ],
+    "returncode": 0,
+    "output": "[ephemeral authentication output omitted]",
+    "elapsed_s": 0.12546424100000308
+  },
+  {
+    "args": [
+      "node",
+      "scripts/extension/gitea_issue_control_v2.mjs",
+      "--registry",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/manifests/gitea-execution-v1.json",
+      "--workflow",
+      "issue",
+      "--channel",
+      "ui",
+      "--out",
+      "/home/runner/work/_temp/gitea-controls/pair/issue-valid-3/ui"
+    ],
+    "returncode": 0,
+    "output": "",
+    "elapsed_s": 1.6686459050000053
+  },
+  {
+    "args": [
+      "docker",
+      "rm",
+      "-f",
+      "-v",
+      "study-gitea-42911846583-issue-valid-3-ui"
+    ],
+    "returncode": 0,
+    "output": "study-gitea-42911846583-issue-valid-3-ui\n",
+    "elapsed_s": 0.15231163699999684
+  }
+]
