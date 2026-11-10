@@ -140,3 +140,8 @@ Memos run42896860622 failed in both first branches during private account bootst
 
 
 Corrected Memos preference run42897292331 dispatched at029864b. Artifacts memos-preference-controls-v2-{preferences-r1,preferences-r2}-42897292331-1; use results/memos-preference-controls-v2-ci-42897292331 and verify_memos_preference_controls_v2.py. No other manual application workflow pending. Independent v2 verifier also reconstructs the exact full-field API masks/bodies from raw requests, rather than relying only on final-state assertions.
+
+
+Memos v2 run42897292331 completed with failed controls. Two API branches returned200 but retained saveMediaMetadata=false; one UI branch completed its ordinary save and binary decode. Both paired results remain unqualified. Archive results/memos-preference-controls-v2-ci-42897292331 and proof manifests/memos-preference-attempt2-v1.json preserve all three attempted branches.
+
+Cause: API harness used camelCase mask values. Pinned generated user_service.pb.gw.go invokes PopulateQueryParameters after body mask generation. Pinned go.mod uses grpc-gateway/v2 v2.30.0; runtime/query.go parses FieldMask by literal comma splitting, without camelCase conversion. Handler switches on memo_visibility and save_media_metadata. v3 uses literal snake_case mask paths, matching the native RPC; seed theme paper and visibility PROTECTED differ from defaults so ignored initialization cannot pass unnoticed. This is an API baseline setup failure, not a natural boundary finding. Preserve v1/v2 runtime and results.
