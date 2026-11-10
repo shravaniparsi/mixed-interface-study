@@ -104,6 +104,8 @@ jobs:
         run: python scripts/prepare_realworld_generated_bindings_v1.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/realworld-generated-bindings.log"
       - name: Verify legacy and database readiness reconciliation
         run: python scripts/prepare_corpus_review_v3.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v3.log"
+      - name: Verify generated corpus readiness reconciliation
+        run: python scripts/prepare_corpus_review_v4.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v4.log"
       - name: Verify reconciled corpus readiness
         run: python scripts/prepare_corpus_review_v2.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v2.log"
       - name: Pure Node adapter tests
