@@ -32,7 +32,7 @@ def analyze(initial_manifest,second_manifest=None,third_manifest=None):
     catalog={b['entry']['pair_id']:b for b in read(ROOT/'manifests/primary-runtime-catalog-v1.json')['bindings']}
     for path in manifests:
         m=read(path);value=verify(path);phases[value['mode']]=value
-        for request in (ROOT/m['archive_root']).glob('*/requested-unit.json'):
+        for request in sorted((ROOT/m['archive_root']).glob('*/requested-unit.json')):
             r=read(request);folder=request.parent/'primary-unit-v1';folders[(value['mode'],r['batch'])]=folder
             if not (folder/'plan.json').exists():continue
             cert=read(folder/'plan.json');unit=cert['unit'];versions=read(folder/'runtime-versions.json')
@@ -47,7 +47,7 @@ def analyze(initial_manifest,second_manifest=None,third_manifest=None):
                 for channel,cost in loaded['branch_total_s'].items():times.append({'mode':value['mode'],'batch_id':r['batch'],'attempt_id':job['attempt_id'],'role':job['role'],
                     'pair_id':job['entry_pair_id'],'workflow_id':catalog[job['entry_pair_id']]['entry']['workflow_id'],'runtime_context_sha256':digest(job['runtime']['context']),'profile':job['runtime']['profile'],'application':unit['application'],'channel':channel,'branch_total_s':cost,**host})
                 if job['runtime']['profile'].startswith('rw_'):
-                    for summary in (p.parent/'runtime/run').glob('*/summary.json'):
+                    for summary in sorted((p.parent/'runtime/run').glob('*/summary.json')):
                         raw=read(summary);setup.append({'mode':value['mode'],'batch_id':r['batch'],'attempt_id':job['attempt_id'],**host,
                             'native_common_fixture_frontend_setup_s':raw.get('common_fixture_frontend_setup_s'),'scope':'Native pair setup; separate from controller setup and branch costs'})
     result=summarize(read(PREPARATION),phases['initial']['records'],phases.get('repeat2',{}).get('records'),phases.get('repeat3',{}).get('records'))
