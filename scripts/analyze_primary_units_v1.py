@@ -8,6 +8,7 @@ from mixed_interface.common_execution_v1 import write
 from mixed_interface.repetition import digest
 from verify_primary_collection_v1 import verify
 from summarize_primary_units_v1 import summarize
+from audit_quartz_form_measurement_v1 import measurement_issue
 
 def component_overlap(loaded):
     result=loaded['runtime_result'];result=result.get('legacy_result',result)
@@ -59,6 +60,11 @@ def analyze(initial_manifest,second_manifest=None,third_manifest=None):
                    assigned_overlap=component_overlap(read(path)) if row['initial_candidate_observed'] and path.exists() else {'category':'unavailable','signals':{}})
         if not phases['initial']['verification'][unit['batch_id']]['qualified_observations']:
             row['assigned_overlap'].update(category='unresolved',unit_acceptance='not_qualified')
+        issue=measurement_issue(path.parent) if path.exists() else None
+        if issue:
+            row['measurement_issue']=issue
+            row['recorded_assigned_overlap_category']=row['assigned_overlap']['category']
+            row['assigned_overlap']['category']='measurement_invalid'
     result['assigned_overlap_counts']=dict(Counter(r['assigned_overlap']['category'] for r in result['rows']))
     result['by_application']={app:dict(Counter(r['assigned_overlap']['category'] for r in result['rows'] if r['application']==app)) for app in sorted({r['application'] for r in result['rows']})}
     result['by_prior_exposure']={exposure:dict(Counter(r['assigned_overlap']['category'] for r in result['rows'] if r['prior_exposure']==exposure)) for exposure in sorted({r['prior_exposure'] for r in result['rows']})}
