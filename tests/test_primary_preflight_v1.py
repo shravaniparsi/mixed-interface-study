@@ -20,6 +20,11 @@ class PreflightTests(unittest.TestCase):
         with self.assertRaises(ValueError):p.sources(altered)
         folder=ROOT/'results/common-generated-ci-42775240013';v=p.read(folder/'runtime-versions.json');b=p.read(folder/'browser.json');boot=p.read(folder/'realworld-bootstrap.json')
         p.environment(value,'realworld',v,b,boot)
+        alternate=ROOT/'results/primary-smoke-ci-42777715374/primary-smoke-smoke-petclinic_v4-42777715374-1'
+        av=p.read(alternate/'runtime-versions.json')
+        p.environment(value,'petclinic',av,p.read(alternate/'browser.json'),p.read(alternate/'petclinic-bootstrap.json'))
+        av['platform']=v['platform']
+        with self.assertRaises(ValueError):p.environment(value,'petclinic',av,p.read(alternate/'browser.json'),p.read(alternate/'petclinic-bootstrap.json'))
         for mode in ('image','node','browser','application'):
             x,y,z=deepcopy(v),deepcopy(b),deepcopy(boot)
             if mode=='image':x['runner']['ImageVersion']='foreign'

@@ -28,6 +28,14 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/summarize_primary_units_v1.py',
+    'scripts/verify_primary_collection_v1.py',
+    'scripts/verify_primary_smoke_attempt1.py',
+    'tests/test_primary_summary_v1.py',
+    'protocol/primary-host-contexts-v1.md',
+    'manifests/primary-smoke-attempt1-v1.json',
+    'manifests/primary-execution-preparation-attempt1.json',
+
     'src/mixed_interface/primary_batches_v1.py',
     'scripts/primary_runtime_v1.py',
     'scripts/primary_attempt_v1.py',

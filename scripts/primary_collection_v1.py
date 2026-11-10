@@ -8,12 +8,14 @@ from mixed_interface.common_execution_v1 import inventory,write
 from mixed_interface.repetition import require,digest
 
 def collect(root,mode):
-    root=Path(root);expected={u['batch_id']:u for u in units(mode)};records={};verification={};run_ids=set()
+    root=Path(root);expected={u['batch_id']:u for u in units(mode)};records={};verification={};run_ids=set();commits=set()
+    require(all(p.is_dir() and (p/'requested-unit.json').is_file() for p in root.iterdir()),'Unrecognized phase artifact')
     for request_path in sorted(root.glob('*/requested-unit.json')):
         folder=request_path.parent;request=read(request_path);bid=request['batch']
         require(request['mode']==mode and bid in expected and bid not in records,'Foreign or duplicate unit artifact')
-        run_ids.add(request['run_identity']);unitdir=folder/'primary-unit-v1'
+        run_ids.add(request['run_identity']);commits.add(request['source_commit']);unitdir=folder/'primary-unit-v1'
         if (unitdir/'plan.json').exists() and (unitdir/'report.json').exists():
+            require(read(unitdir/'plan.json')['source_commit']==request['source_commit'],'Request/source commit differs')
             value=validate(unitdir);require(value['batch_id']==bid and value['run_identity']==request['run_identity'],'Request/certificate differs')
             record=value.get('ledger',{'batch_id':bid,'status':'halted_executor_error','started':[],'observations':[],
                 'independent_sample_size':None,'error_type':'SetupFailure','error':'See retained setup evidence'})
@@ -23,7 +25,7 @@ def collect(root,mode):
                     'error_type':'SetupOrOuterFailure','error':'No completed unit certificate; retained as failed, never replaced'}
         records[bid]=record;verification[bid]=value
     require(set(records)==set(expected),'Declared artifact inventory incomplete')
-    require(len(run_ids)==1,'Phase cannot merge different hosted workflow attempts')
+    require(len(run_ids)==len(commits)==1,'Phase cannot merge different hosted workflow attempts or source commits')
     # A single workflow attempt's matrix contains all predeclared units.
     return {'kind':'primary_unit_collection_v1','mode':mode,'preparation_sha256':sha(PREPARATION),'freeze_sha256':None if mode=='smoke' else sha(FREEZE),
             'run_identity':next(iter(run_ids)),'records':records,'verification':verification,'files_sha256':inventory(root),

@@ -1,0 +1,9 @@
+# Hosted environment acceptance amendment before primary freeze
+
+The first batch smoke workflow (42777715374, source fabf3a499dad67d5863b972ad489c592083035e5) completed the two RealWorld units and Quartz unit, each with two fresh control attempts. PetClinic built and passed its native tests, but application execution was blocked by the environment preflight: GitHub assigned ImageVersion 20261101.114.1 instead of the registered 20261101.360.1. No PetClinic candidate ran in that unit. The entire failed workflow and its original preparation are retained separately; a later smoke workflow is a new engineering qualification, never a replacement primary attempt.
+
+Before primary outcomes, accept exactly two observed host contexts: Ubuntu image 20261101.360.1 with Linux-7.0.0-1017-azure-x86_64-with-glibc2.39, and Ubuntu image 20261101.114.1 with Linux-7.0.0-1014-aws-x86_64-with-glibc2.39. Both require Linux x86_64, two logical CPUs, Python 3.12.16, the explicitly pinned Node and Java versions, and the same pinned browser executable hash. Application revision, dependency, native-test and source checks are unchanged. Any other image/kernel pair is rejected and requires a new prospective acceptance context.
+
+A candidate's API/UI branches, its reference and each unit's raw timing are measured in one hosted environment. Record host context for every unit. Cross-unit repetitions may use either registered context; report their contexts alongside variability. Do not pool timing measurements across the two host contexts or use them to claim cross-application speed differences. A semantic discrepancy that varies across contexts remains variable/unresolved until separately investigated.
+
+The revised environment contract must pass a fresh complete exposed smoke phase before primary freeze. This amendment changes neither payloads, requirements nor oracle outcomes.

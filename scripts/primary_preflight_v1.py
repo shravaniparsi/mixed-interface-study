@@ -26,16 +26,16 @@ def prepare():
                    'run_realworld_paired_database_v7','run_realworld_legacy_campaign_v10','run_common_generated_v1','run_quartz_terminal_campaign'):
         names.update(importlib.import_module(module).SOURCES)
     names.update(['scripts/primary_catalog_v1.py','scripts/primary_runtime_v1.py','scripts/primary_attempt_v1.py',
-        'scripts/primary_preflight_v1.py','scripts/run_primary_unit_v1.py','scripts/validate_primary_unit_v1.py','scripts/primary_matrix_v1.py','scripts/primary_collection_v1.py',
+        'scripts/primary_preflight_v1.py','scripts/run_primary_unit_v1.py','scripts/validate_primary_unit_v1.py','scripts/primary_matrix_v1.py','scripts/primary_collection_v1.py','scripts/summarize_primary_units_v1.py','scripts/verify_primary_collection_v1.py',
         'src/mixed_interface/primary_batches_v1.py','scripts/ci/prepare_quartz.py','scripts/ci/capture_versions.py',
         'scripts/ci/install_browser.sh','scripts/ci/package.json',
         'manifests/primary-runtime-catalog-v1.json','manifests/realworld-identity-controls-v1.json',
         'manifests/quartz-declared-dependencies.json','protocol/primary-independent-units-v1.md',
-        'protocol/primary-runtime-catalog-v1.md','protocol/primary-cost-scope-v2.md','.github/workflows/primary_diagnostics_v1.yml'])
+        'protocol/primary-runtime-catalog-v1.md','protocol/primary-host-contexts-v1.md','protocol/primary-cost-scope-v2.md','.github/workflows/primary_diagnostics_v1.yml'])
     paths={ROOT/name for name in names}
     return {'kind':'primary_execution_preparation_v1','plan':p,'smoke_units':smoke,
         'source_sha256':{str(p.relative_to(ROOT)):sha(p) for p in sorted(paths)},
-        'environment':{'ImageOS':'ubuntu24','ImageVersion':'20261101.360.1','RUNNER_OS':'Linux','RUNNER_ARCH':'X64','architecture':'x86_64',
+        'environment':{'ImageOS':'ubuntu24','host_contexts':{'20261101.360.1':'Linux-7.0.0-1017-azure-x86_64-with-glibc2.39','20261101.114.1':'Linux-7.0.0-1014-aws-x86_64-with-glibc2.39'},'RUNNER_OS':'Linux','RUNNER_ARCH':'X64','architecture':'x86_64',
                        'python_prefix':'3.12.16 ','node':{'petclinic':'v24.22.2','realworld':'v20.20.2','quartz':'v20.20.2'},
                        'java':{'petclinic':'17.0.2+8','quartz':'21.0.13+9'},'browser_version':'151.0.7922.34','browser_sha256':'0b20b130e7edd9dd51873be867761295fe0cfad490c2b9a64f95bd3cfc08fa71','logical_cpus':2},
         'primary_freeze_complete':False,'execution_authorized':False}
@@ -44,7 +44,7 @@ def sources(value):
     for p,h in value['source_sha256'].items():require(sha(ROOT/p)==h,'Frozen source changed: '+p)
 
 def environment(value,app,versions,browser,bootstrap):
-    expected=value['environment'];require(all(versions['runner'][k]==expected[k] for k in ('ImageOS','ImageVersion','RUNNER_OS','RUNNER_ARCH')),'Hosted image differs')
+    expected=value['environment'];require(all(versions['runner'][k]==expected[k] for k in ('ImageOS','RUNNER_OS','RUNNER_ARCH')) and expected['host_contexts'].get(versions['runner']['ImageVersion'])==versions['platform'],'Hosted image differs')
     require(versions['architecture']==expected['architecture'] and versions['logical_cpus']==expected['logical_cpus'],'Machine class differs')
     require(versions['python'].startswith(expected['python_prefix']) and versions['node']['exit_code']==0 and versions['node']['output']==expected['node'][app],'Runtime version differs')
     if app in expected['java']:require(expected['java'][app] in versions['java']['output'],'Java differs')
