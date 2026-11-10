@@ -1,0 +1,664 @@
+{
+  "kind": "vikunja_fixed_followup_execution_v1",
+  "version": "v2.8.0",
+  "source_commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+  "image": "vikunja/vikunja@sha256:35d937baf3b5d5803bed6b9e11d007448b7b536df9e4346dc35551e1072636c3",
+  "image_id": "sha256:a5e3816da40bbb9bab752ff1efc2067008b8d1397238e8f2ffb91170514d7786",
+  "environment": {
+    "VIKUNJA_DATABASE_TYPE": "sqlite",
+    "VIKUNJA_DATABASE_PATH": "/tmp/study-vikunja.db",
+    "VIKUNJA_SERVICE_PUBLICURL": "http://127.0.0.1:18080/",
+    "VIKUNJA_FILES_BASEPATH": "/tmp/study-files"
+  },
+  "boundary_cases_authorized": true,
+  "maximum_parallel_jobs": 3,
+  "maximum_job_minutes": 25,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "control-for-task-title-leading_space-r2",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_boundary_unit": "task-title-leading_space-r2"
+    },
+    {
+      "id": "task-title-leading_space-r2",
+      "case_id": "task-title-leading_space",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_control_unit": "control-for-task-title-leading_space-r2"
+    },
+    {
+      "id": "control-for-task-title-leading_space-r3",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_boundary_unit": "task-title-leading_space-r3"
+    },
+    {
+      "id": "task-title-leading_space-r3",
+      "case_id": "task-title-leading_space",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_control_unit": "control-for-task-title-leading_space-r3"
+    },
+    {
+      "id": "control-for-task-title-trailing_space-r2",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_boundary_unit": "task-title-trailing_space-r2"
+    },
+    {
+      "id": "task-title-trailing_space-r2",
+      "case_id": "task-title-trailing_space",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_control_unit": "control-for-task-title-trailing_space-r2"
+    },
+    {
+      "id": "control-for-task-title-trailing_space-r3",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_boundary_unit": "task-title-trailing_space-r3"
+    },
+    {
+      "id": "task-title-trailing_space-r3",
+      "case_id": "task-title-trailing_space",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_control_unit": "control-for-task-title-trailing_space-r3"
+    },
+    {
+      "id": "control-for-task-title-whitespace-r2",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_boundary_unit": "task-title-whitespace-r2"
+    },
+    {
+      "id": "task-title-whitespace-r2",
+      "case_id": "task-title-whitespace",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_control_unit": "control-for-task-title-whitespace-r2"
+    },
+    {
+      "id": "control-for-task-title-whitespace-r3",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_boundary_unit": "task-title-whitespace-r3"
+    },
+    {
+      "id": "task-title-whitespace-r3",
+      "case_id": "task-title-whitespace",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_control_unit": "control-for-task-title-whitespace-r3"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "project",
+      "collection": "/api/v2/projects",
+      "payload": {
+        "title": "Ordinary project",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699",
+        "identifier": "STUDY",
+        "parent_project_id": 0,
+        "is_archived": false,
+        "is_favorite": false,
+        "position": 65536
+      },
+      "fields": [
+        "title",
+        "description",
+        "hex_color",
+        "identifier",
+        "parent_project_id",
+        "is_archived",
+        "is_favorite",
+        "position"
+      ],
+      "edit_value": "Edited ordinary project",
+      "edit_path": "/projects/{id}/settings/edit",
+      "title_selector": "#title",
+      "owner_field": "owner",
+      "observer": "scripts/extension/vikunja_project_label_probe_v1.mjs"
+    },
+    {
+      "id": "label",
+      "collection": "/api/v2/labels",
+      "payload": {
+        "title": "Ordinary label",
+        "description": "<p>Ordinary description</p>",
+        "hex_color": "336699"
+      },
+      "fields": [
+        "title",
+        "description",
+        "hex_color"
+      ],
+      "edit_value": "Edited ordinary label",
+      "edit_path": "/labels",
+      "title_selector": "form input[type=text]",
+      "owner_field": "created_by",
+      "observer": "scripts/extension/vikunja_project_label_probe_v1.mjs"
+    },
+    {
+      "id": "task",
+      "collection": "/api/v2/tasks",
+      "fields": [
+        "title",
+        "description",
+        "done",
+        "due_date",
+        "start_date",
+        "end_date",
+        "priority",
+        "hex_color",
+        "percent_done",
+        "repeat_after",
+        "repeat_mode",
+        "is_favorite",
+        "bucket_id",
+        "project_id",
+        "reminders",
+        "cover_image_attachment_id"
+      ],
+      "payload": {
+        "title": "Ordinary task",
+        "description": "<p>Ordinary description</p>",
+        "done": false,
+        "due_date": "2027-01-15T12:00:00Z",
+        "start_date": "2027-01-01T12:00:00Z",
+        "end_date": "2027-01-14T12:00:00Z",
+        "priority": 2,
+        "hex_color": "336699",
+        "percent_done": 0.25,
+        "repeat_after": 0,
+        "repeat_mode": 0,
+        "is_favorite": false,
+        "bucket_id": 0,
+        "reminders": [],
+        "cover_image_attachment_id": 0
+      },
+      "owner_field": "created_by",
+      "edit_value": "<p>Edited ordinary description</p>",
+      "observer": "scripts/extension/vikunja_task_probe_v1.mjs"
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/vikunja_control_v1.mjs": "9d67123fb9f04443e278d7f6cb28c08ede9afbe6d03566d0df304d9fc25b84c4",
+    "scripts/extension/run_vikunja_controls_v1.py": "4d4bbd3ea13a64a0a0824a770a101e038a619dc6ca5a41173f581596415833f4",
+    ".github/workflows/vikunja_controls_v1.yml": "a4b8721a861cb3ce88e97b26676895e947b77ef934ec294d5299efd38dbc6079",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/extension/vikunja_control_v2.mjs": "d346e4460ffcad11f675bde1e9de9e864696867570cb087b4496b766212925a7",
+    "scripts/extension/run_vikunja_controls_v2.py": "576e26f0f546fdc265c2ca9918094ab57e7064cdeab8b8a3576beac620ff6639",
+    ".github/workflows/vikunja_controls_v2.yml": "1bb997e6aa363d666a83e4d9e22df25bb5f019ce55bd5f1a5b89bcae2b195b34",
+    "scripts/extension/vikunja_control_v3.mjs": "2661abfc0b6a5a451aefc2725390f0a6cdbab8d64d8901f66e0dd693605416c2",
+    "scripts/extension/run_vikunja_controls_v3.py": "e80c49985c9748973fcc5ca129e79d7b94081b92c5a1aa8f31346e3361a36722",
+    ".github/workflows/vikunja_controls_v3.yml": "37b8e907633b55e720728a090d5400e066cbd44305b88927b264b50640560a2a",
+    "scripts/extension/vikunja_fetch_observer_v1.mjs": "2b27e2203ef7256675f66728a331f9cbc1b3121f92a9d6bd5ba21a1ad0ad278d",
+    "scripts/extension/vikunja_task_control_v1.mjs": "1376afddac79293457dedd36e4beb4935fa4afc27ea2b30f84d97d0224087aa7",
+    "scripts/extension/run_vikunja_task_controls_v1.py": "5c2830fe0a6631bf2f95816f366859a840a15bb281b466b277ca596d5ae6a36e",
+    ".github/workflows/vikunja_task_controls_v1.yml": "7df025ba8ddc01b8456c3fcb73af51371ecc86f537d00a138005b8b73fb613ba",
+    "scripts/extension/vikunja_task_control_v2.mjs": "de426c6b829abfd1ada573542887edc20eea45c0d75c105c7901fbf55ee3d4b9",
+    "scripts/extension/run_vikunja_task_controls_v2.py": "1c221610ab11c82a15d79e8cb7ccab98b2e921430d0f42333a6ee2328f8437fb",
+    ".github/workflows/vikunja_task_controls_v2.yml": "9b434f1ca9ccd466733fe17972dd9e28209e2e7ab8dc091bb9f04d66f8acd122",
+    "scripts/extension/vikunja_task_control_v3.mjs": "9d659e06b669db02a56daf5262fef470a84de551be4be7f985936ec1d478837e",
+    "scripts/extension/run_vikunja_task_controls_v3.py": "8f3a57b6bcf556594ea17ed2bb8b01d095dc3808230bf4191000719d9f9f9d99",
+    ".github/workflows/vikunja_task_controls_v3.yml": "5cad858f6ca844e3030c506b0241f499e13136a91b861d69040a5ac00376d3e9",
+    "scripts/extension/vikunja_task_probe_v1.mjs": "87809e10db5e38aa04ab8258e208afa70f11136eedd1cb6884697027bfba3110",
+    "scripts/extension/vikunja_project_label_probe_v1.mjs": "2b22a53a1ee797a17b503f7432e99a62263ee4562f46f4724ee60edb1a0ab3e0",
+    "scripts/extension/run_vikunja_probes_v1.py": "d5dc7e674a1f08b35cd2f2bda5f77fe54f95644f7bc9a2b93205f05677787919",
+    ".github/workflows/vikunja_probes_v1.yml": "d3fccce30131b0ff8ad1bfd82c443faae8dacc70eda62ebf7c9baeefe2616c30",
+    "scripts/extension/vikunja_case_v1.mjs": "8960c0ce60572caf055c85ca0ed27642788259f4f816064317d9f36e15374f87",
+    "scripts/extension/vikunja_outcomes_v1.py": "c8ff94bb0805f29d818e571799ee0acf071b5899853209ca9d2a8044d033c3f1",
+    "scripts/extension/run_vikunja_cases_v1.py": "17b9792086c112bdc0c72312df726c45b65713856b6c7702965d8d16f99a4e55",
+    "scripts/extension/run_vikunja_batch_v1.py": "0a2fe0435f0282392fe292ffca2c36346b7ebddea85e6760ab513e807c68c406",
+    "scripts/extension/verify_vikunja_cases_v1.py": "396994a86167d7a5d4ff38315e5b82cb07e232dba0a947b625b0ec5668c3b51c",
+    "scripts/extension/build_vikunja_candidates_v1.py": "e24e26018552e01ee9c9805fdbe6c08b9cda4f5b8232ccf21dace48d240e2118",
+    ".github/workflows/vikunja_cases_v1.yml": "6da3f60a59eefa5e8708205ecf390fab172a250cabe4c149a4a06c1044912e47",
+    "scripts/extension/run_vikunja_followups_v1.py": "3358a855fe2491e278f3b96e6e36b9d3532a5409de1c95c88d8bea1461c3c1ee",
+    "scripts/extension/run_vikunja_followup_batch_v1.py": "99aa341ea05f4fa614dfef3631247225c4495ac9e20a68ffecc01da0a522c6db",
+    ".github/workflows/vikunja_followups_v1.yml": "606dfae4b498087cd9596175130c66f0eb1a5cac64b8995aa992b05006d105b3",
+    "scripts/extension/verify_vikunja_followups_v1.py": "14dac6f0e2aeccba21bbddcdb49a6747288c78b0553e0ccd3b9bbc98b3a2c242"
+  },
+  "qualification_sha256": {
+    "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-vikunja-42876848117-1/report.json": "d8e33c02b4d7ea7a12488952220dac3bb03f7f625c0ea12ae41c50e46c2370c8",
+    "manifests/vikunja-controls-v1.json": "77e52e5925d18a7c9c069b5f612f648b4884d66d6c8586966dde8b712f54a344",
+    "manifests/vikunja-controls-v2.json": "def46a00810bdfefb2a01921e2ba571aba7cd30945c15202f9d48f0b490e57f2",
+    "manifests/vikunja-task-controls-v1.json": "9f08d0a67428f75430245caca71bfb90a4385bd3c575da3c67ed09b103c66026",
+    "manifests/vikunja-task-controls-v2.json": "6272afdc1d755bc08b9d4100252a55d2f38d358f760120dd1cf18c208cebc18c",
+    "manifests/vikunja-task-attempt1-v1.json": "8cc2e5cceb314f5d4ef4984badfe6d76365382f6fe7526d3fd6370232cd62d5a",
+    "manifests/vikunja-attempt3-v1.json": "f0dd96a8b9a18ae368b3fb1b1e71d92c8b8b0995e9d961a5038fb956998d6be3",
+    "manifests/vikunja-task-attempt2-v1.json": "bb6f303bfde2a0a222ea677555a0207366aba5f82dd229ace874e01028f16ee9",
+    "manifests/vikunja-probe-results-v2.json": "26060241629be3a06149d97277b0d366c5a7930892bc78502475a2376a473ce4",
+    "manifests/vikunja-candidate-inventory-v1.json": "5f1cb9bf0c4e8b23664de42cc08251c3536a325494ffa8bb73eaee57b48296a7",
+    "manifests/vikunja-execution-v1.json": "1a864b301d251a91939c7c83eb705527e1c44214e17b1b537e17896d9595050b",
+    "manifests/vikunja-initial-results-v1.json": "b1ec041259db848f40cec27da161a77058efbd32b0473a41dac08e899d9fc8fd"
+  },
+  "metadata_policy": "Full raw records retained. Within a branch exclude root updated only for target and project fixture; rejected-producer side effects require exact unchanged state. Across fresh resets exclude root created/updated, owner or created_by created/updated, direct project-view created/updated, and subscription.created. No other fields are discarded.",
+  "project_fixture": {
+    "title": "Study project",
+    "description": "<p>Fixture description</p>",
+    "hex_color": "336699",
+    "identifier": "STUDY",
+    "parent_project_id": 0,
+    "is_archived": false,
+    "is_favorite": false,
+    "position": 65536
+  },
+  "scope": "Exactly two repeats with original valid controls for three initial signal cases; no additional inputs.",
+  "execution_authorized": true,
+  "cases": [
+    {
+      "id": "project-valid-1",
+      "workflow": "project",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "project-valid-2",
+      "workflow": "project",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "project-valid-3",
+      "workflow": "project",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "project-valid-4",
+      "workflow": "project",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "label-valid-1",
+      "workflow": "label",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "label-valid-2",
+      "workflow": "label",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "label-valid-3",
+      "workflow": "label",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "label-valid-4",
+      "workflow": "label",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "task-valid-2",
+      "workflow": "task",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "task-valid-3",
+      "workflow": "task",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "task-valid-4",
+      "workflow": "task",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "project-hex_color-empty",
+      "workflow": "project",
+      "field": "hex_color",
+      "mutation": "empty",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": ""
+    },
+    {
+      "id": "project-identifier-null",
+      "workflow": "project",
+      "field": "identifier",
+      "mutation": "null",
+      "family": "identifier",
+      "cohort": "boundary",
+      "value": null
+    },
+    {
+      "id": "project-hex_color-whitespace",
+      "workflow": "project",
+      "field": "hex_color",
+      "mutation": "whitespace",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "   "
+    },
+    {
+      "id": "project-identifier-at",
+      "workflow": "project",
+      "field": "identifier",
+      "mutation": "at",
+      "family": "identifier",
+      "cohort": "boundary",
+      "value": "ABCDEFGHIJ"
+    },
+    {
+      "id": "project-hex_color-null",
+      "workflow": "project",
+      "field": "hex_color",
+      "mutation": "null",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": null
+    },
+    {
+      "id": "project-identifier-empty",
+      "workflow": "project",
+      "field": "identifier",
+      "mutation": "empty",
+      "family": "identifier",
+      "cohort": "boundary",
+      "value": ""
+    },
+    {
+      "id": "project-hex_color-below_short",
+      "workflow": "project",
+      "field": "hex_color",
+      "mutation": "below_short",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "ab"
+    },
+    {
+      "id": "project-identifier-above",
+      "workflow": "project",
+      "field": "identifier",
+      "mutation": "above",
+      "family": "identifier",
+      "cohort": "boundary",
+      "value": "ABCDEFGHIJK"
+    },
+    {
+      "id": "project-hex_color-invalid",
+      "workflow": "project",
+      "field": "hex_color",
+      "mutation": "invalid",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "not-a-color"
+    },
+    {
+      "id": "project-identifier-below",
+      "workflow": "project",
+      "field": "identifier",
+      "mutation": "below",
+      "family": "identifier",
+      "cohort": "boundary",
+      "value": "ABCDEFGHI"
+    },
+    {
+      "id": "project-hex_color-above_long",
+      "workflow": "project",
+      "field": "hex_color",
+      "mutation": "above_long",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "1234567"
+    },
+    {
+      "id": "project-identifier-whitespace",
+      "workflow": "project",
+      "field": "identifier",
+      "mutation": "whitespace",
+      "family": "identifier",
+      "cohort": "boundary",
+      "value": "   "
+    },
+    {
+      "id": "label-hex_color-whitespace",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "whitespace",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "   "
+    },
+    {
+      "id": "label-hex_color-shorthand",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "shorthand",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "abc"
+    },
+    {
+      "id": "label-hex_color-below_short",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "below_short",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "ab"
+    },
+    {
+      "id": "label-hex_color-null",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "null",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": null
+    },
+    {
+      "id": "label-hex_color-omitted",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "omitted",
+      "family": "hex_color",
+      "cohort": "boundary"
+    },
+    {
+      "id": "label-hex_color-above_long",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "above_long",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "1234567"
+    },
+    {
+      "id": "label-hex_color-invalid",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "invalid",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "not-a-color"
+    },
+    {
+      "id": "label-hex_color-empty",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "empty",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": ""
+    },
+    {
+      "id": "label-hex_color-uppercase",
+      "workflow": "label",
+      "field": "hex_color",
+      "mutation": "uppercase",
+      "family": "hex_color",
+      "cohort": "boundary",
+      "value": "ABCDEF"
+    },
+    {
+      "id": "task-title-empty",
+      "workflow": "task",
+      "field": "title",
+      "mutation": "empty",
+      "family": "title",
+      "cohort": "boundary",
+      "value": ""
+    },
+    {
+      "id": "task-title-leading_space",
+      "workflow": "task",
+      "field": "title",
+      "mutation": "leading_space",
+      "family": "title",
+      "cohort": "boundary",
+      "value": " Ordinary task"
+    },
+    {
+      "id": "task-title-whitespace",
+      "workflow": "task",
+      "field": "title",
+      "mutation": "whitespace",
+      "family": "title",
+      "cohort": "boundary",
+      "value": "   "
+    },
+    {
+      "id": "task-title-trailing_space",
+      "workflow": "task",
+      "field": "title",
+      "mutation": "trailing_space",
+      "family": "title",
+      "cohort": "boundary",
+      "value": "Ordinary task "
+    },
+    {
+      "id": "task-title-omitted",
+      "workflow": "task",
+      "field": "title",
+      "mutation": "omitted",
+      "family": "title",
+      "cohort": "boundary"
+    },
+    {
+      "id": "task-title-null",
+      "workflow": "task",
+      "field": "title",
+      "mutation": "null",
+      "family": "title",
+      "cohort": "boundary",
+      "value": null
+    }
+  ],
+  "batches": [
+    {
+      "id": "repeat-0",
+      "unit_ids": [
+        "control-for-task-title-leading_space-r2",
+        "task-title-leading_space-r2",
+        "control-for-task-title-leading_space-r3",
+        "task-title-leading_space-r3"
+      ]
+    },
+    {
+      "id": "repeat-1",
+      "unit_ids": [
+        "control-for-task-title-trailing_space-r2",
+        "task-title-trailing_space-r2",
+        "control-for-task-title-trailing_space-r3",
+        "task-title-trailing_space-r3"
+      ]
+    },
+    {
+      "id": "repeat-2",
+      "unit_ids": [
+        "control-for-task-title-whitespace-r2",
+        "task-title-whitespace-r2",
+        "control-for-task-title-whitespace-r3",
+        "task-title-whitespace-r3"
+      ]
+    }
+  ],
+  "execution_bound": {
+    "followup_pairs": 12,
+    "batches": 3,
+    "maximum_parallel_jobs": 3,
+    "maximum_job_minutes": 20,
+    "runner_minute_ceiling": 60,
+    "paid_model_calls": 0,
+    "cash_budget_ceiling_usd": 100
+  },
+  "repeat_rule": "Exactly two fresh repeats with original workflow valid-1 control for any channel difference, preservation discrepancy, uncertainty, shared contract/constraint or representation signal, including documented title normalization. No recursive repetition.",
+  "interpretation": "Task title trimming and known empty-color display are declared normalization policies. Report documented_native_normalization separately, not as corruption or a baseline failure; repeat its raw change without granting efficacy credit. Color shorthand expands to six digits in the calibrated browser. All other preserved-field changes remain discrepancies. Field variants and repeated controls are correlated.",
+  "followup_stop_rule": "Exactly repetitions2and3; each interpreted only with its linked ordinary control. No automatic further repeats."
+}
