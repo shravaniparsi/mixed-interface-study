@@ -162,3 +162,10 @@ Added a separate unqualified memo audience-update decoder and local fixtures, pr
 Run42898310104 at54e4cbc executes two memo pairs with reversed branch order. Full mutable-field REST PATCH includes the ten supported paths (snake_case query masks), explicit original timestamps and nullable absence. Seed ordinary personal memo uses deterministic ID and timestamps; full returned prefix/final records compared across resets and all fields except visibility preserved within each branch. Native actual article More→Edit→audience→Update path; raw request bytes before strict decoding. No API or native failure is a boundary finding at this stage.
 
 Artifacts memos-memo-controls-v1-{memo-r1,memo-r2}-42898310104-1; archive results/memos-memo-controls-v1-ci-42898310104; independent verifier verify_memos_memo_controls_v1.py reconstructs exact full-field API request, native binary audience edit, full readbacks and three native views. Capture/preserve any failures before corrections. No other manual workflow pending.
+
+
+## Memo controls verified; preference field calibration registered
+
+Run42898310104 passed both paired memo controls and six native views. Full raw archive results/memos-memo-controls-v1-ci-42898310104 and independently reconstructed manifests/memos-memo-attempt1-v1.json retained. All returned fields, including fixed timestamps and derived fields, preserved except visibility in both channels. Native request contains name/content/visibility with visibility-only mask; API baseline supplies all ten mutable fields. Zero boundary results.
+
+Preference v4 field qualification registered before any boundary experiment. Same ordinary seeds and edit as qualified v3, with source-bound Language/Theme/Default memo visibility row controls, real popup option inventories/selection and resolved document language/theme. Popup inspection selects nothing and closes with Escape. Source-specific checks require English, Paper and Protected. It qualifies measurement, not a new scientific workflow. Two pairs, max50 runner-minutes, no paid calls. Earlier runtime and data remain unchanged.
