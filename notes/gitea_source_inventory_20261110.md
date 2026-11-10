@@ -37,3 +37,9 @@ The pinned image resolves to sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd
 Four ordinary pairs cover milestone/label in reversed branch order. Repository is empty and synthetic to avoid unrelated Git commit timestamp variation. Milestone uses a UTC day-end due_on matching native date-only semantics; label uses area/ordinary with exclusive=true. Both continuations edit description and preserve all remaining returned target fields, excluding only updated_at. API bodies include all four/five writable fields respectively.
 
 routers/web/web.go confirms milestone POST /milestones/{id}/edit and label POST /labels/edit. Native milestone form is URL-encoded; LabelEdit.ts uses fetch-action.ts, whose prepareFormFetchActionOpts builds FormData. The observer handles both actual content types, preserves duplicate fields, excludes file uploads, and redacts CSRF values including encoded forms. A local parser test covers URL-encoded duplicates and multipart fields. This does not replace runtime qualification. Issue workflow still requires its own ordinary source binding and controls.
+
+## Ordinary attempt1: repository-create scope correction
+
+Run42908370077 at sourcef659611 retains all4attempted pairs,0qualified. Both branches authenticate as nonadmin actor2, but POST /api/v1/user/repos returns403 with required=[write:user]; the initial token carried write:issue,write:repository,read:user. No target milestone or label is created. This is bootstrap qualification failure, not a domain finding.
+
+Controls-v2 replaces read:user with write:user, retaining write:repository and write:issue. Actor role, resource payloads, native observer and preservation rules are unchanged. The original raw403s, command traces and qualification result remain archived. The broader self-user token scope does not make the actor an instance administrator.

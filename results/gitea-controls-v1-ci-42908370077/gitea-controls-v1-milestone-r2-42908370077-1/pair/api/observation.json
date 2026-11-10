@@ -1,0 +1,77 @@
+{
+  "kind": "gitea_ordinary_control_v1",
+  "workflow": "milestone",
+  "channel": "api",
+  "status": "incomplete",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/version",
+      "status": 200,
+      "response": {
+        "version": "28.3.0"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user",
+      "status": 200,
+      "response": {
+        "id": 2,
+        "login": "study-actor",
+        "type": "User",
+        "login_name": "",
+        "source_id": 0,
+        "full_name": "",
+        "email": "study-actor@example.invalid",
+        "avatar_url": "http://127.0.0.1:18080/avatars/23d4788dc5f8f84391b30dae5d960f579b32c51726cc10335c0e5b6e4e72327f",
+        "html_url": "http://127.0.0.1:18080/study-actor",
+        "language": "",
+        "is_admin": false,
+        "last_login": "1970-01-01T00:00:00Z",
+        "created": "2026-11-10T21:47:54Z",
+        "restricted": false,
+        "active": true,
+        "prohibit_login": false,
+        "location": "",
+        "website": "",
+        "description": "",
+        "visibility": "public",
+        "followers_count": 0,
+        "following_count": 0,
+        "starred_repos_count": 0,
+        "username": "study-actor"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/user/repos",
+      "body": {
+        "name": "study-repo",
+        "description": "Synthetic study fixture",
+        "private": true,
+        "auto_init": false
+      },
+      "status": 403,
+      "response": {
+        "message": "token does not have at least one of required scope(s), required=[write:user], token scope=write:issue,write:repository,read:user",
+        "url": "http://127.0.0.1:18080/api/swagger"
+      }
+    }
+  ],
+  "forms": [],
+  "native_requests": [],
+  "instance": {
+    "version": "28.3.0"
+  },
+  "actor": {
+    "id": 2,
+    "login": "study-actor",
+    "is_admin": false
+  },
+  "error": {
+    "name": "AssertionError",
+    "message": "POST /api/v1/user/repos\n\n403 !== 201\n"
+  },
+  "browser_cleanup_confirmed": true
+}
