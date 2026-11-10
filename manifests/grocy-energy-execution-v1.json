@@ -1,0 +1,498 @@
+{
+  "kind": "grocy_exploratory_energy_execution_v1",
+  "version": "4.7.1",
+  "source_commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+  "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+  "image_id": "sha256:80a50f603077d272c0c215ed0667a106d3c652a30a322ec1dfe64f34d31f80b1",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-grocy-42876848117-1/report.json",
+  "deployment_report_sha256": "d85a08527dea6351c722224a38d0d5353b3e38838cf6a207a238834f678dfcc7",
+  "scope": "Post-exposure replication and input counterfactual; not a prospective discovery cohort.",
+  "normalization": "Only exact decimal integer strings in declared integer fields map to integers. Raw API responses retained. Null and empty string are never conflated. Date text is exact YYYY-MM-DD.",
+  "actor_permissions": [
+    "MASTER_DATA_EDIT",
+    "STOCK",
+    "TASKS",
+    "USERS_READ"
+  ],
+  "workflows": [
+    {
+      "id": "product",
+      "collection": "/api/objects/products",
+      "edit_path": "/product/{id}",
+      "exit_path": "/products",
+      "form_selector": "#product-form",
+      "save_selector": ".save-product-button[data-location=\"return\"]",
+      "edit_field": "name",
+      "edit_selector": "#name",
+      "edit_value": "Edited ordinary product",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "integer_fields": [
+        "active",
+        "auto_reprint_stock_label",
+        "cumulate_min_stock_amount_of_sub_products",
+        "default_best_before_days",
+        "default_best_before_days_after_freezing",
+        "default_best_before_days_after_open",
+        "default_best_before_days_after_thawing",
+        "default_purchase_price_type",
+        "default_stock_label_type",
+        "disable_open",
+        "due_type",
+        "enable_tare_weight_handling",
+        "hide_on_stock_overview",
+        "location_id",
+        "min_stock_amount",
+        "move_on_open",
+        "no_own_stock",
+        "not_check_stock_fulfillment_for_recipes",
+        "qu_id_consume",
+        "qu_id_price",
+        "qu_id_purchase",
+        "qu_id_stock",
+        "quick_consume_amount",
+        "quick_open_amount",
+        "should_not_be_frozen",
+        "tare_weight",
+        "treat_opened_as_out_of_stock"
+      ],
+      "fixtures": [
+        {
+          "id": "location",
+          "collection": "/api/objects/locations",
+          "payload": {
+            "name": "Study location",
+            "description": "Fixture location",
+            "active": 1,
+            "is_freezer": 0
+          }
+        },
+        {
+          "id": "unit",
+          "collection": "/api/objects/quantity_units",
+          "payload": {
+            "name": "Study unit",
+            "name_plural": "Study units",
+            "description": "Fixture unit",
+            "active": 1
+          }
+        }
+      ],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "#name",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "#description",
+          "kind": "text"
+        },
+        {
+          "field": "active",
+          "selector": "#active",
+          "kind": "checkbox"
+        },
+        {
+          "field": "location_id",
+          "selector": "#location_id",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_purchase",
+          "selector": "#qu_id_purchase",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_stock",
+          "selector": "#qu_id_stock",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_consume",
+          "selector": "#qu_id_consume",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_price",
+          "selector": "#qu_id_price",
+          "kind": "text"
+        },
+        {
+          "field": "min_stock_amount",
+          "selector": "#min_stock_amount",
+          "kind": "text"
+        },
+        {
+          "field": "default_best_before_days",
+          "selector": "#default_best_before_days",
+          "kind": "text"
+        },
+        {
+          "field": "calories",
+          "selector": "#calories",
+          "kind": "text"
+        }
+      ],
+      "fields": [
+        "name",
+        "description",
+        "product_group_id",
+        "active",
+        "location_id",
+        "shopping_location_id",
+        "qu_id_purchase",
+        "qu_id_stock",
+        "min_stock_amount",
+        "default_best_before_days",
+        "default_best_before_days_after_open",
+        "default_best_before_days_after_freezing",
+        "default_best_before_days_after_thawing",
+        "picture_file_name",
+        "enable_tare_weight_handling",
+        "tare_weight",
+        "not_check_stock_fulfillment_for_recipes",
+        "parent_product_id",
+        "calories",
+        "cumulate_min_stock_amount_of_sub_products",
+        "due_type",
+        "quick_consume_amount",
+        "hide_on_stock_overview",
+        "default_stock_label_type",
+        "should_not_be_frozen",
+        "treat_opened_as_out_of_stock",
+        "no_own_stock",
+        "default_consume_location_id",
+        "move_on_open",
+        "qu_id_consume",
+        "auto_reprint_stock_label",
+        "quick_open_amount",
+        "qu_id_price",
+        "disable_open",
+        "default_purchase_price_type"
+      ],
+      "initial_count": 0,
+      "immutable_fields": [
+        "id",
+        "row_created_timestamp",
+        "userfields"
+      ],
+      "references": [
+        {
+          "field": "location_id",
+          "collection": "/api/objects/locations",
+          "nullable": false,
+          "mode": "object"
+        },
+        {
+          "field": "default_consume_location_id",
+          "collection": "/api/objects/locations",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_purchase",
+          "collection": "/api/objects/quantity_units",
+          "nullable": false,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_stock",
+          "collection": "/api/objects/quantity_units",
+          "nullable": false,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_consume",
+          "collection": "/api/objects/quantity_units",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_price",
+          "collection": "/api/objects/quantity_units",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "product_group_id",
+          "collection": "/api/objects/product_groups",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "shopping_location_id",
+          "collection": "/api/objects/shopping_locations",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "parent_product_id",
+          "collection": "/api/objects/products",
+          "nullable": true,
+          "mode": "object"
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "energy-zero-r1",
+      "case_id": "energy-zero",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "energy-zero-r2",
+      "case_id": "energy-zero",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "energy-zero-r3",
+      "case_id": "energy-zero",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "energy-omitted-r1",
+      "case_id": "energy-omitted",
+      "workflow": "product",
+      "cohort": "exploratory_replication",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "energy-omitted-r2",
+      "case_id": "energy-omitted",
+      "workflow": "product",
+      "cohort": "exploratory_replication",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "energy-omitted-r3",
+      "case_id": "energy-omitted",
+      "workflow": "product",
+      "cohort": "exploratory_replication",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "energy-null-r1",
+      "case_id": "energy-null",
+      "workflow": "product",
+      "cohort": "exploratory_replication",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "energy-null-r2",
+      "case_id": "energy-null",
+      "workflow": "product",
+      "cohort": "exploratory_replication",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "energy-null-r3",
+      "case_id": "energy-null",
+      "workflow": "product",
+      "cohort": "exploratory_replication",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/grocy_case_v1.mjs": "2ea31457c315f1c56e88956f9e3ac73b048ac94c65a931f447d84cf70e75f37a",
+    "scripts/extension/run_grocy_energy_v1.py": "ab0a28bfa8bc84ef301e3205482e015c949d672987fc186f8eb9e61e49e0d9dc",
+    "scripts/extension/verify_grocy_cases_v1.py": "ed7856aed8728ce570048a3bfe85229217285475a7ca2b6363ea3c733ac4b7cb",
+    "scripts/extension/grocy_actor_v1.php": "eade7e96e17fdc370a5c6de2e88a7f4ea918329c6c3e185fe349e49eb1754d45",
+    ".github/workflows/grocy_energy_v1.yml": "e85ff386c39f382b3c4572e019fc24e19af4ead8ca0c3650784bef797ca51498",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "seed_policy": "Retain seeded rows in fresh pinned images. Capture complete initial target and prerequisite collections, excluding only generated row_created_timestamp from paired business-state comparison. Require identical projected seed collections across independently reset branches; fixture names must not collide. Ordinary qualification establishes concrete seed inventories before scientific case registration.",
+  "qualification_sha256": {
+    "manifests/grocy-execution-v1.json": "4f8c8ddceb838009975f2f3b813f3fae8c0e6bb5ea9c35beaf7784a055c48bb3",
+    "manifests/grocy-extension-controls-attempt3-v1.json": "5a2ebbd3814edfec0520018fc37b68e775152feef7c8952c88347cc19ae3f2b6",
+    "manifests/grocy-exploratory-full-record-audit-v1.json": "7a8efbe6590668a88f2b5b5232f4bf58d9738928a9c45047e551d33570384373"
+  },
+  "execution_authorized": true,
+  "cases": [
+    {
+      "id": "energy-zero",
+      "workflow": "product",
+      "condition": "zero",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      }
+    },
+    {
+      "id": "energy-omitted",
+      "workflow": "product",
+      "condition": "omitted",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0
+      }
+    },
+    {
+      "id": "energy-null",
+      "workflow": "product",
+      "condition": "null",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": null
+      }
+    }
+  ],
+  "persisted_contracts": {
+    "product": {
+      "name": {
+        "type": "string",
+        "nullable": false
+      },
+      "min_stock_amount": {
+        "type": "number",
+        "minimum": 0,
+        "nullable": false
+      },
+      "location_id": {
+        "type": "integer",
+        "nullable": false
+      },
+      "default_consume_location_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "qu_id_purchase": {
+        "type": "integer",
+        "nullable": false
+      },
+      "qu_id_stock": {
+        "type": "integer",
+        "nullable": false
+      },
+      "qu_id_consume": {
+        "type": "integer",
+        "nullable": true
+      },
+      "qu_id_price": {
+        "type": "integer",
+        "nullable": true
+      },
+      "product_group_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "shopping_location_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "parent_product_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "calories": {
+        "type": "number",
+        "nullable": true,
+        "minimum": 0
+      }
+    }
+  },
+  "contract_scope": "Calibrated persisted business rules for names, numeric stock minimum and reference IDs. Nullability uses pinned database declarations, not UI required flags. This is not complete OpenAPI validation; the OpenAPI has incomplete properties and contradictory nullable examples. Complete persisted-field preservation is checked independently of this targeted contract baseline.",
+  "native_representation": "Null text/select values display as empty. Checkbox 1 maps to checked. Missing referenced options are retained as representation discrepancies and do not prevent attempted unrelated native editing. Only absent/ambiguous bound widgets are adapter errors. Failed native validation requires invalid form/field flags, actual save click, no target request during 1500ms observation and unchanged persisted record.",
+  "execution_bound": {
+    "initial_pairs": 9,
+    "conditions": 3,
+    "pairs_per_condition": 3,
+    "max_parallel_app_jobs": 3,
+    "minutes_per_job": 20,
+    "runner_minute_cap": 180,
+    "cash_budget_ceiling_usd": 100,
+    "paid_model_calls": 0,
+    "valid_control_gate": "All three exact-runtime zero controls must preserve the full record and have no contract/reference/representation signal."
+  },
+  "prior_exposure": "Two previous ordinary native rename branches changed persisted calories null to 1; two API branches preserved null. Original scoped product assertion omitted calories. Full-record audit preserved at manifests/grocy-exploratory-full-record-audit-v1.json. The finite boundary cohort excludes this field mutation.",
+  "hypotheses": [
+    "Omitted and explicit-null energy may converge to the same persisted producer state.",
+    "The native editor may display a default numeric value for persisted null and submit it during unrelated rename.",
+    "Explicit zero may prevent that change.",
+    "Complete mutable-field API PUT may preserve the nullable value. These are hypotheses, not required outputs."
+  ],
+  "decision_rule": "Run exactly three fresh pairs per condition, gated on all three explicit-zero controls. Retain all outcomes and disagreements. Three repetitions are robustness checks of one candidate mechanism, not independent defects. A null/omitted difference from zero supports an input counterfactual only if other starting business fields, fixtures and actor match. No new-defect label without source/requirements and prior-issue checks. No automatic outcome-seeking reruns."
+}
