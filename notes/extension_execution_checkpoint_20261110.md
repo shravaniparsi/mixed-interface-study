@@ -137,3 +137,6 @@ Retrieve completed artifacts under results/memos-preference-controls-v1-ci-42896
 
 
 Memos run42896860622 failed in both first branches during private account bootstrap, HTTP400. Raw artifacts and manifests/memos-preference-attempt1-v1.json retain both failures; zero qualified pairs and zero boundary results. Pinned core/user/user.go delegates username validation to internal/identifier/username.go, which allows ASCII alphanumeric and hyphens only. Harness names study_admin/study_actor were invalid. v2 uses study-admin/study-actor and records safe bootstrap error metadata for future diagnosis. All v1 source/registry/raw files remain unchanged. The second branch of each pair was not attempted because setup failed.
+
+
+Corrected Memos preference run42897292331 dispatched at029864b. Artifacts memos-preference-controls-v2-{preferences-r1,preferences-r2}-42897292331-1; use results/memos-preference-controls-v2-ci-42897292331 and verify_memos_preference_controls_v2.py. No other manual application workflow pending. Independent v2 verifier also reconstructs the exact full-field API masks/bodies from raw requests, rather than relying only on final-state assertions.

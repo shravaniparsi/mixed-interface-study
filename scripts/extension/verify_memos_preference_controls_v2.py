@@ -38,6 +38,10 @@ def build(root):
                 require(o['status']=='ordinary_control_passed' and o['browser_cleanup_confirmed'],'Branch incomplete');require(o['actor']=={'name':'users/study-actor','role':'USER'},'Actor mismatch')
                 require(o['prefix']=={'locale':'en','memoVisibility':'PRIVATE','theme':'default','saveMediaMetadata':False},'Prefix mismatch');require(o['final']=={**o['prefix'],'saveMediaMetadata':True},'Preservation mismatch')
                 require(o['instance']['version']==reg['version'],'Version mismatch')
+                patches=[r for r in o['requests'] if r['method']=='PATCH'];require(len(patches)==(2 if c=='api' else 1),'API write inventory')
+                for index,patch in enumerate(patches):
+                    require(patch['status']==200 and patch['path']=='/api/users/study-actor/settings/GENERAL?updateMask=locale,memoVisibility,theme,saveMediaMetadata','Complete API mask')
+                    require(patch['body']=={'name':'users/study-actor/settings/GENERAL','generalSetting':o['prefix'] if index==0 else o['final']},'API body differs')
                 gets=[r for r in o['requests'] if r['method']=='GET' and r['path']=='/api/users/study-actor/settings/GENERAL'];require(len(gets)==3,'Read inventory');require(gets[-2]['response']['generalSetting']==o['prefix'] and gets[-1]['response']['generalSetting']==o['final'],'Readback differs')
             require(observations['api']['initial_business_state']==observations['ui']['initial_business_state'],'Initial reset differs')
             native=observations['ui']['native_request'];require(native['status']==200 and native['content_type'].split(';')[0]=='application/proto','Native transport')
