@@ -73,3 +73,9 @@ Run42904655242 at source400b6fd passes independent reconstruction for all4pairs 
 Run42904660486 at source400b6fd executes task-controls-v2. All4individual branches pass full body/native/persisted checks;0pairs qualify because prefix and final subscription.created differ across independently reset containers. This is the sole paired difference in each pair. Pinned pkg/models/subscription.go declares created as immutable, read-only, server-generated creation time.
 
 Task-controls-v3 adds only subscription.created to cross-reset timestamp exclusions. It keeps the entire subscription, including created, exact within each branch. The raw v2 records and failed paired classification remain intact; no boundary data have been observed. Two new ordinary pairs will qualify the revised projection prospectively rather than overwrite the original result.
+
+## Task ordinary qualification achieved and measurement probes
+
+Run42905348274 at source37cc6a1 independently qualifies both task pairs, including all16writable fields, full stored preservation and6native views. No scientific boundary was executed. The original failed cross-reset attempt remains separate.
+
+vikunja-probes-v1.json freezes three adapter-control pairs (project/label/task). Project identifier bounds are read from the actual DOM and checked against valid/overlength offline strings. Detached clones of actual native color inputs measure browser coercion for valid and invalid values without changing application state. This is only measurement calibration, not evidence of invalid API persistence or native save failure. Task whitespace title is a deliberate live editor violation: it must restore the original title, emit no task PATCH, and leave the complete stored record unchanged before the unrelated ordinary description continuation. These synthetic inputs are never counted as natural findings.
