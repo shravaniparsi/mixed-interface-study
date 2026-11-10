@@ -67,3 +67,9 @@ Version3 retains those network records and adds a target-path/method/origin-scop
 ## Ordinary project/label qualification achieved
 
 Run42904655242 at source400b6fd passes independent reconstruction for all4pairs (two projects/two labels), with12native views. Both API and native full writable bodies match; full returned records preserve every field except the intended title edit and server-managed root updated. Actor2 is nonadmin. Named timestamp projections establish cross-reset equality. Streamed Fetch clone bytes agree with actual network method/path/status and final GET. These are ordinary controls, not boundary evidence; invalid adapter probes and the final deterministic inventory remain to run.
+
+## Task attempt1: explicit subscription timestamp calibration
+
+Run42904660486 at source400b6fd executes task-controls-v2. All4individual branches pass full body/native/persisted checks;0pairs qualify because prefix and final subscription.created differ across independently reset containers. This is the sole paired difference in each pair. Pinned pkg/models/subscription.go declares created as immutable, read-only, server-generated creation time.
+
+Task-controls-v3 adds only subscription.created to cross-reset timestamp exclusions. It keeps the entire subscription, including created, exact within each branch. The raw v2 records and failed paired classification remain intact; no boundary data have been observed. Two new ordinary pairs will qualify the revised projection prospectively rather than overwrite the original result.

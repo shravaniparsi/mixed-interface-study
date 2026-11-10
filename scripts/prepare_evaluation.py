@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/vikunja-task-controls-v3.json',
+    'manifests/vikunja-task-attempt1-v1.json',
     'manifests/vikunja-attempt3-v1.json',
     'manifests/vikunja-attempt2-v1.json',
     'manifests/vikunja-task-controls-v2.json',
