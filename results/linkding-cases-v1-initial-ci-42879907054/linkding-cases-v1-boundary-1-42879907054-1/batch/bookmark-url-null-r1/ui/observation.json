@@ -1,0 +1,97 @@
+{
+  "kind": "linkding_finite_case_v1",
+  "case_id": "bookmark-url-null",
+  "workflow": "bookmark",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/user/profile/",
+      "status": 200,
+      "response": {
+        "theme": "auto",
+        "bookmark_date_display": "relative",
+        "bookmark_link_target": "_blank",
+        "web_archive_integration": "disabled",
+        "tag_search": "strict",
+        "enable_sharing": false,
+        "enable_public_sharing": false,
+        "enable_favicons": false,
+        "display_url": false,
+        "permanent_notes": false,
+        "search_preferences": {},
+        "version": "1.47.0"
+      },
+      "elapsed_s": 0.052621302
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/bookmarks/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.010317138
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/bookmarks/?disable_scraping&disable_html_snapshot",
+      "body": {
+        "url": null,
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "status": 400,
+      "response": {
+        "url": [
+          "This field may not be null."
+        ]
+      },
+      "elapsed_s": 0.011180226000000005
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/bookmarks/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.006322754000000003
+    }
+  ],
+  "forms": [],
+  "timing": {
+    "producer_s": 0.012078344999999999
+  },
+  "prefix_status": "rejected_without_visible_write",
+  "continuation": "not_attempted",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "resource_count": 0,
+    "version": "1.47.0"
+  },
+  "immediate_status": 400,
+  "collection_after_rejection": {
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": []
+  },
+  "browser_cleanup_confirmed": true
+}

@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/linkding-initial-results-v1.json',
+    'manifests/linkding-followup-selection-v1.json',
     'scripts/extension/run_paperless_controls_v1.py',
     'scripts/extension/paperless_control_v1.mjs',
     'scripts/extension/verify_paperless_controls_v1.py',

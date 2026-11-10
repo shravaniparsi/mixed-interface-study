@@ -1,0 +1,514 @@
+{
+  "kind": "linkding_finite_case_v1",
+  "case_id": "bookmark-title-empty",
+  "workflow": "bookmark",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/user/profile/",
+      "status": 200,
+      "response": {
+        "theme": "auto",
+        "bookmark_date_display": "relative",
+        "bookmark_link_target": "_blank",
+        "web_archive_integration": "disabled",
+        "tag_search": "strict",
+        "enable_sharing": false,
+        "enable_public_sharing": false,
+        "enable_favicons": false,
+        "display_url": false,
+        "permanent_notes": false,
+        "search_preferences": {},
+        "version": "1.47.0"
+      },
+      "elapsed_s": 0.027936661999999998
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/bookmarks/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.006959040000000001
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/bookmarks/?disable_scraping&disable_html_snapshot",
+      "body": {
+        "url": "https://example.invalid/study",
+        "title": "",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "status": 201,
+      "response": {
+        "id": 1,
+        "url": "https://example.invalid/study",
+        "title": "",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "web_archive_snapshot_url": "https://web.archive.org/web/20261110185802/https://example.invalid/study",
+        "favicon_url": null,
+        "preview_image_url": null,
+        "is_archived": false,
+        "unread": false,
+        "shared": false,
+        "tag_names": [],
+        "date_added": "2026-11-10T18:58:02.977465Z",
+        "date_modified": "2026-11-10T18:58:02.977473Z",
+        "website_title": null,
+        "website_description": null
+      },
+      "elapsed_s": 0.045361788
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/bookmarks/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "url": "https://example.invalid/study",
+        "title": "",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "web_archive_snapshot_url": "https://web.archive.org/web/20261110185802/https://example.invalid/study",
+        "favicon_url": null,
+        "preview_image_url": null,
+        "is_archived": false,
+        "unread": false,
+        "shared": false,
+        "tag_names": [],
+        "date_added": "2026-11-10T18:58:02.977465Z",
+        "date_modified": "2026-11-10T18:58:02.977473Z",
+        "website_title": null,
+        "website_description": null
+      },
+      "elapsed_s": 0.00403510399999999
+    },
+    {
+      "channel": "ui",
+      "method": "POST",
+      "path": "/bookmarks/1/edit",
+      "body": [
+        [
+          "auto_close",
+          ""
+        ],
+        [
+          "url",
+          "https://example.invalid/study"
+        ],
+        [
+          "tag_string",
+          ""
+        ],
+        [
+          "title",
+          ""
+        ],
+        [
+          "description",
+          "Edited ordinary description"
+        ],
+        [
+          "notes",
+          "Retain these notes"
+        ]
+      ],
+      "status": 302
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/bookmarks/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "url": "https://example.invalid/study",
+        "title": "",
+        "description": "Edited ordinary description",
+        "notes": "Retain these notes",
+        "web_archive_snapshot_url": "https://web.archive.org/web/20261110185802/https://example.invalid/study",
+        "favicon_url": null,
+        "preview_image_url": null,
+        "is_archived": false,
+        "unread": false,
+        "shared": false,
+        "tag_names": [],
+        "date_added": "2026-11-10T18:58:02.977465Z",
+        "date_modified": "2026-11-10T18:58:04.228450Z",
+        "website_title": null,
+        "website_description": null
+      },
+      "elapsed_s": 0.004843345
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "url",
+          "id": "id_url",
+          "type": "text",
+          "value": "https://example.invalid/study",
+          "required": true,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "tag_string",
+          "id": "id_tag_string",
+          "type": "text",
+          "value": "",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "title",
+          "id": "id_title",
+          "type": "text",
+          "value": "",
+          "required": false,
+          "maxlength": "512",
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "description",
+          "id": "id_description",
+          "type": "textarea",
+          "value": "Original description",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "notes",
+          "id": "id_notes",
+          "type": "textarea",
+          "value": "Retain these notes",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "unread",
+          "id": "id_unread",
+          "type": "checkbox",
+          "value": false,
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "url",
+          "id": "id_url",
+          "type": "text",
+          "value": "https://example.invalid/study",
+          "required": true,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "tag_string",
+          "id": "id_tag_string",
+          "type": "text",
+          "value": "",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "title",
+          "id": "id_title",
+          "type": "text",
+          "value": "",
+          "required": false,
+          "maxlength": "512",
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "description",
+          "id": "id_description",
+          "type": "textarea",
+          "value": "Edited ordinary description",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "notes",
+          "id": "id_notes",
+          "type": "textarea",
+          "value": "Retain these notes",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "unread",
+          "id": "id_unread",
+          "type": "checkbox",
+          "value": false,
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        }
+      ]
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "url",
+          "id": "id_url",
+          "type": "text",
+          "value": "https://example.invalid/study",
+          "required": true,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "tag_string",
+          "id": "id_tag_string",
+          "type": "text",
+          "value": "",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "title",
+          "id": "id_title",
+          "type": "text",
+          "value": "",
+          "required": false,
+          "maxlength": "512",
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "description",
+          "id": "id_description",
+          "type": "textarea",
+          "value": "Edited ordinary description",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "notes",
+          "id": "id_notes",
+          "type": "textarea",
+          "value": "Retain these notes",
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        },
+        {
+          "name": "unread",
+          "id": "id_unread",
+          "type": "checkbox",
+          "value": false,
+          "required": false,
+          "maxlength": null,
+          "min": null,
+          "max": null,
+          "pattern": null
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "producer_s": 0.04610405,
+    "native_auth_setup_s": 0.99926917,
+    "continuation_s": 0.25448411599999987
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "resource_count": 0,
+    "version": "1.47.0"
+  },
+  "immediate_status": 201,
+  "resource_id": 1,
+  "prefix": {
+    "url": "https://example.invalid/study",
+    "title": "",
+    "description": "Original description",
+    "notes": "Retain these notes",
+    "tag_names": [],
+    "unread": false,
+    "shared": false,
+    "is_archived": false
+  },
+  "immediate_schema": {
+    "has_integer_identity": true,
+    "business_fields_present": true,
+    "response_matches_readback": true
+  },
+  "response_contract_violations": [],
+  "producer_input_differences": {},
+  "editor_status": 200,
+  "loaded_agreement": [
+    {
+      "field": "url",
+      "expected": "https://example.invalid/study",
+      "observed": "https://example.invalid/study",
+      "agrees": true
+    },
+    {
+      "field": "title",
+      "expected": "",
+      "observed": "",
+      "agrees": true
+    },
+    {
+      "field": "description",
+      "expected": "Original description",
+      "observed": "Original description",
+      "agrees": true
+    },
+    {
+      "field": "notes",
+      "expected": "Retain these notes",
+      "observed": "Retain these notes",
+      "agrees": true
+    },
+    {
+      "field": "unread",
+      "expected": false,
+      "observed": false,
+      "agrees": true
+    }
+  ],
+  "submission_agreement": [
+    {
+      "field": "url",
+      "expected": "https://example.invalid/study",
+      "observed": "https://example.invalid/study",
+      "agrees": true
+    },
+    {
+      "field": "title",
+      "expected": "",
+      "observed": "",
+      "agrees": true
+    },
+    {
+      "field": "description",
+      "expected": "Edited ordinary description",
+      "observed": "Edited ordinary description",
+      "agrees": true
+    },
+    {
+      "field": "notes",
+      "expected": "Retain these notes",
+      "observed": "Retain these notes",
+      "agrees": true
+    },
+    {
+      "field": "unread",
+      "expected": false,
+      "observed": false,
+      "agrees": true
+    }
+  ],
+  "final": {
+    "url": "https://example.invalid/study",
+    "title": "",
+    "description": "Edited ordinary description",
+    "notes": "Retain these notes",
+    "tag_names": [],
+    "unread": false,
+    "shared": false,
+    "is_archived": false
+  },
+  "final_form_agreement": [
+    {
+      "field": "url",
+      "expected": "https://example.invalid/study",
+      "observed": "https://example.invalid/study",
+      "agrees": true
+    },
+    {
+      "field": "title",
+      "expected": "",
+      "observed": "",
+      "agrees": true
+    },
+    {
+      "field": "description",
+      "expected": "Edited ordinary description",
+      "observed": "Edited ordinary description",
+      "agrees": true
+    },
+    {
+      "field": "notes",
+      "expected": "Retain these notes",
+      "observed": "Retain these notes",
+      "agrees": true
+    },
+    {
+      "field": "unread",
+      "expected": false,
+      "observed": false,
+      "agrees": true
+    }
+  ],
+  "browser_cleanup_confirmed": true
+}
