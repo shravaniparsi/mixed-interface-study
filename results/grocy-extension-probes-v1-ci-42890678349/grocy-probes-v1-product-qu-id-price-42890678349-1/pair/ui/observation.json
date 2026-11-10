@@ -1,0 +1,892 @@
+{
+  "kind": "grocy_ordinary_control_v1",
+  "workflow": "product",
+  "channel": "ui",
+  "status": "ordinary_control_passed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.05263828499999999
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.022448317000000002
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:02:13",
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.02081123199999999
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/locations",
+      "body": {
+        "name": "Study location",
+        "description": "Fixture location",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "3"
+      },
+      "elapsed_s": 0.060917669000000015
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/quantity_units",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Piece",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:02:13",
+          "name_plural": "Pieces",
+          "plural_forms": null,
+          "active": 1
+        },
+        {
+          "id": 3,
+          "name": "Pack",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 20:02:13",
+          "name_plural": "Packs",
+          "plural_forms": null,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.013816103000000027
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/quantity_units",
+      "body": {
+        "name": "Study unit",
+        "name_plural": "Study units",
+        "description": "Fixture unit",
+        "active": 1
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "4"
+      },
+      "elapsed_s": 0.01460714999999999
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/products",
+      "body": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": 3,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "qu_id_consume": 4,
+        "qu_id_price": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.05711393799999999
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary product",
+        "description": "Original description",
+        "product_group_id": null,
+        "active": 1,
+        "location_id": 3,
+        "shopping_location_id": null,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "default_best_before_days_after_open": 0,
+        "default_best_before_days_after_freezing": 0,
+        "default_best_before_days_after_thawing": 0,
+        "picture_file_name": null,
+        "enable_tare_weight_handling": 0,
+        "tare_weight": 0,
+        "not_check_stock_fulfillment_for_recipes": 0,
+        "parent_product_id": null,
+        "calories": null,
+        "cumulate_min_stock_amount_of_sub_products": 0,
+        "due_type": 1,
+        "quick_consume_amount": 1,
+        "hide_on_stock_overview": 0,
+        "default_stock_label_type": 0,
+        "should_not_be_frozen": 0,
+        "treat_opened_as_out_of_stock": 1,
+        "no_own_stock": 0,
+        "default_consume_location_id": null,
+        "move_on_open": 0,
+        "row_created_timestamp": "2026-11-10 20:02:14",
+        "qu_id_consume": 4,
+        "auto_reprint_stock_label": 0,
+        "quick_open_amount": 1,
+        "qu_id_price": 4,
+        "disable_open": 0,
+        "default_purchase_price_type": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.012637624000000017
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/objects/products/1",
+      "body": {
+        "name": "Edited ordinary product",
+        "active": "1",
+        "description": "Original description",
+        "location_id": "3",
+        "default_consume_location_id": "",
+        "shopping_location_id": "",
+        "min_stock_amount": "0",
+        "treat_opened_as_out_of_stock": "1",
+        "due_type": "1",
+        "default_best_before_days": "0",
+        "default_best_before_days_after_open": "0",
+        "default_best_before_days_after_freezing": "0",
+        "default_best_before_days_after_thawing": "0",
+        "product_group_id": "",
+        "qu_id_stock": "4",
+        "qu_id_purchase": "4",
+        "qu_id_consume": "4",
+        "qu_id_price": "4",
+        "calories": "1",
+        "quick_consume_amount": "1",
+        "quick_open_amount": "1",
+        "default_purchase_price_type": "1",
+        "move_on_open": "0",
+        "cumulate_min_stock_amount_of_sub_products": "0",
+        "should_not_be_frozen": "0",
+        "enable_tare_weight_handling": "0",
+        "not_check_stock_fulfillment_for_recipes": "0",
+        "disable_open": "0",
+        "hide_on_stock_overview": "0",
+        "no_own_stock": "0",
+        "parent_product_id": ""
+      },
+      "status": 204
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Edited ordinary product",
+        "description": "Original description",
+        "product_group_id": null,
+        "active": 1,
+        "location_id": 3,
+        "shopping_location_id": null,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "default_best_before_days_after_open": 0,
+        "default_best_before_days_after_freezing": 0,
+        "default_best_before_days_after_thawing": 0,
+        "picture_file_name": null,
+        "enable_tare_weight_handling": 0,
+        "tare_weight": 0,
+        "not_check_stock_fulfillment_for_recipes": 0,
+        "parent_product_id": null,
+        "calories": 1,
+        "cumulate_min_stock_amount_of_sub_products": 0,
+        "due_type": 1,
+        "quick_consume_amount": 1,
+        "hide_on_stock_overview": 0,
+        "default_stock_label_type": 0,
+        "should_not_be_frozen": 0,
+        "treat_opened_as_out_of_stock": 1,
+        "no_own_stock": 0,
+        "default_consume_location_id": null,
+        "move_on_open": 0,
+        "row_created_timestamp": "2026-11-10 20:02:14",
+        "qu_id_consume": 4,
+        "auto_reprint_stock_label": 0,
+        "quick_open_amount": 1,
+        "qu_id_price": 4,
+        "disable_open": 0,
+        "default_purchase_price_type": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.0195956699999997
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/products/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Edited ordinary product",
+        "description": "Original description",
+        "product_group_id": null,
+        "active": 1,
+        "location_id": 3,
+        "shopping_location_id": null,
+        "qu_id_purchase": 4,
+        "qu_id_stock": 4,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "default_best_before_days_after_open": 0,
+        "default_best_before_days_after_freezing": 0,
+        "default_best_before_days_after_thawing": 0,
+        "picture_file_name": null,
+        "enable_tare_weight_handling": 0,
+        "tare_weight": 0,
+        "not_check_stock_fulfillment_for_recipes": 0,
+        "parent_product_id": null,
+        "calories": 1,
+        "cumulate_min_stock_amount_of_sub_products": 0,
+        "due_type": 1,
+        "quick_consume_amount": 1,
+        "hide_on_stock_overview": 0,
+        "default_stock_label_type": 0,
+        "should_not_be_frozen": 0,
+        "treat_opened_as_out_of_stock": 1,
+        "no_own_stock": 0,
+        "default_consume_location_id": null,
+        "move_on_open": 0,
+        "row_created_timestamp": "2026-11-10 20:02:14",
+        "qu_id_consume": 4,
+        "auto_reprint_stock_label": 0,
+        "quick_open_amount": 1,
+        "qu_id_price": 4,
+        "disable_open": 0,
+        "default_purchase_price_type": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.019223990999999843
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary product",
+          "expected": "Ordinary product",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "selector": "#active",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "location_id",
+          "count": 1,
+          "value": "3",
+          "expected": "3",
+          "selector": "#location_id",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_purchase",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_purchase",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_stock",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_stock",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_consume",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_consume",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_price",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_price",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "min_stock_amount",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "selector": "#min_stock_amount",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "default_best_before_days",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "selector": "#default_best_before_days",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": "-1",
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Edited ordinary product",
+          "expected": "Edited ordinary product",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "selector": "#active",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "location_id",
+          "count": 1,
+          "value": "3",
+          "expected": "3",
+          "selector": "#location_id",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_purchase",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_purchase",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_stock",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_stock",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_consume",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_consume",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_price",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_price",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "min_stock_amount",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "selector": "#min_stock_amount",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "default_best_before_days",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "selector": "#default_best_before_days",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": "-1",
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Edited ordinary product",
+          "expected": "Edited ordinary product",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "selector": "#active",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "location_id",
+          "count": 1,
+          "value": "3",
+          "expected": "3",
+          "selector": "#location_id",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_purchase",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_purchase",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_stock",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_stock",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_consume",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_consume",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "qu_id_price",
+          "count": 1,
+          "value": "4",
+          "expected": "4",
+          "selector": "#qu_id_price",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "min_stock_amount",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "selector": "#min_stock_amount",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": "0.0000",
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "default_best_before_days",
+          "count": 1,
+          "value": "0",
+          "expected": "0",
+          "selector": "#default_best_before_days",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": "-1",
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 2.574665829,
+    "continuation_s": 1.2921608909999995
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/products": [],
+      "/api/objects/locations": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "/api/objects/quantity_units": [
+        {
+          "id": 2,
+          "name": "Piece",
+          "description": null,
+          "name_plural": "Pieces",
+          "plural_forms": null,
+          "active": 1
+        },
+        {
+          "id": 3,
+          "name": "Pack",
+          "description": null,
+          "name_plural": "Packs",
+          "plural_forms": null,
+          "active": 1
+        }
+      ]
+    }
+  },
+  "fixture_ids": {
+    "location": 3,
+    "unit": 4
+  },
+  "resolved_payload": {
+    "name": "Ordinary product",
+    "description": "Original description",
+    "active": 1,
+    "location_id": 3,
+    "qu_id_purchase": 4,
+    "qu_id_stock": 4,
+    "qu_id_consume": 4,
+    "qu_id_price": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0
+  },
+  "prefix": {
+    "name": "Ordinary product",
+    "description": "Original description",
+    "active": 1,
+    "location_id": 3,
+    "qu_id_purchase": 4,
+    "qu_id_stock": 4,
+    "qu_id_consume": 4,
+    "qu_id_price": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0
+  },
+  "resource_id": 1,
+  "final": {
+    "name": "Edited ordinary product",
+    "description": "Original description",
+    "active": 1,
+    "location_id": 3,
+    "qu_id_purchase": 4,
+    "qu_id_stock": 4,
+    "qu_id_consume": 4,
+    "qu_id_price": 4,
+    "min_stock_amount": 0,
+    "default_best_before_days": 0
+  },
+  "adapter_probe": {
+    "id": "product-qu-id-price",
+    "synthetic": true,
+    "selector": "#qu_id_price",
+    "kind": "required_select",
+    "observation_window_ms": 1000,
+    "target_writes": [],
+    "field": {
+      "value": "",
+      "required": true,
+      "min": null,
+      "valid": false,
+      "valueMissing": true,
+      "rangeUnderflow": false,
+      "validationMessage": "Please select an item in the list."
+    },
+    "form_valid": false,
+    "persisted_after": {
+      "name": "Edited ordinary product",
+      "description": "Original description",
+      "active": 1,
+      "location_id": 3,
+      "qu_id_purchase": 4,
+      "qu_id_stock": 4,
+      "qu_id_consume": 4,
+      "qu_id_price": 4,
+      "min_stock_amount": 0,
+      "default_best_before_days": 0
+    },
+    "status": "qualified"
+  },
+  "browser_cleanup_confirmed": true
+}

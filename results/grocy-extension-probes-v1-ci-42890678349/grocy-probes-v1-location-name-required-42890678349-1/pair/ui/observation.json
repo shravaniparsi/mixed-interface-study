@@ -1,0 +1,383 @@
+{
+  "kind": "grocy_ordinary_control_v1",
+  "workflow": "location",
+  "channel": "ui",
+  "status": "ordinary_control_passed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.07808670200000001
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations",
+      "status": 200,
+      "response": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "row_created_timestamp": "2026-11-10 19:59:59",
+          "is_freezer": 0,
+          "active": 1
+        }
+      ],
+      "elapsed_s": 0.016371389000000007
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/locations",
+      "body": {
+        "name": "Ordinary location",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "3"
+      },
+      "elapsed_s": 0.038878592999999996
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": "Ordinary location",
+        "description": "Original description",
+        "row_created_timestamp": "2026-11-10 20:00:00",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.009383028999999994
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/objects/locations/3",
+      "body": {
+        "name": "Ordinary location",
+        "active": "1",
+        "description": "Edited ordinary description",
+        "is_freezer": "0"
+      },
+      "status": 204
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": "Ordinary location",
+        "description": "Edited ordinary description",
+        "row_created_timestamp": "2026-11-10 20:00:00",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.01828558800000019
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/locations/3",
+      "status": 200,
+      "response": {
+        "id": 3,
+        "name": "Ordinary location",
+        "description": "Edited ordinary description",
+        "row_created_timestamp": "2026-11-10 20:00:00",
+        "is_freezer": 0,
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.06777916099999994
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary location",
+          "expected": "Ordinary location",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Original description",
+          "expected": "Original description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "selector": "#active",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_freezer",
+          "count": 1,
+          "value": false,
+          "expected": false,
+          "selector": "#is_freezer",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary location",
+          "expected": "Ordinary location",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "selector": "#active",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_freezer",
+          "count": 1,
+          "value": false,
+          "expected": false,
+          "selector": "#is_freezer",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary location",
+          "expected": "Ordinary location",
+          "selector": "#name",
+          "kind": "text",
+          "attributes": {
+            "required": true,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "selector": "#description",
+          "kind": "text",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "selector": "#active",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_freezer",
+          "count": 1,
+          "value": false,
+          "expected": false,
+          "selector": "#is_freezer",
+          "kind": "checkbox",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "min": null,
+            "max": null,
+            "pattern": null
+          }
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.268836235,
+    "continuation_s": 0.5409460880000001
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 1,
+    "seed_collections": {
+      "/api/objects/locations": [
+        {
+          "id": 2,
+          "name": "Fridge",
+          "description": null,
+          "is_freezer": 0,
+          "active": 1
+        }
+      ]
+    }
+  },
+  "fixture_ids": {},
+  "resolved_payload": {
+    "name": "Ordinary location",
+    "description": "Original description",
+    "active": 1,
+    "is_freezer": 0
+  },
+  "prefix": {
+    "name": "Ordinary location",
+    "description": "Original description",
+    "active": 1,
+    "is_freezer": 0
+  },
+  "resource_id": 3,
+  "final": {
+    "name": "Ordinary location",
+    "description": "Edited ordinary description",
+    "active": 1,
+    "is_freezer": 0
+  },
+  "adapter_probe": {
+    "id": "location-name-required",
+    "synthetic": true,
+    "selector": "#name",
+    "kind": "required_text",
+    "observation_window_ms": 1000,
+    "target_writes": [],
+    "field": {
+      "value": "",
+      "required": true,
+      "min": null,
+      "valid": false,
+      "valueMissing": true,
+      "rangeUnderflow": false,
+      "validationMessage": "Please fill out this field."
+    },
+    "form_valid": false,
+    "persisted_after": {
+      "name": "Ordinary location",
+      "description": "Edited ordinary description",
+      "active": 1,
+      "is_freezer": 0
+    },
+    "status": "qualified"
+  },
+  "browser_cleanup_confirmed": true
+}
