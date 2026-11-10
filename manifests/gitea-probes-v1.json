@@ -1,0 +1,94 @@
+{
+  "kind": "gitea_adapter_probes_v1",
+  "version": "28.3.0",
+  "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+  "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+  "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+  "environment": {
+    "GITEA__database__DB_TYPE": "sqlite3",
+    "GITEA__security__INSTALL_LOCK": "true",
+    "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+    "GITEA__server__DISABLE_SSH": "true"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_job_minutes": 25,
+  "maximum_parallel_jobs": 3,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "milestone-r1",
+      "workflow": "milestone",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "label-r1",
+      "workflow": "label",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "milestone",
+      "collection": "milestones",
+      "fields": [
+        "title",
+        "description",
+        "due_on",
+        "state"
+      ],
+      "payload": {
+        "title": "Ordinary milestone",
+        "description": "Ordinary description",
+        "due_on": "2027-01-15T23:59:59Z",
+        "state": "open"
+      },
+      "edit_value": "Edited ordinary description"
+    },
+    {
+      "id": "label",
+      "collection": "labels",
+      "fields": [
+        "name",
+        "description",
+        "color",
+        "exclusive",
+        "is_archived"
+      ],
+      "payload": {
+        "name": "area/ordinary",
+        "description": "Ordinary description",
+        "color": "#336699",
+        "exclusive": true,
+        "is_archived": false
+      },
+      "edit_value": "Edited ordinary description"
+    }
+  ],
+  "repository": {
+    "name": "study-repo",
+    "description": "Synthetic study fixture",
+    "private": true,
+    "auto_init": false
+  },
+  "source_sha256": {
+    "scripts/extension/gitea_probe_v1.mjs": "37359042db23ba5349fc855e65407637469a11c17d5131225d4f37f11be953a5",
+    "scripts/extension/gitea_form_wire_v1.mjs": "7a5684841af3b6fa7a2c8a0a99e38b5c7d6324f65156805b7508b9248a8cc8ab",
+    "scripts/extension/run_gitea_probes_v1.py": "20c84f06463784326e253aba14010a425dac62c646866f6eddabbc1c194457cf",
+    ".github/workflows/gitea_probes_v1.yml": "b8faf9da5311fedcb2dab4c969f12308d71a99fc75f9ed567d2f739f709702a7",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495"
+  },
+  "qualification_sha256": {
+    "manifests/gitea-attempt3-v1.json": "dee6625c11f4186f8f9ab06843372f83ffb7a7d53beb2e5b637d063a07a1adf2"
+  },
+  "metadata_policy": "Full target records retained. Only target updated_at may change within a branch; created_at remains exact. Across resets exclude target created_at/updated_at only. Initial repository identity is id/full_name/owner id; repository response is retained but not claimed as a complete global-state invariant. Native CSRF form values are redacted, all business fields retained.",
+  "interpretation": "Measurement probes on actual native fields before ordinary edit: required title empty/valid, maxlength50 versus51requested, label color valid/invalid, exclusive scoped/unscoped. Restore fields and independently confirm no persisted changes before ordinary save. No invalid producer writes."
+}
