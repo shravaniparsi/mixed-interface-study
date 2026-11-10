@@ -1,0 +1,137 @@
+{
+  "kind": "ordinary_linkding_controls_v2",
+  "registered_date": "2026-11-10",
+  "version": "1.47.0",
+  "source_commit": "24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f",
+  "image": "ghcr.io/sissbruecker/linkding@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522",
+  "image_id": "sha256:0f9a8582286a2efc50d51724869b48d845fed52032b8d0b45f02ee6ee649a9f3",
+  "deployment_report": "results/production-extension-screen-ci-42874085809/production-screen-linkding-42874085809-1/report.json",
+  "deployment_report_sha256": "5a11797ce3445357102744178f9133b860a5e73c085203fc381abeed4bc3dfe2",
+  "scope": "Four ordinary engineering control pairs; no boundary outcomes or independent scientific samples",
+  "workflows": [
+    {
+      "id": "bookmark",
+      "collection": "/api/bookmarks/",
+      "create_query": "?disable_scraping&disable_html_snapshot",
+      "edit_path": "/bookmarks/{id}/edit",
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "url": "https://example.invalid/study",
+        "title": "Ordinary bookmark",
+        "description": "Original description",
+        "notes": "Retain these notes",
+        "tag_names": [],
+        "unread": false,
+        "shared": false,
+        "is_archived": false
+      },
+      "form_fields": [
+        "url",
+        "title",
+        "description",
+        "notes",
+        "unread"
+      ],
+      "fields": [
+        "url",
+        "title",
+        "description",
+        "notes",
+        "tag_names",
+        "unread",
+        "shared",
+        "is_archived"
+      ]
+    },
+    {
+      "id": "bundle",
+      "collection": "/api/bundles/",
+      "create_query": "",
+      "edit_path": "/bundles/{id}/edit",
+      "edit_field": "search",
+      "edit_value": "edited-search",
+      "payload": {
+        "name": "Ordinary bundle",
+        "search": "original-search",
+        "any_tags": "",
+        "all_tags": "",
+        "excluded_tags": "",
+        "filter_unread": "off",
+        "filter_shared": "off"
+      },
+      "form_fields": [
+        "name",
+        "search",
+        "any_tags",
+        "all_tags",
+        "excluded_tags",
+        "filter_unread",
+        "filter_shared"
+      ],
+      "fields": [
+        "name",
+        "search",
+        "any_tags",
+        "all_tags",
+        "excluded_tags",
+        "filter_unread",
+        "filter_shared"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "bookmark-r1",
+      "workflow": "bookmark",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bookmark-r2",
+      "workflow": "bookmark",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "bundle-r1",
+      "workflow": "bundle",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "bundle-r2",
+      "workflow": "bundle",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/linkding_control_v1.mjs": "a0b91f24c54ad22b9dc053b212e686572aa32de69c004df46e52f9d5afbafa0e",
+    "scripts/extension/run_linkding_controls_v2.py": "6463ce4a6669e1b2e5076bb2697f3f762ebbf1ea526029976efd005e53eb2783",
+    ".github/workflows/linkding_extension_controls_v2.yml": "b21a54d4b29664f2a41137457577fceddcef548137399a6f18e099dcb9bfc50e",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "boundary_execution_authorized": false,
+  "amendment": {
+    "reason": "All v1 attempts stopped at first profile GET with 401. Pinned source authenticates bookmarks.models.ApiToken, not DRF Token. Only actor provisioning changes; Node observation logic, payloads, workflows, image and branch order unchanged.",
+    "prior_registry_sha256": "0f9076993f08c766a8c224b3c9f02ddbb7ecf6baee555cf76745be9943cb203b",
+    "prior_attempt": "manifests/linkding-extension-controls-attempt1-v1.json",
+    "prior_attempt_sha256": "590df62b7891b2261bbd8307d67ab3008e07a7ca41c3305de547dc8c37f710c3",
+    "source": "https://github.com/sissbruecker/linkding/blob/24b5ad6cc9bde497b5d1b1e86aed5a2fb7d25c2f/bookmarks/api/auth.py"
+  }
+}
