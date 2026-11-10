@@ -40,6 +40,7 @@ ARTIFACTS = [
     'scripts/extension/verify_grocy_energy_v1.py',
     '.github/workflows/grocy_energy_v1.yml',
     'manifests/grocy-energy-execution-v1.json',
+    'manifests/grocy-energy-results-v1.json',
 
     'scripts/extension/grocy_case_v1.mjs',
     'scripts/extension/run_grocy_cases_v1.py',

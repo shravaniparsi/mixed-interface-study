@@ -111,3 +111,10 @@ The fixed registered selection rule selects exactly thirteen cases for repetitio
 Energy run42894136994 passed three explicit-zero controls; omitted/null branches are executing. Queue followups behind it after publishing the new workflow; do not add another pending manual app run.
 
 Followups dispatched as run42894961954 at7efd556cf179171f79fcd8fb0b8b497eec82cafe, queued behind energy run42894136994. Shared concurrency now has one running and one pending workflow; do not enqueue a third. Expected followup artifacts grocy-followups-v1-repeat-{0..12}-{run}-1. Retrieve all13, analyze with verify_grocy_followups_v1.py over the full52pair archive. Next immediate work: finish and independently verify nine energy pairs, retain all outcomes, then source/requirements assessment and remaining-app qualification while repeats run.
+
+
+## Energy replication independently verified
+
+Run 42894136994 completed successfully. All nine raw artifacts are preserved under results/grocy-energy-v1-ci-42894136994 and independently reconstructed in manifests/grocy-energy-results-v1.json. Three explicit-zero pairs preserve zero in both channels. All three omitted and three explicit-null pairs preserve null through the full-record API rename, whereas native editing loads 1 and saves 1 during that same rename. Calories is the sole additional changed business field. All three cross-condition comparisons confirm matching fixtures and non-energy starting fields. This is one reproducible exploratory mechanism; no new-defect adjudication or population frequency follows. No extra outcome-triggered repetitions are scheduled.
+
+Followup run 42894961954 remains queued at the latest API status check. Retain its existing dispatch; do not create a duplicate. Memos source and binary transport qualification remains next independent work.
