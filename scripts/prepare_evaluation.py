@@ -28,6 +28,14 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/run_linkding_probes_v2.py',
+    'scripts/extension/linkding_probe_v2.mjs',
+    'scripts/extension/verify_linkding_probes_v2.py',
+    '.github/workflows/linkding_extension_probes_v2.yml',
+    'manifests/linkding-extension-probes-v2.json',
+    'manifests/linkding-extension-probes-attempt1-v1.json',
+    'manifests/linkding-extension-controls-attempt3-v1.json',
+
     'scripts/extension/run_linkding_probes_v1.py',
     'scripts/extension/linkding_probe_v1.mjs',
     'scripts/extension/verify_linkding_probes_v1.py',
