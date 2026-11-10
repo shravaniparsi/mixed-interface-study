@@ -1,0 +1,50 @@
+name: Grocy extension ordinary controls v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        unit: [location-r1, location-r2, task-r1, task-r2]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      UNIT: ${{ matrix.unit }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12.16'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Initialize evidence
+        run: |
+          mkdir -p "$RUNNER_TEMP/grocy-controls"
+          printf 'CI_ARTIFACT_DIR=%s\n' "$RUNNER_TEMP/grocy-controls" >> "$GITHUB_ENV"
+      - name: Install pinned browser
+        run: bash scripts/ci/install_browser.sh
+      - name: Record runtime
+        run: python scripts/ci/capture_versions.py --output "$CI_ARTIFACT_DIR/runtime-versions.json"
+      - name: Execute ordinary pair
+        run: timeout --signal=TERM --kill-after=90s 900s python scripts/extension/run_grocy_controls_v1.py --unit "$UNIT" --output "$CI_ARTIFACT_DIR/pair"
+      - name: Retain every attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: grocy-controls-v1-${{ matrix.unit }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/grocy-controls/
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: true
