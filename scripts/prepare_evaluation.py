@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/quartz_recovery_dispatch_v3.yml',
+    'scripts/verify_quartz_recovery_dispatch_v3.py',
+    'tests/test_quartz_dispatch_v3.py',
     'manifests/quartz-recovery-release-ci-v2.json',
     'manifests/quartz-recovery-freeze-v2.json',
     'scripts/quartz_recovery_preflight_v2.py',
