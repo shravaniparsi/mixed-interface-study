@@ -1,0 +1,1709 @@
+{
+  "kind": "grocy_finite_execution_v1",
+  "version": "4.7.1",
+  "source_commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+  "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+  "image_id": "sha256:80a50f603077d272c0c215ed0667a106d3c652a30a322ec1dfe64f34d31f80b1",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-grocy-42876848117-1/report.json",
+  "deployment_report_sha256": "d85a08527dea6351c722224a38d0d5353b3e38838cf6a207a238834f678dfcc7",
+  "scope": "Finite registered observation cohort; known energy-null exposure excluded and retained separately.",
+  "normalization": "Only exact decimal integer strings in declared integer fields map to integers. Raw API responses retained. Null and empty string are never conflated. Date text is exact YYYY-MM-DD.",
+  "actor_permissions": [
+    "MASTER_DATA_EDIT",
+    "STOCK",
+    "TASKS",
+    "USERS_READ"
+  ],
+  "workflows": [
+    {
+      "id": "location",
+      "collection": "/api/objects/locations",
+      "edit_path": "/location/{id}",
+      "exit_path": "/locations",
+      "form_selector": "#location-form",
+      "save_selector": "#save-location-button",
+      "edit_field": "description",
+      "edit_selector": "#description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "name": "Ordinary location",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "integer_fields": [
+        "active",
+        "is_freezer"
+      ],
+      "fixtures": [],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "#name",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "#description",
+          "kind": "text"
+        },
+        {
+          "field": "active",
+          "selector": "#active",
+          "kind": "checkbox"
+        },
+        {
+          "field": "is_freezer",
+          "selector": "#is_freezer",
+          "kind": "checkbox"
+        }
+      ],
+      "fields": [
+        "name",
+        "description",
+        "is_freezer",
+        "active"
+      ],
+      "initial_count": 1,
+      "immutable_fields": [
+        "id",
+        "row_created_timestamp",
+        "userfields"
+      ],
+      "references": []
+    },
+    {
+      "id": "product",
+      "collection": "/api/objects/products",
+      "edit_path": "/product/{id}",
+      "exit_path": "/products",
+      "form_selector": "#product-form",
+      "save_selector": ".save-product-button[data-location=\"return\"]",
+      "edit_field": "name",
+      "edit_selector": "#name",
+      "edit_value": "Edited ordinary product",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "integer_fields": [
+        "active",
+        "auto_reprint_stock_label",
+        "cumulate_min_stock_amount_of_sub_products",
+        "default_best_before_days",
+        "default_best_before_days_after_freezing",
+        "default_best_before_days_after_open",
+        "default_best_before_days_after_thawing",
+        "default_purchase_price_type",
+        "default_stock_label_type",
+        "disable_open",
+        "due_type",
+        "enable_tare_weight_handling",
+        "hide_on_stock_overview",
+        "location_id",
+        "min_stock_amount",
+        "move_on_open",
+        "no_own_stock",
+        "not_check_stock_fulfillment_for_recipes",
+        "qu_id_consume",
+        "qu_id_price",
+        "qu_id_purchase",
+        "qu_id_stock",
+        "quick_consume_amount",
+        "quick_open_amount",
+        "should_not_be_frozen",
+        "tare_weight",
+        "treat_opened_as_out_of_stock"
+      ],
+      "fixtures": [
+        {
+          "id": "location",
+          "collection": "/api/objects/locations",
+          "payload": {
+            "name": "Study location",
+            "description": "Fixture location",
+            "active": 1,
+            "is_freezer": 0
+          }
+        },
+        {
+          "id": "unit",
+          "collection": "/api/objects/quantity_units",
+          "payload": {
+            "name": "Study unit",
+            "name_plural": "Study units",
+            "description": "Fixture unit",
+            "active": 1
+          }
+        }
+      ],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "#name",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "#description",
+          "kind": "text"
+        },
+        {
+          "field": "active",
+          "selector": "#active",
+          "kind": "checkbox"
+        },
+        {
+          "field": "location_id",
+          "selector": "#location_id",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_purchase",
+          "selector": "#qu_id_purchase",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_stock",
+          "selector": "#qu_id_stock",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_consume",
+          "selector": "#qu_id_consume",
+          "kind": "text"
+        },
+        {
+          "field": "qu_id_price",
+          "selector": "#qu_id_price",
+          "kind": "text"
+        },
+        {
+          "field": "min_stock_amount",
+          "selector": "#min_stock_amount",
+          "kind": "text"
+        },
+        {
+          "field": "default_best_before_days",
+          "selector": "#default_best_before_days",
+          "kind": "text"
+        },
+        {
+          "field": "calories",
+          "selector": "#calories",
+          "kind": "text"
+        }
+      ],
+      "fields": [
+        "name",
+        "description",
+        "product_group_id",
+        "active",
+        "location_id",
+        "shopping_location_id",
+        "qu_id_purchase",
+        "qu_id_stock",
+        "min_stock_amount",
+        "default_best_before_days",
+        "default_best_before_days_after_open",
+        "default_best_before_days_after_freezing",
+        "default_best_before_days_after_thawing",
+        "picture_file_name",
+        "enable_tare_weight_handling",
+        "tare_weight",
+        "not_check_stock_fulfillment_for_recipes",
+        "parent_product_id",
+        "calories",
+        "cumulate_min_stock_amount_of_sub_products",
+        "due_type",
+        "quick_consume_amount",
+        "hide_on_stock_overview",
+        "default_stock_label_type",
+        "should_not_be_frozen",
+        "treat_opened_as_out_of_stock",
+        "no_own_stock",
+        "default_consume_location_id",
+        "move_on_open",
+        "qu_id_consume",
+        "auto_reprint_stock_label",
+        "quick_open_amount",
+        "qu_id_price",
+        "disable_open",
+        "default_purchase_price_type"
+      ],
+      "initial_count": 0,
+      "immutable_fields": [
+        "id",
+        "row_created_timestamp",
+        "userfields"
+      ],
+      "references": [
+        {
+          "field": "location_id",
+          "collection": "/api/objects/locations",
+          "nullable": false,
+          "mode": "object"
+        },
+        {
+          "field": "default_consume_location_id",
+          "collection": "/api/objects/locations",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_purchase",
+          "collection": "/api/objects/quantity_units",
+          "nullable": false,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_stock",
+          "collection": "/api/objects/quantity_units",
+          "nullable": false,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_consume",
+          "collection": "/api/objects/quantity_units",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "qu_id_price",
+          "collection": "/api/objects/quantity_units",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "product_group_id",
+          "collection": "/api/objects/product_groups",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "shopping_location_id",
+          "collection": "/api/objects/shopping_locations",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "parent_product_id",
+          "collection": "/api/objects/products",
+          "nullable": true,
+          "mode": "object"
+        }
+      ]
+    },
+    {
+      "id": "task",
+      "collection": "/api/objects/tasks",
+      "edit_path": "/task/{id}",
+      "exit_path": "/tasks",
+      "form_selector": "#task-form",
+      "save_selector": ".save-task-button",
+      "edit_field": "description",
+      "edit_selector": "#description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "integer_fields": [
+        "assigned_to_user_id",
+        "category_id",
+        "done"
+      ],
+      "fixtures": [
+        {
+          "id": "category",
+          "collection": "/api/objects/task_categories",
+          "payload": {
+            "name": "Study category",
+            "description": "Fixture category",
+            "active": 1
+          }
+        }
+      ],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "#name",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "#description",
+          "kind": "text"
+        },
+        {
+          "field": "due_date",
+          "selector": "#due_date input",
+          "kind": "text"
+        },
+        {
+          "field": "category_id",
+          "selector": "#category_id",
+          "kind": "text"
+        },
+        {
+          "field": "assigned_to_user_id",
+          "selector": "#user_id",
+          "kind": "text"
+        }
+      ],
+      "fields": [
+        "name",
+        "description",
+        "due_date",
+        "done",
+        "done_timestamp",
+        "category_id",
+        "assigned_to_user_id"
+      ],
+      "initial_count": 0,
+      "immutable_fields": [
+        "id",
+        "row_created_timestamp",
+        "userfields"
+      ],
+      "references": [
+        {
+          "field": "category_id",
+          "collection": "/api/objects/task_categories",
+          "nullable": true,
+          "mode": "object"
+        },
+        {
+          "field": "assigned_to_user_id",
+          "collection": "/api/users",
+          "nullable": true,
+          "mode": "list"
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "location-valid-1-r1",
+      "case_id": "location-valid-1",
+      "workflow": "location",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "location-valid-2-r1",
+      "case_id": "location-valid-2",
+      "workflow": "location",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "location-valid-3-r1",
+      "case_id": "location-valid-3",
+      "workflow": "location",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "location-valid-4-r1",
+      "case_id": "location-valid-4",
+      "workflow": "location",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-valid-1-r1",
+      "case_id": "product-valid-1",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-valid-2-r1",
+      "case_id": "product-valid-2",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-valid-3-r1",
+      "case_id": "product-valid-3",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-valid-4-r1",
+      "case_id": "product-valid-4",
+      "workflow": "product",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-valid-1-r1",
+      "case_id": "task-valid-1",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-valid-2-r1",
+      "case_id": "task-valid-2",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-valid-3-r1",
+      "case_id": "task-valid-3",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-valid-4-r1",
+      "case_id": "task-valid-4",
+      "workflow": "task",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "location-name-whitespace-r1",
+      "case_id": "location-name-whitespace",
+      "workflow": "location",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "location-name-omitted-r1",
+      "case_id": "location-name-omitted",
+      "workflow": "location",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "location-name-empty-r1",
+      "case_id": "location-name-empty",
+      "workflow": "location",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "location-name-null-r1",
+      "case_id": "location-name-null",
+      "workflow": "location",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-min_stock_amount-null-r1",
+      "case_id": "product-min_stock_amount-null",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-qu_id_purchase-negative-r1",
+      "case_id": "product-qu_id_purchase-negative",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-min_stock_amount-omitted-r1",
+      "case_id": "product-min_stock_amount-omitted",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-location_id-negative-r1",
+      "case_id": "product-location_id-negative",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-min_stock_amount-at-r1",
+      "case_id": "product-min_stock_amount-at",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-qu_id_stock-omitted-r1",
+      "case_id": "product-qu_id_stock-omitted",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-min_stock_amount-above-r1",
+      "case_id": "product-min_stock_amount-above",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-qu_id_price-omitted-r1",
+      "case_id": "product-qu_id_price-omitted",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-min_stock_amount-below-r1",
+      "case_id": "product-min_stock_amount-below",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-qu_id_stock-negative-r1",
+      "case_id": "product-qu_id_stock-negative",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "product-location_id-zero-r1",
+      "case_id": "product-location_id-zero",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "product-qu_id_price-missing-positive-r1",
+      "case_id": "product-qu_id_price-missing-positive",
+      "workflow": "product",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-category_id-missing-positive-r1",
+      "case_id": "task-category_id-missing-positive",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-name-empty-r1",
+      "case_id": "task-name-empty",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-assigned_to_user_id-negative-r1",
+      "case_id": "task-assigned_to_user_id-negative",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-name-null-r1",
+      "case_id": "task-name-null",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-category_id-null-r1",
+      "case_id": "task-category_id-null",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-name-whitespace-r1",
+      "case_id": "task-name-whitespace",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-category_id-omitted-r1",
+      "case_id": "task-category_id-omitted",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-name-omitted-r1",
+      "case_id": "task-name-omitted",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-assigned_to_user_id-null-r1",
+      "case_id": "task-assigned_to_user_id-null",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-category_id-zero-r1",
+      "case_id": "task-category_id-zero",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "task-assigned_to_user_id-zero-r1",
+      "case_id": "task-assigned_to_user_id-zero",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "task-assigned_to_user_id-missing-positive-r1",
+      "case_id": "task-assigned_to_user_id-missing-positive",
+      "workflow": "task",
+      "cohort": "boundary",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/grocy_case_v1.mjs": "2ea31457c315f1c56e88956f9e3ac73b048ac94c65a931f447d84cf70e75f37a",
+    "scripts/extension/run_grocy_cases_v1.py": "4d23fcb132fd281269040542cc51dc6551859fc530b90ba722d7dcd89c81746c",
+    "scripts/extension/run_grocy_batch_v1.py": "fd17bd8e34607fde3ebd7f67acd8eff3ac2d6a485543be244b7d64a8289ea0cf",
+    "scripts/extension/grocy_actor_v1.php": "eade7e96e17fdc370a5c6de2e88a7f4ea918329c6c3e185fe349e49eb1754d45",
+    ".github/workflows/grocy_cases_v1.yml": "60fc9cc346f60966361e1f72c5ced36b2cc3d5c5e191f28f32c3a7fe68d19d34",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd"
+  },
+  "seed_policy": "Retain seeded rows in fresh pinned images. Capture complete initial target and prerequisite collections, excluding only generated row_created_timestamp from paired business-state comparison. Require identical projected seed collections across independently reset branches; fixture names must not collide. Ordinary qualification establishes concrete seed inventories before scientific case registration.",
+  "qualification_sha256": {
+    "manifests/grocy-candidate-inventory-v1.json": "66cb37c6faf781c55f1a98b1ad9b4b9094e83ee66a1c5ce877bfc865dce2a60a",
+    "manifests/grocy-extension-controls-attempt3-v1.json": "5a2ebbd3814edfec0520018fc37b68e775152feef7c8952c88347cc19ae3f2b6",
+    "manifests/grocy-extension-probes-attempt1-v1.json": "82fa548289045bf43942f47f912bf7d3c44eec39a71ab2e190b59aa2ed5dd7db"
+  },
+  "execution_authorized": true,
+  "cases": [
+    {
+      "id": "location-valid-1",
+      "workflow": "location",
+      "payload": {
+        "name": "Ordinary location",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "location-valid-2",
+      "workflow": "location",
+      "payload": {
+        "name": "Second location",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "location-valid-3",
+      "workflow": "location",
+      "payload": {
+        "name": "Valid location 3",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "location-valid-4",
+      "workflow": "location",
+      "payload": {
+        "name": "Valid location 4",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "product-valid-1",
+      "workflow": "product",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "product-valid-2",
+      "workflow": "product",
+      "payload": {
+        "name": "Second product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 1,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "product-valid-3",
+      "workflow": "product",
+      "payload": {
+        "name": "Valid product 3",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 2,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "product-valid-4",
+      "workflow": "product",
+      "payload": {
+        "name": "Valid product 4",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 3,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "task-valid-1",
+      "workflow": "task",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "task-valid-2",
+      "workflow": "task",
+      "payload": {
+        "name": "Second task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "task-valid-3",
+      "workflow": "task",
+      "payload": {
+        "name": "Valid task 3",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "task-valid-4",
+      "workflow": "task",
+      "payload": {
+        "name": "Valid task 4",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "location-name-whitespace",
+      "workflow": "location",
+      "field": "name",
+      "variant": "whitespace",
+      "family": "required_name",
+      "payload": {
+        "name": "   ",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "location-name-omitted",
+      "workflow": "location",
+      "field": "name",
+      "variant": "omitted",
+      "family": "required_name",
+      "payload": {
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "location-name-empty",
+      "workflow": "location",
+      "field": "name",
+      "variant": "empty",
+      "family": "required_name",
+      "payload": {
+        "name": "",
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "location-name-null",
+      "workflow": "location",
+      "field": "name",
+      "variant": "null",
+      "family": "required_name",
+      "payload": {
+        "name": null,
+        "description": "Original description",
+        "active": 1,
+        "is_freezer": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-min_stock_amount-null",
+      "workflow": "product",
+      "field": "min_stock_amount",
+      "variant": "null",
+      "family": "numeric_minimum",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": null,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-qu_id_purchase-negative",
+      "workflow": "product",
+      "field": "qu_id_purchase",
+      "variant": "negative",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": -1,
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-min_stock_amount-omitted",
+      "workflow": "product",
+      "field": "min_stock_amount",
+      "variant": "omitted",
+      "family": "numeric_minimum",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible_after_default"
+    },
+    {
+      "id": "product-location_id-negative",
+      "workflow": "product",
+      "field": "location_id",
+      "variant": "negative",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": -1,
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-min_stock_amount-at",
+      "workflow": "product",
+      "field": "min_stock_amount",
+      "variant": "at",
+      "family": "numeric_minimum",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "product-qu_id_stock-omitted",
+      "workflow": "product",
+      "field": "qu_id_stock",
+      "variant": "omitted",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-min_stock_amount-above",
+      "workflow": "product",
+      "field": "min_stock_amount",
+      "variant": "above",
+      "family": "numeric_minimum",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 1,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "product-qu_id_price-omitted",
+      "workflow": "product",
+      "field": "qu_id_price",
+      "variant": "omitted",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-min_stock_amount-below",
+      "workflow": "product",
+      "field": "min_stock_amount",
+      "variant": "below",
+      "family": "numeric_minimum",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": -1,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-qu_id_stock-negative",
+      "workflow": "product",
+      "field": "qu_id_stock",
+      "variant": "negative",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": -1,
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-location_id-zero",
+      "workflow": "product",
+      "field": "location_id",
+      "variant": "zero",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": 0,
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": "$fixture:unit",
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "product-qu_id_price-missing-positive",
+      "workflow": "product",
+      "field": "qu_id_price",
+      "variant": "missing-positive",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary product",
+        "description": "Original description",
+        "active": 1,
+        "location_id": "$fixture:location",
+        "qu_id_purchase": "$fixture:unit",
+        "qu_id_stock": "$fixture:unit",
+        "qu_id_consume": "$fixture:unit",
+        "qu_id_price": 2147483647,
+        "min_stock_amount": 0,
+        "default_best_before_days": 0,
+        "calories": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-category_id-missing-positive",
+      "workflow": "task",
+      "field": "category_id",
+      "variant": "missing-positive",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": 2147483647,
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-name-empty",
+      "workflow": "task",
+      "field": "name",
+      "variant": "empty",
+      "family": "required_name",
+      "payload": {
+        "name": "",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-assigned_to_user_id-negative",
+      "workflow": "task",
+      "field": "assigned_to_user_id",
+      "variant": "negative",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": -1
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-name-null",
+      "workflow": "task",
+      "field": "name",
+      "variant": "null",
+      "family": "required_name",
+      "payload": {
+        "name": null,
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-category_id-null",
+      "workflow": "task",
+      "field": "category_id",
+      "variant": "null",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": null,
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible_absence"
+    },
+    {
+      "id": "task-name-whitespace",
+      "workflow": "task",
+      "field": "name",
+      "variant": "whitespace",
+      "family": "required_name",
+      "payload": {
+        "name": "   ",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible"
+    },
+    {
+      "id": "task-category_id-omitted",
+      "workflow": "task",
+      "field": "category_id",
+      "variant": "omitted",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "compatible_absence"
+    },
+    {
+      "id": "task-name-omitted",
+      "workflow": "task",
+      "field": "name",
+      "variant": "omitted",
+      "family": "required_name",
+      "payload": {
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-assigned_to_user_id-null",
+      "workflow": "task",
+      "field": "assigned_to_user_id",
+      "variant": "null",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": null
+      },
+      "native_constraint_prediction": "compatible_absence"
+    },
+    {
+      "id": "task-category_id-zero",
+      "workflow": "task",
+      "field": "category_id",
+      "variant": "zero",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": 0,
+        "assigned_to_user_id": "$actor"
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-assigned_to_user_id-zero",
+      "workflow": "task",
+      "field": "assigned_to_user_id",
+      "variant": "zero",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": 0
+      },
+      "native_constraint_prediction": "violation"
+    },
+    {
+      "id": "task-assigned_to_user_id-missing-positive",
+      "workflow": "task",
+      "field": "assigned_to_user_id",
+      "variant": "missing-positive",
+      "family": "reference",
+      "payload": {
+        "name": "Ordinary task",
+        "description": "Original description",
+        "due_date": "2027-01-15",
+        "done": 0,
+        "category_id": "$fixture:category",
+        "assigned_to_user_id": 2147483647
+      },
+      "native_constraint_prediction": "violation"
+    }
+  ],
+  "batches": [
+    {
+      "id": "valid-0",
+      "unit_ids": [
+        "location-valid-1-r1",
+        "location-valid-2-r1",
+        "location-valid-3-r1",
+        "location-valid-4-r1"
+      ],
+      "cohort": "valid_control"
+    },
+    {
+      "id": "valid-1",
+      "unit_ids": [
+        "product-valid-1-r1",
+        "product-valid-2-r1",
+        "product-valid-3-r1",
+        "product-valid-4-r1"
+      ],
+      "cohort": "valid_control"
+    },
+    {
+      "id": "valid-2",
+      "unit_ids": [
+        "task-valid-1-r1",
+        "task-valid-2-r1",
+        "task-valid-3-r1",
+        "task-valid-4-r1"
+      ],
+      "cohort": "valid_control"
+    },
+    {
+      "id": "boundary-0",
+      "unit_ids": [
+        "location-name-whitespace-r1",
+        "location-name-omitted-r1",
+        "location-name-empty-r1",
+        "location-name-null-r1"
+      ],
+      "cohort": "boundary"
+    },
+    {
+      "id": "boundary-1",
+      "unit_ids": [
+        "product-min_stock_amount-null-r1",
+        "product-qu_id_purchase-negative-r1",
+        "product-min_stock_amount-omitted-r1",
+        "product-location_id-negative-r1"
+      ],
+      "cohort": "boundary"
+    },
+    {
+      "id": "boundary-2",
+      "unit_ids": [
+        "product-min_stock_amount-at-r1",
+        "product-qu_id_stock-omitted-r1",
+        "product-min_stock_amount-above-r1",
+        "product-qu_id_price-omitted-r1"
+      ],
+      "cohort": "boundary"
+    },
+    {
+      "id": "boundary-3",
+      "unit_ids": [
+        "product-min_stock_amount-below-r1",
+        "product-qu_id_stock-negative-r1",
+        "product-location_id-zero-r1",
+        "product-qu_id_price-missing-positive-r1"
+      ],
+      "cohort": "boundary"
+    },
+    {
+      "id": "boundary-4",
+      "unit_ids": [
+        "task-category_id-missing-positive-r1",
+        "task-name-empty-r1",
+        "task-assigned_to_user_id-negative-r1",
+        "task-name-null-r1"
+      ],
+      "cohort": "boundary"
+    },
+    {
+      "id": "boundary-5",
+      "unit_ids": [
+        "task-category_id-null-r1",
+        "task-name-whitespace-r1",
+        "task-category_id-omitted-r1",
+        "task-name-omitted-r1"
+      ],
+      "cohort": "boundary"
+    },
+    {
+      "id": "boundary-6",
+      "unit_ids": [
+        "task-assigned_to_user_id-null-r1",
+        "task-category_id-zero-r1",
+        "task-assigned_to_user_id-zero-r1",
+        "task-assigned_to_user_id-missing-positive-r1"
+      ],
+      "cohort": "boundary"
+    }
+  ],
+  "persisted_contracts": {
+    "location": {
+      "name": {
+        "type": "string",
+        "nullable": false
+      }
+    },
+    "product": {
+      "name": {
+        "type": "string",
+        "nullable": false
+      },
+      "min_stock_amount": {
+        "type": "number",
+        "minimum": 0,
+        "nullable": false
+      },
+      "location_id": {
+        "type": "integer",
+        "nullable": false
+      },
+      "default_consume_location_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "qu_id_purchase": {
+        "type": "integer",
+        "nullable": false
+      },
+      "qu_id_stock": {
+        "type": "integer",
+        "nullable": false
+      },
+      "qu_id_consume": {
+        "type": "integer",
+        "nullable": true
+      },
+      "qu_id_price": {
+        "type": "integer",
+        "nullable": true
+      },
+      "product_group_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "shopping_location_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "parent_product_id": {
+        "type": "integer",
+        "nullable": true
+      }
+    },
+    "task": {
+      "name": {
+        "type": "string",
+        "nullable": false
+      },
+      "category_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "assigned_to_user_id": {
+        "type": "integer",
+        "nullable": true
+      }
+    }
+  },
+  "contract_scope": "Calibrated persisted business rules for names, numeric stock minimum and reference IDs. Nullability uses pinned database declarations, not UI required flags. This is not complete OpenAPI validation; the OpenAPI has incomplete properties and contradictory nullable examples. Complete persisted-field preservation is checked independently of this targeted contract baseline.",
+  "native_representation": "Null text/select values display as empty. Checkbox 1 maps to checked. Missing referenced options are retained as representation discrepancies and do not prevent attempted unrelated native editing. Only absent/ambiguous bound widgets are adapter errors. Failed native validation requires invalid form/field flags, actual save click, no target request during 1500ms observation and unchanged persisted record.",
+  "repeat_rule": "Repeat every channel difference, preservation discrepancy, execution uncertainty, shared contract/reference signal or native representation discrepancy twice with its original workflow valid control, each from fresh resets. Repeats are correlated, not additional mechanisms.",
+  "execution_bound": {
+    "initial_pairs": 40,
+    "initial_batches": 10,
+    "max_parallel_app_jobs": 3,
+    "minutes_per_job": 20,
+    "initial_runner_minute_cap": 200,
+    "max_repeat_pairs": 112,
+    "max_total_pairs": 152,
+    "max_total_runner_minutes": 760,
+    "cash_budget_ceiling_usd": 100,
+    "paid_model_calls": 0,
+    "runner": "standard public GitHub hosted",
+    "valid_control_gate": "All twelve exact-executor valid controls must be clean with no contract/reference/representation signals before boundary jobs start."
+  }
+}
