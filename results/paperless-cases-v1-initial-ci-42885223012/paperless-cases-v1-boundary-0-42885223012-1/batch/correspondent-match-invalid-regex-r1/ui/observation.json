@@ -1,0 +1,77 @@
+{
+  "kind": "paperless_finite_case_v1",
+  "case_id": "correspondent-match-invalid-regex",
+  "prefix_status": "rejected_without_visible_write",
+  "continuation": "not_attempted",
+  "workflow": "correspondent",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/correspondents/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.06623303400000001
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "POST",
+      "path": "/api/correspondents/",
+      "body": {
+        "name": "Ordinary correspondent",
+        "match": "[",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "owner": 2
+      },
+      "status": 400,
+      "response": {
+        "match": [
+          "Invalid regular expression, see log for details."
+        ]
+      },
+      "elapsed_s": 0.020367081
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/correspondents/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.02554238400000001
+    }
+  ],
+  "forms": [],
+  "timing": {
+    "producer_s": 0.021202877999999998
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "resource_count": 0,
+    "version": "3.4.2"
+  },
+  "immediate_status": 400,
+  "collection_after_rejection": {
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": []
+  },
+  "browser_cleanup_confirmed": true
+}

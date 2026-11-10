@@ -1,0 +1,373 @@
+{
+  "kind": "paperless_finite_case_v1",
+  "case_id": "correspondent-match-length-255",
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "workflow": "correspondent",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/correspondents/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.06477862000000001
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "POST",
+      "path": "/api/correspondents/",
+      "body": {
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      },
+      "status": 201,
+      "response": {
+        "id": 1,
+        "slug": "ordinary-correspondent",
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2,
+        "user_can_change": true
+      },
+      "elapsed_s": 0.027212973000000005
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/correspondents/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "slug": "ordinary-correspondent",
+        "name": "Ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "document_count": 0,
+        "last_correspondence": null,
+        "owner": 2,
+        "user_can_change": true
+      },
+      "elapsed_s": 0.02472224200000001
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/correspondents/1/",
+      "body": {
+        "id": 1,
+        "slug": "ordinary-correspondent",
+        "name": "Renamed ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "document_count": 0,
+        "last_correspondence": null,
+        "owner": 2,
+        "permissions": {
+          "view": {
+            "users": [],
+            "groups": []
+          },
+          "change": {
+            "users": [],
+            "groups": []
+          }
+        },
+        "permissions_form": {
+          "owner": 2,
+          "set_permissions": {
+            "view": {
+              "users": [],
+              "groups": []
+            },
+            "change": {
+              "users": [],
+              "groups": []
+            }
+          }
+        },
+        "set_permissions": {
+          "view": {
+            "users": [],
+            "groups": []
+          },
+          "change": {
+            "users": [],
+            "groups": []
+          }
+        }
+      },
+      "accept": "application/json; version=10",
+      "status": 200
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/correspondents/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "slug": "renamed-ordinary-correspondent",
+        "name": "Renamed ordinary correspondent",
+        "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "document_count": 0,
+        "last_correspondence": null,
+        "owner": 2,
+        "user_can_change": true
+      },
+      "elapsed_s": 0.029461369999999987
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "displayed": true,
+          "value": "Ordinary correspondent",
+          "expected": "Ordinary correspondent",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "match",
+          "count": 1,
+          "displayed": true,
+          "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "matching_algorithm",
+          "count": 1,
+          "displayed": true,
+          "value": "Any: Document contains any of these words (space separated)",
+          "expected": "Any: Document contains any of these words (space separated)",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label",
+          "agrees": true,
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_insensitive",
+          "count": 1,
+          "displayed": true,
+          "value": true,
+          "expected": true,
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "displayed": true,
+          "value": "Renamed ordinary correspondent",
+          "expected": "Renamed ordinary correspondent",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "match",
+          "count": 1,
+          "displayed": true,
+          "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "matching_algorithm",
+          "count": 1,
+          "displayed": true,
+          "value": "Any: Document contains any of these words (space separated)",
+          "expected": "Any: Document contains any of these words (space separated)",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label",
+          "agrees": true,
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_insensitive",
+          "count": 1,
+          "displayed": true,
+          "value": true,
+          "expected": true,
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "displayed": true,
+          "value": "Renamed ordinary correspondent",
+          "expected": "Renamed ordinary correspondent",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "match",
+          "count": 1,
+          "displayed": true,
+          "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "matching_algorithm",
+          "count": 1,
+          "displayed": true,
+          "value": "Any: Document contains any of these words (space separated)",
+          "expected": "Any: Document contains any of these words (space separated)",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label",
+          "agrees": true,
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_insensitive",
+          "count": 1,
+          "displayed": true,
+          "value": true,
+          "expected": true,
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "producer_s": 0.02835437900000001,
+    "native_auth_setup_s": 1.289428119,
+    "continuation_s": 1.714205638
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "resource_count": 0,
+    "version": "3.4.2"
+  },
+  "immediate_status": 201,
+  "prefix": {
+    "name": "Ordinary correspondent",
+    "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "matching_algorithm": 1,
+    "is_insensitive": true,
+    "owner": 2
+  },
+  "resource_id": 1,
+  "immediate_schema": {
+    "has_integer_identity": true,
+    "business_fields_present": true,
+    "response_matches_readback": true
+  },
+  "response_contract_violations": [],
+  "producer_input_differences": {},
+  "final": {
+    "name": "Renamed ordinary correspondent",
+    "match": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "matching_algorithm": 1,
+    "is_insensitive": true,
+    "owner": 2
+  },
+  "browser_cleanup_confirmed": true
+}

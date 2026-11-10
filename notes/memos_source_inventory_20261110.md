@@ -23,3 +23,11 @@ Keep the protocol's memos and editable user preferences. The GENERAL preference 
 ## Qualification still required
 
 Inspect pinned creation/update helpers, preference defaults/fallbacks, route constants, actual transport (native RPC versus REST), instance version endpoint, actor bootstrap and UI editor bindings. Register two independently reset ordinary pairs per eligible workflow with reversed order. Record raw responses and native values before assertions. No Memos boundary inputs or normalization policy are frozen by this note, and no API/UI difference is an experimental finding yet.
+
+## Additional transport and setup inspection
+
+`web/src/connect.ts` configures Connect RPC with `useBinaryFormat: true`, at the application origin. Native saves therefore cannot be observed by assuming a REST PATCH with JSON. Preserve the actual request bytes, decode against pinned protobuf field definitions, and qualify that decoding against both ordinary payloads and persisted readback. Do not switch the application's transport to simplify measurement.
+
+`proto/api/instance_service.proto` exposes `/api/instance/profile` with version, build commit, demo flag and needs_setup. `web/src/router/routes.ts` resolves auth to `/auth` and settings to `/setting`; `pages/Setting.tsx` selects its section from the hash. `PasswordSignInForm.tsx` and `CredentialFields.tsx` identify `#signin-username`, `#signin-password` and the form submit button. All authentication RPCs must remain outside retained request traces.
+
+`server/api/memo_create_helpers.go` validates audience and placement, checks content quota, rebuilds the memo payload, and resolves attachments and relations before mutation. It does not itself establish the complete content-validity contract; quota and payload helper behavior remain dependencies to inspect. In particular, the UI's trimmed-content rule must not be labeled API-absent merely because it is not visible in this helper.

@@ -1,0 +1,77 @@
+{
+  "kind": "paperless_finite_case_v1",
+  "case_id": "document-type-match-null",
+  "prefix_status": "rejected_without_visible_write",
+  "continuation": "not_attempted",
+  "workflow": "document-type",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/document_types/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.06724510600000001
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "POST",
+      "path": "/api/document_types/",
+      "body": {
+        "name": "Ordinary document-type",
+        "match": null,
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      },
+      "status": 400,
+      "response": {
+        "match": [
+          "This field may not be null."
+        ]
+      },
+      "elapsed_s": 0.02071063199999999
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/document_types/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.030561515000000015
+    }
+  ],
+  "forms": [],
+  "timing": {
+    "producer_s": 0.021364537
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "resource_count": 0,
+    "version": "3.4.2"
+  },
+  "immediate_status": 400,
+  "collection_after_rejection": {
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": []
+  },
+  "browser_cleanup_confirmed": true
+}
