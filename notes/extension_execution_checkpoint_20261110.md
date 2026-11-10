@@ -53,3 +53,13 @@ Registered v2 observer/controller/verifier and grocy-extension-controls-v2.json 
 Node/Python syntax and workflow-context checks passed before dispatch. No v1 runtime or registry has been rewritten.
 
 Grocy v2 dispatched as run 42889952089 at 3c6264b7e26a9bda02bebed134f992eb74a24b1a. Next: download grocy-controls-v2-* artifacts after completion and run verify_grocy_controls_v2.py; preserve any failures before corrections. No other manual application workflow is queued.
+
+## Grocy v2 qualified; synthetic probes and exploratory full-record signal
+
+Run 42889952089 passed all four location/product pairs and twelve native views. Together with two v1 task pairs, all three workflows have ordinary controls over their declared fields. Proof manifests/grocy-extension-controls-attempt2-v1.json and full raw archive are committed. Ten synthetic probes dispatched as run 42890678349, source 2654c7f517fc14c017f4452e27e325aea455a964. No other manual workflow is pending. Retrieve grocy-probes-v1-* and verify_grocy_probes_v1.py when finished.
+
+A subsequent full raw-record audit found product calories null→1 during native rename in both product repetitions; both API branches kept null. The original ten-field product assertion omitted calories, so those successful scoped controls cannot be represented as full-record preservation. Independent audit script and manifest preserve all twelve successful ordinary branches and their full changed-field sets. This is explicitly an exploratory, post-hoc qualification observation, not a new registered boundary discovery. Do not hide it or count it as an independent mechanism multiple times.
+
+Pinned product form passes nullable calories to an optional numberpicker; numberpicker sets value=1 when isset(value) is false. This supplies a candidate mechanism, not a settled requirement/defect claim. Next scientific preparation must qualify full persisted-field preservation and full-record API PUT, select an explicit interior energy value for ordinary controls, and retain separate replication/counterfactual tests of the already-exposed null behavior. Any prospective generator must disclose this exposure and apply its fixed family selection rule, rather than preferentially selecting the observed failure.
+
+Native product PUT also emits many fields beyond the ten supplied producer values. The qualified raw GET lists 38 keys including identity, timestamp and userfields; inspect those before defining writable versus preserved fields. Initial seeds: Fridge id2; units Piece id2 and Pack id3. Product fixtures create location3/unit4. Scientific reference baseline must independently check referenced-object existence, shared with native checks. Q1 readiness remains unestablished.
