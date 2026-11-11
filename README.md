@@ -2,7 +2,13 @@
 
 ## Current status, 11 November 2026
 
-The active study now uses independently selected API inputs. Its [registered protocol](protocol/independent-input-extension-v1.md) fixes six new continuation-workflow candidates in four previously exposed applications. Pinned live API schemas have been captured and verified. Before inspecting the new frontend rules, the [input inventory](manifests/independent-api-input-inventory-v1.json) freezes 44 selected schema-compatible inputs and20ordinary controls across five candidate workflows, retaining11unselected inputs. Grocy shopping lists are excluded for missing object-schema coverage. Native qualification and scientific execution remain pending; these are preparation counts, not new findings. Workflow-level generalization must not be represented as untouched-application validation.
+The independently selected API-input study is complete. Its finite schedule contains **44 scientific paired executions** across three qualified workflows in previously exposed applications: 28 initial sampled inputs, 12 initial valid controls and four followup pairs. The initial sampled inputs yielded 24 clean pairs, three producer rejections and one channel difference covered by the shared baseline. There were **zero additional native-only detections and zero confirmed natural defects**. Three of the six candidate workflows were excluded before scientific execution; a Paperless owner-fixture correction is disclosed. This is not untouched-application validation.
+
+[Independent-input summary](manifests/independent-input-summary-v1.json) · [Evidence review](notes/independent_input_evidence_review_20261111.md)
+
+Separate historical calibrations now reproduce one known Tiller mechanism in 12 executions and one known Iris mechanism in 24 executions. The Iris four-cell intervention separates adapter and backend remedies and retains intended-clear controls. These outcome-selected development cases establish replay feasibility and causal evidence, not new-defect discovery or independent detector efficacy. **A Q1-level contribution remains unestablished.** Their counts are not pooled with the independent-input study.
+
+[Tiller calibration](notes/write_preservation_calibration_results_20261111.md) · [Iris component results](notes/iris_write_preservation_results_20261111.md) · [Prior-art scope verification](notes/write_preservation_prior_art_verification_20261111.md)
 
 The original registered experiments and selected repetitions are complete. The corrected Quartz collection covers 22 cases: 14 clean observations, five matching rejections, three unresolved policy cases, and zero eligible check mismatches. Eight original Quartz measurements remain invalid. One original eligible UI-only PetClinic check mismatch remains, observed in three repetitions; repeats are not independent defects.
 
@@ -47,7 +53,7 @@ Private source repository: [shravaniparsi/mixed-interface-study](https://github.
 
 The question is whether substituting API operations for native UI operations preserves the ability to complete a web workflow, and whether tests that track interface-specific dependencies find failures efficiently. The proposed contribution remains under evaluation.
 
-## Current development findings
+## Historical development findings
 
 The expanded source-guided batch covers **7 workflow templates, 44 case variants and 86 independently reset replay branches** across the two applications. It reproduces one known PetClinic UI compatibility blocker and one RealWorld returned-identifier defect. The PetClinic API edit passes while the corresponding UI edit is disabled; the RealWorld failure is detected by both API and UI continuations. Diagnostic repeats and controls are stored separately.
 
@@ -55,7 +61,7 @@ The expanded source-guided batch covers **7 workflow templates, 44 case variants
 
 These are exploratory development results. Server errors, unresolved whitespace policies and shared preflight failures are kept separate from the two reproduced findings. No selector-effectiveness or agent experiment has run, and no previously unknown fault has been established.
 
-## Runtime integration and third application
+## Historical runtime integration and third application
 
 The 18-case generated RealWorld pool now executes through a measured-budget controller. A complete integration batch includes 18 validations, eight cost-calibration controls and nine sessions on a common 20.696-second budget. Across sessions, 105 workers started, 96 completed in budget and nine were interrupted; no late feedback was credited. Earlier incomplete attempts are retained. This is execution/accounting verification, not selector-effectiveness evidence.
 

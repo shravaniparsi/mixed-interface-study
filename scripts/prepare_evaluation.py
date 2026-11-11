@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/iris-component-git-blobs-v1.json',
+    'manifests/iris-write-preservation-results-v1.json',
+    'manifests/iris-write-preservation-cost-v1.json',
     'manifests/iris-write-preservation-calibration-v1.json',
     'manifests/write-preservation-calibration-results-v2.json',
     'manifests/write-preservation-calibration-cost-v1.json',
