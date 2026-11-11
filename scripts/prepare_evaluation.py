@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/independent-gitea-repo-initial-results-v1.json',
+    'manifests/independent-input-summary-v1.json',
+    'manifests/independent-input-cost-v1.json',
     'manifests/independent-gitea-repo-execution-v1.json',
     'manifests/independent-gitea-repo-probe-results-v1.json',
     'manifests/independent-gitea-repo-probes-v1.json',

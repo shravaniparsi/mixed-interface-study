@@ -1,0 +1,103 @@
+{
+  "kind": "gitea_ordinary_control_v1",
+  "workflow": "gitea.repository_settings",
+  "channel": "ui",
+  "case_id": "gitea.repository_settings:default_branch:ordinary",
+  "prefix_status": "rejected_without_visible_write",
+  "continuation": "not_attempted",
+  "status": "observed",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/version",
+      "status": 200,
+      "response": {
+        "version": "28.3.0"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user",
+      "status": 200,
+      "response": {
+        "id": 2,
+        "login": "study-actor",
+        "type": "User",
+        "login_name": "",
+        "source_id": 0,
+        "full_name": "",
+        "email": "study-actor@example.invalid",
+        "avatar_url": "http://127.0.0.1:18080/avatars/23d4788dc5f8f84391b30dae5d960f579b32c51726cc10335c0e5b6e4e72327f",
+        "html_url": "http://127.0.0.1:18080/study-actor",
+        "language": "en-US",
+        "is_admin": false,
+        "last_login": "2026-11-11T18:17:11Z",
+        "created": "2026-11-11T18:17:11Z",
+        "restricted": false,
+        "active": true,
+        "prohibit_login": false,
+        "location": "",
+        "website": "",
+        "description": "",
+        "visibility": "public",
+        "followers_count": 0,
+        "following_count": 0,
+        "starred_repos_count": 0,
+        "username": "study-actor"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/repos",
+      "status": 200,
+      "response": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/user/repos",
+      "body": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": "Study value"
+      },
+      "status": 422,
+      "response": {
+        "message": "[DefaultBranch]: GitRefName",
+        "url": "http://127.0.0.1:18080/api/swagger"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/repos",
+      "status": 200,
+      "response": []
+    }
+  ],
+  "forms": [],
+  "native_requests": [],
+  "authentication_setup_ms": 746.631488,
+  "instance": {
+    "version": "28.3.0"
+  },
+  "actor": {
+    "id": 2,
+    "login": "study-actor",
+    "is_admin": false
+  },
+  "initial_business_state": {
+    "actor": {
+      "id": 2,
+      "login": "study-actor",
+      "is_admin": false
+    },
+    "resources": []
+  },
+  "producer_status": 422,
+  "collection_unchanged": true,
+  "browser_cleanup_confirmed": true
+}

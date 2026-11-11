@@ -144,12 +144,14 @@ jobs:
         run: python scripts/prepare_corpus_review_v4.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v4.log"
       - name: Verify reconciled corpus readiness
         run: python scripts/prepare_corpus_review_v2.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v2.log"
+      - name: Reconstruct complete independent-input evidence
+        run: python scripts/extension/build_independent_input_summary_v1.py --verify
       - name: Pure Node adapter tests
         run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
       - name: Syntax checks
         run: |
           python -m compileall -q src scripts tests
-          for file in scripts/*.mjs scripts/ci/*.mjs; do node --check "$file"; done
+          for file in scripts/*.mjs scripts/ci/*.mjs scripts/extension/*.mjs; do node --check "$file"; done
           for file in scripts/ci/*.sh; do bash -n "$file"; done
       - name: Retain unit evidence
         if: ${{ always() }}
