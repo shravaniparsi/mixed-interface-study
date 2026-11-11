@@ -79,8 +79,8 @@
   ],
   "source_sha256": {
     "scripts/extension/run_independent_gitea_repo_controls_v1.py": "7a28713d618dd1896b75d34bd77b215f275b67b8b39f20604d8b418503e911e9",
-    "scripts/extension/independent_gitea_repo_control_v1.mjs": "ebf78b6d7ded36e3e6b7edcbff2fe4daabeee5cddc5f251a707428824ee1f3e2",
-    "scripts/extension/verify_independent_gitea_repo_controls_v1.py": "393d25bfedb254f69b4c543be9d7f9d1abcaaf95e5e24e461c43b1c4f0d7fbe1",
+    "scripts/extension/independent_gitea_repo_control_v1.mjs": "addaf490da0011c4a7a34d25da72ec3d9b4c43064858794e285437b56e2c18be",
+    "scripts/extension/verify_independent_gitea_repo_controls_v1.py": "f302ba9ebcba160758cc8bff6f1db0f83eccb1c30a902e4b62417912a360e359",
     ".github/workflows/independent_gitea_repo_controls_v1.yml": "25c6592a3efcc8ddd9f5346db7339f74dcfa60c75fb5c5ff8abecdb1729bddf1",
     "scripts/extension/gitea_form_wire_v1.mjs": "7a5684841af3b6fa7a2c8a0a99e38b5c7d6324f65156805b7508b9248a8cc8ab",
     "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
@@ -95,5 +95,6 @@
     "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007"
   },
   "scope": "Two frozen ordinary repository description-edit pairs; authenticate both channels before creation. The API sends all four fields written by the native basic-settings action and readback preserves the complete repository JSON except updated_at.",
-  "api_operation_binding": "PATCH /repos/{owner}/{repo} changes only supplied fields. The native action=update handler writes Name, Description, Website and IsTemplate; send all four corresponding fields in the API comparator. Private, default branch and trust settings are preserved and independently checked in full readback."
+  "api_operation_binding": "PATCH /repos/{owner}/{repo} changes only supplied fields. The native action=update handler writes Name, Description, Website and IsTemplate; send all four corresponding fields in the API comparator. Private, default branch and trust settings are preserved and independently checked in full readback.",
+  "shared_metadata_oracle": "Repository GET omits trust_model. Both branches additionally read the signing-settings radio state before and after their edit using the authenticated browser; observations and read time are separate. This is a shared read-only metadata measurement, not an API-only observable. No API-only completeness claim is made for this field."
 }

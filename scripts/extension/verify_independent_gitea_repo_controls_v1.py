@@ -30,6 +30,7 @@ def qualify(o,s):
         for form,values in zip(o['forms'],[before,expected,expected]):
             for f in s['native_fields']:
                 found=[x for x in form['fields'] if x['name']==f['field']];need(len(found)==1 and found[0]['selector']==f['selector'] and found[0]['value']==values[f['field']],'Native measurement')
+    shared=o['shared_state_observations'];need([x['phase'] for x in shared]==['before','after'],'Shared metadata measurements');need(all(x['path']=='/'+raw['full_name']+'/settings' and x['trust_model']==s['payload']['trust_model'] and [v['value'] for v in x['options'] if v['checked']]==[x['trust_model']] for x in shared),'Trust setting preservation');need(shared[0]['options']==shared[1]['options'],'Trust setting options');
     a=dict(after);b=dict(expected);a.pop('updated_at',None);b.pop('updated_at',None);need(a==b,'Complete record preservation');need(business(before)==o['prefix_business'] and business(after)==o['final_business'],'Reset comparison');return True
 
 def build(root):

@@ -21,6 +21,8 @@ try{
  const initial=await api('GET','/api/v1/user/repos');assert.deepEqual(initial,[]);result.initial_business_state={actor:result.actor,resources:initial};
  const created=await api('POST','/api/v1/user/repos',spec.payload,201);assert.equal(created.owner.id,actor.id);assert.equal(created.full_name,'study-actor/study-repo');target='/api/v1/repos/'+created.full_name;
  result.prefix=await api('GET',target);result.prefix_business=business(result.prefix);await save();const p=result.prefix,expected={...p,description:spec.edit_value},body=Object.fromEntries(spec.fields.map(k=>[k,expected[k]]));assert.ok(spec.fields.every(k=>Object.hasOwn(p,k)));
+ async function sharedState(phase){const start=performance.now(),path='/'+created.full_name+'/settings';await page.goto(base+path);const loc=page.locator('input[name=trust_model]:checked');assert.equal(await loc.count(),1);const value=await loc.inputValue(),options=await page.locator('input[name=trust_model]').evaluateAll(nodes=>nodes.map(e=>({id:e.id,value:e.value,checked:e.checked})));const state={phase,path,trust_model:value,options,measurement_ms:performance.now()-start};result.shared_state_observations??=[];result.shared_state_observations.push(state);await save();return value}
+ const trustBefore=await sharedState('before');assert.equal(trustBefore,spec.payload.trust_model);
  if(a.channel==='api')await api('PATCH',target,body,200);
  else{
   const editPath='/'+created.full_name+'/settings';const scope=()=>page.locator('form').filter({has:page.locator('input[name=action][value=update]')});
@@ -32,7 +34,7 @@ try{
   const submitted=new URLSearchParams(result.native_requests[0].form_entries);assert.equal(submitted.get('action'),'update');assert.equal(submitted.get('description'),spec.edit_value);assert.equal(submitted.get('repo_name'),p.name);assert.equal(submitted.get('website'),p.website);assert.equal(submitted.has('template'),p.template);
   await page.waitForLoadState('domcontentloaded');await open();matches(await snapshot('fresh_final'),expected);
  }
- result.final=await api('GET',target);result.final_business=business(result.final);await save();assert.deepEqual(preserved(result.final),preserved(expected));result.status='ordinary_control_passed';
+ result.final=await api('GET',target);result.final_business=business(result.final);await save();const trustAfter=await sharedState('after');assert.equal(trustAfter,trustBefore);assert.deepEqual(preserved(result.final),preserved(expected));result.status='ordinary_control_passed';
 }catch(e){result.error={name:e.name,message:redact(e.message)};if(target)try{result.final=await api('GET',target);result.final_business=business(result.final)}catch(readError){result.final_read_error=redact(readError.message)}}
 finally{if(browser)try{await browser.close();result.browser_cleanup_confirmed=true}catch(e){result.browser_cleanup_confirmed=false}else result.browser_cleanup_confirmed=true;await save()}
 process.exitCode=result.status==='ordinary_control_passed'?0:1;
