@@ -1,0 +1,7 @@
+# One platform retry after zero-job startup failure
+
+Run 43096414710 attempt 1, at registered commit b137f849a95b28adf0013c3d0a36458dbb819920, ended with startup_failure and zero jobs. The public run-page annotation states: "An unexpected error has occurred and we've been automatically notified." It suggests trying again for a potentially temporary error and gives request ID b19496ca-de0f-11f1-81bf-c25b949b401d. The CLI's generic suggestion of a workflow-file issue is not the specific diagnosis. Run and job metadata are preserved; no scientific observation exists.
+
+Permit one deliberate platform retry via `gh run rerun 43096414710`, preserving the exact registered commit and workflow. This is an explicit exception to the original no-retry default for a failure before any application job was created. No test outcome has been observed and no test is selected for repetition. It does not consume or enlarge the additional application correction-job allowance: the same initial three jobs remain capped at 75 minutes, and total application jobs remain at most four and 100 minutes. Count all eventual started jobs across attempts. Zero paid model calls.
+
+No second platform retry is permitted under this addendum. If the second attempt also fails before allocation, preserve it and diagnose the external blocker; do not alter runners, tests or services merely to obtain a successful result. This addendum is written after the terminal startup failure and before the deliberate retry.

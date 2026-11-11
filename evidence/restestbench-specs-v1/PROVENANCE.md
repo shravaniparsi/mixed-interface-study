@@ -1,0 +1,1 @@
+These unchanged API specifications come from casablancahotelsoftware/RESTestBench commit 4decc1e36ea3dd41b64ce3e3ac6a85bc72df36ae. Source paths and Git blobs are in pins.json. All three blobs were checked against GitHub contents metadata. Upstream license: ../restestbench-source-v1/LICENSE. No specifications were generated or modified by this study.
