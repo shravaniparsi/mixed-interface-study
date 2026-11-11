@@ -1,6 +1,8 @@
 # Mixed-interface workflow testing
 
-## Current status, 10 November 2026
+## Current status, 11 November 2026
+
+The active study now uses independently selected API inputs. Its [registered protocol](protocol/independent-input-extension-v1.md) fixes six new continuation-workflow candidates in four previously exposed applications. Pinned live API schemas have been captured and verified. Before inspecting the new frontend rules, the [input inventory](manifests/independent-api-input-inventory-v1.json) freezes 44 selected schema-compatible inputs and20ordinary controls across five candidate workflows, retaining11unselected inputs. Grocy shopping lists are excluded for missing object-schema coverage. Native qualification and scientific execution remain pending; these are preparation counts, not new findings. Workflow-level generalization must not be represented as untouched-application validation.
 
 The original registered experiments and selected repetitions are complete. The corrected Quartz collection covers 22 cases: 14 clean observations, five matching rejections, three unresolved policy cases, and zero eligible check mismatches. Eight original Quartz measurements remain invalid. One original eligible UI-only PetClinic check mismatch remains, observed in three repetitions; repeats are not independent defects.
 
