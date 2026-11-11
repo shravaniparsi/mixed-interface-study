@@ -1,0 +1,114 @@
+name: Fast Dash cascade calibration v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  environment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      requirements: ${{ steps.freeze.outputs.requirements }}
+      lock_sha256: ${{ steps.freeze.outputs.lock_sha256 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: dkedar7/fast_dash
+          ref: b2a27d5075f9fb6f042681e2eb72ca1587122983
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12.16'
+      - name: Resolve one shared environment
+        run: |
+          mkdir -p "$RUNNER_TEMP/fastdash-environment"
+          python - <<'PYDEP'
+          import pathlib, tomllib
+          dependencies = tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['dependencies']
+          pathlib.Path('/tmp/fastdash-requested.txt').write_text('\n'.join(dependencies + ['dash==4.4.1', 'mcp==2.0.0', 'jsonschema==4.23.0']) + '\n')
+          PYDEP
+          python -m pip install -r /tmp/fastdash-requested.txt > "$RUNNER_TEMP/fastdash-environment/install.log" 2>&1
+      - name: Freeze dependency versions before execution
+        id: freeze
+        run: |
+          python - <<'PY'
+          import base64, hashlib, os, pathlib, re, subprocess, sys
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'fastdash-environment'
+          raw = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze', '--all'], text=True)
+          (root / 'full-freeze.txt').write_text(raw)
+          selected = []
+          for line in raw.splitlines():
+              name = re.split(r'==| @ ', line, maxsplit=1)[0].lower().replace('_', '-')
+              assert re.fullmatch(r'[A-Za-z0-9_.-]+==[^ ]+', line), line
+              selected.append(line)
+          value = ('\n'.join(sorted(selected)) + '\n').encode()
+          (root / 'requirements.txt').write_bytes(value)
+          (root / 'python.txt').write_text(sys.version)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              stream.write('requirements=' + base64.b64encode(value).decode() + '\n')
+              stream.write('lock_sha256=' + hashlib.sha256(value).hexdigest() + '\n')
+          PY
+      - name: Retain environment attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: fastdash-write-environment-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/fastdash-environment/
+          retention-days: 7
+          if-no-files-found: error
+  calibration:
+    needs: environment
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - version: historical
+            ref: b2a27d5075f9fb6f042681e2eb72ca1587122983
+          - version: fixed
+            ref: d1172129268042725a8bca517175799ed9860989
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      STUDY_VERSION: ${{ matrix.version }}
+      STUDY_LOCK_B64: ${{ needs.environment.outputs.requirements }}
+      STUDY_LOCK_SHA256: ${{ needs.environment.outputs.lock_sha256 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: dkedar7/fast_dash
+          ref: ${{ matrix.ref }}
+          path: upstream-fastdash
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12.16'
+      - name: Install shared frozen dependencies
+        run: |
+          mkdir -p "$RUNNER_TEMP/fastdash-install"
+          python - <<'PY'
+          import base64, hashlib, os, pathlib
+          value = base64.b64decode(os.environ['STUDY_LOCK_B64'], validate=True)
+          assert hashlib.sha256(value).hexdigest() == os.environ['STUDY_LOCK_SHA256']
+          (pathlib.Path(os.environ['RUNNER_TEMP']) / 'fastdash-install/requirements.txt').write_bytes(value)
+          PY
+          python -m pip install --no-deps -r "$RUNNER_TEMP/fastdash-install/requirements.txt" > "$RUNNER_TEMP/fastdash-install/install.log" 2>&1
+      - name: Execute frozen cascade cases
+        run: python scripts/extension/run_fastdash_cascade_v1.py --version "$STUDY_VERSION" --source upstream-fastdash --lock "$RUNNER_TEMP/fastdash-install/requirements.txt" --output "$RUNNER_TEMP/fastdash-calibration"
+      - name: Retain cell attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: fastdash-write-calibration-v1-${{ matrix.version }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/fastdash-calibration/
+            ${{ runner.temp }}/fastdash-install/
+          retention-days: 7
+          if-no-files-found: error
