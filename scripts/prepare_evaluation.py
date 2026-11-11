@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/vikunja-bulk-calibration-v2.json',
     'manifests/vikunja-bulk-calibration-v1.json',
     'manifests/write-frame-development-v1.json',
     'manifests/iris-component-git-blobs-v1.json',
