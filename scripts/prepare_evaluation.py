@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/independent-paperless-storage-inputs-v2.json',
+    'manifests/independent-paperless-storage-probe-results-v1.json',
     'manifests/independent-grocy-category-followup-execution-v1.json',
     'manifests/independent-grocy-category-initial-results-v1.json',
     'manifests/independent-vikunja-filter-controls-v1.json',

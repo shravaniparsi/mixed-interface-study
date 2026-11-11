@@ -1,0 +1,9 @@
+# Storage-path identity correction before sampled execution
+
+The original input inventory requires the separate nonadmin Paperless actor to have primary key 1. Both qualified storage-path control pairs instead established actor ID 2. Their observer used the actual authenticated actor ID, so those controls establish ordinary editor behavior but do not establish the original numerical fixture assumption. No storage-path scientific sampled input has run.
+
+The original inventory remains immutable. Its storage-path subgroup is unexecuted because the assumed fixture identity was not realized. A separately identified `storage_fixture_corrected_v2` subgroup changes only the ordinary owner's numerical ID from 1 to the observed 2. Null and omission mutations, other payload values, fields, selected mutation identifiers, ordering and the four ordinary controls remain unchanged. The runtime must assert the actor is nonadmin and has ID 2; it must not overwrite owner mutations with the authenticated actor ID.
+
+This correction occurs after inspecting the native editor and observing ordinary controls. It is therefore explicitly a post-qualification fixture correction, not a new blinded sample or an untouched holdout. The registered protocol permits a correction only as a new cohort with the original preserved. The deterministic correction builder retains parent hashes and all four ordinary branch observations. No extra candidate or repeat is added, and the existing budget and fixed repeat schedule apply. Report the original unexecuted subgroup and corrected subgroup separately; never count them as independent workflows or double the input denominator.
+
+The storage-path negative probe also qualified: clearing its path through native controls yielded an HTTP 400 validation response and preserved the previously saved record. This is adapter calibration, not an independently sampled application finding.
