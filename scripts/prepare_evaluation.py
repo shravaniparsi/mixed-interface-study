@@ -29,6 +29,7 @@ SOURCES = {
 }
 ARTIFACTS = [
     'manifests/gitea-controls-v3.json',
+    'manifests/independent-grocy-category-controls-v1.json',
     'manifests/independent-input-selection-v1.json',
     'manifests/independent-api-capture-v1.json',
     'manifests/independent-api-capture-v2.json',
