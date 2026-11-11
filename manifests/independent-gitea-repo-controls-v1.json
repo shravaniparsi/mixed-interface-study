@@ -1,0 +1,97 @@
+{
+  "kind": "independent_gitea_repo_controls_v1",
+  "version": "28.3.0",
+  "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+  "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+  "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+  "environment": {
+    "GITEA__database__DB_TYPE": "sqlite3",
+    "GITEA__security__INSTALL_LOCK": "true",
+    "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+    "GITEA__server__DISABLE_SSH": "true"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_job_minutes": 25,
+  "maximum_parallel_jobs": 3,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "repo-r1",
+      "workflow": "repository_settings",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-r2",
+      "workflow": "repository_settings",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "edit_value": "Edited ordinary description",
+      "fields": [
+        "name",
+        "description",
+        "website",
+        "template"
+      ],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "input[name=repo_name]",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "textarea[name=description]",
+          "kind": "text"
+        },
+        {
+          "field": "website",
+          "selector": "input[name=website]",
+          "kind": "text"
+        },
+        {
+          "field": "template",
+          "selector": "input[name=template]",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_independent_gitea_repo_controls_v1.py": "7a28713d618dd1896b75d34bd77b215f275b67b8b39f20604d8b418503e911e9",
+    "scripts/extension/independent_gitea_repo_control_v1.mjs": "ebf78b6d7ded36e3e6b7edcbff2fe4daabeee5cddc5f251a707428824ee1f3e2",
+    "scripts/extension/verify_independent_gitea_repo_controls_v1.py": "a4bf6ea4fc062ad75603fcccbb26b74c243750e11b1ea86c7e7e07ac89f04c72",
+    ".github/workflows/independent_gitea_repo_controls_v1.yml": "25c6592a3efcc8ddd9f5346db7339f74dcfa60c75fb5c5ff8abecdb1729bddf1",
+    "scripts/extension/gitea_form_wire_v1.mjs": "7a5684841af3b6fa7a2c8a0a99e38b5c7d6324f65156805b7508b9248a8cc8ab",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "evidence/independent-native-v1/gitea/routers/web/repo/setting/setting.go": "fb877ab6c18657f0b23b6dbff2cdee5ade179dde164ba2ab7e9312167677362e",
+    "evidence/independent-native-v1/gitea/templates/repo/settings/options.tmpl": "5be7f84db79beb22e7357c5c41d52179763995133d0477e2703831775cd4b55a"
+  },
+  "qualification_sha256": {
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007"
+  },
+  "scope": "Two frozen ordinary repository description-edit pairs; authenticate both channels before creation. The API sends all four fields written by the native basic-settings action and readback preserves the complete repository JSON except updated_at."
+}
