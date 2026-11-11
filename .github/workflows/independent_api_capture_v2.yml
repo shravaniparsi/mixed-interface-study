@@ -1,0 +1,38 @@
+name: Independent API schema capture v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        app: [grocy]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      APP: ${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12.16'
+      - name: Capture pinned API schema
+        run: timeout --signal=TERM --kill-after=90s 1000s python scripts/extension/capture_independent_api_schemas_v2.py --app "$APP" --output "$RUNNER_TEMP/api-schema"
+      - name: Retain every attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: independent-api-schema-v2-${{ matrix.app }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/api-schema/
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: true

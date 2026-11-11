@@ -1,0 +1,31 @@
+{
+  "kind": "independent_api_capture_v2",
+  "applications": {
+    "grocy": {
+      "version": "4.7.1",
+      "source_commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+      "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+      "image_id": "sha256:80a50f603077d272c0c215ed0667a106d3c652a30a322ec1dfe64f34d31f80b1",
+      "prior_registry": "manifests/grocy-execution-v1.json",
+      "prior_registry_sha256": "4f8c8ddceb838009975f2f3b813f3fae8c0e6bb5ea9c35beaf7784a055c48bb3",
+      "environment": {
+        "TZ": "UTC"
+      },
+      "port": 80,
+      "ready_path": "/login",
+      "schema_path": "/api/openapi/specification"
+    }
+  },
+  "source_sha256": {
+    "scripts/extension/capture_independent_api_schemas_v2.py": "0095ee82185547cf07891db31527c6e77e1446b61167db9c9f9acddb44e29e49",
+    "scripts/extension/grocy_actor_v1.php": "eade7e96e17fdc370a5c6de2e88a7f4ea918329c6c3e185fe349e49eb1754d45",
+    ".github/workflows/independent_api_capture_v2.yml": "0a5045627a0776c6d8a85e8fe12b956856dbbc28c3c58391ddd98540a8087ad2",
+    "manifests/independent-input-selection-v1.json": "4feb7311b00ca8134a7a516877cbc1902e18d4c0c1c0c9059601b325526c5237",
+    "protocol/independent-input-extension-v1.md": "7a3c2806cf3e350f7638260ca4af5038c3f1f7c63f379979b1f0d202e13a09d5"
+  },
+  "candidate_resource_writes_authorized": false,
+  "frontend_reads_authorized": false,
+  "paid_model_calls": 0,
+  "maximum_parallel_jobs": 3,
+  "reason": "Grocy resolves exposed-entity API schema references dynamically in backend DocumentationSpec; capture actual generated API without reading frontend."
+}
