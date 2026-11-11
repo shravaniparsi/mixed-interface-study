@@ -10,6 +10,8 @@ Separate historical calibrations now reproduce one known Tiller mechanism in 12 
 
 [Tiller calibration](notes/write_preservation_calibration_results_20261111.md) · [Iris component results](notes/iris_write_preservation_results_20261111.md) · [Prior-art scope verification](notes/write_preservation_prior_art_verification_20261111.md)
 
+The [shared write-frame export](manifests/write-frame-development-v1.json) reconstructs all 36 historical executions with one baseline implementation. Contracts remain manual; this is development reconstruction, not independent efficacy. The [bounded next cohort](protocol/write-contract-corpus-expansion-v1.md) fixes four additional historical leads and stopping rules; the [contribution review](notes/write_contract_benchmark_scope_20261111.md) records the remaining benchmark-utility question.
+
 The original registered experiments and selected repetitions are complete. The corrected Quartz collection covers 22 cases: 14 clean observations, five matching rejections, three unresolved policy cases, and zero eligible check mismatches. Eight original Quartz measurements remain invalid. One original eligible UI-only PetClinic check mismatch remains, observed in three repetitions; repeats are not independent defects.
 
 [Completed results and evidence](notes/registered_experiments_complete_20261110.md) · [Machine-readable completion](manifests/experiment-completion-v3.json)
