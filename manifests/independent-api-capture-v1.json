@@ -1,0 +1,69 @@
+{
+  "kind": "independent_api_capture_v1",
+  "applications": {
+    "paperless": {
+      "version": "3.4.2",
+      "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+      "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+      "image_id": "sha256:1135cf639679fb573eabf9af76d87dc1a74868f5830291ae3287e5c6992aedc5",
+      "prior_registry": "manifests/paperless-execution-v1.json",
+      "prior_registry_sha256": "103644ea7c116c740394890d552a1a5457089d4893832d2177d28dfa5fd033c2",
+      "environment": {
+        "PAPERLESS_REDIS": "redis://broker:6379",
+        "PAPERLESS_DBENGINE": "sqlite",
+        "PAPERLESS_URL": "http://127.0.0.1:18080",
+        "PAPERLESS_OCR_LANGUAGE": "eng",
+        "PAPERLESS_TIME_ZONE": "UTC",
+        "PAPERLESS_TASK_WORKERS": "1"
+      },
+      "broker_image": "valkey/valkey@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b",
+      "port": 8000,
+      "ready_path": "/accounts/login/",
+      "schema_path": "/api/schema/?format=json"
+    },
+    "vikunja": {
+      "version": "v2.8.0",
+      "source_commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+      "image": "vikunja/vikunja@sha256:35d937baf3b5d5803bed6b9e11d007448b7b536df9e4346dc35551e1072636c3",
+      "image_id": "sha256:a5e3816da40bbb9bab752ff1efc2067008b8d1397238e8f2ffb91170514d7786",
+      "prior_registry": "manifests/vikunja-execution-v1.json",
+      "prior_registry_sha256": "1a864b301d251a91939c7c83eb705527e1c44214e17b1b537e17896d9595050b",
+      "environment": {
+        "VIKUNJA_DATABASE_TYPE": "sqlite",
+        "VIKUNJA_DATABASE_PATH": "/tmp/study-vikunja.db",
+        "VIKUNJA_SERVICE_PUBLICURL": "http://127.0.0.1:18080/",
+        "VIKUNJA_FILES_BASEPATH": "/tmp/study-files"
+      },
+      "port": 3456,
+      "ready_path": "/api/v2/info",
+      "schema_path": "/api/v2/openapi.json"
+    },
+    "gitea": {
+      "version": "28.3.0",
+      "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+      "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+      "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+      "prior_registry": "manifests/gitea-execution-v1.json",
+      "prior_registry_sha256": "09bcfb08a81adf6987ebb3031f8ef6e05b98eb2c1fec419fbbed575f3aad2410",
+      "environment": {
+        "GITEA__database__DB_TYPE": "sqlite3",
+        "GITEA__security__INSTALL_LOCK": "true",
+        "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+        "GITEA__server__DISABLE_SSH": "true"
+      },
+      "port": 3000,
+      "ready_path": "/api/v1/version",
+      "schema_path": "/swagger.v1.json"
+    }
+  },
+  "source_sha256": {
+    "scripts/extension/capture_independent_api_schemas_v1.py": "33c8bd4957e8483bb0f95ab6856e01a857281d1ef9e23e9de4fad3764159a8bf",
+    ".github/workflows/independent_api_capture_v1.yml": "4018b50b8536d167c893583af657b47a49553c2a25e65cd5b445877af92907db",
+    "manifests/independent-input-selection-v1.json": "4feb7311b00ca8134a7a516877cbc1902e18d4c0c1c0c9059601b325526c5237",
+    "protocol/independent-input-extension-v1.md": "7a3c2806cf3e350f7638260ca4af5038c3f1f7c63f379979b1f0d202e13a09d5"
+  },
+  "candidate_resource_writes_authorized": false,
+  "frontend_reads_authorized": false,
+  "paid_model_calls": 0,
+  "maximum_parallel_jobs": 3
+}
