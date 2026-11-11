@@ -156,6 +156,10 @@ jobs:
           python scripts/extension/build_iris_write_cost_v1.py --verify
       - name: Verify common write-frame development export
         run: python scripts/extension/build_write_frame_development_v1.py --verify
+      - name: Verify unqualified Vikunja attempts and cost
+        run: |
+          python scripts/extension/verify_vikunja_bulk_exclusion_v1.py --verify
+          python scripts/extension/build_vikunja_bulk_cost_v1.py --verify
       - name: Pure Node adapter tests
         run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
       - name: Syntax checks
