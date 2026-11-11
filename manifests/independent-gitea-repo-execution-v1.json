@@ -1,0 +1,539 @@
+{
+  "kind": "independent_gitea_repo_execution_v1",
+  "version": "28.3.0",
+  "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+  "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+  "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+  "environment": {
+    "GITEA__database__DB_TYPE": "sqlite3",
+    "GITEA__security__INSTALL_LOCK": "true",
+    "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+    "GITEA__server__DISABLE_SSH": "true"
+  },
+  "maximum_job_minutes": 25,
+  "maximum_parallel_jobs": 3,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "repo-valid-1",
+      "case_id": "gitea.repository_settings:valid:1",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-valid-2",
+      "case_id": "gitea.repository_settings:valid:2",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-valid-3",
+      "case_id": "gitea.repository_settings:valid:3",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-valid-4",
+      "case_id": "gitea.repository_settings:valid:4",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-sample-1",
+      "case_id": "gitea.repository_settings:auto_init:true",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-sample-2",
+      "case_id": "gitea.repository_settings:default_branch:ordinary",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-sample-3",
+      "case_id": "gitea.repository_settings:name:short",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-sample-4",
+      "case_id": "gitea.repository_settings:object_format_name:enum-1",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-sample-5",
+      "case_id": "gitea.repository_settings:private:omitted",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-sample-6",
+      "case_id": "gitea.repository_settings:template:omitted",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-sample-7",
+      "case_id": "gitea.repository_settings:trust_model:omitted",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-sample-8",
+      "case_id": "gitea.repository_settings:auto_init:omitted",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-sample-9",
+      "case_id": "gitea.repository_settings:default_branch:empty",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-sample-10",
+      "case_id": "gitea.repository_settings:name:empty",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "repo-sample-11",
+      "case_id": "gitea.repository_settings:object_format_name:omitted",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "repo-sample-12",
+      "case_id": "gitea.repository_settings:private:false",
+      "workflow": "gitea.repository_settings",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "edit_value": "Edited ordinary description",
+      "fields": [
+        "name",
+        "description",
+        "website",
+        "template"
+      ],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "input[name=repo_name]",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "textarea[name=description]",
+          "kind": "text"
+        },
+        {
+          "field": "website",
+          "selector": "input[name=website]",
+          "kind": "text"
+        },
+        {
+          "field": "template",
+          "selector": "input[name=template]",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/independent_gitea_repo_case_v1.mjs": "52b5f4a292e846fd52e6e2c70210c954296b0251ce59cca4e521ef7e024b4e90",
+    "scripts/extension/run_independent_gitea_repo_cases_v1.py": "46002819cb95e64e05c72c17f2909bc3ac552848f193854cb12000d2be5b4b4d",
+    "scripts/extension/run_independent_gitea_repo_batch_v1.py": "1063eb353834f4e12daab76d82e69a3e874c5b33fdbecda29c88109fb2bc8afd",
+    "scripts/extension/verify_independent_gitea_repo_cases_v1.py": "349ccacf60b406b46450d5059e3004f1d136787fe532c4e2fc305d0028368b4f",
+    ".github/workflows/independent_gitea_repo_cases_v1.yml": "c446ab2cbe53f8326dc748747ce6a39ac36b26f9ac14e18a4a4197c7e09f9f08",
+    "scripts/extension/gitea_form_wire_v1.mjs": "7a5684841af3b6fa7a2c8a0a99e38b5c7d6324f65156805b7508b9248a8cc8ab",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "evidence/independent-native-v1/gitea/routers/web/repo/setting/setting.go": "fb877ab6c18657f0b23b6dbff2cdee5ade179dde164ba2ab7e9312167677362e",
+    "evidence/independent-native-v1/gitea/routers/api/v1/repo/repo.go": "6ee1b807fd274f618d81f3506f40afec24e4b5e09995b1a81485102df7a54fde",
+    "evidence/independent-native-v1/gitea/templates/repo/settings/options.tmpl": "5be7f84db79beb22e7357c5c41d52179763995133d0477e2703831775cd4b55a"
+  },
+  "qualification_sha256": {
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007",
+    "manifests/independent-gitea-repo-probe-results-v1.json": "b88df3c52c354fe3d71131fe043aa1e3528762f7bcd6bfa3fb00a26775608a64",
+    "manifests/independent-gitea-repo-attempt1-v1.json": "f514c719e4bb5429c4728c783732ec8b4a5260c7d97273c5f71dce083771f461",
+    "protocol/independent-input-extension-v1.md": "7a3c2806cf3e350f7638260ca4af5038c3f1f7c63f379979b1f0d202e13a09d5"
+  },
+  "scope": "Twelve fixed API-schema-selected repository inputs plus four frozen ordinary controls. Native basic-settings action and API projection cover the same four writable fields; complete API readback and a separately timed shared trust-model measurement cover preserved state.",
+  "api_operation_binding": "PATCH /repos/{owner}/{repo} changes only supplied fields. The native action=update handler writes Name, Description, Website and IsTemplate; send all four corresponding fields in the API comparator. Private, default branch and trust settings are preserved and independently checked in full readback.",
+  "shared_metadata_oracle": "Repository GET omits trust_model. Both branches additionally read the signing-settings radio state before and after their edit using the authenticated browser; observations and read time are separate. This is a shared read-only metadata measurement, not an API-only observable. No API-only completeness claim is made for this field.",
+  "cases": [
+    {
+      "id": "gitea.repository_settings:valid:1",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:valid:2",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:valid:3",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:valid:4",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:auto_init:true",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": true,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:ordinary",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": "Study value"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:name:short",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "x",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:object_format_name:enum-1",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha256",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:private:omitted",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:template:omitted",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:omitted",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:auto_init:omitted",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:empty",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": ""
+      }
+    },
+    {
+      "id": "gitea.repository_settings:name:empty",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:object_format_name:omitted",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "trust_model": "default"
+      }
+    },
+    {
+      "id": "gitea.repository_settings:private:false",
+      "workflow": "gitea.repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": false,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      }
+    }
+  ],
+  "batches": [
+    {
+      "id": "valid-0",
+      "unit_ids": [
+        "repo-valid-1",
+        "repo-valid-2"
+      ]
+    },
+    {
+      "id": "valid-1",
+      "unit_ids": [
+        "repo-valid-3",
+        "repo-valid-4"
+      ]
+    },
+    {
+      "id": "sample-0",
+      "unit_ids": [
+        "repo-sample-1",
+        "repo-sample-2"
+      ]
+    },
+    {
+      "id": "sample-1",
+      "unit_ids": [
+        "repo-sample-3",
+        "repo-sample-4"
+      ]
+    },
+    {
+      "id": "sample-2",
+      "unit_ids": [
+        "repo-sample-5",
+        "repo-sample-6"
+      ]
+    },
+    {
+      "id": "sample-3",
+      "unit_ids": [
+        "repo-sample-7",
+        "repo-sample-8"
+      ]
+    },
+    {
+      "id": "sample-4",
+      "unit_ids": [
+        "repo-sample-9",
+        "repo-sample-10"
+      ]
+    },
+    {
+      "id": "sample-5",
+      "unit_ids": [
+        "repo-sample-11",
+        "repo-sample-12"
+      ]
+    }
+  ],
+  "execution_authorized": true,
+  "trust_models": [
+    "default",
+    "collaborator",
+    "committer",
+    "collaboratorcommitter"
+  ],
+  "execution_bound": {
+    "initial_pairs": 16,
+    "maximum_followup_pairs": 64
+  },
+  "repeat_rule": "Two repeats of each discrepancy/unresolved/shared alert, with linked original controls; reverse order on first repeat.",
+  "shared_constraint_scope": "Name nonempty; description and website declared native length limits; template boolean and enumerated signing trust model. API rejection and readback semantics are credited independently. Shared trust-model read is explicitly outside the API-only observable fields."
+}
