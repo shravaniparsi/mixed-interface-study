@@ -1,0 +1,129 @@
+name: TestPlanIt tag calibration v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  calibration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: tpi_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U user" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+      valkey:
+        image: valkey/valkey:8-alpine
+        ports:
+          - 6377:6379
+      elasticsearch:
+        image: elasticsearch:9.0.3
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: 'false'
+          ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+        ports:
+          - 9221:9200
+    env:
+      DATABASE_URL: postgresql://user:password@localhost:5433/tpi_test?schema=public
+      VALKEY_URL: redis://localhost:6377
+      ELASTICSEARCH_NODE: http://localhost:9221
+      NEXTAUTH_URL: http://127.0.0.1:3002
+      NEXTAUTH_SECRET: study-disposable-ci-secret
+      ENCRYPTION_KEY: study-disposable-encryption-key32
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_NAME: Study Administrator
+      ADMIN_PASSWORD: study-disposable-password
+      NODE_OPTIONS: --max-old-space-size=6144
+      SKIP_ENV_VALIDATION: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: TestPlanIt/testplanit
+          ref: 294b646af84ca8a7543fa37366e0b84437cd5c4a
+          path: upstream-testplanit
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24'
+      - name: Record sources and install pinned package manager
+        run: |
+          mkdir -p "$RUNNER_TEMP/testplanit-evidence/source"
+          git -C upstream-testplanit fetch --depth=1 origin 8b10df16fd4d6d629ed5c18882d9bbdc1a67a066
+          test "$(git -C upstream-testplanit rev-parse HEAD:pnpm-lock.yaml)" = 49a753c7e410f6530742e891bf1e6f27139b045b
+          test "$(git -C upstream-testplanit rev-parse 8b10df16fd4d6d629ed5c18882d9bbdc1a67a066:pnpm-lock.yaml)" = 49a753c7e410f6530742e891bf1e6f27139b045b
+          cp upstream-testplanit/LICENSE.md "$RUNNER_TEMP/testplanit-evidence/source/"
+          cp upstream-testplanit/pnpm-lock.yaml "$RUNNER_TEMP/testplanit-evidence/source/"
+          cp upstream-testplanit/packages/mcp-server/src/tools/cases/update.ts "$RUNNER_TEMP/testplanit-evidence/source/update-historical.ts"
+          git -C upstream-testplanit show 8b10df16fd4d6d629ed5c18882d9bbdc1a67a066:packages/mcp-server/src/tools/cases/update.ts > "$RUNNER_TEMP/testplanit-evidence/source/update-fixed.ts"
+          git -C upstream-testplanit diff HEAD 8b10df16fd4d6d629ed5c18882d9bbdc1a67a066 --stat > "$RUNNER_TEMP/testplanit-evidence/source/repair-stat.txt"
+          cp scripts/extension/testplanit_fixture_v1.ts upstream-testplanit/testplanit/scripts/study_fixture_v1.ts
+          cp scripts/extension/observe_testplanit_tags_v1.ts upstream-testplanit/packages/mcp-server/study_observer_v1.ts
+          npm install --global pnpm@11.25.0
+          node --version > "$RUNNER_TEMP/testplanit-evidence/node.txt"
+          pnpm --version > "$RUNNER_TEMP/testplanit-evidence/pnpm.txt"
+      - name: Install host and adapter dependencies
+        timeout-minutes: 6
+        working-directory: upstream-testplanit
+        run: pnpm --filter testplanit --filter @testplanit/mcp-server --filter @testplanit/api install --frozen-lockfile > "$RUNNER_TEMP/testplanit-evidence/install.log" 2>&1
+      - name: Prepare actual host database
+        timeout-minutes: 3
+        working-directory: upstream-testplanit/testplanit
+        run: |
+          pnpm exec zenstack migrate deploy --schema schema.zmodel > "$RUNNER_TEMP/testplanit-evidence/migrate.log" 2>&1
+          pnpm triggers:apply > "$RUNNER_TEMP/testplanit-evidence/triggers.log" 2>&1
+          pnpm exec tsx db/seed.ts > "$RUNNER_TEMP/testplanit-evidence/seed.log" 2>&1
+          pnpm exec tsx scripts/study_fixture_v1.ts setup "$RUNNER_TEMP/testplanit-fixture.json"
+      - name: Start host and warm read-only routes
+        timeout-minutes: 2
+        working-directory: upstream-testplanit/testplanit
+        run: |
+          pnpm exec next dev --hostname 127.0.0.1 --port 3002 > "$RUNNER_TEMP/testplanit-evidence/host.log" 2>&1 &
+          python3 - <<'PY'
+          import json, os, time, urllib.request, urllib.error
+          f = json.load(open(os.environ['RUNNER_TEMP'] + '/testplanit-fixture.json'))
+          for path in ['/api/model/repositoryCases/findMany?q=%7B%22take%22%3A1%7D', '/api/repository/cases/' + str(f['template']['id']) + '/versions']:
+              for attempt in range(30):
+                  try:
+                      request = urllib.request.Request('http://127.0.0.1:3002' + path, headers={'Authorization': 'Bearer ' + f['token']})
+                      with urllib.request.urlopen(request, timeout=60) as response:
+                          response.read()
+                      break
+                  except urllib.error.HTTPError as error:
+                      if path.endswith('/versions') and error.code == 405:
+                          break  # POST-only route compiled; this is not a successful scientific read.
+                      raise
+                  except urllib.error.URLError:
+                      if attempt == 29: raise
+                      time.sleep(1)
+          PY
+      - name: Execute historical and fixed adapter cases on same host
+        timeout-minutes: 3
+        run: |
+          export STUDY_HOST="$GITHUB_WORKSPACE/upstream-testplanit/testplanit"
+          cd upstream-testplanit/packages/mcp-server
+          pnpm exec tsx study_observer_v1.ts historical "$RUNNER_TEMP/testplanit-evidence/historical" "$RUNNER_TEMP/testplanit-fixture.json" "$STUDY_HOST"
+          cp "$RUNNER_TEMP/testplanit-evidence/source/update-fixed.ts" src/tools/cases/update.ts
+          pnpm exec tsx study_observer_v1.ts fixed "$RUNNER_TEMP/testplanit-evidence/fixed" "$RUNNER_TEMP/testplanit-fixture.json" "$STUDY_HOST"
+      - name: Retain attempt including setup failures
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: testplanit-tags-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/testplanit-evidence/
+          retention-days: 7
+          if-no-files-found: error
