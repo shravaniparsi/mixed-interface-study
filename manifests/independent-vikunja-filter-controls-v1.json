@@ -1,0 +1,85 @@
+{
+  "kind": "independent_vikunja_filter_controls_v1",
+  "version": "v2.8.0",
+  "source_commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+  "image": "vikunja/vikunja@sha256:35d937baf3b5d5803bed6b9e11d007448b7b536df9e4346dc35551e1072636c3",
+  "image_id": "sha256:a5e3816da40bbb9bab752ff1efc2067008b8d1397238e8f2ffb91170514d7786",
+  "environment": {
+    "VIKUNJA_DATABASE_TYPE": "sqlite",
+    "VIKUNJA_DATABASE_PATH": "/tmp/study-vikunja.db",
+    "VIKUNJA_SERVICE_PUBLICURL": "http://127.0.0.1:18080/",
+    "VIKUNJA_FILES_BASEPATH": "/tmp/study-files"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_parallel_jobs": 3,
+  "maximum_job_minutes": 25,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "filter-r1",
+      "workflow": "saved_filter",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "filter-r2",
+      "workflow": "saved_filter",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "saved_filter",
+      "collection": "/api/v2/filters",
+      "initial_collection": "/api/v2/projects",
+      "payload": {
+        "title": "Ordinary saved filter",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "owner_field": "owner",
+      "fields": [
+        "title",
+        "description",
+        "filters",
+        "is_favorite"
+      ],
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "edit_html": "<p>Edited ordinary description</p>",
+      "edit_path": "/projects/{id}/settings/edit",
+      "title_selector": "#Title"
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_independent_vikunja_filter_controls_v1.py": "cdc37eb483ea5453bc6960de605612635660cc9c0d448f823ea0951c4a62d6fd",
+    "scripts/extension/independent_vikunja_filter_control_v1.mjs": "5cecee4521dcaaff2e19924026f2f76e963ea7437d1af06a63a8d75576ce0b6a",
+    "scripts/extension/verify_independent_vikunja_filter_controls_v1.py": "108052963cb303cfc0cca07cbee249e1206cded598aaa916e4189b8357d7106e",
+    ".github/workflows/independent_vikunja_filter_controls_v1.yml": "91ff3275b4dddc06c262fd479ff849adf0acc3ff7882f9dfb80974b40fcb05dd",
+    "scripts/extension/vikunja_fetch_observer_v1.mjs": "2b27e2203ef7256675f66728a331f9cbc1b3121f92a9d6bd5ba21a1ad0ad278d",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "evidence/independent-native-v1/vikunja/frontend/src/composables/useSavedFilter.ts": "06e7c023f90fe505a439b366b4794be9b5bd375477f05f8c737cc1884c571898",
+    "evidence/independent-native-v1/vikunja/frontend/src/components/project/partials/Filters.vue": "e36f263af755cdd770d9eeb3243ae444010bc7713844cfe65eaa5319e47608a2",
+    "evidence/independent-native-v1/vikunja/frontend/src/views/filters/FilterEdit.vue": "40f673e1f1595fc083808dd4a90048291414722fd39d02532fb9578592ff2636",
+    "evidence/independent-native-v1/vikunja/frontend/src/client/queries/projects.ts": "fd20a225799b152c182693a2b93229345ad44993dba7f6196a8e9ba706c7dac1",
+    "evidence/independent-native-v1/vikunja/frontend/src/client/queries/savedFilters.ts": "7393fa777d1082d6031af55c296118af347b3344403dbfc107e48302dd511188",
+    "evidence/independent-native-v1/vikunja/frontend/src/router/index.ts": "09094bede9d8ab21167009bfdeead1cd327284cb48b0921ceccf4c272a6cc3de",
+    "evidence/independent-native-v1/vikunja/pkg/routes/api/v2/saved_filters.go": "685fe4f654dfb921cc1238c948c57bd9575b7b99abc3b7594976ee0a27699d6a"
+  },
+  "qualification_sha256": {
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007"
+  },
+  "scope": "Ordinary frozen saved-filter controls. Exact raw preservation is required; a defaults transformation is retained as unqualified and is not labelled a defect.",
+  "task_encoding": "Frozen plain description edit expressed as one HTML paragraph in both API/native rich-text editors. No producer payload changes. Saved filter native pseudo-project ID is -filter_id-1; no list endpoint exists, so initial project list records reset state."
+}
