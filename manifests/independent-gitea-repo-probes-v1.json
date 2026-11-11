@@ -1,0 +1,96 @@
+{
+  "kind": "independent_gitea_repo_probes_v1",
+  "version": "28.3.0",
+  "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+  "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+  "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+  "environment": {
+    "GITEA__database__DB_TYPE": "sqlite3",
+    "GITEA__security__INSTALL_LOCK": "true",
+    "GITEA__server__ROOT_URL": "http://127.0.0.1:18080/",
+    "GITEA__server__DISABLE_SSH": "true"
+  },
+  "boundary_cases_authorized": false,
+  "maximum_job_minutes": 25,
+  "maximum_parallel_jobs": 3,
+  "paid_model_calls": 0,
+  "units": [
+    {
+      "id": "repo-probe-r1",
+      "workflow": "repository_settings",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "repository_settings",
+      "payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "edit_value": "Edited ordinary description",
+      "fields": [
+        "name",
+        "description",
+        "website",
+        "template"
+      ],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "input[name=repo_name]",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "textarea[name=description]",
+          "kind": "text"
+        },
+        {
+          "field": "website",
+          "selector": "input[name=website]",
+          "kind": "text"
+        },
+        {
+          "field": "template",
+          "selector": "input[name=template]",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_independent_gitea_repo_controls_v1.py": "7a28713d618dd1896b75d34bd77b215f275b67b8b39f20604d8b418503e911e9",
+    "scripts/extension/independent_gitea_repo_control_v1.mjs": "addaf490da0011c4a7a34d25da72ec3d9b4c43064858794e285437b56e2c18be",
+    "scripts/extension/verify_independent_gitea_repo_controls_v1.py": "f302ba9ebcba160758cc8bff6f1db0f83eccb1c30a902e4b62417912a360e359",
+    ".github/workflows/independent_gitea_repo_controls_v1.yml": "25c6592a3efcc8ddd9f5346db7339f74dcfa60c75fb5c5ff8abecdb1729bddf1",
+    "scripts/extension/gitea_form_wire_v1.mjs": "7a5684841af3b6fa7a2c8a0a99e38b5c7d6324f65156805b7508b9248a8cc8ab",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "evidence/independent-native-v1/gitea/routers/web/repo/setting/setting.go": "fb877ab6c18657f0b23b6dbff2cdee5ade179dde164ba2ab7e9312167677362e",
+    "evidence/independent-native-v1/gitea/templates/repo/settings/options.tmpl": "5be7f84db79beb22e7357c5c41d52179763995133d0477e2703831775cd4b55a",
+    "evidence/independent-native-v1/gitea/routers/api/v1/repo/repo.go": "6ee1b807fd274f618d81f3506f40afec24e4b5e09995b1a81485102df7a54fde",
+    "scripts/extension/run_independent_gitea_repo_probes_v1.py": "2a2847950d54c8b8633202cbdf73ccf558359c4bc69e994742858a11aa564b48",
+    "scripts/extension/independent_gitea_repo_probe_v1.mjs": "3ea6d5ad580d41b4d1db31f5692759bb6ba4d541967b7cdea03f291b1866b7c7",
+    "scripts/extension/verify_independent_gitea_repo_probes_v1.py": "de11f6ecaf6207bb6ee8c939204e32a4e559996f7aa267526dc1166841a40f08",
+    ".github/workflows/independent_gitea_repo_probes_v1.yml": "17827142675b57b91f5fde73314f9568e557be2f41459cb8545470787dc53de3"
+  },
+  "qualification_sha256": {
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007",
+    "manifests/independent-gitea-repo-attempt1-v1.json": "f514c719e4bb5429c4728c783732ec8b4a5260c7d97273c5f71dce083771f461"
+  },
+  "scope": "One deliberate native required-name violation followed by the ordinary description edit. Synthetic qualification only.",
+  "api_operation_binding": "PATCH /repos/{owner}/{repo} changes only supplied fields. The native action=update handler writes Name, Description, Website and IsTemplate; send all four corresponding fields in the API comparator. Private, default branch and trust settings are preserved and independently checked in full readback.",
+  "shared_metadata_oracle": "Repository GET omits trust_model. Both branches additionally read the signing-settings radio state before and after their edit using the authenticated browser; observations and read time are separate. This is a shared read-only metadata measurement, not an API-only observable. No API-only completeness claim is made for this field."
+}
