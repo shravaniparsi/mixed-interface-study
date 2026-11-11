@@ -1,0 +1,89 @@
+{
+  "kind": "independent_paperless_custom_controls_v1",
+  "version": "3.4.2",
+  "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+  "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+  "image_id": "sha256:1135cf639679fb573eabf9af76d87dc1a74868f5830291ae3287e5c6992aedc5",
+  "broker_image": "valkey/valkey@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-paperless-42876848117-1/report.json",
+  "deployment_report_sha256": "5fea82ce4a3a04af0f98335ade04113c9878eb1e627eb60c1d4631bf4c84de0d",
+  "scope": "Two frozen ordinary custom-field qualification pairs; metadata changes retained as failed exact preservation, not normalized away or called defects.",
+  "boundary_execution_authorized": false,
+  "workflows": [
+    {
+      "id": "custom_field",
+      "collection": "/api/custom_fields/",
+      "list_path": "/attributes/customfields",
+      "payload": {
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": {}
+      },
+      "fields": [
+        "name",
+        "data_type",
+        "extra_data"
+      ],
+      "edit_field": "name",
+      "edit_value": "Edited ordinary name",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "data_type",
+          "selector": "[formcontrolname=\"data_type\"] .ng-value-label",
+          "kind": "label"
+        }
+      ]
+    }
+  ],
+  "algorithm_labels": {
+    "string": "Text"
+  },
+  "units": [
+    {
+      "id": "custom-r1",
+      "workflow": "custom_field",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "custom-r2",
+      "workflow": "custom_field",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_independent_paperless_custom_controls_v1.py": "3ec9d140ebfcb9655257d8e40de97ffd003e0d29425eae43fab5aed923b50cd7",
+    "scripts/extension/independent_paperless_custom_control_v1.mjs": "cb1a27c3d7c141ec1886ed0f5e235edc9c507d2b3255d89f875bc6cf5a52edb6",
+    "scripts/extension/verify_independent_paperless_custom_controls_v1.py": "ece83d80c14053b442910040dc1c2310bcd911bf5ee34746daebae70604e405d",
+    ".github/workflows/independent_paperless_custom_controls_v1.yml": "a4cf53d07a2f4da6c6643a4df0ea3fa0a234741590b965c55dc63e1900be1b71",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-native-inspection-v1.json": "cedbe4b65585b267ca89df889f3cdaddc86fb572d10f4c4187cfd5d76396f754",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/app-routing.module.ts": "56f26f0c51180f0f1a56260b8c6827ec6ea836a9661aecf41bdacc2199228f5d",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/common/edit-dialog/edit-dialog.component.ts": "f00eeb23d37530e7cceb82a7e341b96c86344d7c4245da1024ae1a0132b16b03",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/common/edit-dialog/storage-path-edit-dialog/storage-path-edit-dialog.component.ts": "cf2e45e875dd93864a5feb61b27337852a26c7097b61cfd9f8ac4b9a20a4cf01",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/common/edit-dialog/storage-path-edit-dialog/storage-path-edit-dialog.component.html": "67ec9ca713a70e4ebc6ae0573ad62db899d3aeff99303c6513998dcb08b4c0bd",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/common/edit-dialog/custom-field-edit-dialog/custom-field-edit-dialog.component.ts": "0d72a5c9ff633a64a57bb9b045d99b8c6061aa3574fa44b393b5d71854fd3a2b",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/common/edit-dialog/custom-field-edit-dialog/custom-field-edit-dialog.component.html": "ddf693512131f2c62cce30d12260f4c120f4e9d3ce1fb44a0cc3eaeb66984520",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/manage/document-attributes/management-list/storage-path-list/storage-path-list.component.ts": "ff4f39284ff73355cb17a02ff6d8bd1273010b0241dfed98541928b71d2b7b82",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/manage/document-attributes/custom-fields/custom-fields.component.html": "fffbb0bf50a5ac2a2dcd55d9981412577e13365cd635ff737263099f6b9895aa",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/components/manage/document-attributes/custom-fields/custom-fields.component.ts": "9512620a31e283685eabd4f0d46c56d5bbd0d7f6a3120aa43c0d2d725fbbaf5a",
+    "evidence/independent-native-v1/paperless/src-ui/src/app/data/custom-field.ts": "746440e68260b077beb7565e6db6a3dfd5c6671bc30a06b86269b50aea98a157"
+  },
+  "input_freeze_commit": "215bf7b"
+}
