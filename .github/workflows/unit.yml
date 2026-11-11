@@ -160,6 +160,10 @@ jobs:
         run: |
           python scripts/extension/verify_vikunja_bulk_exclusion_v1.py --verify
           python scripts/extension/build_vikunja_bulk_cost_v1.py --verify
+      - name: Reconstruct Fast Dash cascade discrepancy
+        run: |
+          python scripts/extension/verify_fastdash_cascade_v2.py --archive results/fastdash-cascade-v1-ci-43088065630 --verify manifests/fastdash-cascade-results-v2.json
+          python scripts/extension/build_fastdash_cascade_cost_v1.py --verify
       - name: Pure Node adapter tests
         run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
       - name: Syntax checks

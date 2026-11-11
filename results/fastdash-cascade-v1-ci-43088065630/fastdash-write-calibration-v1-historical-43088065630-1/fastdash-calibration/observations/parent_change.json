@@ -1,0 +1,1238 @@
+{
+  "case": "parent_change",
+  "status": "observed",
+  "calls": [
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {}
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "resources": {
+              "listChanged": true
+            },
+            "tools": {
+              "listChanged": true
+            }
+          },
+          "serverInfo": {
+            "name": "Plotly Dash",
+            "version": "4.4.1"
+          },
+          "instructions": "This is a Fast Dash app: a Python callback rendered as a web UI, with a live browser session a human may be watching.\n\nUnlike a plain Dash app, this app's tools are STATEFUL -- they drive the running app, and what you do IS reflected in the user's browser (within about 500ms, no reload):\n  - describe_app() -- start here: every input's id, type, default, allowed options and current value, plus the outputs a run produces.\n  - set_input(component_id, value) / set_inputs(inputs) -- set values; the browser's widgets update to match.\n  - invoke(inputs=None) -- set values and run the callback in one call; the output renders in the browser and the result is returned to you.\n  - set_form(specs) -- DynamicDash only: build the input form at runtime.\n\nValues are validated against the contract describe_app() advertises, so you cannot set something the UI itself could not produce."
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/list",
+        "params": {}
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "tools": [
+            {
+              "name": "get_dash_component",
+              "description": "Get a component's properties, values, and tool relationships. If property is omitted, returns all defined properties. If property is specified, returns only that property. See the dash://components resource for available component IDs.",
+              "inputSchema": {
+                "properties": {
+                  "component_id": {
+                    "description": "The component ID to query",
+                    "title": "Component Id",
+                    "type": "string"
+                  },
+                  "property": {
+                    "description": "The property name to read (e.g. 'options', 'value'). Omit to list all defined properties.",
+                    "title": "Property",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "component_id"
+                ],
+                "title": "_ComponentQueryInput",
+                "type": "object"
+              },
+              "outputSchema": {
+                "$defs": {
+                  "ComponentPropertyInfo": {
+                    "properties": {
+                      "initial_value": {
+                        "title": "Initial Value"
+                      },
+                      "modified_by_tool": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "title": "Modified By Tool",
+                        "type": "array"
+                      },
+                      "input_to_tool": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "title": "Input To Tool",
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "initial_value",
+                      "modified_by_tool",
+                      "input_to_tool"
+                    ],
+                    "title": "ComponentPropertyInfo",
+                    "type": "object"
+                  }
+                },
+                "properties": {
+                  "component_id": {
+                    "title": "Component Id",
+                    "type": "string"
+                  },
+                  "component_type": {
+                    "title": "Component Type",
+                    "type": "string"
+                  },
+                  "label": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Label"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/$defs/ComponentPropertyInfo"
+                    },
+                    "title": "Properties"
+                  }
+                },
+                "required": [
+                  "component_id",
+                  "component_type",
+                  "properties"
+                ],
+                "title": "ComponentQueryResult",
+                "type": "object"
+              }
+            },
+            {
+              "name": "set_input",
+              "description": "Update one input's value, server-side and live in the browser.\n\n        Browser update lands within ~500ms (Dash ``Interval`` drain).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "component_id": {
+                    "type": "string"
+                  },
+                  "value": {}
+                },
+                "required": [
+                  "component_id",
+                  "value"
+                ]
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            },
+            {
+              "name": "set_inputs",
+              "description": "Bulk-update multiple input values (keyed by parameter name).\n\n        The argument is named ``inputs`` to match ``invoke(inputs=...)``.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "inputs": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "inputs"
+                ]
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            },
+            {
+              "name": "invoke",
+              "description": "Run the app's callback with the current input mirror.\n\n        Pass ``inputs`` to set values and run in a single call (atomic\n        validation: a bad key rejects without mutating the mirror).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "inputs": {
+                    "additionalProperties": true,
+                    "type": "object",
+                    "description": "Input is optional."
+                  }
+                }
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            },
+            {
+              "name": "set_form",
+              "description": "Replace the form on a DynamicDash app with a new spec list.\n\n        The DynamicDash drain re-renders the form live within ~500ms. Plain\n        FastDash apps reject this tool.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "specs": {
+                    "items": {},
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "specs"
+                ]
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            },
+            {
+              "name": "get_invocation",
+              "description": "Look up a past invocation by history index (returned by invoke).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "index": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "index"
+                ]
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            },
+            {
+              "name": "list_component_types",
+              "description": "List the legal ``type`` values for a DynamicDash UI spec.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {}
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            },
+            {
+              "name": "describe_app",
+              "description": "Describe the app's inputs and outputs, plus their CURRENT values.\n\n        This is the reliable way for a headless agent (no browser) to read the\n        app's contract *and* its live state before calling ``invoke``: each\n        input reports its parameter ``id``, JSON ``type``, ``default``, any\n        allowed ``options`` (for dropdowns / ``Literal`` / ``Enum``), and its\n        ``current_value`` \u2014 including values you set via ``set_input`` /\n        ``set_inputs``. Each output reports its ``id``, the component ``tag`` it\n        renders into, its JSON ``type`` and ``label``, so you can see what a run\n        will produce without having to run it. (The native ``dash://components``\n        resource lists ids and Dash *widget* types only, and\n        ``get_dash_component`` reflects the browser, not the agent's mirror, so\n        neither shows agent-set values headlessly.)",
+              "inputSchema": {
+                "type": "object",
+                "properties": {}
+              },
+              "outputSchema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {
+          "name": "set_input",
+          "arguments": {
+            "component_id": "country",
+            "value": "India"
+          }
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\": true, \"id\": \"country\", \"value\": \"India\"}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "ok": true,
+              "id": "country",
+              "value": "India"
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "tools/call",
+        "params": {
+          "name": "set_input",
+          "arguments": {
+            "component_id": "state",
+            "value": "Karnataka"
+          }
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\": true, \"id\": \"state\", \"value\": \"Karnataka\"}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "ok": true,
+              "id": "state",
+              "value": "Karnataka"
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "tools/call",
+        "params": {
+          "name": "describe_app",
+          "arguments": {}
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"title\": \"Pick State\", \"doc\": \"\", \"inputs\": [{\"id\": \"country\", \"tag\": \"Select\", \"type\": \"string\", \"options\": [\"USA\", \"India\"], \"secret\": false, \"default\": null, \"current_value\": \"India\"}, {\"id\": \"state\", \"tag\": \"Select\", \"type\": \"string\", \"options\": [\"Maharashtra\", \"Karnataka\", \"Delhi\"], \"secret\": false, \"default\": null, \"current_value\": \"Karnataka\"}, {\"id\": \"label\", \"tag\": \"Text\", \"type\": \"string\", \"options\": null, \"secret\": false, \"default\": \"original\", \"current_value\": \"original\"}], \"outputs\": [{\"id\": \"output_output_1\", \"tag\": \"Text\", \"type\": \"string\", \"label\": \"OUTPUT_1\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "title": "Pick State",
+              "doc": "",
+              "inputs": [
+                {
+                  "id": "country",
+                  "tag": "Select",
+                  "type": "string",
+                  "options": [
+                    "USA",
+                    "India"
+                  ],
+                  "secret": false,
+                  "default": null,
+                  "current_value": "India"
+                },
+                {
+                  "id": "state",
+                  "tag": "Select",
+                  "type": "string",
+                  "options": [
+                    "Maharashtra",
+                    "Karnataka",
+                    "Delhi"
+                  ],
+                  "secret": false,
+                  "default": null,
+                  "current_value": "Karnataka"
+                },
+                {
+                  "id": "label",
+                  "tag": "Text",
+                  "type": "string",
+                  "options": null,
+                  "secret": false,
+                  "default": "original",
+                  "current_value": "original"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "output_output_1",
+                  "tag": "Text",
+                  "type": "string",
+                  "label": "OUTPUT_1"
+                }
+              ]
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "tools/call",
+        "params": {
+          "name": "set_input",
+          "arguments": {
+            "component_id": "country",
+            "value": "USA"
+          }
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\": true, \"id\": \"country\", \"value\": \"USA\"}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "ok": true,
+              "id": "country",
+              "value": "USA"
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "tools/call",
+        "params": {
+          "name": "describe_app",
+          "arguments": {}
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"title\": \"Pick State\", \"doc\": \"\", \"inputs\": [{\"id\": \"country\", \"tag\": \"Select\", \"type\": \"string\", \"options\": [\"USA\", \"India\"], \"secret\": false, \"default\": null, \"current_value\": \"USA\"}, {\"id\": \"state\", \"tag\": \"Select\", \"type\": \"string\", \"options\": [\"California\", \"Texas\", \"New York\"], \"secret\": false, \"default\": null, \"current_value\": \"Karnataka\"}, {\"id\": \"label\", \"tag\": \"Text\", \"type\": \"string\", \"options\": null, \"secret\": false, \"default\": \"original\", \"current_value\": \"original\"}], \"outputs\": [{\"id\": \"output_output_1\", \"tag\": \"Text\", \"type\": \"string\", \"label\": \"OUTPUT_1\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "title": "Pick State",
+              "doc": "",
+              "inputs": [
+                {
+                  "id": "country",
+                  "tag": "Select",
+                  "type": "string",
+                  "options": [
+                    "USA",
+                    "India"
+                  ],
+                  "secret": false,
+                  "default": null,
+                  "current_value": "USA"
+                },
+                {
+                  "id": "state",
+                  "tag": "Select",
+                  "type": "string",
+                  "options": [
+                    "California",
+                    "Texas",
+                    "New York"
+                  ],
+                  "secret": false,
+                  "default": null,
+                  "current_value": "Karnataka"
+                },
+                {
+                  "id": "label",
+                  "tag": "Text",
+                  "type": "string",
+                  "options": null,
+                  "secret": false,
+                  "default": "original",
+                  "current_value": "original"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "output_output_1",
+                  "tag": "Text",
+                  "type": "string",
+                  "label": "OUTPUT_1"
+                }
+              ]
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "initialize",
+        "params": {}
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "result": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "resources": {
+              "listChanged": true
+            },
+            "tools": {
+              "listChanged": true
+            }
+          },
+          "serverInfo": {
+            "name": "Plotly Dash",
+            "version": "4.4.1"
+          },
+          "instructions": "This is a Fast Dash app: a Python callback rendered as a web UI, with a live browser session a human may be watching.\n\nUnlike a plain Dash app, this app's tools are STATEFUL -- they drive the running app, and what you do IS reflected in the user's browser (within about 500ms, no reload):\n  - describe_app() -- start here: every input's id, type, default, allowed options and current value, plus the outputs a run produces.\n  - set_input(component_id, value) / set_inputs(inputs) -- set values; the browser's widgets update to match.\n  - invoke(inputs=None) -- set values and run the callback in one call; the output renders in the browser and the result is returned to you.\n  - set_form(specs) -- DynamicDash only: build the input form at runtime.\n\nValues are validated against the contract describe_app() advertises, so you cannot set something the UI itself could not produce."
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "method": "tools/call",
+        "params": {
+          "name": "describe_app",
+          "arguments": {}
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"title\": \"Pick State\", \"doc\": \"\", \"inputs\": [{\"id\": \"country\", \"tag\": \"Select\", \"type\": \"string\", \"options\": [\"USA\", \"India\"], \"secret\": false, \"default\": null, \"current_value\": \"USA\"}, {\"id\": \"state\", \"tag\": \"Select\", \"type\": \"string\", \"options\": [\"California\", \"Texas\", \"New York\"], \"secret\": false, \"default\": null, \"current_value\": \"Karnataka\"}, {\"id\": \"label\", \"tag\": \"Text\", \"type\": \"string\", \"options\": null, \"secret\": false, \"default\": \"original\", \"current_value\": \"original\"}], \"outputs\": [{\"id\": \"output_output_1\", \"tag\": \"Text\", \"type\": \"string\", \"label\": \"OUTPUT_1\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "title": "Pick State",
+              "doc": "",
+              "inputs": [
+                {
+                  "id": "country",
+                  "tag": "Select",
+                  "type": "string",
+                  "options": [
+                    "USA",
+                    "India"
+                  ],
+                  "secret": false,
+                  "default": null,
+                  "current_value": "USA"
+                },
+                {
+                  "id": "state",
+                  "tag": "Select",
+                  "type": "string",
+                  "options": [
+                    "California",
+                    "Texas",
+                    "New York"
+                  ],
+                  "secret": false,
+                  "default": null,
+                  "current_value": "Karnataka"
+                },
+                {
+                  "id": "label",
+                  "tag": "Text",
+                  "type": "string",
+                  "options": null,
+                  "secret": false,
+                  "default": "original",
+                  "current_value": "original"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "output_output_1",
+                  "tag": "Text",
+                  "type": "string",
+                  "label": "OUTPUT_1"
+                }
+              ]
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "tools/call",
+        "params": {
+          "name": "invoke",
+          "arguments": {}
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\": true, \"duration_ms\": 0.0, \"outputs\": {\"output_output_1\": \"original: Karnataka, USA\"}, \"history_index\": 0}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "ok": true,
+              "duration_ms": 0.0,
+              "outputs": {
+                "output_output_1": "original: Karnataka, USA"
+              },
+              "history_index": 0
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "tools/call",
+        "params": {
+          "name": "get_invocation",
+          "arguments": {
+            "index": 0
+          }
+        }
+      },
+      "http_status": 200,
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\": true, \"ts\": \"2026-11-11T19:33:06.500227+00:00\", \"duration_ms\": 0.0, \"kwargs_summary\": {\"country\": \"USA\", \"state\": \"Karnataka\", \"label\": \"original\"}, \"outputs_summary\": {\"output_output_1\": \"original: Karnataka, USA\"}}"
+            }
+          ],
+          "structuredContent": {
+            "result": {
+              "ok": true,
+              "ts": "2026-11-11T19:33:06.500227+00:00",
+              "duration_ms": 0.0,
+              "kwargs_summary": {
+                "country": "USA",
+                "state": "Karnataka",
+                "label": "original"
+              },
+              "outputs_summary": {
+                "output_output_1": "original: Karnataka, USA"
+              }
+            }
+          },
+          "isError": false
+        }
+      }
+    }
+  ],
+  "tool_catalog": {
+    "tools": [
+      {
+        "name": "get_dash_component",
+        "description": "Get a component's properties, values, and tool relationships. If property is omitted, returns all defined properties. If property is specified, returns only that property. See the dash://components resource for available component IDs.",
+        "inputSchema": {
+          "properties": {
+            "component_id": {
+              "description": "The component ID to query",
+              "title": "Component Id",
+              "type": "string"
+            },
+            "property": {
+              "description": "The property name to read (e.g. 'options', 'value'). Omit to list all defined properties.",
+              "title": "Property",
+              "type": "string"
+            }
+          },
+          "required": [
+            "component_id"
+          ],
+          "title": "_ComponentQueryInput",
+          "type": "object"
+        },
+        "outputSchema": {
+          "$defs": {
+            "ComponentPropertyInfo": {
+              "properties": {
+                "initial_value": {
+                  "title": "Initial Value"
+                },
+                "modified_by_tool": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Modified By Tool",
+                  "type": "array"
+                },
+                "input_to_tool": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Input To Tool",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "initial_value",
+                "modified_by_tool",
+                "input_to_tool"
+              ],
+              "title": "ComponentPropertyInfo",
+              "type": "object"
+            }
+          },
+          "properties": {
+            "component_id": {
+              "title": "Component Id",
+              "type": "string"
+            },
+            "component_type": {
+              "title": "Component Type",
+              "type": "string"
+            },
+            "label": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Label"
+            },
+            "properties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ComponentPropertyInfo"
+              },
+              "title": "Properties"
+            }
+          },
+          "required": [
+            "component_id",
+            "component_type",
+            "properties"
+          ],
+          "title": "ComponentQueryResult",
+          "type": "object"
+        }
+      },
+      {
+        "name": "set_input",
+        "description": "Update one input's value, server-side and live in the browser.\n\n        Browser update lands within ~500ms (Dash ``Interval`` drain).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "component_id": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "required": [
+            "component_id",
+            "value"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      },
+      {
+        "name": "set_inputs",
+        "description": "Bulk-update multiple input values (keyed by parameter name).\n\n        The argument is named ``inputs`` to match ``invoke(inputs=...)``.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "inputs": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "inputs"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      },
+      {
+        "name": "invoke",
+        "description": "Run the app's callback with the current input mirror.\n\n        Pass ``inputs`` to set values and run in a single call (atomic\n        validation: a bad key rejects without mutating the mirror).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "inputs": {
+              "additionalProperties": true,
+              "type": "object",
+              "description": "Input is optional."
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      },
+      {
+        "name": "set_form",
+        "description": "Replace the form on a DynamicDash app with a new spec list.\n\n        The DynamicDash drain re-renders the form live within ~500ms. Plain\n        FastDash apps reject this tool.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "specs": {
+              "items": {},
+              "type": "array"
+            }
+          },
+          "required": [
+            "specs"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      },
+      {
+        "name": "get_invocation",
+        "description": "Look up a past invocation by history index (returned by invoke).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      },
+      {
+        "name": "list_component_types",
+        "description": "List the legal ``type`` values for a DynamicDash UI spec.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      },
+      {
+        "name": "describe_app",
+        "description": "Describe the app's inputs and outputs, plus their CURRENT values.\n\n        This is the reliable way for a headless agent (no browser) to read the\n        app's contract *and* its live state before calling ``invoke``: each\n        input reports its parameter ``id``, JSON ``type``, ``default``, any\n        allowed ``options`` (for dropdowns / ``Literal`` / ``Enum``), and its\n        ``current_value`` \u2014 including values you set via ``set_input`` /\n        ``set_inputs``. Each output reports its ``id``, the component ``tag`` it\n        renders into, its JSON ``type`` and ``label``, so you can see what a run\n        will produce without having to run it. (The native ``dash://components``\n        resource lists ids and Dash *widget* types only, and\n        ``get_dash_component`` reflects the browser, not the agent's mirror, so\n        neither shows agent-set values headlessly.)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        }
+      }
+    ]
+  },
+  "setup_parent": {
+    "ok": true,
+    "id": "country",
+    "value": "India"
+  },
+  "setup_child": {
+    "ok": true,
+    "id": "state",
+    "value": "Karnataka"
+  },
+  "before": {
+    "label": "original",
+    "country": "India",
+    "state": "Karnataka"
+  },
+  "describe_before": {
+    "title": "Pick State",
+    "doc": "",
+    "inputs": [
+      {
+        "id": "country",
+        "tag": "Select",
+        "type": "string",
+        "options": [
+          "USA",
+          "India"
+        ],
+        "secret": false,
+        "default": null,
+        "current_value": "India"
+      },
+      {
+        "id": "state",
+        "tag": "Select",
+        "type": "string",
+        "options": [
+          "Maharashtra",
+          "Karnataka",
+          "Delhi"
+        ],
+        "secret": false,
+        "default": null,
+        "current_value": "Karnataka"
+      },
+      {
+        "id": "label",
+        "tag": "Text",
+        "type": "string",
+        "options": null,
+        "secret": false,
+        "default": "original",
+        "current_value": "original"
+      }
+    ],
+    "outputs": [
+      {
+        "id": "output_output_1",
+        "tag": "Text",
+        "type": "string",
+        "label": "OUTPUT_1"
+      }
+    ]
+  },
+  "input": {
+    "component_id": "country",
+    "value": "USA"
+  },
+  "operation_response": {
+    "ok": true,
+    "id": "country",
+    "value": "USA"
+  },
+  "after": {
+    "label": "original",
+    "country": "USA",
+    "state": "Karnataka"
+  },
+  "describe_after": {
+    "title": "Pick State",
+    "doc": "",
+    "inputs": [
+      {
+        "id": "country",
+        "tag": "Select",
+        "type": "string",
+        "options": [
+          "USA",
+          "India"
+        ],
+        "secret": false,
+        "default": null,
+        "current_value": "USA"
+      },
+      {
+        "id": "state",
+        "tag": "Select",
+        "type": "string",
+        "options": [
+          "California",
+          "Texas",
+          "New York"
+        ],
+        "secret": false,
+        "default": null,
+        "current_value": "Karnataka"
+      },
+      {
+        "id": "label",
+        "tag": "Text",
+        "type": "string",
+        "options": null,
+        "secret": false,
+        "default": "original",
+        "current_value": "original"
+      }
+    ],
+    "outputs": [
+      {
+        "id": "output_output_1",
+        "tag": "Text",
+        "type": "string",
+        "label": "OUTPUT_1"
+      }
+    ]
+  },
+  "fresh_client_readback": {
+    "title": "Pick State",
+    "doc": "",
+    "inputs": [
+      {
+        "id": "country",
+        "tag": "Select",
+        "type": "string",
+        "options": [
+          "USA",
+          "India"
+        ],
+        "secret": false,
+        "default": null,
+        "current_value": "USA"
+      },
+      {
+        "id": "state",
+        "tag": "Select",
+        "type": "string",
+        "options": [
+          "California",
+          "Texas",
+          "New York"
+        ],
+        "secret": false,
+        "default": null,
+        "current_value": "Karnataka"
+      },
+      {
+        "id": "label",
+        "tag": "Text",
+        "type": "string",
+        "options": null,
+        "secret": false,
+        "default": "original",
+        "current_value": "original"
+      }
+    ],
+    "outputs": [
+      {
+        "id": "output_output_1",
+        "tag": "Text",
+        "type": "string",
+        "label": "OUTPUT_1"
+      }
+    ]
+  },
+  "before_invoke": {
+    "label": "original",
+    "country": "USA",
+    "state": "Karnataka"
+  },
+  "invoke_response": {
+    "ok": true,
+    "duration_ms": 0.0,
+    "outputs": {
+      "output_output_1": "original: Karnataka, USA"
+    },
+    "history_index": 0
+  },
+  "after_invoke": {
+    "label": "original",
+    "country": "USA",
+    "state": "Karnataka"
+  },
+  "history_response": {
+    "ok": true,
+    "ts": "2026-11-11T19:33:06.500227+00:00",
+    "duration_ms": 0.0,
+    "kwargs_summary": {
+      "country": "USA",
+      "state": "Karnataka",
+      "label": "original"
+    },
+    "outputs_summary": {
+      "output_output_1": "original: Karnataka, USA"
+    }
+  }
+}
