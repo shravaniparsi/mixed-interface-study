@@ -8,10 +8,10 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def write(p,v):Path(p).write_text(json.dumps(v,indent=2)+'\n')
 def main():
     p=argparse.ArgumentParser();p.add_argument('--unit',required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
-    registry=json.loads(REGISTRY.read_text());unit=next(x for x in registry['units'] if x['id']==a.unit)
+    registry=json.loads(REGISTRY.read_text());assert registry['execution_authorized'] is True;unit=next(x for x in registry['units'] if x['id']==a.unit)
     for path,h in {**registry['source_sha256'],**registry['qualification_sha256']}.items():
         if sha(ROOT/path)!=h:raise ValueError('Control source differs: '+path)
-    a.output.mkdir(parents=True,exist_ok=False);report={'kind':'gitea_ordinary_pair_v1','unit':unit,'registry_sha256':sha(REGISTRY),'source_commit':os.environ['GITHUB_SHA'],'run_identity':os.environ['GITHUB_RUN_ID']+':'+os.environ['GITHUB_RUN_ATTEMPT'],'status':'incomplete','branches':[],'boundary_cases_executed':0};owned=[];commands=[]
+    a.output.mkdir(parents=True,exist_ok=False);report={'kind':'gitea_independent_scientific_pair_v1','unit':unit,'registry_sha256':sha(REGISTRY),'source_commit':os.environ['GITHUB_SHA'],'run_identity':os.environ['GITHUB_RUN_ID']+':'+os.environ['GITHUB_RUN_ATTEMPT'],'status':'incomplete','branches':[],'scientific_case_id':unit['case_id'],'cohort':unit['cohort']};owned=[];commands=[]
     def interrupted(signum,frame):raise KeyboardInterrupt('Control bound reached')
     signal.signal(signal.SIGTERM,interrupted)
     def cmd(args,timeout=120,private=False,input=None,env=None,check=True):
@@ -46,7 +46,7 @@ def main():
             observed=json.loads((branch/'observation.json').read_text());report['branches'].append({'channel':channel,'status':observed['status'],'observation_sha256':sha(branch/'observation.json')})
             cmd(['docker','rm','-f','-v',name]);owned.remove(name)
         values=[json.loads((a.output/c/'observation.json').read_text()) for c in unit['branch_order']]
-        if not all(v['status']=='observed' and v['browser_cleanup_confirmed'] for v in values):raise ValueError('Ordinary control failed')
+        if not all(v['status']=='observed' and v['browser_cleanup_confirmed'] for v in values):raise ValueError('Incomplete scientific observation')
         for key in ('initial_business_state','prefix_status','prefix_business'):
             if values[0].get(key)!=values[1].get(key):raise ValueError('Branch comparability differs: '+key)
         report['status']='pair_observed'
