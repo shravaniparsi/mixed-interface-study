@@ -16,6 +16,8 @@ Expansion update: Superset has an ambiguous pre-repair contract and was not disp
 
 The [portable contract replay](notes/write_contract_replay_20261111.md) now covers 36 Tiller/Iris records plus eight Fast Dash observations with one checker. It reproduces seven previously identified violating observations using manual contracts; no new application executions or automatic-inference advantage are claimed.
 
+The [contract-information ablation](notes/contract_information_ablation_20261111.md) shows that allowing derived changes is insufficient: their expected values matter. Continuation-agreement checks add zero detections over the complete manual transition contract on these traces. [Verified prior-art scope](notes/contract_inference_prior_art_20261111.md).
+
 The original registered experiments and selected repetitions are complete. The corrected Quartz collection covers 22 cases: 14 clean observations, five matching rejections, three unresolved policy cases, and zero eligible check mismatches. Eight original Quartz measurements remain invalid. One original eligible UI-only PetClinic check mismatch remains, observed in three repetitions; repeats are not independent defects.
 
 [Completed results and evidence](notes/registered_experiments_complete_20261110.md) · [Machine-readable completion](manifests/experiment-completion-v3.json)
