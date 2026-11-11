@@ -170,6 +170,11 @@ jobs:
           python scripts/extension/verify_testplanit_tags_v1.py --archive results/testplanit-tags-v2-ci-43090747883 --verify manifests/testplanit-tags-attempt2-v1.json
           python scripts/extension/build_testplanit_tags_cost_v1.py --verify
           python scripts/extension/build_write_contract_disposition_v1.py --verify
+      - name: Verify portable manual-contract replay
+        run: |
+          python scripts/extension/build_write_contract_replay_v1.py --verify
+          PYTHONPATH=src python -m mixed_interface.write_contract manifests/write-contract-replay-v1.json --output "$CI_ARTIFACT_DIR/write-contract-replay.json"
+          python -c 'import json,os; from pathlib import Path; assert json.loads((Path(os.environ["CI_ARTIFACT_DIR"])/"write-contract-replay.json").read_text())["scores"] == json.loads(Path("manifests/write-contract-replay-v1.json").read_text())["scores"]'
       - name: Pure Node adapter tests
         run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
       - name: Syntax checks
