@@ -1,0 +1,179 @@
+{
+  "kind": "paperless_ordinary_control_v1",
+  "workflow": "custom_field",
+  "channel": "ui",
+  "status": "incomplete",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/custom_fields/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.050752886000000004
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/custom_fields/",
+      "body": {
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": {}
+      },
+      "status": 201,
+      "response": {
+        "id": 1,
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": {}
+      },
+      "elapsed_s": 0.022215237000000002
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/custom_fields/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": {},
+        "document_count": 0
+      },
+      "elapsed_s": 0.02223213700000001
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/custom_fields/1/",
+      "body": {
+        "id": 1,
+        "name": "Edited ordinary name",
+        "data_type": "string",
+        "extra_data": {
+          "select_options": [],
+          "default_currency": null
+        },
+        "document_count": 0,
+        "permissions_form": {}
+      },
+      "status": 200
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/custom_fields/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Edited ordinary name",
+        "data_type": "string",
+        "extra_data": {
+          "select_options": [],
+          "default_currency": null
+        },
+        "document_count": 0
+      },
+      "elapsed_s": 0.01565498699999989
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Ordinary custom field",
+          "expected": "Ordinary custom field",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "data_type",
+          "count": 1,
+          "value": "Text",
+          "expected": "Text",
+          "selector": "[formcontrolname=\"data_type\"] .ng-value-label",
+          "kind": "label",
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "value": "Edited ordinary name",
+          "expected": "Edited ordinary name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "data_type",
+          "count": 1,
+          "value": "Text",
+          "expected": "Text",
+          "selector": "[formcontrolname=\"data_type\"] .ng-value-label",
+          "kind": "label",
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.376462982
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "resource_count": 0,
+    "version": "3.4.2"
+  },
+  "prefix": {
+    "name": "Ordinary custom field",
+    "data_type": "string",
+    "extra_data": {}
+  },
+  "resource_id": 1,
+  "final": {
+    "name": "Edited ordinary name",
+    "data_type": "string",
+    "extra_data": {
+      "select_options": [],
+      "default_currency": null
+    }
+  },
+  "error": {
+    "name": "AssertionError",
+    "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    data_type: 'string',\n+   extra_data: {\n+     default_currency: null,\n+     select_options: []\n+   },\n-   extra_data: {},\n    name: 'Edited ordinary name'\n  }"
+  },
+  "browser_cleanup_confirmed": true
+}
