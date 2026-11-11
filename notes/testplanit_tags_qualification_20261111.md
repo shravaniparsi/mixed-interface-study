@@ -1,0 +1,12 @@
+# TestPlanIt qualification result
+
+Both registered attempts failed in study instrumentation before any scientific tool execution. TestPlanIt adds zero scientific executions and no confirmed defect to this cohort. Its source-reported bug remains unverified by this study. This is an implementation failure of our harness, not evidence of a defect or infeasibility in TestPlanIt.
+
+- [Initial attempt 43090047548](https://github.com/shravaniparsi/mixed-interface-study/actions/runs/43090047548), study b9c9f36b7767d51edc5d2b31b6e6adfa24a207ac: dependencies installed; migrations, triggers and seeding completed; authenticated model GET returned 200. The warm-up incorrectly required a successful GET from the POST-only version route. It received 405 and stopped.
+- [Single correction 43090747883](https://github.com/shravaniparsi/mixed-interface-study/actions/runs/43090747883), study 47b3fd37b1f283fa8c9c86f6e51ff31f78d368c0: the same real-host setup and corrected warm-up passed. The observer launcher then failed with `Command "tsx" not found`. The command ran in packages/mcp-server, which does not declare tsx; the host workspace does. No observer case, MCP mutation, or historical/fixed comparison executed.
+
+The appropriate future engineering fix is to invoke the already installed host TypeScript runner by its explicit path while retaining adapter module resolution. That fix was not executed here: the registered initial-plus-one-correction allowance is exhausted. A third attempt cannot be silently included as a compliant run. The finite expansion ends with this harness exclusion, with no replacement lead.
+
+Both raw archives, complete Actions job logs, run metadata and zero-observation reconstructions are retained. Source Git blobs match the pinned historical adapter, fixed adapter and shared lockfile. Node resolved to the version recorded in each archive; no local dependency installation was performed. The attempts consumed 4.7 elapsed application-job minutes. Together with Vikunja and Fast Dash, the bounded expansion consumed 11.2833333333 elapsed application-job minutes. These numbers exclude unit CI and assistant/local work and are not billing totals. Paid model calls: zero.
+
+The host's ability to start is useful engineering evidence, but it does not validate tag persistence, version snapshots or the alleged repair. The eight planned cases must not enter a scientific denominator.
