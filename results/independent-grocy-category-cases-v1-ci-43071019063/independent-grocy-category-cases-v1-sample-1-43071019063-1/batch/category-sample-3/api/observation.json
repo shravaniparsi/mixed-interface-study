@@ -1,0 +1,146 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "grocy.task_category:name:empty",
+  "workflow": "grocy.task_category",
+  "channel": "api",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.034965672999999996
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.015342726999999997
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/task_categories",
+      "body": {
+        "name": "",
+        "description": "Ordinary description"
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.044954196999999994
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": null,
+        "description": "Ordinary description",
+        "row_created_timestamp": "2026-11-11 17:47:18",
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.010307716
+    },
+    {
+      "channel": "api",
+      "method": "PUT",
+      "path": "/api/objects/task_categories/1",
+      "body": {
+        "name": null,
+        "description": "Edited ordinary description",
+        "active": 1
+      },
+      "status": 204,
+      "response": null,
+      "elapsed_s": 0.010504951000000005
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": null,
+        "description": "Edited ordinary description",
+        "row_created_timestamp": "2026-11-11 17:47:18",
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.008185787000000005
+    }
+  ],
+  "forms": [],
+  "timing": {
+    "continuation_s": 0.019567581999999986
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/task_categories": []
+    }
+  },
+  "fixture_ids": {},
+  "resolved_payload": {
+    "name": "",
+    "description": "Ordinary description"
+  },
+  "producer_status": 200,
+  "resource_id": 1,
+  "prefix": {
+    "name": null,
+    "description": "Ordinary description",
+    "active": 1
+  },
+  "immutable_before": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-11 17:47:18",
+    "userfields": null
+  },
+  "producer_normalizations": {
+    "name": {
+      "input": "",
+      "persisted": null
+    }
+  },
+  "persisted_contract_violations": [
+    "name"
+  ],
+  "reference_checks": [],
+  "final": {
+    "name": null,
+    "description": "Edited ordinary description",
+    "active": 1
+  },
+  "immutable_after": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-11 17:47:18",
+    "userfields": null
+  },
+  "additional_field_changes": {},
+  "browser_cleanup_confirmed": true
+}

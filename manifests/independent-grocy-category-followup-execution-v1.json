@@ -1,0 +1,202 @@
+{
+  "kind": "independent_grocy_category_fixed_followups_v1",
+  "version": "4.7.1",
+  "source_commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+  "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+  "image_id": "sha256:80a50f603077d272c0c215ed0667a106d3c652a30a322ec1dfe64f34d31f80b1",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-grocy-42876848117-1/report.json",
+  "deployment_report_sha256": "d85a08527dea6351c722224a38d0d5353b3e38838cf6a207a238834f678dfcc7",
+  "scope": "Exactly two registered repeats of the empty-name channel difference with two original ordinary controls; no new sampled values.",
+  "normalization": "Only exact decimal integer strings in declared integer fields map to integers. Raw API responses retained. Null and empty string are never conflated. Date text is exact YYYY-MM-DD.",
+  "actor_permissions": [
+    "MASTER_DATA_EDIT",
+    "STOCK",
+    "TASKS",
+    "USERS_READ"
+  ],
+  "workflows": [
+    {
+      "id": "grocy.task_category",
+      "collection": "/api/objects/task_categories",
+      "edit_path": "/taskcategory/{id}",
+      "exit_path": "/taskcategories",
+      "form_selector": "#task-category-form",
+      "save_selector": "#save-task-category-button",
+      "edit_field": "description",
+      "edit_selector": "#description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "name": "Ordinary category",
+        "description": "Ordinary description"
+      },
+      "integer_fields": [
+        "active"
+      ],
+      "fields": [
+        "name",
+        "description",
+        "active"
+      ],
+      "immutable_fields": [
+        "id",
+        "row_created_timestamp",
+        "userfields"
+      ],
+      "initial_count": 0,
+      "fixtures": [],
+      "references": [],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "#name",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "#description",
+          "kind": "text"
+        },
+        {
+          "field": "active",
+          "selector": "#active",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "category-control-r2",
+      "case_id": "grocy.task_category:valid:1",
+      "workflow": "grocy.task_category",
+      "cohort": "valid_control",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "category-empty-r2",
+      "case_id": "grocy.task_category:name:empty",
+      "workflow": "grocy.task_category",
+      "cohort": "schema_sample",
+      "repetition": 2,
+      "branch_order": [
+        "ui",
+        "api"
+      ],
+      "linked_control_unit": "category-control-r2"
+    },
+    {
+      "id": "category-control-r3",
+      "case_id": "grocy.task_category:valid:1",
+      "workflow": "grocy.task_category",
+      "cohort": "valid_control",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "category-empty-r3",
+      "case_id": "grocy.task_category:name:empty",
+      "workflow": "grocy.task_category",
+      "cohort": "schema_sample",
+      "repetition": 3,
+      "branch_order": [
+        "api",
+        "ui"
+      ],
+      "linked_control_unit": "category-control-r3"
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_independent_grocy_category_cases_v1.py": "1d2146c9782f9e90d75cfd5400e8356d5c74df9b0be33a2d1a3b4d8a3a40239f",
+    "scripts/extension/run_independent_grocy_category_batch_v1.py": "40c66322fafb164689455fec7520f29ef2a67dc2005cb537d238e6159a60abd1",
+    "scripts/extension/independent_grocy_category_case_v1.mjs": "cd953f6b9c4b4fc5fc910938c717f96a98392174448522bcce249d5da68c99ec",
+    "scripts/extension/verify_independent_grocy_category_cases_v1.py": "2acc43433ca3abe0298ea40195b34a9be2c1464e227f716d0a8e5962bcb41451",
+    ".github/workflows/independent_grocy_category_cases_v1.yml": "58f50445548e2b11b3173e49b64af988f4114f25a5346dcdb9bb29da47eee236",
+    "scripts/extension/grocy_actor_v1.php": "eade7e96e17fdc370a5c6de2e88a7f4ea918329c6c3e185fe349e49eb1754d45",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "evidence/independent-native-v1/grocy/views/taskcategoryform.blade.php": "0013fe8d7b6c1aa14315208d1e4427d5b0b6b331f9be59f15f1c0e8724fce388",
+    "evidence/independent-native-v1/grocy/public/viewjs/taskcategoryform.js": "4ba7a77e5f427f3dac3f2e11976a2ed3471ea5bae57240e06678bbb19b71a1ee",
+    "scripts/extension/run_independent_grocy_category_followups_v1.py": "6df9f5c46a813af4afa226f7c8cb3aab087314e43387d50a1312befedfacefb5",
+    "scripts/extension/run_independent_grocy_category_followup_batch_v1.py": "810aa50c3bfd18dd59a27957ab6be774095e8489d0a724d9d392753c9163103e",
+    "scripts/extension/verify_independent_grocy_category_followups_v1.py": "4f5eff7bade179fd7ce670b33d70ad7af7b79d590b8563018af4d389c47f568d",
+    ".github/workflows/independent_grocy_category_followups_v1.yml": "135086b0cbdfa19655860a2938ea24a3ce903ad0c526db7fec19bede69e75355"
+  },
+  "seed_policy": "Retain seeded rows in fresh pinned images. Capture complete initial target and prerequisite collections, excluding only generated row_created_timestamp from paired business-state comparison. Require identical projected seed collections across independently reset branches; fixture names must not collide. Ordinary qualification establishes concrete seed inventories before scientific case registration.",
+  "qualification_sha256": {
+    "manifests/independent-grocy-category-attempt1-v1.json": "60085e554ce264c970707f3807fca25258465135317eaf1656b7e0c7f882ae1a",
+    "manifests/independent-grocy-category-probe-results-v1.json": "9bce9d6f11b4f8b3f73dbca77a0ce7f24f5eba88b93279991a81bc2ec828434a",
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007",
+    "protocol/independent-input-extension-v1.md": "7a3c2806cf3e350f7638260ca4af5038c3f1f7c63f379979b1f0d202e13a09d5",
+    "manifests/independent-grocy-category-initial-results-v1.json": "da656824a11c5f19856ae7546200b67054bea55cc3400fa8611d0964d87051d5"
+  },
+  "post_freeze_native_source": {
+    "commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+    "paths": [
+      "views/taskcategoryform.blade.php",
+      "public/viewjs/taskcategoryform.js",
+      "routes.php"
+    ],
+    "findings": "Required name; native ValidateForm before PUT; active checkbox absent from published TaskCategory schema but included in full semantic comparator and preserved readback. Sampling remains unchanged; no active-field inputs added."
+  },
+  "execution_authorized": true,
+  "cases": [
+    {
+      "id": "grocy.task_category:valid:1",
+      "workflow": "grocy.task_category",
+      "payload": {
+        "name": "Ordinary category",
+        "description": "Ordinary description"
+      },
+      "inventory_cohort": "valid_control"
+    },
+    {
+      "id": "grocy.task_category:name:empty",
+      "workflow": "grocy.task_category",
+      "payload": {
+        "name": "",
+        "description": "Ordinary description"
+      },
+      "inventory_cohort": "schema_sample"
+    }
+  ],
+  "batches": [
+    {
+      "id": "repeat-2",
+      "unit_ids": [
+        "category-control-r2",
+        "category-empty-r2"
+      ]
+    },
+    {
+      "id": "repeat-3",
+      "unit_ids": [
+        "category-control-r3",
+        "category-empty-r3"
+      ]
+    }
+  ],
+  "persisted_contracts": {
+    "grocy.task_category": {
+      "name": {
+        "type": "string",
+        "nullable": false,
+        "minLength": 1
+      }
+    }
+  },
+  "contract_scope": "Published type plus native required-name rule shared by both baselines before sampled outcomes. Active state is preserved in full-record PUT and readback but no active-input mutation is introduced.",
+  "repeat_rule": "Repeat twice every channel/shared discrepancy, unresolved result, shared alert or representation discrepancy; each repetition paired with original ordinary control, repetition 2 reversing order. No additional finding-driven repetitions.",
+  "execution_bound": {
+    "followup_pairs": 4
+  },
+  "input_freeze_commit": "215bf7b"
+}

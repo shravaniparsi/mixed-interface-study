@@ -1,0 +1,344 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "grocy.task_category:valid:2",
+  "workflow": "grocy.task_category",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.039287948999999996
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.016416846000000006
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/task_categories",
+      "body": {
+        "name": "Ordinary category",
+        "description": "Ordinary description"
+      },
+      "status": 200,
+      "response": {
+        "created_object_id": "1"
+      },
+      "elapsed_s": 0.043835044
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary category",
+        "description": "Ordinary description",
+        "row_created_timestamp": "2026-11-11 17:46:21",
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.011200491999999998
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/objects/task_categories/1",
+      "body": {
+        "name": "Ordinary category",
+        "active": "1",
+        "description": "Edited ordinary description"
+      },
+      "status": 204
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "name": "Ordinary category",
+        "description": "Edited ordinary description",
+        "row_created_timestamp": "2026-11-11 17:46:21",
+        "active": 1,
+        "userfields": null
+      },
+      "elapsed_s": 0.015340315000000146
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "Ordinary category",
+          "expected": "Ordinary category",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Ordinary description",
+          "expected": "Ordinary description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": true
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "Ordinary category",
+          "expected": "Ordinary category",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": true
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "selector": "#name",
+          "count": 1,
+          "value": "Ordinary category",
+          "expected": "Ordinary category",
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": true,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "description",
+          "selector": "#description",
+          "count": 1,
+          "value": "Edited ordinary description",
+          "expected": "Edited ordinary description",
+          "agrees": true,
+          "details": {
+            "tag": "TEXTAREA",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        },
+        {
+          "name": "active",
+          "selector": "#active",
+          "count": 1,
+          "value": true,
+          "expected": true,
+          "agrees": true,
+          "details": {
+            "tag": "INPUT",
+            "required": false,
+            "min": null,
+            "max": null,
+            "pattern": null,
+            "valid": true,
+            "valueMissing": false,
+            "rangeUnderflow": false,
+            "options": null
+          }
+        }
+      ],
+      "form_valid": true
+    }
+  ],
+  "timing": {
+    "native_auth_setup_s": 1.1587731330000002,
+    "continuation_s": 0.629219145
+  },
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/task_categories": []
+    }
+  },
+  "fixture_ids": {},
+  "resolved_payload": {
+    "name": "Ordinary category",
+    "description": "Ordinary description"
+  },
+  "producer_status": 200,
+  "resource_id": 1,
+  "prefix": {
+    "name": "Ordinary category",
+    "description": "Ordinary description",
+    "active": 1
+  },
+  "immutable_before": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-11 17:46:21",
+    "userfields": null
+  },
+  "producer_normalizations": {},
+  "persisted_contract_violations": [],
+  "reference_checks": [],
+  "native_submission": {
+    "form_valid": true,
+    "observation_window_ms": 20000,
+    "attempts": [
+      {
+        "method": "PUT",
+        "path": "/api/objects/task_categories/1",
+        "body": {
+          "name": "Ordinary category",
+          "active": "1",
+          "description": "Edited ordinary description"
+        }
+      }
+    ]
+  },
+  "final": {
+    "name": "Ordinary category",
+    "description": "Edited ordinary description",
+    "active": 1
+  },
+  "immutable_after": {
+    "id": 1,
+    "row_created_timestamp": "2026-11-11 17:46:21",
+    "userfields": null
+  },
+  "native_representation_discrepancies": [],
+  "additional_field_changes": {},
+  "browser_cleanup_confirmed": true
+}

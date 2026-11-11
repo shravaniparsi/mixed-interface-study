@@ -1,0 +1,76 @@
+{
+  "kind": "grocy_case_v1",
+  "case_id": "grocy.task_category:name:omitted",
+  "workflow": "grocy.task_category",
+  "channel": "api",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/system/info",
+      "status": 200,
+      "response": {
+        "grocy_version": {
+          "Version": "4.7.1",
+          "ReleaseDate": "2026-09-04"
+        },
+        "php_version": "8.5.12",
+        "sqlite_version": "3.53.4",
+        "db_version": 257,
+        "os": "Linux 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64",
+        "client": "node"
+      },
+      "elapsed_s": 0.052203519
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.015377523999999993
+    },
+    {
+      "channel": "api",
+      "method": "POST",
+      "path": "/api/objects/task_categories",
+      "body": {
+        "description": "Ordinary description"
+      },
+      "status": 400,
+      "response": {
+        "error_message": "SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: task_categories.name"
+      },
+      "elapsed_s": 0.06536347199999999
+    },
+    {
+      "channel": "api",
+      "method": "GET",
+      "path": "/api/objects/task_categories",
+      "status": 200,
+      "response": [],
+      "elapsed_s": 0.019055575000000005
+    }
+  ],
+  "forms": [],
+  "timing": {},
+  "prefix_status": "rejected_without_visible_write",
+  "continuation": "not_attempted",
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "version": "4.7.1",
+    "resource_count": 0,
+    "seed_collections": {
+      "/api/objects/task_categories": []
+    }
+  },
+  "fixture_ids": {},
+  "resolved_payload": {
+    "description": "Ordinary description"
+  },
+  "producer_status": 400,
+  "failed_producer_collection_unchanged": true,
+  "browser_cleanup_confirmed": true
+}
