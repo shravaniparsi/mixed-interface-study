@@ -1,0 +1,125 @@
+{
+  "sha": "3566bd3f09430ad573a41bc7a4b52725b8be6221",
+  "node_id": "C_kwDOISLYb9oAKDM1NjZiZDNmMDk0MzBhZDU3M2E0MWJjN2E0YjUyNzI1YjhiZTYyMjE",
+  "commit": {
+    "author": {
+      "name": "Matthew James Briggs",
+      "email": "matthew.james.briggs@gmail.com",
+      "date": "2026-08-10T06:52:35Z"
+    },
+    "committer": {
+      "name": "Matthew James Briggs",
+      "email": "matthew.james.briggs@gmail.com",
+      "date": "2026-08-10T07:41:41Z"
+    },
+    "message": "fix: preserve original_order when updating a transaction\n\nEvery transaction touched by `update_transactions` came back with\n`original_order = NULL`. NULL sorts last, so on the next `sync up` those\nrows were written at the very bottom of the Transactions tab, below the\noldest row, regardless of date.\n\n`get_transaction_impl` omitted `original_order` from its SELECT and filled\nthe field via `..Default::default()`, which produced `None`.\n`update_transaction_impl` then wrote every column back, binding that `None`\nas NULL. The fetch was incomplete but the write was complete.\n\nThe SELECT now includes the column. The struct literal also lists every\nremaining field explicitly instead of falling back on\n`..Default::default()`, so a field added to `Transaction` in the future is\na compile error here rather than a silent NULL. The one field with no\ncolumn to read from, `no_name`, is set explicitly with a comment saying so.\n\nThe category and autocat getters already listed their fields explicitly,\nwhich is why only transactions were affected.\n\nFixes #40",
+    "tree": {
+      "sha": "efa8b9fafc7c50e9d079760b6bc2f584a7d52be3",
+      "url": "https://api.github.com/repos/webern/tiller-sync/git/trees/efa8b9fafc7c50e9d079760b6bc2f584a7d52be3"
+    },
+    "url": "https://api.github.com/repos/webern/tiller-sync/git/commits/3566bd3f09430ad573a41bc7a4b52725b8be6221",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unknown_key",
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgrLzsfFISF4by8Q+FKz27YpkK1USsBB+m\namu1QkJnbDsAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5AAAAQIwMzwiR\niwrN2c5W6vlGDf8WuJQqAoMef9Vh6cLGjxjpZtnUZcWx9Y5CyGKhBDMsGvVUUJw0l/tkAnz4lynz\nCg8=\n-----END SSH SIGNATURE-----",
+      "payload": "tree efa8b9fafc7c50e9d079760b6bc2f584a7d52be3\nparent dea54f939e388ab857d0f4923b27f5793f028e33\nauthor Matthew James Briggs <matthew.james.briggs@gmail.com> 1786344755 +0000\ncommitter Matthew James Briggs <matthew.james.briggs@gmail.com> 1786347701 +0000\n\nfix: preserve original_order when updating a transaction\n\nEvery transaction touched by `update_transactions` came back with\n`original_order = NULL`. NULL sorts last, so on the next `sync up` those\nrows were written at the very bottom of the Transactions tab, below the\noldest row, regardless of date.\n\n`get_transaction_impl` omitted `original_order` from its SELECT and filled\nthe field via `..Default::default()`, which produced `None`.\n`update_transaction_impl` then wrote every column back, binding that `None`\nas NULL. The fetch was incomplete but the write was complete.\n\nThe SELECT now includes the column. The struct literal also lists every\nremaining field explicitly instead of falling back on\n`..Default::default()`, so a field added to `Transaction` in the future is\na compile error here rather than a silent NULL. The one field with no\ncolumn to read from, `no_name`, is set explicitly with a comment saying so.\n\nThe category and autocat getters already listed their fields explicitly,\nwhich is why only transactions were affected.\n\nFixes #40\n",
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/webern/tiller-sync/commits/3566bd3f09430ad573a41bc7a4b52725b8be6221",
+  "html_url": "https://github.com/webern/tiller-sync/commit/3566bd3f09430ad573a41bc7a4b52725b8be6221",
+  "comments_url": "https://api.github.com/repos/webern/tiller-sync/commits/3566bd3f09430ad573a41bc7a4b52725b8be6221/comments",
+  "author": {
+    "login": "webern",
+    "id": 6260372,
+    "node_id": "MDQ6VXNlcjYyNjAzNzI=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/6260372?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/webern",
+    "html_url": "https://github.com/webern",
+    "followers_url": "https://api.github.com/users/webern/followers",
+    "following_url": "https://api.github.com/users/webern/following{/other_user}",
+    "gists_url": "https://api.github.com/users/webern/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/webern/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/webern/subscriptions",
+    "organizations_url": "https://api.github.com/users/webern/orgs",
+    "repos_url": "https://api.github.com/users/webern/repos",
+    "events_url": "https://api.github.com/users/webern/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/webern/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "webern",
+    "id": 6260372,
+    "node_id": "MDQ6VXNlcjYyNjAzNzI=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/6260372?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/webern",
+    "html_url": "https://github.com/webern",
+    "followers_url": "https://api.github.com/users/webern/followers",
+    "following_url": "https://api.github.com/users/webern/following{/other_user}",
+    "gists_url": "https://api.github.com/users/webern/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/webern/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/webern/subscriptions",
+    "organizations_url": "https://api.github.com/users/webern/orgs",
+    "repos_url": "https://api.github.com/users/webern/repos",
+    "events_url": "https://api.github.com/users/webern/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/webern/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "dea54f939e388ab857d0f4923b27f5793f028e33",
+      "url": "https://api.github.com/repos/webern/tiller-sync/commits/dea54f939e388ab857d0f4923b27f5793f028e33",
+      "html_url": "https://github.com/webern/tiller-sync/commit/dea54f939e388ab857d0f4923b27f5793f028e33"
+    }
+  ],
+  "stats": {
+    "total": 115,
+    "additions": 111,
+    "deletions": 4
+  },
+  "files": [
+    {
+      "sha": "d968f2661b0003c56b60a1859b53c9284a8277d3",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/webern/tiller-sync/blob/3566bd3f09430ad573a41bc7a4b52725b8be6221/CHANGELOG.md",
+      "raw_url": "https://github.com/webern/tiller-sync/raw/3566bd3f09430ad573a41bc7a4b52725b8be6221/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/webern/tiller-sync/contents/CHANGELOG.md?ref=3566bd3f09430ad573a41bc7a4b52725b8be6221",
+      "patch": "@@ -14,6 +14,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n - `--other-field` on the `insert` and `update` subcommands is now optional and no longer panics when\n   supplied. Repeating it adds one custom column per occurrence. [#41]\n - Negative amounts can now be given as `--amount -12.34` instead of only `--amount=-12.34`.\n+- Updating a transaction no longer clears its `original_order`, which had caused updated rows to be\n+  written to the bottom of the Transactions tab on the next `sync up`. [#40]\n \n ### Changed\n \n@@ -96,4 +98,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n [#24]: https://github.com/webern/tiller-sync/issues/24\n [#28]: https://github.com/webern/tiller-sync/issues/28\n [#36]: https://github.com/webern/tiller-sync/issues/36\n+[#40]: https://github.com/webern/tiller-sync/issues/40\n [#41]: https://github.com/webern/tiller-sync/issues/41"
+    },
+    {
+      "sha": "df7c731bb77d753d8d1b1ad659b0f0f1942e139c",
+      "filename": "src/commands/update.rs",
+      "status": "modified",
+      "additions": 103,
+      "deletions": 2,
+      "changes": 105,
+      "blob_url": "https://github.com/webern/tiller-sync/blob/3566bd3f09430ad573a41bc7a4b52725b8be6221/src%2Fcommands%2Fupdate.rs",
+      "raw_url": "https://github.com/webern/tiller-sync/raw/3566bd3f09430ad573a41bc7a4b52725b8be6221/src%2Fcommands%2Fupdate.rs",
+      "contents_url": "https://api.github.com/repos/webern/tiller-sync/contents/src%2Fcommands%2Fupdate.rs?ref=3566bd3f09430ad573a41bc7a4b52725b8be6221",
+      "patch": "@@ -131,8 +131,11 @@ pub async fn update_autocats(\n #[cfg(test)]\n mod tests {\n     use super::*;\n-    use crate::args::{UpdateAutoCatsArgs, UpdateCategoriesArgs, UpdateTransactionsArgs};\n-    use crate::model::{AutoCatUpdates, CategoryUpdates, TransactionUpdates};\n+    use crate::args::{\n+        InsertTransactionArgs, UpdateAutoCatsArgs, UpdateCategoriesArgs, UpdateTransactionsArgs,\n+    };\n+    use crate::commands::insert_transaction;\n+    use crate::model::{AutoCatUpdates, CategoryUpdates, Date, TransactionUpdates};\n     use crate::test::TestEnv;\n \n     #[tokio::test]\n@@ -196,6 +199,104 @@ mod tests {\n         assert_eq!(updated.account_number, \"1234\");\n     }\n \n+    /// Updating a transaction used to clear its `original_order`. NULL sorts last, so on the next\n+    /// `sync up` every touched row was written below the oldest row of the Transactions tab,\n+    /// regardless of date.\n+    ///\n+    /// See https://github.com/webern/tiller-sync/issues/40\n+    #[tokio::test]\n+    async fn test_update_transactions_preserves_original_order() {\n+        let env = TestEnv::new().await;\n+        let txn_id = \"test-txn-order\";\n+        env.insert_test_transaction(txn_id).await;\n+\n+        // insert_test_transaction goes through Transactions::parse, which assigns original_order\n+        // from the row index, so the row starts out with Some(_).\n+        let before = env\n+            .config()\n+            .db()\n+            ._get_transaction(txn_id)\n+            .await\n+            .unwrap()\n+            .unwrap();\n+        assert!(\n+            before.original_order.is_some(),\n+            \"precondition: the inserted row should carry an original_order\"\n+        );\n+\n+        let updates = TransactionUpdates {\n+            note: Some(\"touched\".to_string()),\n+            ..Default::default()\n+        };\n+        let args = UpdateTransactionsArgs::new(vec![txn_id], updates).unwrap();\n+        update_transactions(env.config(), args).await.unwrap();\n+\n+        let after = env\n+            .config()\n+            .db()\n+            ._get_transaction(txn_id)\n+            .await\n+            .unwrap()\n+            .unwrap();\n+        assert_eq!(\n+            after.original_order, before.original_order,\n+            \"update_transactions must preserve original_order\"\n+        );\n+        assert_eq!(after.note, \"touched\");\n+    }\n+\n+    /// A transaction added locally has no `original_order`, and updating it must not invent one.\n+    #[tokio::test]\n+    async fn test_update_transactions_leaves_local_rows_unordered() {\n+        let env = TestEnv::new().await;\n+        env.insert_test_transaction(\"test-txn-anchor\").await;\n+\n+        let insert_args = InsertTransactionArgs {\n+            date: Date::parse(\"2025-01-20\").unwrap(),\n+            amount: \"-25.50\".parse().unwrap(),\n+            description: None,\n+            account: None,\n+            account_number: None,\n+            institution: None,\n+            month: None,\n+            week: None,\n+            full_description: None,\n+            account_id: None,\n+            check_number: None,\n+            date_added: None,\n+            merchant_name: None,\n+            category_hint: None,\n+            category: None,\n+            note: None,\n+            tags: None,\n+            categorized_date: None,\n+            statement: None,\n+            metadata: None,\n+            other_fields: Vec::new(),\n+        };\n+        let inserted = insert_transaction(env.config(), insert_args).await.unwrap();\n+        let txn_id = inserted.structure().unwrap().clone();\n+\n+        let updates = TransactionUpdates {\n+            note: Some(\"touched\".to_string()),\n+            ..Default::default()\n+        };\n+        let args = UpdateTransactionsArgs::new(vec![txn_id.clone()], updates).unwrap();\n+        update_transactions(env.config(), args).await.unwrap();\n+\n+        let after = env\n+            .config()\n+            .db()\n+            ._get_transaction(&txn_id)\n+            .await\n+            .unwrap()\n+            .unwrap();\n+        assert_eq!(\n+            after.original_order, None,\n+            \"a locally-added row should stay unordered\"\n+        );\n+    }\n+\n     #[tokio::test]\n     async fn test_update_transactions_not_found_error() {\n         let env = TestEnv::new().await;"
+    },
+    {
+      "sha": "b7c2a7de8f632bd2d26ddcb489defcad688202f0",
+      "filename": "src/db/mod.rs",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/webern/tiller-sync/blob/3566bd3f09430ad573a41bc7a4b52725b8be6221/src%2Fdb%2Fmod.rs",
+      "raw_url": "https://github.com/webern/tiller-sync/raw/3566bd3f09430ad573a41bc7a4b52725b8be6221/src%2Fdb%2Fmod.rs",
+      "contents_url": "https://api.github.com/repos/webern/tiller-sync/contents/src%2Fdb%2Fmod.rs?ref=3566bd3f09430ad573a41bc7a4b52725b8be6221",
+      "patch": "@@ -606,7 +606,7 @@ impl Db {\n                 transaction_id, date, description, amount, account, account_number,\n                 institution, month, week, full_description, account_id, check_number,\n                 date_added, merchant_name, category_hint, category, note, tags,\n-                categorized_date, statement, metadata, other_fields\n+                categorized_date, statement, metadata, other_fields, original_order\n             FROM transactions WHERE transaction_id = ?\"#,\n         )\n         .bind(id)\n@@ -663,7 +663,10 @@ impl Db {\n                     statement: r.get::<Option<String>, _>(\"statement\").unwrap_or_default(),\n                     metadata: r.get::<Option<String>, _>(\"metadata\").unwrap_or_default(),\n                     other_fields,\n-                    ..Default::default()\n+                    original_order: r.get::<Option<u64>, _>(\"original_order\"),\n+                    // `no_name` (the unnamed column A that some sheets have) has no column in the\n+                    // `transactions` table, so there is nothing to read it from.\n+                    no_name: String::new(),\n                 }))\n             }\n         }"
+    }
+  ]
+}
