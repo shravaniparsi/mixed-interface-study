@@ -1,0 +1,423 @@
+{
+  "kind": "paperless_finite_case_v1",
+  "case_id": "paperless.storage_path:matching_algorithm:enum-3",
+  "prefix_status": "accepted_persisted",
+  "continuation": "clean_preserving_continuation",
+  "workflow": "paperless.storage_path",
+  "channel": "ui",
+  "status": "observed",
+  "requests": [
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/storage_paths/",
+      "status": 200,
+      "response": {
+        "count": 0,
+        "next": null,
+        "previous": null,
+        "results": []
+      },
+      "elapsed_s": 0.068785534
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "POST",
+      "path": "/api/storage_paths/",
+      "body": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "owner": 2
+      },
+      "status": 201,
+      "response": {
+        "id": 1,
+        "slug": "ordinary-storage-path",
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "owner": 2,
+        "user_can_change": true
+      },
+      "elapsed_s": 0.030320060999999995
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/storage_paths/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "slug": "ordinary-storage-path",
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "document_count": 0,
+        "owner": 2,
+        "user_can_change": true
+      },
+      "elapsed_s": 0.028021652999999987
+    },
+    {
+      "channel": "ui",
+      "method": "PUT",
+      "path": "/api/storage_paths/1/",
+      "body": {
+        "id": 1,
+        "slug": "ordinary-storage-path",
+        "name": "Edited ordinary name",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "document_count": 0,
+        "owner": 2,
+        "permissions": {
+          "view": {
+            "users": [],
+            "groups": []
+          },
+          "change": {
+            "users": [],
+            "groups": []
+          }
+        },
+        "permissions_form": {
+          "owner": 2,
+          "set_permissions": {
+            "view": {
+              "users": [],
+              "groups": []
+            },
+            "change": {
+              "users": [],
+              "groups": []
+            }
+          }
+        },
+        "set_permissions": {
+          "view": {
+            "users": [],
+            "groups": []
+          },
+          "change": {
+            "users": [],
+            "groups": []
+          }
+        }
+      },
+      "accept": "application/json; version=10",
+      "status": 200
+    },
+    {
+      "channel": "api",
+      "api_version": 10,
+      "method": "GET",
+      "path": "/api/storage_paths/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "slug": "edited-ordinary-name",
+        "name": "Edited ordinary name",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "document_count": 0,
+        "owner": 2,
+        "user_can_change": true
+      },
+      "elapsed_s": 0.024122521000000233
+    }
+  ],
+  "forms": [
+    {
+      "label": "loaded",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "displayed": true,
+          "value": "Ordinary storage path",
+          "expected": "Ordinary storage path",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "path",
+          "count": 1,
+          "displayed": true,
+          "value": "study-storage",
+          "expected": "study-storage",
+          "selector": "[formcontrolname=\"path\"] textarea",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "match",
+          "count": 1,
+          "displayed": true,
+          "value": "study",
+          "expected": "study",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "matching_algorithm",
+          "count": 1,
+          "displayed": true,
+          "value": "Exact: Document contains this string",
+          "expected": "Exact: Document contains this string",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label",
+          "agrees": true,
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_insensitive",
+          "count": 1,
+          "displayed": true,
+          "value": true,
+          "expected": true,
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "before_submit",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "displayed": true,
+          "value": "Edited ordinary name",
+          "expected": "Edited ordinary name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "path",
+          "count": 1,
+          "displayed": true,
+          "value": "study-storage",
+          "expected": "study-storage",
+          "selector": "[formcontrolname=\"path\"] textarea",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "match",
+          "count": 1,
+          "displayed": true,
+          "value": "study",
+          "expected": "study",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "matching_algorithm",
+          "count": 1,
+          "displayed": true,
+          "value": "Exact: Document contains this string",
+          "expected": "Exact: Document contains this string",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label",
+          "agrees": true,
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_insensitive",
+          "count": 1,
+          "displayed": true,
+          "value": true,
+          "expected": true,
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "fresh_final",
+      "fields": [
+        {
+          "name": "name",
+          "count": 1,
+          "displayed": true,
+          "value": "Edited ordinary name",
+          "expected": "Edited ordinary name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "path",
+          "count": 1,
+          "displayed": true,
+          "value": "study-storage",
+          "expected": "study-storage",
+          "selector": "[formcontrolname=\"path\"] textarea",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "match",
+          "count": 1,
+          "displayed": true,
+          "value": "study",
+          "expected": "study",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "matching_algorithm",
+          "count": 1,
+          "displayed": true,
+          "value": "Exact: Document contains this string",
+          "expected": "Exact: Document contains this string",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label",
+          "agrees": true,
+          "attributes": {
+            "required": null,
+            "maxlength": null,
+            "pattern": null
+          }
+        },
+        {
+          "name": "is_insensitive",
+          "count": 1,
+          "displayed": true,
+          "value": true,
+          "expected": true,
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "agrees": true,
+          "attributes": {
+            "required": false,
+            "maxlength": null,
+            "pattern": null
+          }
+        }
+      ]
+    }
+  ],
+  "timing": {
+    "producer_s": 0.03297450299999998,
+    "native_auth_setup_s": 1.362612177,
+    "continuation_s": 1.8695015119999998
+  },
+  "initial_business_state": {
+    "actor": "study_actor",
+    "actor_id": 2,
+    "resource_count": 0,
+    "version": "3.4.2"
+  },
+  "immediate_status": 201,
+  "prefix": {
+    "name": "Ordinary storage path",
+    "path": "study-storage",
+    "match": "study",
+    "matching_algorithm": 3,
+    "is_insensitive": true,
+    "owner": 2
+  },
+  "resource_id": 1,
+  "immediate_schema": {
+    "has_integer_identity": true,
+    "business_fields_present": true,
+    "response_matches_readback": true
+  },
+  "response_contract_violations": [],
+  "producer_input_differences": {},
+  "final": {
+    "name": "Edited ordinary name",
+    "path": "study-storage",
+    "match": "study",
+    "matching_algorithm": 3,
+    "is_insensitive": true,
+    "owner": 2
+  },
+  "native_representation_signal": false,
+  "browser_cleanup_confirmed": true
+}
