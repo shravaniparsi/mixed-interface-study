@@ -1,0 +1,108 @@
+{
+  "kind": "independent_grocy_category_probes_v1",
+  "version": "4.7.1",
+  "source_commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+  "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+  "image_id": "sha256:80a50f603077d272c0c215ed0667a106d3c652a30a322ec1dfe64f34d31f80b1",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-grocy-42876848117-1/report.json",
+  "deployment_report_sha256": "d85a08527dea6351c722224a38d0d5353b3e38838cf6a207a238834f678dfcc7",
+  "scope": "One ordinary pair with deliberate live required-name probe; no sampled producer writes.",
+  "boundary_execution_authorized": false,
+  "normalization": "Only exact decimal integer strings in declared integer fields map to integers. Raw API responses retained. Null and empty string are never conflated. Date text is exact YYYY-MM-DD.",
+  "actor_permissions": [
+    "MASTER_DATA_EDIT",
+    "STOCK",
+    "TASKS",
+    "USERS_READ"
+  ],
+  "workflows": [
+    {
+      "id": "category",
+      "collection": "/api/objects/task_categories",
+      "edit_path": "/taskcategory/{id}",
+      "exit_path": "/taskcategories",
+      "form_selector": "#task-category-form",
+      "save_selector": "#save-task-category-button",
+      "edit_field": "description",
+      "edit_selector": "#description",
+      "edit_value": "Edited ordinary description",
+      "payload": {
+        "name": "Ordinary category",
+        "description": "Ordinary description"
+      },
+      "integer_fields": [
+        "active"
+      ],
+      "fields": [
+        "name",
+        "description",
+        "active"
+      ],
+      "immutable_fields": [
+        "id",
+        "row_created_timestamp",
+        "userfields"
+      ],
+      "initial_count": 0,
+      "fixtures": [],
+      "references": [],
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "#name",
+          "kind": "text"
+        },
+        {
+          "field": "description",
+          "selector": "#description",
+          "kind": "text"
+        },
+        {
+          "field": "active",
+          "selector": "#active",
+          "kind": "checkbox"
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "category-r1",
+      "workflow": "category",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/grocy_control_v3.mjs": "8fd2f7e192360a2213c3295e296bf634aa8644145e442b028f9bb5290bec6893",
+    "scripts/extension/grocy_actor_v1.php": "eade7e96e17fdc370a5c6de2e88a7f4ea918329c6c3e185fe349e49eb1754d45",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "scripts/extension/run_independent_grocy_category_controls_v1.py": "d0870fdfed445b241569469678de854cdeef3cb758ad0aaa49da5805e7716ea6",
+    ".github/workflows/independent_grocy_category_controls_v1.yml": "7e12757a3156052bcd4f6e6cd54f02fad7b3bb2ce00a332316fb780a2b9ba909",
+    "scripts/extension/independent_grocy_category_probe_v1.mjs": "eafec4027dbaafc739a9ded11ad13b686ff19d49823871e6e2cb36eed80abd9c",
+    "scripts/extension/run_independent_grocy_category_probes_v1.py": "49c400f04e5edc74d38449622280a5b71ead5a130593608a4b3e1e03d792c9a1",
+    ".github/workflows/independent_grocy_category_probes_v1.yml": "4c650ba790058c6d05a2bdbdd67f0e72e9b53f3fe8e8ca65ccd1345f7c311087"
+  },
+  "seed_policy": "Retain seeded rows in fresh pinned images. Capture complete initial target and prerequisite collections, excluding only generated row_created_timestamp from paired business-state comparison. Require identical projected seed collections across independently reset branches; fixture names must not collide. Ordinary qualification establishes concrete seed inventories before scientific case registration.",
+  "qualification_sha256": {
+    "manifests/independent-api-input-inventory-v1.json": "8aa247cc3021a6c568b071d83b70cf6783cd9814000c925db1ab7d3e7a643a14",
+    "manifests/independent-api-input-verification-v1.json": "e1dd91e90163fe9af5eb8705f75001c53dd11d6705b839ee7f49c3d22e5a9007",
+    "manifests/independent-api-capture-results-v2.json": "b07264b4b82b679f5cb6b4d88b99f7d243a0063f1f5db27fe4f06079a255faff",
+    "manifests/independent-grocy-category-attempt1-v1.json": "60085e554ce264c970707f3807fca25258465135317eaf1656b7e0c7f882ae1a",
+    "manifests/independent-native-inspection-v1.json": "cedbe4b65585b267ca89df889f3cdaddc86fb572d10f4c4187cfd5d76396f754"
+  },
+  "post_freeze_native_source": {
+    "commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+    "paths": [
+      "views/taskcategoryform.blade.php",
+      "public/viewjs/taskcategoryform.js",
+      "routes.php"
+    ],
+    "findings": "Required name; native ValidateForm before PUT; active checkbox absent from published TaskCategory schema but included in full semantic comparator and preserved readback. Sampling remains unchanged; no active-field inputs added."
+  }
+}
