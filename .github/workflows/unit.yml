@@ -146,6 +146,10 @@ jobs:
         run: python scripts/prepare_corpus_review_v2.py --verify 2>&1 | tee "$CI_ARTIFACT_DIR/corpus-review-v2.log"
       - name: Reconstruct complete independent-input evidence
         run: python scripts/extension/build_independent_input_summary_v1.py --verify
+      - name: Reconstruct historical write-preservation calibration
+        run: |
+          python -m pip install jsonschema==4.23.0
+          python scripts/extension/verify_write_preservation_calibration_v2.py --archive results/write-preservation-calibration-v2-ci-43079843246 --verify manifests/write-preservation-calibration-results-v2.json
       - name: Pure Node adapter tests
         run: node --test tests/*.test.mjs 2>&1 | tee "$CI_ARTIFACT_DIR/node-tests.log"
       - name: Syntax checks

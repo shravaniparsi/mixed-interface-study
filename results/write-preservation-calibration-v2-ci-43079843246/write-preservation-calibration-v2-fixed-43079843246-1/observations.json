@@ -1,0 +1,1082 @@
+[
+  {
+    "after": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "study edited note",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "before": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "morning coffee",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "case": "imported",
+    "channel": "direct",
+    "input": {
+      "ids": [
+        "study-transaction"
+      ],
+      "updates": {
+        "note": "study edited note"
+      }
+    },
+    "operation_success": true,
+    "response": {
+      "error": null,
+      "ok": true
+    },
+    "schema": null
+  },
+  {
+    "after": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "study edited note",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "before": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "morning coffee",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "case": "imported",
+    "channel": "mcp",
+    "input": {
+      "ids": [
+        "study-transaction"
+      ],
+      "updates": {
+        "note": "study edited note"
+      }
+    },
+    "operation_success": true,
+    "response": {
+      "content": [
+        {
+          "text": "Updated 1 transaction",
+          "type": "text"
+        },
+        {
+          "text": "[{\"transaction_id\":\"study-transaction\",\"date\":\"2025-01-15\",\"description\":\"Coffee Shop\",\"amount\":\"-$4.50\",\"account\":\"Checking\",\"account_number\":\"1234\",\"institution\":\"Test Bank\",\"month\":null,\"week\":null,\"full_description\":\"\",\"account_id\":\"acct-001\",\"check_number\":\"\",\"date_added\":null,\"merchant_name\":\"\",\"category_hint\":\"\",\"category\":\"Food\",\"note\":\"study edited note\",\"tags\":\"\",\"categorized_date\":null,\"statement\":\"\",\"metadata\":\"\",\"no_name\":\"\",\"other_fields\":{},\"original_order\":0}]",
+          "type": "text"
+        }
+      ],
+      "isError": false
+    },
+    "schema": {
+      "$defs": {
+        "Amount": {
+          "description": "A decimal number, with or without a dollar sign, negative sign or commas. Examples: 1.0 or -1 or -$1.21 or $3,452.12",
+          "type": "string"
+        },
+        "Date": {
+          "description": "A date in YYYY-MM-DD format (e.g., 2025-01-23), or ISO 8601 RFC 3339",
+          "format": "date",
+          "type": "string"
+        },
+        "TransactionUpdates": {
+          "description": "The fields to update in a transaction row. Only set values will be changed, unset values will\nnot be changed.\n\nSee tiller documentation for more information about the semantic meanings of transaction\ncolumns: https://help.tiller.com/en/articles/432681-transactions-sheet-columns",
+          "properties": {
+            "account": {
+              "description": "The account name as it appears on your bank's website or your custom nickname from Tiller\nConsole.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account_id": {
+              "description": "A unique ID assigned to your accounts by Tiller's systems. Important for troubleshooting;\ndo not delete.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account_number": {
+              "description": "Last four digits of the bank account number (e.g., \"xxxx1102\").",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "amount": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Amount"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Transaction value where income and credits are positive; expenses and debits are negative."
+            },
+            "categorized_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Date when AutoCat automatically categorized or updated a transaction. Google Sheets Add-on\ncolumn."
+            },
+            "category": {
+              "description": "User-assigned category. Non-automated by default to promote spending awareness; AutoCat\navailable for automation.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "category_hint": {
+              "description": "Data provider's category suggestion based on merchant knowledge. Optional automated column;\nnot included in core templates.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "check_number": {
+              "description": "Check number when available for checks you write.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The posted date (when the transaction cleared) or transaction date (when the transaction\noccurred). Posted date takes priority except for investment accounts."
+            },
+            "date_added": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "When the transaction was added to the spreadsheet."
+            },
+            "description": {
+              "description": "Cleaned-up merchant information from your bank.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "full_description": {
+              "description": "Unmodified merchant details directly from your bank, including codes and numbers.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "institution": {
+              "description": "Financial institution name (e.g., \"Bank of America\").",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "merchant_name": {
+              "description": "Normalized merchant name standardizing variants (e.g., \"Amazon\" for multiple Amazon\nformats). Optional automated column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "metadata": {
+              "description": "Supports workflows including CSV imports. Google Sheets Add-on column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First day of the transaction's month, useful for pivot tables and reporting."
+            },
+            "no_name": {
+              "description": "Empty column that may appear at Column A.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "note": {
+              "description": "Custom notes about specific transactions. Leveraged by Category Rollup reports.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "other_fields": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Custom columns not part of the standard Tiller schema.\n\nOn the command line, repeat `--other-field Name=Value` once per column. Over MCP this is a\nJSON object, e.g. `{\"My Column\": \"value\"}`.",
+              "type": "object"
+            },
+            "statement": {
+              "description": "For reconciling transactions to bank statements. Google Sheets Add-on column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "tags": {
+              "description": "User-defined tags for additional transaction categorization.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "week": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Sunday date of the transaction's week for weekly breakdowns."
+            }
+          },
+          "type": "object"
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "ids": {
+          "description": "One or more transaction IDs to update. All specified transactions will receive the same\nupdates.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "updates": {
+          "$ref": "#/$defs/TransactionUpdates",
+          "description": "The fields to update. Only fields with values will be modified; unspecified fields remain\nunchanged."
+        }
+      },
+      "required": [
+        "ids",
+        "updates"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "after": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "study edited note",
+      "original_order": null,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "before": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "morning coffee",
+      "original_order": null,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "case": "unordered",
+    "channel": "direct",
+    "input": {
+      "ids": [
+        "study-transaction"
+      ],
+      "updates": {
+        "note": "study edited note"
+      }
+    },
+    "operation_success": true,
+    "response": {
+      "error": null,
+      "ok": true
+    },
+    "schema": null
+  },
+  {
+    "after": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "study edited note",
+      "original_order": null,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "before": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "morning coffee",
+      "original_order": null,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "case": "unordered",
+    "channel": "mcp",
+    "input": {
+      "ids": [
+        "study-transaction"
+      ],
+      "updates": {
+        "note": "study edited note"
+      }
+    },
+    "operation_success": true,
+    "response": {
+      "content": [
+        {
+          "text": "Updated 1 transaction",
+          "type": "text"
+        },
+        {
+          "text": "[{\"transaction_id\":\"study-transaction\",\"date\":\"2025-01-15\",\"description\":\"Coffee Shop\",\"amount\":\"-$4.50\",\"account\":\"Checking\",\"account_number\":\"1234\",\"institution\":\"Test Bank\",\"month\":null,\"week\":null,\"full_description\":\"\",\"account_id\":\"acct-001\",\"check_number\":\"\",\"date_added\":null,\"merchant_name\":\"\",\"category_hint\":\"\",\"category\":\"Food\",\"note\":\"study edited note\",\"tags\":\"\",\"categorized_date\":null,\"statement\":\"\",\"metadata\":\"\",\"no_name\":\"\",\"other_fields\":{}}]",
+          "type": "text"
+        }
+      ],
+      "isError": false
+    },
+    "schema": {
+      "$defs": {
+        "Amount": {
+          "description": "A decimal number, with or without a dollar sign, negative sign or commas. Examples: 1.0 or -1 or -$1.21 or $3,452.12",
+          "type": "string"
+        },
+        "Date": {
+          "description": "A date in YYYY-MM-DD format (e.g., 2025-01-23), or ISO 8601 RFC 3339",
+          "format": "date",
+          "type": "string"
+        },
+        "TransactionUpdates": {
+          "description": "The fields to update in a transaction row. Only set values will be changed, unset values will\nnot be changed.\n\nSee tiller documentation for more information about the semantic meanings of transaction\ncolumns: https://help.tiller.com/en/articles/432681-transactions-sheet-columns",
+          "properties": {
+            "account": {
+              "description": "The account name as it appears on your bank's website or your custom nickname from Tiller\nConsole.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account_id": {
+              "description": "A unique ID assigned to your accounts by Tiller's systems. Important for troubleshooting;\ndo not delete.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account_number": {
+              "description": "Last four digits of the bank account number (e.g., \"xxxx1102\").",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "amount": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Amount"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Transaction value where income and credits are positive; expenses and debits are negative."
+            },
+            "categorized_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Date when AutoCat automatically categorized or updated a transaction. Google Sheets Add-on\ncolumn."
+            },
+            "category": {
+              "description": "User-assigned category. Non-automated by default to promote spending awareness; AutoCat\navailable for automation.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "category_hint": {
+              "description": "Data provider's category suggestion based on merchant knowledge. Optional automated column;\nnot included in core templates.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "check_number": {
+              "description": "Check number when available for checks you write.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The posted date (when the transaction cleared) or transaction date (when the transaction\noccurred). Posted date takes priority except for investment accounts."
+            },
+            "date_added": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "When the transaction was added to the spreadsheet."
+            },
+            "description": {
+              "description": "Cleaned-up merchant information from your bank.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "full_description": {
+              "description": "Unmodified merchant details directly from your bank, including codes and numbers.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "institution": {
+              "description": "Financial institution name (e.g., \"Bank of America\").",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "merchant_name": {
+              "description": "Normalized merchant name standardizing variants (e.g., \"Amazon\" for multiple Amazon\nformats). Optional automated column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "metadata": {
+              "description": "Supports workflows including CSV imports. Google Sheets Add-on column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First day of the transaction's month, useful for pivot tables and reporting."
+            },
+            "no_name": {
+              "description": "Empty column that may appear at Column A.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "note": {
+              "description": "Custom notes about specific transactions. Leveraged by Category Rollup reports.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "other_fields": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Custom columns not part of the standard Tiller schema.\n\nOn the command line, repeat `--other-field Name=Value` once per column. Over MCP this is a\nJSON object, e.g. `{\"My Column\": \"value\"}`.",
+              "type": "object"
+            },
+            "statement": {
+              "description": "For reconciling transactions to bank statements. Google Sheets Add-on column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "tags": {
+              "description": "User-defined tags for additional transaction categorization.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "week": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Sunday date of the transaction's week for weekly breakdowns."
+            }
+          },
+          "type": "object"
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "ids": {
+          "description": "One or more transaction IDs to update. All specified transactions will receive the same\nupdates.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "updates": {
+          "$ref": "#/$defs/TransactionUpdates",
+          "description": "The fields to update. Only fields with values will be modified; unspecified fields remain\nunchanged."
+        }
+      },
+      "required": [
+        "ids",
+        "updates"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "after": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "before": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "morning coffee",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "case": "explicit_empty",
+    "channel": "direct",
+    "input": {
+      "ids": [
+        "study-transaction"
+      ],
+      "updates": {
+        "note": ""
+      }
+    },
+    "operation_success": true,
+    "response": {
+      "error": null,
+      "ok": true
+    },
+    "schema": null
+  },
+  {
+    "after": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "before": {
+      "account": "Checking",
+      "account_id": "acct-001",
+      "account_number": "1234",
+      "amount": -4.5,
+      "categorized_date": null,
+      "category": "Food",
+      "category_hint": "",
+      "check_number": "",
+      "date": "2025-01-15",
+      "date_added": null,
+      "description": "Coffee Shop",
+      "full_description": "",
+      "institution": "Test Bank",
+      "merchant_name": "",
+      "metadata": "",
+      "month": null,
+      "note": "morning coffee",
+      "original_order": 0,
+      "other_fields": null,
+      "statement": "",
+      "tags": "",
+      "transaction_id": "study-transaction",
+      "week": null
+    },
+    "case": "explicit_empty",
+    "channel": "mcp",
+    "input": {
+      "ids": [
+        "study-transaction"
+      ],
+      "updates": {
+        "note": ""
+      }
+    },
+    "operation_success": true,
+    "response": {
+      "content": [
+        {
+          "text": "Updated 1 transaction",
+          "type": "text"
+        },
+        {
+          "text": "[{\"transaction_id\":\"study-transaction\",\"date\":\"2025-01-15\",\"description\":\"Coffee Shop\",\"amount\":\"-$4.50\",\"account\":\"Checking\",\"account_number\":\"1234\",\"institution\":\"Test Bank\",\"month\":null,\"week\":null,\"full_description\":\"\",\"account_id\":\"acct-001\",\"check_number\":\"\",\"date_added\":null,\"merchant_name\":\"\",\"category_hint\":\"\",\"category\":\"Food\",\"note\":\"\",\"tags\":\"\",\"categorized_date\":null,\"statement\":\"\",\"metadata\":\"\",\"no_name\":\"\",\"other_fields\":{},\"original_order\":0}]",
+          "type": "text"
+        }
+      ],
+      "isError": false
+    },
+    "schema": {
+      "$defs": {
+        "Amount": {
+          "description": "A decimal number, with or without a dollar sign, negative sign or commas. Examples: 1.0 or -1 or -$1.21 or $3,452.12",
+          "type": "string"
+        },
+        "Date": {
+          "description": "A date in YYYY-MM-DD format (e.g., 2025-01-23), or ISO 8601 RFC 3339",
+          "format": "date",
+          "type": "string"
+        },
+        "TransactionUpdates": {
+          "description": "The fields to update in a transaction row. Only set values will be changed, unset values will\nnot be changed.\n\nSee tiller documentation for more information about the semantic meanings of transaction\ncolumns: https://help.tiller.com/en/articles/432681-transactions-sheet-columns",
+          "properties": {
+            "account": {
+              "description": "The account name as it appears on your bank's website or your custom nickname from Tiller\nConsole.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account_id": {
+              "description": "A unique ID assigned to your accounts by Tiller's systems. Important for troubleshooting;\ndo not delete.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account_number": {
+              "description": "Last four digits of the bank account number (e.g., \"xxxx1102\").",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "amount": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Amount"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Transaction value where income and credits are positive; expenses and debits are negative."
+            },
+            "categorized_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Date when AutoCat automatically categorized or updated a transaction. Google Sheets Add-on\ncolumn."
+            },
+            "category": {
+              "description": "User-assigned category. Non-automated by default to promote spending awareness; AutoCat\navailable for automation.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "category_hint": {
+              "description": "Data provider's category suggestion based on merchant knowledge. Optional automated column;\nnot included in core templates.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "check_number": {
+              "description": "Check number when available for checks you write.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The posted date (when the transaction cleared) or transaction date (when the transaction\noccurred). Posted date takes priority except for investment accounts."
+            },
+            "date_added": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "When the transaction was added to the spreadsheet."
+            },
+            "description": {
+              "description": "Cleaned-up merchant information from your bank.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "full_description": {
+              "description": "Unmodified merchant details directly from your bank, including codes and numbers.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "institution": {
+              "description": "Financial institution name (e.g., \"Bank of America\").",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "merchant_name": {
+              "description": "Normalized merchant name standardizing variants (e.g., \"Amazon\" for multiple Amazon\nformats). Optional automated column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "metadata": {
+              "description": "Supports workflows including CSV imports. Google Sheets Add-on column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First day of the transaction's month, useful for pivot tables and reporting."
+            },
+            "no_name": {
+              "description": "Empty column that may appear at Column A.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "note": {
+              "description": "Custom notes about specific transactions. Leveraged by Category Rollup reports.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "other_fields": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Custom columns not part of the standard Tiller schema.\n\nOn the command line, repeat `--other-field Name=Value` once per column. Over MCP this is a\nJSON object, e.g. `{\"My Column\": \"value\"}`.",
+              "type": "object"
+            },
+            "statement": {
+              "description": "For reconciling transactions to bank statements. Google Sheets Add-on column.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "tags": {
+              "description": "User-defined tags for additional transaction categorization.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "week": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Sunday date of the transaction's week for weekly breakdowns."
+            }
+          },
+          "type": "object"
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "ids": {
+          "description": "One or more transaction IDs to update. All specified transactions will receive the same\nupdates.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "updates": {
+          "$ref": "#/$defs/TransactionUpdates",
+          "description": "The fields to update. Only fields with values will be modified; unspecified fields remain\nunchanged."
+        }
+      },
+      "required": [
+        "ids",
+        "updates"
+      ],
+      "type": "object"
+    }
+  }
+]
