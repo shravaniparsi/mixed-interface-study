@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/testplanit-tags-calibration-v1.json',
     'manifests/fastdash-cascade-results-v2.json',
     'manifests/fastdash-cascade-cost-v1.json',
     'manifests/fastdash-cascade-calibration-v1.json',
