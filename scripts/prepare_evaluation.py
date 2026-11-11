@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/restestbench-applicability-v1.json',
     'manifests/restestbench-released-status-v1.json',
     'manifests/restestbench-source-inventory-v1.json',
     'manifests/restestbench-source-pins-v1.json',
