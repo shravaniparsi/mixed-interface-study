@@ -171,6 +171,8 @@ jobs:
           python -m venv "$RUNNER_TEMP/adapter-schema-validator"
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" scripts/extension/validate_adapter_inputs_v1.py --verify
+      - name: Reconstruct reference backend calibration
+        run: python scripts/extension/verify_adapter_reference_v1.py --verify
       - name: Verify independent converter input enumeration
         run: python scripts/extension/build_adapter_input_inventory_v1.py --verify
       - name: Verify information-matched configuration reference replay

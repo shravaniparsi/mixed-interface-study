@@ -1,0 +1,207 @@
+# OpenAPI to MCP
+
+`fromOpenAPI()` (`fastmcp/openapi`) converts an OpenAPI 3.x document into a FastMCP server, turning each operation into a tool.
+
+## Table of Contents
+
+- [Basic Usage](#basic-usage)
+- [Choosing which operations become tools](#choosing-which-operations-become-tools)
+- [GET → resources](#get--resources)
+- [Structured output](#structured-output)
+- [Query and form-body serialization](#query-and-form-body-serialization)
+- [Path parameter serialization](#path-parameter-serialization)
+- [Header parameter serialization](#header-parameter-serialization)
+- [Options](#options)
+- [Authentication](#authentication)
+- [Adding to an existing server](#adding-to-an-existing-server)
+- [Known limitations](#known-limitations)
+
+## Basic Usage
+
+```typescript
+import { fromOpenAPI } from "fastmcp/openapi";
+
+const server = await fromOpenAPI({
+  spec: "https://petstore3.swagger.io/api/v3/openapi.json",
+  include: (operation) => operation.tags.includes("pet"),
+});
+
+await server.start({ transportType: "stdio" });
+```
+
+`spec` accepts a URL, a local file path, or an already-parsed OpenAPI document (JSON or YAML). Passing a URL or file path — rather than an object you fetched and parsed yourself — is what lets external `$ref`s (multi-file specs) and a relative `servers[0].url` resolve correctly, since both are resolved relative to that value.
+
+Path Item `$ref`s are supported too: when multiple paths share a definition, each remains a separate tool or resource at its own path.
+
+Generated tools forward the call's cancellation signal to `fetch`, so cancelling a tool call or closing its session aborts the HTTP request and response-body reading. A custom `fetch` implementation must honor `RequestInit.signal` for this to work. Aborting a request does not undo work the API has already performed; resource reads do not receive a cancellation signal.
+
+Each operation uses the first server in its nearest non-empty `servers` array: operation, then path, then document. Server variables use their defaults, and relative URLs resolve against the spec URL. An explicit `baseUrl` overrides this selection for every generated tool or resource.
+
+Tool inputs combine path, query, header, cookie, and body fields. If a parameter name is shared across locations or with a body property, it becomes `{name}__{location}`; body properties keep their names. If that generated alias is already occupied, `_2`, `_3`, and so on are appended until it is unique. These aliases only affect MCP input names; HTTP requests still use the original parameter and body names. Header parameters named `Accept`, `Content-Type` or `Authorization` are ignored, as the OpenAPI specification requires, so they never become tool inputs; set those headers through the `headers` option.
+
+A top-level parameter or flattened body property named `__proto__` also receives an alias, because the schema validator does not validate that literal property name. For example, a path parameter becomes `__proto____path` and a body property becomes `__proto____body`; occupied aliases receive the same numeric suffixes. The HTTP field name remains `__proto__`. This does not rename properties inside nested or whole-body schemas.
+
+## Choosing which operations become tools
+
+Turning every operation in a large spec into a tool produces a tool list most MCP clients can't work with well. There is no way to make this fully automatic, so `fromOpenAPI` asks you to choose:
+
+```typescript
+const server = await fromOpenAPI({
+  spec: "https://api.example.com/openapi.json",
+  include: (operation) => operation.tags.includes("orders"),
+  exclude: (operation) => operation.operationId === "deleteAllOrders",
+});
+```
+
+`include`/`exclude` receive an `OperationSummary` (`{ deprecated, method, operationId, path, tags }`). Deprecated operations are excluded by default.
+
+If neither `include`/`exclude` nor `maxTools` is given and the spec still produces more than 40 operations, `fromOpenAPI` throws instead of silently generating a wall of tools. Pass `maxTools` to raise that limit explicitly once you've decided that's really what you want.
+
+## GET → resources
+
+Pass `resources: true` to map an eligible `GET` operation to an MCP resource (no parameters) or resource template (path and/or query parameters) instead of a tool:
+
+```typescript
+const server = await fromOpenAPI({
+  spec: "https://petstore3.swagger.io/api/v3/openapi.json",
+  include: (operation) => operation.tags.includes("pet"),
+  resources: true,
+});
+```
+
+`getPetById` (`GET /pet/{petId}`) becomes a resource template at `openapi://getPetById/pet/{petId}`, readable via `client.readResource({ uri: "openapi://getPetById/pet/10" })`. A `GET` with no parameters at all becomes a static resource.
+
+A `GET` stays a tool instead — even with `resources: true` — when:
+
+- it has any `header` or `cookie` parameter (these can't be expressed in a resource URI, and resource reads have no per-call side channel for them), or
+- any of its path/query parameters is array-typed, including component schema references and nullable arrays (OpenAPI's array query serialization and RFC 6570's don't match), or
+- any of its path/query parameters is object-typed, including component schema references and nullable objects (the URI template parser does not preserve the object shape needed for OpenAPI serialization).
+
+This means a "get by ID" style endpoint typically becomes a resource template, while a "search/filter" endpoint with array- or object-valued query parameters typically stays a tool — which tends to match how each is actually used.
+
+There's no per-operation override for this — an eligible `GET` always maps to a resource when `resources: true`; use `exclude` if you want a specific one to stay a tool instead of being generated at all.
+
+Eligibility doesn't check the response's own content type, only the request shape. A `GET` returning binary data (an image, a PDF, ...) can still become a resource, and its response is read as text, not as the binary-safe `blob` a resource can also return — corrupting non-text bytes. If your spec has binary-returning `GET`s you want as resources, use `exclude` to keep them as tools instead until this is addressed.
+
+## Structured output
+
+When an operation declares a `2xx` `application/json` response schema, its tool is given an `outputSchema`, and a successful call returns `structuredContent` (the parsed response object) instead of just a text blob — so an agent can consume typed fields directly rather than parsing JSON out of a string.
+
+The response is checked against the advertised schema _before_ being returned as structured content. When a tool has an `outputSchema` but the response doesn't match, isn't a JSON object, is served as `text/plain`, or has an empty body, the call returns a tool error (`isError: true`) containing the response text. This keeps the response visible to clients that validate calls against the advertised schema. Tools without an `outputSchema` keep returning plain-text successes; for example, an array-typed response schema is never wired to `outputSchema` in the first place.
+
+An operation whose response schema is unusually large (more than 50 transitively-referenced component schemas — real for some "core" resource objects in large APIs) doesn't get `outputSchema` wired at all, both to keep `tools/list` fast and because a schema that large has limited practical value as structured output anyway.
+
+## Query and form-body serialization
+
+Query parameters are serialized according to their declared `style`:
+
+- `deepObject` (e.g. Stripe's `created[gte]=...`, `expand[]=...` filters) expands as bracket-notation pairs.
+- `spaceDelimited` / `pipeDelimited` array values join into a single space- or pipe-separated value.
+- `form` (the default when no style is declared) uses repeated keys for arrays — `tag=a&tag=b` — and property pairs for objects — `R=100&G=200`. With `explode: false`, arrays use a single comma-separated value, such as `fields=id%2Cname` (decoded value: `id,name`), and objects use alternating keys and values, such as `color=R%2C100%2CG%2C200` (decoded value: `R,100,G,200`). Values are URL-encoded; empty form-style arrays and objects are omitted.
+
+Query parameters with `allowReserved: true` preserve query-safe reserved characters such as `/`, `:`, `?`, and `,`, plus existing percent-encoded triples (`%2F` stays `%2F`). Raw `[]#&=+` remain encoded to preserve the query structure and values; HTTP(S) URL serialization also encodes apostrophes. Other unsafe characters and Unicode are percent-encoded. Parameter names and query parameters with `allowReserved: false` or no flag keep their existing encoding.
+
+For form-style query arrays and objects, `explode` defaults to `true`. Form-body encoding is unchanged by this flag.
+
+With `explode: false`, commas inside individual array items or object keys/values are not escaped separately from the separators. For example, `["x,y", "z"]` is sent as `fields=x%2Cy%2Cz`; a server that URL-decodes and then splits on commas cannot distinguish the comma inside the first item from a separator.
+
+Form-style query objects support scalar property values; nested objects/arrays require `deepObject` serialization. Object-valued `spaceDelimited`/`pipeDelimited` queries and cookies are still sent as the literal string `"[object Object]"` (percent-encoded for form-style cookies).
+
+Form-style cookie values (the default) are percent-encoded, leaving only letters, digits and `-._~` as they are, so a value such as `a; b=c` is sent as `a%3B%20b%3Dc` and cannot add a cookie of its own. With OpenAPI 3.2 `style: cookie` the value is sent as given, already escaped by the caller, and a value holding `;` or `,` is refused. Array items are encoded, or checked, one at a time and joined with commas.
+
+Request bodies get the same bracket-notation treatment for nested objects/arrays (e.g. Stripe's `metadata[key]=value`) when form-urlencoded.
+
+Required flattened JSON request bodies are sent as `{}` when no body properties are supplied. A required `application/json` body without a schema also sends `{}`. Omitted optional bodies remain absent.
+
+For optional JSON and form-urlencoded bodies, required body properties are enforced only when at least one body field is supplied. Omitting all body fields leaves the body absent; supplying only some required fields is rejected. Path, query, header, and cookie requirements still apply independently.
+
+## Path parameter serialization
+
+Flat object path parameters support `style: simple`, including the path default when `style` is omitted. With `{ R: 100, G: 200, B: 150 }`, `explode: false` (the default) produces `R,100,G,200,B,150`; `explode: true` produces `R=100,G=200,B=150`.
+
+Each property key and scalar value is percent-encoded separately before adding the comma and equals-sign separators. For example, `{ "x,y": "a/b=c" }` becomes `x%2Cy,a%2Fb%3Dc`, or `x%2Cy=a%2Fb%3Dc` when exploded. Empty objects expand to an empty path value.
+
+Simple-style arrays also encode each item separately, then join them with commas, for either `explode` value. For example, `["blue,green", "red/white"]` becomes `blue%2Cgreen,red%2Fwhite`, preserving the difference between a comma inside an item and a separator. Empty arrays expand to an empty path value. Scalar path parameters keep their existing encoding.
+
+Nested object/array properties and other path styles (such as `matrix` and `label`) remain unsupported: these objects are still sent as the literal string `"[object Object]"`.
+
+## Header parameter serialization
+
+Flat object header parameters support `style: simple`, the default for headers. `{ R: 100, G: 200 }` is sent as `R,100,G,200`, or `R=100,G=200` with `explode: true`.
+
+Keys and values are sent as given, like scalar and array headers: OpenAPI 3.2 rules out percent-encoding a header value. A `,` or `=` inside a key or value is therefore not escaped separately from the separators; `{ "x,y": "a/b=c" }` is sent as `x,y,a/b=c`. Empty objects produce an empty header value.
+
+Scalar and array headers retain their existing string conversion. Nested objects/arrays inside header objects and non-simple styles remain unsupported and retain the `"[object Object]"` fallback. Static or callback-provided `headers` values are unchanged.
+
+## Options
+
+| Option      | Type                                                       | Description                                                                                |
+| ----------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `spec`      | `string \| object`                                         | Required. A URL, file path, or parsed OpenAPI document.                                    |
+| `name`      | `string`                                                   | Name for a newly-created server. Defaults to the spec's `info.title`, or "OpenAPI Server". |
+| `version`   | `` `${number}.${number}.${number}` ``                      | Version for a newly-created server. Defaults to `"1.0.0"`.                                 |
+| `server`    | `FastMCP`                                                  | Register the generated tools onto an existing server instead of creating one.              |
+| `include`   | `(operation: OperationSummary) => boolean`                 | Only keep matching operations.                                                             |
+| `exclude`   | `(operation: OperationSummary) => boolean`                 | Drop matching operations, applied after `include`.                                         |
+| `maxTools`  | `number`                                                   | Hard cap; throws if the selected operation count exceeds it.                               |
+| `mcpNames`  | `Record<string, string>`                                   | Override the generated tool name for a given `operationId`.                                |
+| `resources` | `boolean`                                                  | Map eligible `GET`s to resources/resource templates instead of tools. Default `false`.     |
+| `baseUrl`   | `string`                                                   | Overrides the resolved `servers[0].url`.                                                   |
+| `headers`   | `Record<string, string> \| (() => Record<string, string>)` | Static or dynamically-resolved headers sent with every generated tool call.                |
+| `fetch`     | `typeof fetch`                                             | HTTP client used to execute tool calls. Defaults to the global `fetch`.                    |
+
+## Authentication
+
+Most APIs need an API key or bearer token. Use `headers`:
+
+```typescript
+const server = await fromOpenAPI({
+  spec: "https://api.example.com/openapi.json",
+  headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+});
+```
+
+Pass a function instead of a plain object if the token needs to be refreshed per call. The function receives the context of the MCP call, so a per-user token can come from the session your `authenticate` returned. Pass that server as `server`:
+
+```typescript
+const server = new FastMCP({
+  name: "My Server",
+  version: "1.0.0",
+  authenticate: async (request) => ({
+    token: request.headers["x-api-token"] as string,
+  }),
+});
+
+await fromOpenAPI({
+  spec: "https://api.example.com/openapi.json",
+  server,
+  headers: (context) =>
+    context?.session?.token
+      ? { Authorization: `Bearer ${context.session.token}` }
+      : {},
+});
+```
+
+The context is `undefined` when a resource is read through `server.embedded()`.
+
+## Adding to an existing server
+
+Pass `server` to register the generated tools onto a server you've already created, alongside hand-written tools:
+
+```typescript
+const server = new FastMCP({ name: "My Server", version: "1.0.0" });
+server.addTool({ name: "customTool", execute: async () => "..." });
+
+await fromOpenAPI({ spec: "https://api.example.com/openapi.json", server });
+```
+
+## Known limitations
+
+This scope is deliberately kept tight:
+
+- **Tools by default.** Every operation becomes a tool unless you opt into [`resources: true`](#get--resources), and even then only an eligible `GET` is affected.
+- **`application/json` and `application/x-www-form-urlencoded` request bodies.** Other content types (`multipart/form-data`, `application/json-patch+json`, `application/octet-stream`, ...) are skipped, not silently turned into a tool with no way to carry its payload — `fromOpenAPI` logs one `console.warn` listing every operation it skipped this way.
+- **An array-of-objects form-body property bracket-expands under `key[]`** (not indexed `key[0][...]`) — see [Query and form-body serialization](#query-and-form-body-serialization).
+- **OpenAPI 3.x only.** Swagger 2.0 documents are rejected with a clear error.
+- **A very large response schema doesn't get `outputSchema` wired** — see [Structured output](#structured-output).
+- **No CLI.** `fromOpenAPI` is a programmatic API; there is no `fastmcp openapi <spec>` command yet.

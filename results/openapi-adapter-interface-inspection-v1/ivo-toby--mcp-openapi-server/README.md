@@ -1,0 +1,1092 @@
+# OpenAPI MCP Server
+
+[![smithery badge](https://smithery.ai/badge/@ivo-toby/mcp-openapi-server)](https://smithery.ai/server/@ivo-toby/mcp-openapi-server)
+
+A Model Context Protocol (MCP) server that exposes OpenAPI endpoints as MCP tools, along with optional support for MCP prompts and resources. This server allows Large Language Models to discover and interact with REST APIs defined by OpenAPI specifications through the MCP protocol.
+
+## 📖 Documentation
+
+- **[User Guide](#user-guide)** - For users wanting to use this MCP server with Claude Desktop, Cursor, or other MCP clients
+- **[Library Usage](#library-usage)** - For developers creating custom MCP servers using this package as a library
+- **[Developer Guide](./docs/developer-guide.md)** - For contributors and developers working on the codebase
+- **[AuthProvider Guide](./docs/auth-provider-guide.md)** - Detailed authentication patterns and examples
+
+---
+
+# User Guide
+
+This section covers how to use the MCP server as an end user with Claude Desktop, Cursor, or other MCP-compatible tools.
+
+## Overview
+
+This MCP server can be used in two ways:
+
+1. **CLI Tool**: Use `npx @ivotoby/openapi-mcp-server` directly with command-line arguments for quick setup
+2. **Library**: Import and use the `OpenAPIServer` class in your own Node.js applications for custom implementations
+
+The server supports two transport methods:
+
+1. **Stdio Transport** (default): For direct integration with AI systems like Claude Desktop that manage MCP connections through standard input/output.
+2. **Streamable HTTP Transport**: For connecting to the server over HTTP, allowing web clients and other HTTP-capable systems to use the MCP protocol.
+
+## Quick Start for Users
+
+### Option 1: Using with Claude Desktop (Stdio Transport)
+
+No need to clone this repository. Simply configure Claude Desktop to use this MCP server:
+
+1. Locate or create your Claude Desktop configuration file:
+   - On macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+2. Add the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "openapi": {
+      "command": "npx",
+      "args": ["-y", "@ivotoby/openapi-mcp-server"],
+      "env": {
+        "API_BASE_URL": "https://api.example.com",
+        "OPENAPI_SPEC_PATH": "https://api.example.com/openapi.json",
+        "API_HEADERS": "Authorization:Bearer token123,X-API-Key:your-api-key"
+      }
+    }
+  }
+}
+```
+
+3. Replace the environment variables with your actual API configuration:
+   - `API_BASE_URL`: The base URL of your API
+   - `OPENAPI_SPEC_PATH`: URL or path to your OpenAPI specification
+   - `API_HEADERS`: Comma-separated key:value pairs for API authentication headers
+
+### Option 2: Using with HTTP Clients (HTTP Transport)
+
+To use the server with HTTP clients:
+
+1. No installation required! Use npx to run the package directly:
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --headers "Authorization:Bearer token123" \
+  --transport http \
+  --port 3000
+```
+
+2. Interact with the server using HTTP requests:
+
+```bash
+# Initialize a session (first request)
+curl -X POST http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"curl-client","version":"1.0.0"}}}'
+
+# The response includes a Mcp-Session-Id header that you must use for subsequent requests
+# and the InitializeResult directly in the POST response body.
+
+# Send a request to list tools
+# This also receives its response directly on this POST request.
+curl -X POST http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -H "Mcp-Session-Id: your-session-id" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+
+# Open a streaming connection for other server responses (e.g., tool execution results)
+# This uses Server-Sent Events (SSE).
+curl -N http://localhost:3000/mcp -H "Mcp-Session-Id: your-session-id"
+
+# Example: Execute a tool (response will arrive on the GET stream)
+# curl -X POST http://localhost:3000/mcp \
+#  -H "Content-Type: application/json" \
+#  -H "Mcp-Session-Id: your-session-id" \
+#  -d '{"jsonrpc":"2.0","id":2,"method":"tools/execute","params":{"name":"yourToolName", "arguments": {}}}'
+
+# Terminate the session when done
+curl -X DELETE http://localhost:3000/mcp -H "Mcp-Session-Id: your-session-id"
+```
+
+## Configuration Options
+
+The server can be configured through environment variables or command line arguments:
+
+### Environment Variables
+
+- `API_BASE_URL` - Base URL for the API endpoints
+- `OPENAPI_SPEC_PATH` - Path or URL to OpenAPI specification
+- `OPENAPI_SPEC_FROM_STDIN` - Set to "true" to read OpenAPI spec from standard input
+- `OPENAPI_SPEC_INLINE` - Provide OpenAPI spec content directly as a string
+- `API_HEADERS` - Comma-separated key:value pairs for API headers
+- `SPEC_AUTH` - When to send the auth headers while loading the spec from a URL: `same-origin` (default), `always`, or `never` (see [Authenticated Spec URLs](#authenticated-spec-urls))
+- `CLIENT_CERT_PATH` - Path to client certificate PEM file for mutual TLS
+- `CLIENT_KEY_PATH` - Path to client private key PEM file for mutual TLS
+- `CA_CERT_PATH` - Path to custom CA certificate PEM file for private/internal CAs
+- `CLIENT_KEY_PASSPHRASE` - Passphrase for an encrypted client private key
+- `REJECT_UNAUTHORIZED` - Whether to reject untrusted server certificates (default: `true`)
+- `SERVER_NAME` - Name for the MCP server (default: "mcp-openapi-server")
+- `SERVER_VERSION` - Version of the server (default: "1.0.0")
+- `TRANSPORT_TYPE` - Transport type to use: "stdio" or "http" (default: "stdio")
+- `HTTP_PORT` - Port for HTTP transport (default: 3000)
+- `HTTP_HOST` - Host for HTTP transport (default: "127.0.0.1")
+- `ENDPOINT_PATH` - Endpoint path for HTTP transport (default: "/mcp")
+- `TOOLS_MODE` - Tools loading mode: "all" (load all endpoint-based tools), "dynamic" (load only meta-tools), or "explicit" (load only tools specified in includeTools) (default: "all")
+- `DISABLE_ABBREVIATION` - Disable name optimization (this could throw errors when name is > 64 chars)
+- `VERBOSE` - Enable operational logging (`true` by default; set to `false` to suppress non-essential logs)
+- `PROMPTS_PATH` - Path or URL to prompts JSON/YAML file
+- `PROMPTS_INLINE` - Provide prompts directly as JSON string
+- `RESOURCES_PATH` - Path or URL to resources JSON/YAML file
+- `RESOURCES_INLINE` - Provide resources directly as JSON string
+- `SERVER_INSTRUCTIONS` - Instructions describing how to use the server, handed to MCP clients
+
+### Command Line Arguments
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --headers "Authorization:Bearer token123,X-API-Key:your-api-key" \
+  --spec-auth same-origin \
+  --exclude-tag admin \
+  --client-cert ./certs/client.pem \
+  --client-key ./certs/client-key.pem \
+  --name "my-mcp-server" \
+  --server-version "1.0.0" \
+  --transport http \
+  --port 3000 \
+  --host 127.0.0.1 \
+  --path /mcp \
+  --disable-abbreviation true \
+  --instructions "Pages are created unapproved: approve the version once you are done." \
+  --verbose false
+```
+
+## Mutual TLS (mTLS)
+
+If your upstream API requires client certificate authentication, you can attach TLS credentials directly to outbound requests.
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://secure-api.example.com \
+  --openapi-spec https://secure-api.example.com/openapi.json \
+  --client-cert ./certs/client.pem \
+  --client-key ./certs/client-key.pem \
+  --headers "Authorization:Bearer token123"
+```
+
+This is orthogonal to HTTP-level auth, so mTLS can be combined with static headers or an `AuthProvider`.
+
+TLS-related options only apply when `--api-base-url` uses `https://`. They are also used to fetch the OpenAPI spec when `--openapi-spec` is an `https://` URL on the **same origin** (scheme, host and port) as `--api-base-url`, so a spec served by the API behind mTLS or a private CA loads with the same client certificate and CA. Spec URLs on any other origin, including redirect targets, are fetched without these settings. That way your client certificate, private CA and `--reject-unauthorized false` never apply to unrelated hosts. When TLS options are set but skipped for the spec URL, the server logs a warning and adds the reason to any load error.
+
+For private CAs or encrypted keys:
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://internal-api.example.com \
+  --openapi-spec ./openapi.yaml \
+  --client-cert ./certs/client.pem \
+  --client-key ./certs/client-key.pem \
+  --client-key-passphrase "$CLIENT_KEY_PASSPHRASE" \
+  --ca-cert ./certs/internal-ca.pem \
+  --reject-unauthorized false
+```
+
+- `--client-cert` / `CLIENT_CERT_PATH`: client certificate PEM file
+- `--client-key` / `CLIENT_KEY_PATH`: client private key PEM file
+- `--client-key-passphrase` / `CLIENT_KEY_PASSPHRASE`: passphrase for encrypted private keys
+- `--ca-cert` / `CA_CERT_PATH`: custom CA bundle for private/internal certificate authorities
+- `--reject-unauthorized` / `REJECT_UNAUTHORIZED`: set to `false` only when you intentionally want to allow self-signed or otherwise untrusted server certificates
+
+Set `--verbose false` or `VERBOSE=false` if you want the server to stay quiet in scripts or embedded environments.
+
+## OpenAPI Specification Loading
+
+The MCP server supports multiple methods for loading OpenAPI specifications, providing flexibility for different deployment scenarios:
+
+### 1. URL Loading (Default)
+
+Load the OpenAPI spec from a remote URL:
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json
+```
+
+#### Authenticated Spec URLs
+
+If the API serves its own spec behind the same auth as its endpoints, the configured `--headers` (or your `AuthProvider`) are sent with the spec request too. By default this only happens when the spec URL is on the **same origin** (scheme, host and port) as `--api-base-url`, so your credentials never reach a spec hosted elsewhere:
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com/v1 \
+  --openapi-spec https://api.example.com/openapi.json \
+  --headers "Authorization:Bearer token123"
+```
+
+Control this with `--spec-auth` / `SPEC_AUTH`:
+
+- `same-origin` (default): send auth headers only to a spec URL on the `--api-base-url` origin
+- `always`: send auth headers to the spec URL's own origin, even when it differs from the API (only for a spec host you trust with these credentials)
+- `never`: never send auth headers with spec requests
+
+In every mode, each redirect is checked before it is followed. A redirect to another origin, such as a pre-signed storage URL, continues **without** auth headers, and so does any redirect after that one, even if it comes back to the API origin. On a `401`/`403`, an `AuthProvider`'s `handleAuthError()` is called and the request is retried once if it returns `true`, the same as for API calls.
+
+Notes:
+
+- All configured `--headers` are sent with an authenticated spec request, not only `Authorization`.
+- If your `AuthProvider`'s `getAuthHeaders()` throws (for example because no token is set yet), the spec request is sent without auth and a warning is logged. If the spec then needs auth, the error includes the provider's message.
+- Spec URLs that embed credentials (`https://user:pass@host/...`) never get auth headers added.
+- Authenticated spec requests use the same HTTP client as API calls: a 30s timeout, a 50MB size limit, and a direct connection with no proxy.
+
+### 2. Local File Loading
+
+Load the OpenAPI spec from a local file:
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec ./path/to/openapi.yaml
+```
+
+### 3. Standard Input Loading
+
+Read the OpenAPI spec from standard input (useful for piping or containerized environments):
+
+```bash
+# Pipe from file
+cat openapi.json | npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --spec-from-stdin
+
+# Pipe from curl
+curl -s https://api.example.com/openapi.json | npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --spec-from-stdin
+
+# Using environment variable
+export OPENAPI_SPEC_FROM_STDIN=true
+echo '{"openapi": "3.0.0", ...}' | npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com
+```
+
+### 4. Inline Specification
+
+Provide the OpenAPI spec content directly as a command line argument:
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --spec-inline '{"openapi": "3.0.0", "info": {"title": "My API", "version": "1.0.0"}, "paths": {}}'
+
+# Using environment variable
+export OPENAPI_SPEC_INLINE='{"openapi": "3.0.0", ...}'
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com
+```
+
+### Supported Formats
+
+All loading methods support both JSON and YAML formats. The server automatically detects the format and parses accordingly.
+
+### Docker and Container Usage
+
+For containerized deployments, you can mount OpenAPI specs or use stdin:
+
+```bash
+# Mount local file
+docker run -v /path/to/spec:/app/spec.json your-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec /app/spec.json
+
+# Use stdin with docker
+cat openapi.json | docker run -i your-mcp-server \
+  --api-base-url https://api.example.com \
+  --spec-from-stdin
+```
+
+### Error Handling
+
+The server provides detailed error messages for spec loading failures:
+
+- **URL loading**: HTTP status codes and network errors (a `401`/`403` from an authenticated spec URL usually means the headers or `--spec-auth` mode need adjusting)
+- **File loading**: File system errors (not found, permissions, etc.)
+- **Stdin loading**: Empty input or read errors
+- **Inline loading**: Missing content errors
+- **Parsing errors**: Detailed JSON/YAML syntax error messages
+
+### Validation
+
+Only one specification source can be used at a time. The server will validate that exactly one of the following is provided:
+
+- `--openapi-spec` (URL or file path)
+- `--spec-from-stdin`
+- `--spec-inline`
+
+If multiple sources are specified, the server will exit with an error message.
+
+## Tool Loading & Filtering Options
+
+Based on the Stainless article "What We Learned Converting Complex OpenAPI Specs to MCP Servers" (https://www.stainless.com/blog/what-we-learned-converting-complex-openapi-specs-to-mcp-servers), the following flags were added to control which API endpoints (tools) are loaded:
+
+- `--tools <all|dynamic|explicit>`: Choose tool loading mode:
+  - `all` (default): Load all tools from the OpenAPI spec, applying any specified filters
+  - `dynamic`: Load only dynamic meta-tools (`list-api-endpoints`, `get-api-endpoint-schema`, `invoke-api-endpoint`). `--exclude-tag` still applies to dynamic endpoint discovery and invocation.
+  - `explicit`: Load only tools explicitly listed in `--tool` options, ignoring include filters. `--exclude-tag` still applies as a deny filter.
+- `--tool <toolId>`: Import only specified tool IDs or names. Can be used multiple times. In `all` mode, this bypasses `--tag`, `--resource`, and `--operation`, but not `--exclude-tag`.
+- `--tag <tag>`: Import only tools with the specified OpenAPI tag. Can be used multiple times.
+- `--exclude-tag <tag>`: Exclude tools with the specified OpenAPI tag. Can be used multiple times. Excluded tags take precedence over `--tool`.
+- `--resource <resource>`: Import only tools under the specified resource path prefixes. Can be used multiple times.
+- `--operation <method>`: Import only tools for the specified HTTP methods (get, post, etc). Can be used multiple times.
+
+Tag filters are tool-surface controls, not authorization. Keep protecting sensitive endpoints with the upstream API's auth model. Untagged endpoints are not affected by `--exclude-tag`.
+
+**Examples:**
+
+```bash
+# Load only dynamic meta-tools
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com --openapi-spec https://api.example.com/openapi.json --tools dynamic
+
+# Load only explicitly specified tools (ignores other filters)
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com --openapi-spec https://api.example.com/openapi.json --tools explicit --tool GET::users --tool POST::users
+
+# Load only the GET /users endpoint tool (using all mode with filtering)
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com --openapi-spec https://api.example.com/openapi.json --tool GET-users
+
+# Load tools tagged with "user" under the "/users" resource
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com --openapi-spec https://api.example.com/openapi.json --tag user --resource users
+
+# Exclude admin and internal endpoints from any tool loading mode
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com --openapi-spec https://api.example.com/openapi.json --exclude-tag admin --exclude-tag internal
+
+# Load only POST operations
+npx @ivotoby/openapi-mcp-server --api-base-url https://api.example.com --openapi-spec https://api.example.com/openapi.json --operation post
+```
+
+## Server Instructions
+
+The MCP protocol lets a server describe how it is meant to be used: the text travels in the `initialize` result, and a client may add it to the system prompt of the model. It's the place for what an OpenAPI description can't say, such as what has to be called before what.
+
+```typescript
+const config = {
+  // …
+  instructions: "Pages are created unapproved: approve the version once you are done.",
+}
+```
+
+The same text can be given to the CLI with `--instructions` or with the `SERVER_INSTRUCTIONS` environment variable. Keep it short: it is handed over at every session, and it takes room in the context of the model.
+
+## Prompts and Resources
+
+In addition to exposing OpenAPI endpoints as **tools**, this server can expose **prompts** (reusable templates) and **resources** (static content) via the MCP protocol.
+
+### What Are Prompts and Resources?
+
+| Feature       | Purpose                                       | Use Case                    |
+| ------------- | --------------------------------------------- | --------------------------- |
+| **Tools**     | API endpoints for the AI to execute           | Making API calls            |
+| **Prompts**   | Templated messages with argument substitution | Reusable workflow templates |
+| **Resources** | Read-only content for context                 | API documentation, schemas  |
+
+### Loading Prompts
+
+Prompts can be loaded from files, URLs, or inline JSON:
+
+```bash
+# Load from local file
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --prompts ./prompts.json
+
+# Load from URL
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --prompts https://example.com/mcp/prompts.json
+
+# Inline JSON
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --prompts-inline '[{"name":"greet","title":"Greeting","template":"Hello {{name}}!"}]'
+```
+
+**Prompts File Format (JSON):**
+
+```json
+[
+  {
+    "name": "api_request",
+    "title": "API Request Helper",
+    "description": "Helps generate API request templates",
+    "arguments": [
+      { "name": "endpoint", "description": "API endpoint path", "required": true },
+      { "name": "method", "description": "HTTP method", "required": false }
+    ],
+    "template": "Create a {{method}} request to {{endpoint}} with proper parameters."
+  }
+]
+```
+
+### Loading Resources
+
+Resources can be loaded from files, URLs, or inline JSON:
+
+```bash
+# Load from local file
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --mcp-resources ./resources.json
+
+# Load from URL
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --mcp-resources https://example.com/mcp/resources.json
+
+# Inline JSON
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --mcp-resources-inline '[{"uri":"docs://readme","name":"readme","text":"# Welcome"}]'
+```
+
+**Resources File Format (JSON):**
+
+```json
+[
+  {
+    "uri": "docs://api/overview",
+    "name": "api-overview",
+    "title": "API Overview",
+    "description": "Overview of the API",
+    "mimeType": "text/markdown",
+    "text": "# API Overview\n\nThis API provides..."
+  }
+]
+```
+
+### Combining Tools, Prompts, and Resources
+
+```bash
+npx @ivotoby/openapi-mcp-server \
+  --api-base-url https://api.example.com \
+  --openapi-spec https://api.example.com/openapi.json \
+  --prompts ./prompts.json \
+  --mcp-resources ./resources.json \
+  --transport http \
+  --port 3000
+```
+
+With this configuration, the server advertises capabilities for all three:
+
+```json
+{
+  "capabilities": {
+    "tools": { "list": true, "execute": true },
+    "prompts": {},
+    "resources": {}
+  }
+}
+```
+
+## Transport Types
+
+### Stdio Transport (Default)
+
+The stdio transport is designed for direct integration with AI systems like Claude Desktop that manage MCP connections through standard input/output. This is the simplest setup and requires no network configuration.
+
+**When to use**: When integrating with Claude Desktop or other systems that support stdio-based MCP communication.
+
+### Streamable HTTP Transport
+
+The HTTP transport allows the MCP server to be accessed over HTTP, enabling web applications and other HTTP-capable clients to interact with the MCP protocol. It supports session management, streaming responses, and standard HTTP methods.
+
+**Key features**:
+
+- Session management with Mcp-Session-Id header
+- HTTP responses for `initialize` and `tools/list` requests are sent synchronously on the POST.
+- Other server-to-client messages (e.g., `tools/execute` results, notifications) are streamed over a GET connection using Server-Sent Events (SSE).
+- Support for POST/GET/DELETE methods
+
+**When to use**: When you need to expose the MCP server to web clients or systems that communicate over HTTP rather than stdio.
+
+### Health Check Endpoint
+
+When using HTTP transport, a health check endpoint is available at `/health` for monitoring and service discovery:
+
+```bash
+# Check server health
+curl http://localhost:3000/health
+
+# Response:
+# {
+#   "status": "healthy",
+#   "activeSessions": 2,
+#   "uptime": 3600
+# }
+```
+
+**Health Response Fields:**
+
+- `status`: Always returns "healthy" when server is running
+- `activeSessions`: Number of active MCP sessions
+- `uptime`: Server uptime in seconds
+
+**Key Features:**
+
+- No authentication required
+- Works with any HTTP method (GET, POST, etc.)
+- Ideal for load balancers, Kubernetes probes, and monitoring systems
+
+**Integration Examples:**
+
+```yaml
+# Kubernetes liveness probe
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 3
+  periodSeconds: 10
+
+# Docker healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:3000/health || exit 1
+```
+
+## Security Considerations
+
+- The HTTP transport validates Origin headers to prevent DNS rebinding attacks
+- By default, HTTP transport only binds to localhost (127.0.0.1)
+- If exposing to other hosts, consider implementing additional authentication
+- Auth headers are only sent to a spec URL on the API's origin by default, and never across a cross-origin redirect; use `--spec-auth always` only for spec hosts you trust with your credentials
+
+## Debugging
+
+To see debug logs:
+
+1. When using stdio transport with Claude Desktop:
+   - Logs appear in the Claude Desktop logs
+
+2. When using HTTP transport:
+   ```bash
+   npx @ivotoby/openapi-mcp-server --transport http &2>debug.log
+   ```
+
+---
+
+# Library Usage
+
+This section is for developers who want to use this package as a library to create custom MCP servers.
+
+## 🚀 Using as a Library
+
+Create dedicated MCP servers for specific APIs by importing and configuring the `OpenAPIServer` class. This approach is ideal for:
+
+- **Custom Authentication**: Implement complex authentication patterns with the `AuthProvider` interface
+- **API-Specific Optimizations**: Filter endpoints, customize error handling, and optimize for specific use cases
+- **Distribution**: Package your server as a standalone npm module for easy sharing
+- **Integration**: Embed the server in larger applications or add custom middleware
+
+### Basic Library Usage
+
+```typescript
+import { OpenAPIServer } from "@ivotoby/openapi-mcp-server"
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
+
+const config = {
+  name: "my-api-server",
+  version: "1.0.0",
+  apiBaseUrl: "https://api.example.com",
+  openApiSpec: "https://api.example.com/openapi.json",
+  specInputMethod: "url" as const,
+  headers: {
+    Authorization: "Bearer your-token",
+    "X-API-Key": "your-api-key",
+  },
+  transportType: "stdio" as const,
+  toolsMode: "all" as const, // Options: "all", "dynamic", "explicit"
+}
+
+const server = new OpenAPIServer(config)
+const transport = new StdioServerTransport()
+await server.start(transport)
+```
+
+### Tool Loading Modes
+
+The `toolsMode` configuration option controls which tools are loaded from your OpenAPI specification:
+
+```typescript
+// Load all tools from the spec (default)
+const config = {
+  // ... other config
+  toolsMode: "all" as const,
+  // Optional: Apply filters to control which tools are loaded
+  includeTools: ["GET::users", "POST::users"], // Only these tools
+  includeTags: ["public"], // Only tools with these tags
+  excludeTags: ["admin", "internal"], // Never expose tools with these tags
+  includeResources: ["users"], // Only tools under these resources
+  includeOperations: ["get", "post"], // Only these HTTP methods
+}
+
+// Load only dynamic meta-tools for API exploration
+const config = {
+  // ... other config
+  toolsMode: "dynamic" as const,
+  // Provides: list-api-endpoints, get-api-endpoint-schema, invoke-api-endpoint
+  // excludeTags still hides matching operations from discovery and invocation
+}
+
+// Load only explicitly specified tools (include filters are ignored)
+const config = {
+  // ... other config
+  toolsMode: "explicit" as const,
+  includeTools: ["GET::users", "POST::users"], // Only these exact tools
+  excludeTags: ["admin"], // Still applied as a deny filter
+  // includeTags, includeResources, includeOperations are ignored in explicit mode
+}
+```
+
+Tool names are unique per server. If two operations reduce to the same name (e.g. no `operationId` and summaries that only differ in non-ASCII characters), the first one in spec order keeps the name and later ones get a short suffix derived from their method and path (e.g. `ticket` and `ticket-e181`). Because which operation keeps the bare name depends on spec order, prefer tool IDs in `includeTools` when names collide (e.g. `POST::t__consume` for `POST /t/consume`; path segments are joined with `__`).
+
+### Configuring Prompts and Resources
+
+Expose reusable prompts and static resources alongside your API tools:
+
+```typescript
+import { OpenAPIServer } from "@ivotoby/openapi-mcp-server"
+
+const config = {
+  name: "my-api-server",
+  version: "1.0.0",
+  apiBaseUrl: "https://api.example.com",
+  openApiSpec: "https://api.example.com/openapi.json",
+  specInputMethod: "url" as const,
+  transportType: "stdio" as const,
+  toolsMode: "all" as const,
+
+  // Define prompts with argument templates
+  prompts: [
+    {
+      name: "api_request",
+      title: "API Request Helper",
+      description: "Helps generate API request templates",
+      arguments: [
+        { name: "endpoint", description: "API endpoint path", required: true },
+        { name: "method", description: "HTTP method", required: false },
+      ],
+      template: "Create a {{method}} request to {{endpoint}} with proper parameters.",
+    },
+  ],
+
+  // Define resources with static content
+  resources: [
+    {
+      uri: "docs://api/overview",
+      name: "api-overview",
+      title: "API Overview",
+      description: "Overview of the API capabilities",
+      mimeType: "text/markdown",
+      text: "# API Overview\n\nThis API provides...",
+    },
+  ],
+}
+
+const server = new OpenAPIServer(config)
+```
+
+### Adding Extra Custom Tools
+
+You can expose a few hand-written MCP tools alongside the tools generated from your OpenAPI spec:
+
+```typescript
+import { OpenAPIServer } from "@ivotoby/openapi-mcp-server"
+
+const extraTools = [
+  {
+    id: "add",
+    tool: {
+      name: "add",
+      description: "Add two numbers",
+      inputSchema: {
+        type: "object",
+        properties: {
+          a: { type: "number" },
+          b: { type: "number" },
+        },
+        required: ["a", "b"],
+      },
+    },
+    handler: async (args) => {
+      const a = Number(args.a)
+      const b = Number(args.b)
+      const result = a + b
+      return {
+        content: [{ type: "text", text: JSON.stringify({ result }) }],
+        structuredContent: { result },
+      }
+    },
+  },
+]
+
+const server = new OpenAPIServer({
+  name: "my-api-server",
+  version: "1.0.0",
+  apiBaseUrl: "https://api.example.com",
+  openApiSpec: "https://api.example.com/openapi.json",
+  specInputMethod: "url",
+  transportType: "stdio",
+  toolsMode: "all",
+  extraTools,
+})
+```
+
+Notes:
+
+- `extraTools` is library-only in this first version; there is no CLI format for function handlers
+- extra tool IDs and MCP tool names must be unique across both custom and OpenAPI-generated tools
+- extra tool handlers should return a normal MCP `tools/call` result object
+
+#### Dynamic Prompt and Resource Management
+
+You can also add prompts and resources dynamically after server creation:
+
+```typescript
+const server = new OpenAPIServer(config)
+
+// Add prompts dynamically
+const promptsManager = server.getPromptsManager()
+if (promptsManager) {
+  promptsManager.addPrompt({
+    name: "debug_error",
+    title: "Error Debugger",
+    template: "Debug this API error: {{error_message}}",
+  })
+}
+
+// Add resources dynamically
+const resourcesManager = server.getResourcesManager()
+if (resourcesManager) {
+  resourcesManager.addResource({
+    uri: "docs://changelog",
+    name: "changelog",
+    title: "API Changelog",
+    mimeType: "text/markdown",
+    text: "# Changelog\n\n## v1.0.0\n- Initial release",
+  })
+}
+```
+
+#### Prompt Definition Format
+
+```typescript
+interface PromptDefinition {
+  name: string // Unique identifier
+  title?: string // Human-readable display title
+  description?: string // Description of the prompt
+  arguments?: {
+    // Template arguments
+    name: string
+    description?: string
+    required?: boolean
+  }[]
+  template: string // Template with {{argName}} placeholders
+}
+```
+
+#### Resource Definition Format
+
+```typescript
+interface ResourceDefinition {
+  uri: string // Unique URI identifier
+  name: string // Resource name
+  title?: string // Human-readable display title
+  description?: string // Description of the resource
+  mimeType?: string // Content MIME type
+  text?: string // Static text content
+  blob?: string // Static binary content (base64)
+  contentProvider?: () => Promise<string | { blob: string }> // Dynamic content
+}
+```
+
+### Advanced Authentication with AuthProvider
+
+For APIs with token expiration, refresh requirements, or complex authentication:
+
+```typescript
+import { OpenAPIServer, AuthProvider } from "@ivotoby/openapi-mcp-server"
+import { AxiosError } from "axios"
+
+class MyAuthProvider implements AuthProvider {
+  async getAuthHeaders(): Promise<Record<string, string>> {
+    // Called before each request - return fresh headers
+    if (this.isTokenExpired()) {
+      await this.refreshToken()
+    }
+    return { Authorization: `Bearer ${this.token}` }
+  }
+
+  async handleAuthError(error: AxiosError): Promise<boolean> {
+    // Called on 401/403 errors - return true to retry
+    if (error.response?.status === 401) {
+      await this.refreshToken()
+      return true // Retry the request
+    }
+    return false
+  }
+}
+
+const authProvider = new MyAuthProvider()
+const config = {
+  // ... other config
+  authProvider: authProvider, // Use AuthProvider instead of static headers
+}
+```
+
+**📁 See the [examples/](./examples/) directory for complete, runnable examples including:**
+
+- Basic library usage with static authentication
+- AuthProvider implementations for different scenarios
+- Real-world Beatport API integration
+- Production-ready packaging patterns
+
+## 🔐 Dynamic Authentication with AuthProvider
+
+The `AuthProvider` interface enables sophisticated authentication scenarios that static headers cannot handle:
+
+### Key Features
+
+- **Dynamic Headers**: Fresh authentication headers for each request
+- **Token Expiration Handling**: Automatic detection and handling of expired tokens
+- **Authentication Error Recovery**: Retry logic for recoverable authentication failures
+- **Custom Error Messages**: Provide clear, actionable guidance to users
+
+### AuthProvider Interface
+
+```typescript
+interface AuthProvider {
+  /**
+   * Get authentication headers for the current request
+   * Called before each API request to get fresh headers
+   */
+  getAuthHeaders(): Promise<Record<string, string>>
+
+  /**
+   * Handle authentication errors from API responses
+   * Called when the API returns 401 or 403 errors
+   * Return true to retry the request, false otherwise
+   */
+  handleAuthError(error: AxiosError): Promise<boolean>
+}
+```
+
+### Common Patterns
+
+#### Automatic Token Refresh
+
+```typescript
+class RefreshableAuthProvider implements AuthProvider {
+  async getAuthHeaders(): Promise<Record<string, string>> {
+    if (this.isTokenExpired()) {
+      await this.refreshToken()
+    }
+    return { Authorization: `Bearer ${this.accessToken}` }
+  }
+
+  async handleAuthError(error: AxiosError): Promise<boolean> {
+    if (error.response?.status === 401) {
+      await this.refreshToken()
+      return true // Retry with fresh token
+    }
+    return false
+  }
+}
+```
+
+#### Manual Token Management (e.g., Beatport)
+
+```typescript
+class ManualTokenAuthProvider implements AuthProvider {
+  async getAuthHeaders(): Promise<Record<string, string>> {
+    if (!this.token || this.isTokenExpired()) {
+      throw new Error(
+        "Token expired. Please get a new token from your browser:\n" +
+          "1. Go to the API website and log in\n" +
+          "2. Open browser dev tools (F12)\n" +
+          "3. Copy the Authorization header from any API request\n" +
+          "4. Update your token using updateToken()",
+      )
+    }
+    return { Authorization: `Bearer ${this.token}` }
+  }
+
+  updateToken(token: string): void {
+    this.token = token
+    this.tokenExpiry = new Date(Date.now() + 3600000) // 1 hour
+  }
+}
+```
+
+#### API Key Authentication
+
+```typescript
+class ApiKeyAuthProvider implements AuthProvider {
+  constructor(private apiKey: string) {}
+
+  async getAuthHeaders(): Promise<Record<string, string>> {
+    return { "X-API-Key": this.apiKey }
+  }
+
+  async handleAuthError(error: AxiosError): Promise<boolean> {
+    throw new Error("API key authentication failed. Please check your key.")
+  }
+}
+```
+
+**📖 For detailed AuthProvider documentation and examples, see [docs/auth-provider-guide.md](./docs/auth-provider-guide.md)**
+
+### OpenAPI Schema Processing
+
+#### Reference Resolution
+
+This MCP server implements robust OpenAPI reference (`$ref`) resolution to ensure accurate representation of API schemas:
+
+- **Parameter References**: Fully resolves `$ref` pointers to parameter components in the OpenAPI spec
+- **Schema References**: Handles nested schema references within parameters and request bodies
+- **Recursive References**: Prevents infinite loops by detecting and handling circular references
+- **Nested Properties**: Preserves complex nested object and array structures with all their attributes
+
+### Input Schema Composition
+
+The server intelligently merges parameters and request bodies into a unified input schema for each tool:
+
+- **Parameters + Request Body Merging**: Combines path, query, and body parameters into a single schema
+- **Collision Handling**: Resolves naming conflicts by prefixing body properties that conflict with parameter names
+- **Type Preservation**: Maintains the original type information for all schema elements
+- **Metadata Retention**: Preserves descriptions, formats, defaults, enums, and other schema attributes
+
+### Complex Schema Support
+
+The MCP server handles various OpenAPI schema complexities:
+
+- **Primitive Type Bodies**: Exposes non-object request bodies as a "body" property; its value is sent as the request body itself (not wrapped in an object)
+- **Object Bodies**: Flattens object properties into the tool's input schema
+- **Array Bodies**: Properly handles array schemas with their nested item definitions
+- **Required Properties**: Tracks and preserves which parameters and properties are required
+
+### Binary Request and Response Bodies
+
+- **Binary uploads**: Operations whose request body is binary (e.g. `application/octet-stream`, `image/png`, or any `type: string, format: binary` schema) get a `body` argument that takes **base64** (a `data:<type>;base64,...` URL is also accepted). The bytes are decoded and sent raw with the declared `Content-Type`.
+- **Binary responses**: Responses are read as raw bytes and decoded by `Content-Type`:
+  - JSON → parsed and returned as JSON text
+  - Text types (`text/*`, XML, YAML, ...) → returned verbatim as `text` content
+  - `image/*` → MCP `image` content
+  - `audio/*` → MCP `audio` content
+  - Anything else (PDF, ZIP, `application/octet-stream`, ...) → an embedded `resource` with a base64 `blob`
+- **Resource URIs** are `api-response://<request path>`: the upstream host, credentials and query string are never exposed to the MCP client.
+- **Dynamic mode**: pass non-object bodies as `params.body` (base64 for binary bodies) to `INVOKE-API-ENDPOINT`; `GET-API-ENDPOINT-SCHEMA` reports this as `bodyParameter`.
+- **Library usage**: `ApiClient.executeApiCall()` returns a `BinaryResponse` (`data: Buffer`, `mimeType`, `uri`) for binary responses.
+
+---
+
+# Developer Information
+
+## For Developers
+
+### Development Tools
+
+- `npm run build` - Builds the TypeScript source
+- `npm run clean` - Removes build artifacts
+- `npm test` - Runs the Vitest test suite
+- `npm run typecheck` - Runs TypeScript type checking
+- `npm run lint` - Runs type-aware ESLint against `src/**/*.ts`
+- `npm run dev` - Watches source files and rebuilds on changes
+- `npm run inspect-watch` - Runs the inspector with auto-reload on changes
+
+### Verification Before Pull Requests
+
+Run the full local verification suite before opening a PR:
+
+```bash
+npm run build
+npm test
+npm run typecheck
+npm run lint
+```
+
+`npm run build` refreshes `dist/` so CLI execution tests use current code. `npm run lint` is intentionally type-aware and should be clean for all source files.
+
+### Development Workflow
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development environment: `npm run inspect-watch`
+4. Make changes to the TypeScript files in `src/`
+5. The server will automatically rebuild and restart
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run build, tests, typecheck, and linting: `npm run build && npm test && npm run typecheck && npm run lint`
+5. Submit a pull request
+
+**📖 For comprehensive developer documentation, see [docs/developer-guide.md](./docs/developer-guide.md)**
+
+---
+
+# FAQ
+
+**Q: What is a "tool"?**
+A: A tool corresponds to a single API endpoint derived from your OpenAPI specification, exposed as an MCP resource.
+
+**Q: How can I use this package in my own project?**
+A: You can import the `OpenAPIServer` class and use it as a library in your Node.js application. This allows you to create dedicated MCP servers for specific APIs with custom authentication, filtering, and error handling. See the [examples/](./examples/) directory for complete implementations.
+
+**Q: What's the difference between using the CLI and using it as a library?**
+A: The CLI is great for quick setup and testing, while the library approach allows you to create dedicated packages for specific APIs, implement custom authentication with `AuthProvider`, add custom logic, and distribute your server as a standalone npm module.
+
+**Q: How do I handle APIs with expiring tokens?**
+A: Use the `AuthProvider` interface instead of static headers. AuthProvider allows you to implement dynamic authentication with token refresh, expiration handling, and custom error recovery. See the AuthProvider examples for different patterns.
+
+**Q: What is AuthProvider and when should I use it?**
+A: `AuthProvider` is an interface for dynamic authentication that gets fresh headers before each request and handles authentication errors. Use it when your API has expiring tokens, requires token refresh, or needs complex authentication logic that static headers can't handle.
+
+**Q: How do I filter which tools are loaded?**
+A: Use the `--tool`, `--tag`, `--exclude-tag`, `--resource`, and `--operation` flags with `--tools all` (default), set `--tools dynamic` for meta-tools only, or use `--tools explicit` to load only tools specified with `--tool`. `--exclude-tag` is a deny filter and still applies in dynamic and explicit modes.
+
+**Q: When should I use dynamic mode?**
+A: Dynamic mode provides meta-tools (`list-api-endpoints`, `get-api-endpoint-schema`, `invoke-api-endpoint`) to inspect and interact with endpoints without preloading all operations, which is useful for large or changing APIs.
+
+**Q: What are prompts and resources?**
+A: **Prompts** are reusable message templates with argument placeholders (e.g., `{{name}}`) that can be retrieved via the MCP `prompts/get` method. **Resources** are static or dynamic content (text or binary) that can be read via the MCP `resources/read` method. Both are optional capabilities you can configure alongside tools.
+
+**Q: How do I expose prompts and resources from the CLI?**
+A: Use `--prompts <path|url>` for prompts and `--resources <path|url>` for resources. You can also use `--prompts-inline` and `--resources-inline` for inline JSON. See the "Prompts and Resources" section in the User Guide for details.
+
+**Q: How do I specify custom headers for API requests?**
+A: Use the `--headers` flag or `API_HEADERS` environment variable with `key:value` pairs separated by commas for CLI usage. For library usage, use the `headers` config option or implement an `AuthProvider` for dynamic headers.
+
+**Q: Which transport methods are supported?**
+A: The server supports stdio transport (default) for integration with AI systems and HTTP transport (with streaming via SSE) for web clients.
+
+**Q: How does the server handle complex OpenAPI schemas with references?**
+A: The server fully resolves `$ref` references in parameters and schemas, preserving nested structures, default values, and other attributes. See the "OpenAPI Schema Processing" section for details on reference resolution and schema composition.
+
+**Q: What happens when parameter names conflict with request body properties?**
+A: The server detects naming conflicts and automatically prefixes body property names with `body_` to avoid collisions, ensuring all properties are accessible.
+
+**Q: Can I package my MCP server for distribution?**
+A: Yes! When using the library approach, you can create a dedicated npm package for your API. See the Beatport example for a complete implementation that can be packaged and distributed as `npx your-api-mcp-server`.
+
+**Q: Where can I find development and contribution guidelines?**
+A: See the [Developer Guide](./docs/developer-guide.md) for comprehensive documentation on architecture, key concepts, development workflow, and contribution guidelines.
+
+## License
+
+MIT
