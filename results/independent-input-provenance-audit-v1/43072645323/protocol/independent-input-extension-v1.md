@@ -1,0 +1,45 @@
+# Independent API-input extension, registered 11 November 2026
+
+## Question and prior evidence
+
+The completed six-application study found 26 initial API/native continuation differences, all covered by shared constraint checks. Its inputs were derived from native constraints, making incremental detection estimates conditional on that construction. The new question is whether source-independent API-input generation yields accepted states whose native continuation failures are not predicted by competent API-semantic and shared-constraint checks. A second question is how often a shared constraint alert accompanies a successful preserving continuation for the prescribed task.
+
+This study does not claim discovery of client/server validation inconsistency. It does not measure LLM-agent performance. The original and production-extension datasets remain immutable, separate development evidence. Known Grocy energy behavior is excluded from new prospective discovery claims.
+
+## Fixed subjects and exposure
+
+The selection registry fixes six workflow candidates in four previously studied applications: Paperless storage paths and custom fields; Grocy shopping lists and task categories; Vikunja saved filters; Gitea repository settings. Existing release/source/image pins remain in force. These are candidate new continuation workflows, not untouched applications. The registry discloses prior fixture, API and incidental source exposure. The list is fixed before inspecting new API schemas or executing new resource inputs. Do not substitute resources based on yield.
+
+Eligibility requires documented API creation/update, an ordinary native edit, at least two independently writable business fields, and an unrelated continuation edit that can leave the candidate field untouched. References must use isolated legitimate fixtures. No network-backed integration, uploads, real external recipients or destructive user data are eligible. An ineligible resource remains in the denominator of workflow selection with the reason recorded. At most three versioned qualification dispatch attempts per workflow; failure to qualify excludes it from scientific execution.
+
+## Input construction independent of frontend constraints
+
+First retain pinned API documentation/schema files and their hashes. Derive writable fields, requiredness, documented types, nullability, enum membership, defaults and explicit bounds from those sources alone. Do not inspect the new workflow's frontend validation/normalization code before its input inventory is frozen. Existing incidental knowledge is disclosed rather than described as blinded. This is procedural separation, not independent human or agent blinding.
+
+Choose the unrelated continuation edit from documented writable scalar fields in fixed preference order: description, name, title, then lexical field order. Freeze its ordinary value and exclude that field from producer mutations. If no meaningful unrelated edit is available, exclude the workflow. Require source-backed full API write semantics; omission, partial-update masks and legacy aliases must not weaken the comparator.
+
+Start from a documented ordinary create payload. Generate single-field alternatives solely from the API contract: omission for optional fields; explicit null only when documented nullable; both booleans; documented enum members; empty and short ordinary strings when permitted; documented defaults; and interior integer values satisfying explicit bounds. Where documentation is silent, preserve that uncertainty. Do not infer nullability or semantic validity from examples alone. If a JSON string has a documented format, use format-valid synthetic values. References use precreated records or documented null/absence, never dangling references. Nested objects are unsupported unless their schema and lifecycle can be resolved before freeze. Do not add invalid values obtained from frontend inspection.
+
+Retain all generated candidates and reasons for unsupported fields. Rank candidates by SHA256(seed + ':' + workflow + ':' + field + ':' + mutation), round-robin field families in lexical order, and select at most 12 per workflow. Identical values/payloads are deduplicated before selection. Four ordinary controls per eligible workflow are separate. This is a reproducible purposive schema sample, not a representative sample of production traffic or user intentions. An input conforming to the documented schema can still be rejected by server business rules; retain rejections.
+
+Only after inventory freeze inspect native constraints and qualify adapters. Never edit the frozen sample to create or remove findings. If documentation turns out to be wrong, retain the frozen case and describe the mismatch. Calibration fixes may change measurement code, not the sampled values. Any sampling correction requires a new cohort with the original preserved.
+
+## Baselines and observations
+
+Freeze each workflow's API contract, complete writable update projection, reference existence checks and extracted native constraint rules before scientific execution. Shared rules are credited to both channels. Preserve the source provenance of each rule. The API-semantic branch reads the accepted record, makes the same meaningful edit, and verifies edited and preserved fields. The native branch loads the actual editor, changes only that edit field, submits native controls and checks fresh persisted state. Native constraint consistency predicts incompatibility; it is not itself an observed failure.
+
+Each pair starts from separate resets with matching actors, fixtures and producer payloads. Retain raw requests, responses, loaded/before-submit/fresh-final views, failed-write readbacks and cleanup. Normalize only declared generated metadata across resets; keep within-branch preservation stricter. Qualify valid controls, deliberately violating adapter probes and independent raw reconstruction before boundaries. Measurement probes are separate from the independently generated sample.
+
+Primary observations are producer rejection, successful preserving continuation, blocked/rejected continuation, successful write with extra preserved-field changes, and unresolved measurement or policy. Documented normalization is separate. HTTP200with an error page is not successful editing. A valid control failure makes the linked case unqualified; it is not an application fault.
+
+Native outcomes define the particular continuation task under study. Do not claim an unbiased accuracy score for the native oracle against labels produced by that same oracle. Validate consequential outcomes with repeated readback, independent reconstruction, source explanation and input-only or source-patch counterfactuals. Distinguish observable behavior, user-intent assumptions and requirement-backed defects.
+
+## Fixed schedule, cost and analysis
+
+At most96initial pairs comprise72sampled inputs and24ordinary controls. Every channel/preservation difference, unresolved case or shared consistency alert receives exactly two fresh repeats, each with its original ordinary control. This adds at most288pairs. Reverse branch order on the first repeat. Preserve all failures and stop after the fixed schedule; never repeat a clean result until it fails. Inputs that merely display documented normalization are retained separately and repeated for stability without counting as defects.
+
+Use the existing public-runner infrastructure, at most three simultaneous application jobs, and no paid model calls. Maintain the $100 cash ceiling. Each scientific batch is bounded at30minutes; ordinary qualification at25minutes. Register batch counts and wall-clock bounds before dispatch. Keep setup/authentication separate from continuation observations, and report measured compute independently from billing. No paid resource provisioning or new spending account is authorized by this protocol.
+
+Report per-application/workflow funnels and overlap: API-semantic only, native only, both, neither; separate shared-constraint predictions from observed failures. Report shared alerts with clean prescribed tasks without automatically calling them false positives for all requirements. Keep original candidate selection, exclusions, unresolved controls and correlated variants visible. No population prevalence or pooled significance test follows from this purposive sample. A two-stage check policy may be evaluated by replaying frozen observations and measured component costs, but must not be described as a deployed preventive guard or agent intervention.
+
+The study succeeds methodologically if it resolves the independent-input comparison, even if incremental yield is zero. Q1 suitability additionally requires a defensible contribution against verified prior art. Do not promise journal acceptance or broaden the sample in response to disappointing outcomes. After completion, reassess whether the evidence supports an empirical/benchmark paper, a measured intervention study, or another no-go decision.

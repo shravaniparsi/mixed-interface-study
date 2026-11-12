@@ -1,0 +1,583 @@
+{
+  "kind": "independent_paperless_storage_execution_v2",
+  "version": "3.4.2",
+  "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+  "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+  "image_id": "sha256:1135cf639679fb573eabf9af76d87dc1a74868f5830291ae3287e5c6992aedc5",
+  "broker_image": "valkey/valkey@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b",
+  "deployment_report": "results/production-extension-screen-v2-ci-42876848117/production-screen-v2-paperless-42876848117-1/report.json",
+  "deployment_report_sha256": "5fea82ce4a3a04af0f98335ade04113c9878eb1e627eb60c1d4631bf4c84de0d",
+  "scope": "Twelve fixed API-schema-selected inputs in disclosed corrected-owner cohort plus four ordinary controls. Original incorrect-identity subgroup remains unexecuted.",
+  "workflows": [
+    {
+      "id": "paperless.storage_path",
+      "collection": "/api/storage_paths/",
+      "list_path": "/attributes/storagepaths",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      },
+      "fields": [
+        "name",
+        "path",
+        "match",
+        "matching_algorithm",
+        "is_insensitive",
+        "owner"
+      ],
+      "edit_field": "name",
+      "edit_value": "Edited ordinary name",
+      "edit_selector": "[formcontrolname=\"name\"] input",
+      "native_fields": [
+        {
+          "field": "name",
+          "selector": "[formcontrolname=\"name\"] input",
+          "kind": "input"
+        },
+        {
+          "field": "path",
+          "selector": "[formcontrolname=\"path\"] textarea",
+          "kind": "input"
+        },
+        {
+          "field": "match",
+          "selector": "[formcontrolname=\"match\"] input",
+          "kind": "input",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        },
+        {
+          "field": "matching_algorithm",
+          "selector": "[formcontrolname=\"matching_algorithm\"] .ng-value-label",
+          "kind": "label"
+        },
+        {
+          "field": "is_insensitive",
+          "selector": "[formcontrolname=\"is_insensitive\"] input",
+          "kind": "checkbox",
+          "hidden_for_algorithms": [
+            0,
+            6
+          ]
+        }
+      ],
+      "readonly_fields": [
+        "id",
+        "slug",
+        "document_count",
+        "user_can_change"
+      ],
+      "edited_slug": "edited-ordinary-name"
+    }
+  ],
+  "algorithm_labels": {
+    "0": "None: Disable matching",
+    "1": "Any: Document contains any of these words (space separated)",
+    "2": "All: Document contains all of these words (space separated)",
+    "3": "Exact: Document contains this string",
+    "4": "Regular expression: Document matches this regular expression",
+    "5": "Fuzzy: Document contains a word similar to this word",
+    "6": "Auto: Learn matching automatically"
+  },
+  "units": [
+    {
+      "id": "storage-valid-1",
+      "case_id": "paperless.storage_path:valid:1",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-valid-2",
+      "case_id": "paperless.storage_path:valid:2",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-valid-3",
+      "case_id": "paperless.storage_path:valid:3",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-valid-4",
+      "case_id": "paperless.storage_path:valid:4",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-sample-1",
+      "case_id": "paperless.storage_path:is_insensitive:false",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-sample-2",
+      "case_id": "paperless.storage_path:match:empty",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-sample-3",
+      "case_id": "paperless.storage_path:matching_algorithm:omitted",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-sample-4",
+      "case_id": "paperless.storage_path:owner:null",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-sample-5",
+      "case_id": "paperless.storage_path:path:ordinary",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-sample-6",
+      "case_id": "paperless.storage_path:is_insensitive:omitted",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-sample-7",
+      "case_id": "paperless.storage_path:match:short",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-sample-8",
+      "case_id": "paperless.storage_path:matching_algorithm:enum-2",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-sample-9",
+      "case_id": "paperless.storage_path:owner:omitted",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-sample-10",
+      "case_id": "paperless.storage_path:path:short",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    },
+    {
+      "id": "storage-sample-11",
+      "case_id": "paperless.storage_path:match:omitted",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "api",
+        "ui"
+      ]
+    },
+    {
+      "id": "storage-sample-12",
+      "case_id": "paperless.storage_path:matching_algorithm:enum-3",
+      "workflow": "paperless.storage_path",
+      "cohort": "schema_sample",
+      "repetition": 1,
+      "branch_order": [
+        "ui",
+        "api"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "scripts/extension/run_independent_paperless_storage_cases_v2.py": "91be09e56f2d902d9386d4e5503035e0438aa5621606931d50f164e136b27ce3",
+    "scripts/extension/run_independent_paperless_storage_batch_v2.py": "fc8cdde1059e049941a173fab6e62b06512686507174ca477b3926e00332227a",
+    "scripts/extension/independent_paperless_storage_case_v2.mjs": "9f20881e1f63b06deeb64b5e806e2af29850ab1e1a66e406f002f7f3fd438556",
+    "scripts/extension/verify_independent_paperless_storage_cases_v2.py": "029d35a835df11d89f2a515fa1f6b28cfd69b239b9c3ba1d2bb153466033c724",
+    ".github/workflows/independent_paperless_storage_cases_v2.yml": "8746855da969a0a88754323e1851d08565171b910bab13dd55c3554979a92db7",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/ci/capture_versions.py": "5c65e9d0f9e48f19e12b47c1df7fc86a6e8b4a9a4f8e952a1c841ac147ed56bd",
+    "scripts/extension/build_independent_storage_fixture_v2.py": "edfdec0045dc60d989d33ade94b38807cb666f08a9c0df042b76a872444f6be0"
+  },
+  "input_freeze_commit": "215bf7b",
+  "execution_authorized": true,
+  "cohort": "storage_fixture_corrected_v2",
+  "response_contracts": {
+    "paperless.storage_path": {
+      "name": {
+        "type": "string",
+        "max_length": 128,
+        "min_length": 1
+      },
+      "match": {
+        "type": "string",
+        "max_length": 256
+      },
+      "matching_algorithm": {
+        "type": "number",
+        "integer": true,
+        "options": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "is_insensitive": {
+        "type": "boolean"
+      },
+      "owner": {
+        "type": "number",
+        "integer": true,
+        "nullable": true,
+        "options": [
+          2
+        ]
+      },
+      "path": {
+        "type": "string",
+        "min_length": 1
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "paperless.storage_path:valid:1",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:valid:2",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:valid:3",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:valid:4",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:is_insensitive:false",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": false,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:match:empty",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:omitted",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:owner:null",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": null
+      }
+    },
+    {
+      "id": "paperless.storage_path:path:ordinary",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "Study value",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:is_insensitive:omitted",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:match:short",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "x",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-2",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 2,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:owner:omitted",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      }
+    },
+    {
+      "id": "paperless.storage_path:path:short",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "x",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:match:omitted",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-3",
+      "workflow": "paperless.storage_path",
+      "payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "owner": 2
+      }
+    }
+  ],
+  "batches": [
+    {
+      "id": "valid-0",
+      "unit_ids": [
+        "storage-valid-1",
+        "storage-valid-2"
+      ]
+    },
+    {
+      "id": "valid-1",
+      "unit_ids": [
+        "storage-valid-3",
+        "storage-valid-4"
+      ]
+    },
+    {
+      "id": "sample-0",
+      "unit_ids": [
+        "storage-sample-1",
+        "storage-sample-2"
+      ]
+    },
+    {
+      "id": "sample-1",
+      "unit_ids": [
+        "storage-sample-3",
+        "storage-sample-4"
+      ]
+    },
+    {
+      "id": "sample-2",
+      "unit_ids": [
+        "storage-sample-5",
+        "storage-sample-6"
+      ]
+    },
+    {
+      "id": "sample-3",
+      "unit_ids": [
+        "storage-sample-7",
+        "storage-sample-8"
+      ]
+    },
+    {
+      "id": "sample-4",
+      "unit_ids": [
+        "storage-sample-9",
+        "storage-sample-10"
+      ]
+    },
+    {
+      "id": "sample-5",
+      "unit_ids": [
+        "storage-sample-11",
+        "storage-sample-12"
+      ]
+    }
+  ],
+  "qualification_sha256": {
+    "manifests/independent-paperless-storage-attempt1-v1.json": "741b73ae68843273f626ec5a916b210f78d747d5668ad75d84fded6731251aeb",
+    "manifests/independent-paperless-storage-probe-results-v1.json": "ac8174b959d516ba1e3c622a1ac07a7042b258dbeb0367a073223634de555c73",
+    "manifests/independent-paperless-storage-inputs-v2.json": "d1f28a4e10804e33b13ea163d1e59f1514143f3ec67fb352b4faed6f4fcfb27e",
+    "protocol/independent-storage-fixture-amendment-v2.md": "d48cf7fdb6754ec909480140ed9cd8d8567f76b1de6c97ab694a8c7f484a4575",
+    "protocol/independent-input-extension-v1.md": "7a3c2806cf3e350f7638260ca4af5038c3f1f7c63f379979b1f0d202e13a09d5"
+  },
+  "preservation": "Full persisted JSON must preserve every field other than the edited name and its derived slug. Slug edited-ordinary-name is established by both ordinary controls and checked in both channels. Document count, ID, owner and user_can_change remain protected. Native representation differences are recorded separately and do not stop the prescribed edit.",
+  "reference_baseline": "Actor ID2 is independently established in fresh setup; owner=2 refers to that actor, null is allowed, omission is observed from readback. Owner values outside null/2 raise a shared signal.",
+  "execution_bound": {
+    "initial_pairs": 16,
+    "maximum_followup_pairs": 64
+  },
+  "repeat_rule": "Exactly two repeats with linked ordinary controls for differences, unresolved results, shared alerts and native representation discrepancies; first repeat reverses branch order."
+}

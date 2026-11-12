@@ -1,0 +1,2136 @@
+{
+  "kind": "independent_api_input_inventory_v1",
+  "seed": "mixed-interface:api-schema-inputs:v1:20261111",
+  "selection_sha256": "4feb7311b00ca8134a7a516877cbc1902e18d4c0c1c0c9059601b325526c5237",
+  "generator_sha256": "fcaa43ca7f1473dede09ad6ece672a4dc11b6d5695313e92e70c463b45d49a3c",
+  "source_sha256": {
+    "manifests/independent-api-capture-results-v1.json": "84dcf96b08431e196f0cacadd128901dc7e5ece69f888f4f745f7fd29c83c5cb",
+    "results/independent-api-schema-v1-ci-43067934033/independent-api-schema-v1-paperless-43067934033-1/schema.json": "0b762d143ce427dec1ea1f861d0f2f0f29ac94832a8739ee53fae727abda255a",
+    "results/independent-api-schema-v1-ci-43067934033/independent-api-schema-v1-gitea-43067934033-1/schema.json": "32ef52854a1adb7d990887adb8065db005ab2054a626d404cfe3913828bacab9",
+    "results/independent-api-schema-v1-ci-43067934033/independent-api-schema-v1-vikunja-43067934033-1/schema.json": "4255f4dd936022180b83f99632100b2bba4f61b0d8598b7c181d49ade91e6e32",
+    "manifests/independent-api-capture-results-v2.json": "b07264b4b82b679f5cb6b4d88b99f7d243a0063f1f5db27fe4f06079a255faff",
+    "results/independent-api-schema-v2-ci-43068337661/independent-api-schema-v2-grocy-43068337661-1/schema.json": "700f7eb49d721a550562b0f1ab8d344f5246794900710f6483ea275dd40cc58f"
+  },
+  "workflows": [
+    {
+      "id": "paperless.storage_path",
+      "status": "api_input_frozen_native_eligibility_pending",
+      "application": "paperless",
+      "component": "StoragePathRequest",
+      "producer_method": "POST",
+      "producer_path": "/api/storage_paths/",
+      "ordinary_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "edit_field": "name",
+      "edit_value": "Edited ordinary name",
+      "api_fields": {
+        "is_insensitive": {
+          "type": "boolean"
+        },
+        "match": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "matching_algorithm": {
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "type": "integer",
+          "description": "* `0` - None\n* `1` - Any word\n* `2` - All words\n* `3` - Exact match\n* `4` - Regular expression\n* `5` - Fuzzy word\n* `6` - Automatic",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "owner": {
+          "type": "integer",
+          "nullable": true
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "set_permissions": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "$ref": "#/components/schemas/PermissionSetRequest"
+            },
+            "change": {
+              "$ref": "#/components/schemas/PermissionSetRequest"
+            }
+          },
+          "writeOnly": true
+        }
+      },
+      "api_required": [
+        "name",
+        "path"
+      ],
+      "unsupported_fields": {
+        "set_permissions": "Nested permission mutation outside scalar independent-input scope",
+        "name": "Unrelated continuation edit"
+      },
+      "fixture_constraints": {
+        "owner": "Separate nonadmin actor must have id1; no arbitrary integer reference sampling"
+      },
+      "generated_count": 17,
+      "selected_count": 12
+    },
+    {
+      "id": "paperless.custom_field",
+      "status": "api_input_frozen_native_eligibility_pending",
+      "application": "paperless",
+      "component": "CustomFieldRequest",
+      "producer_method": "POST",
+      "producer_path": "/api/custom_fields/",
+      "ordinary_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": {}
+      },
+      "edit_field": "name",
+      "edit_value": "Edited ordinary name",
+      "api_fields": {
+        "data_type": {
+          "enum": [
+            "string",
+            "url",
+            "date",
+            "boolean",
+            "integer",
+            "float",
+            "monetary",
+            "documentlink",
+            "select",
+            "longtext"
+          ],
+          "type": "string",
+          "description": "* `string` - string\n* `url` - url\n* `date` - date\n* `boolean` - boolean\n* `integer` - integer\n* `float` - float\n* `monetary` - monetary\n* `documentlink` - documentlink\n* `select` - select\n* `longtext` - longtext"
+        },
+        "extra_data": {
+          "nullable": true,
+          "description": "Extra data for the custom field, such as select options"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "api_required": [
+        "data_type",
+        "name"
+      ],
+      "unsupported_fields": {
+        "name": "Unrelated continuation edit"
+      },
+      "fixture_constraints": {
+        "extra_data": "Ordinary empty metadata object; no nested-value mutations. Schema explicitly permits null and absence."
+      },
+      "generated_count": 11,
+      "selected_count": 11
+    },
+    {
+      "id": "grocy.shopping_list",
+      "status": "schema_scope_excluded",
+      "reason": "Runtime permits shopping_lists but supplies no ShoppingList object schema. No field types inferred from frontend or database."
+    },
+    {
+      "id": "grocy.task_category",
+      "status": "api_input_frozen_native_eligibility_pending",
+      "application": "grocy",
+      "component": "TaskCategory",
+      "producer_method": "POST",
+      "producer_path": "/api/objects/task_categories",
+      "ordinary_payload": {
+        "name": "Ordinary category",
+        "description": "Ordinary description"
+      },
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "api_fields": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "row_created_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "api_required": [],
+      "unsupported_fields": {
+        "id": "Generated identity",
+        "row_created_timestamp": "Generated creation metadata",
+        "description": "Unrelated continuation edit"
+      },
+      "fixture_constraints": {
+        "schema_binding": "Runtime exposed-entity enum permits task_categories; named TaskCategory component supplies shape despite incomplete generic oneOf list. This is documented mapping inference."
+      },
+      "generated_count": 4,
+      "selected_count": 4
+    },
+    {
+      "id": "vikunja.saved_filter",
+      "status": "api_input_frozen_native_eligibility_pending",
+      "application": "vikunja",
+      "component": "SavedFilter",
+      "producer_method": "POST",
+      "producer_path": "/api/v2/filters",
+      "ordinary_payload": {
+        "title": "Ordinary saved filter",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "api_fields": {
+        "$schema": {
+          "description": "A URL to the JSON Schema for this object.",
+          "examples": [
+            "/api/v2/schemas/SavedFilter.json"
+          ],
+          "format": "uri",
+          "readOnly": true,
+          "type": "string"
+        },
+        "created": {
+          "description": "A timestamp when this filter was created. You cannot change this value.",
+          "format": "date-time",
+          "readOnly": true,
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the filter.",
+          "type": "string"
+        },
+        "filters": {
+          "additionalProperties": false,
+          "properties": {
+            "filter": {
+              "description": "The filter query to match tasks by, e.g. \"done = false && due_date < now+7d\". Combine conditions with && or || (not and/or) and group them with parentheses. Operators: =, !=, >, >=, <, <=, like, in, not in. See https://vikunja.io/docs/filters.",
+              "type": "string"
+            },
+            "filter_include_nulls": {
+              "description": "If true, the result also includes tasks whose filtered field is null.",
+              "type": "boolean"
+            },
+            "order_by": {
+              "description": "The order for each sort_by field, either asc or desc. Defaults to asc.",
+              "items": {
+                "type": "string"
+              },
+              "type": [
+                "array",
+                "null"
+              ]
+            },
+            "s": {
+              "description": "A search term to match tasks by their title.",
+              "type": "string"
+            },
+            "sort_by": {
+              "description": "The fields to sort by, for example done or priority. The special value relevance sorts by search relevance (most relevant first, requires s; ignored when the database cannot score the query).",
+              "items": {
+                "type": "string"
+              },
+              "type": [
+                "array",
+                "null"
+              ]
+            }
+          },
+          "type": "object",
+          "description": "The task filter query and collection options this saved filter wraps."
+        },
+        "id": {
+          "description": "The unique, numeric id of this saved filter.",
+          "format": "int64",
+          "readOnly": true,
+          "type": "integer"
+        },
+        "is_favorite": {
+          "description": "If true, the filter shows up in the Favorites pseudo-project alongside favorite projects.",
+          "type": "boolean"
+        },
+        "owner": {
+          "additionalProperties": false,
+          "properties": {
+            "$schema": {
+              "description": "A URL to the JSON Schema for this object.",
+              "examples": [
+                "/api/v2/schemas/User.json"
+              ],
+              "format": "uri",
+              "readOnly": true,
+              "type": "string"
+            },
+            "bot_owner": {
+              "$ref": "#/components/schemas/User",
+              "description": "The user who created this bot. Only set for bot users.",
+              "readOnly": true
+            },
+            "bot_owner_id": {
+              "description": "The id of the owning (human) user. Set by the server on creation; a non-zero value means this user is a bot.",
+              "format": "int64",
+              "readOnly": true,
+              "type": "integer"
+            },
+            "created": {
+              "description": "A timestamp when this user was created. You cannot change this value.",
+              "format": "date-time",
+              "readOnly": true,
+              "type": "string"
+            },
+            "email": {
+              "description": "The user's email address. Always empty for bot users.",
+              "maxLength": 250,
+              "type": "string"
+            },
+            "id": {
+              "description": "The unique, numeric id of this user.",
+              "format": "int64",
+              "readOnly": true,
+              "type": "integer"
+            },
+            "name": {
+              "description": "The full name of the user.",
+              "type": "string"
+            },
+            "updated": {
+              "description": "A timestamp when this user was last updated. You cannot change this value.",
+              "format": "date-time",
+              "readOnly": true,
+              "type": "string"
+            },
+            "username": {
+              "description": "The username of the user. Is always unique. For bot users it must start with the 'bot-' prefix.",
+              "maxLength": 250,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "description": "The user who owns this filter; set by the server.",
+          "readOnly": true
+        },
+        "title": {
+          "description": "The title of the filter.",
+          "maxLength": 250,
+          "minLength": 1,
+          "type": "string"
+        },
+        "updated": {
+          "description": "A timestamp when this filter was last updated. You cannot change this value.",
+          "format": "date-time",
+          "readOnly": true,
+          "type": "string"
+        }
+      },
+      "api_required": [],
+      "unsupported_fields": {
+        "filters": "Nested query/lifecycle scope unsupported for mutations; ordinary empty query is fixed",
+        "$schema": "API read-only field",
+        "created": "API read-only field",
+        "description": "Unrelated continuation edit",
+        "id": "API read-only field",
+        "owner": "API read-only field",
+        "updated": "API read-only field"
+      },
+      "fixture_constraints": {
+        "filters": "Must qualify empty query before any scientific case; API states filter queries are validated"
+      },
+      "generated_count": 5,
+      "selected_count": 5
+    },
+    {
+      "id": "gitea.repository_settings",
+      "status": "api_input_frozen_native_eligibility_pending",
+      "application": "gitea",
+      "component": "CreateRepoOption",
+      "producer_method": "POST",
+      "producer_path": "/api/v1/user/repos",
+      "ordinary_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "edit_field": "description",
+      "edit_value": "Edited ordinary description",
+      "api_fields": {
+        "auto_init": {
+          "description": "Whether the repository should be auto-initialized?",
+          "type": "boolean",
+          "x-go-name": "AutoInit"
+        },
+        "default_branch": {
+          "description": "DefaultBranch of the repository (used when initializes and in template)",
+          "type": "string",
+          "x-go-name": "DefaultBranch"
+        },
+        "description": {
+          "description": "Description of the repository to create",
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "gitignores": {
+          "description": "Gitignores to use",
+          "type": "string",
+          "x-go-name": "Gitignores"
+        },
+        "issue_labels": {
+          "description": "Label-Set to use",
+          "type": "string",
+          "x-go-name": "IssueLabels"
+        },
+        "license": {
+          "description": "License to use",
+          "type": "string",
+          "x-go-name": "License"
+        },
+        "name": {
+          "description": "Name of the repository to create",
+          "type": "string",
+          "uniqueItems": true,
+          "x-go-name": "Name"
+        },
+        "object_format_name": {
+          "description": "ObjectFormatName of the underlying git repository, empty string for default (sha1)",
+          "type": "string",
+          "enum": [
+            "sha1",
+            "sha256"
+          ],
+          "x-go-enum-desc": "sha1 ObjectFormatSHA1\nsha256 ObjectFormatSHA256",
+          "x-go-name": "ObjectFormatName"
+        },
+        "private": {
+          "description": "Whether the repository is private",
+          "type": "boolean",
+          "x-go-name": "Private"
+        },
+        "readme": {
+          "description": "Readme of the repository to create",
+          "type": "string",
+          "x-go-name": "Readme"
+        },
+        "template": {
+          "description": "Whether the repository is template",
+          "type": "boolean",
+          "x-go-name": "Template"
+        },
+        "trust_model": {
+          "description": "TrustModel of the repository",
+          "type": "string",
+          "enum": [
+            "default",
+            "collaborator",
+            "committer",
+            "collaboratorcommitter"
+          ],
+          "x-go-name": "TrustModel"
+        }
+      },
+      "api_required": [
+        "name"
+      ],
+      "unsupported_fields": {
+        "gitignores": "Template catalog reference not resolved",
+        "license": "Template catalog reference not resolved",
+        "readme": "Template catalog reference not resolved",
+        "issue_labels": "Label-set catalog reference not resolved",
+        "description": "Unrelated continuation edit"
+      },
+      "fixture_constraints": {
+        "name": "Resolve created repository identity from POST result, including renamed synthetic names. All instances isolated on localhost."
+      },
+      "generated_count": 18,
+      "selected_count": 12
+    }
+  ],
+  "generated": [
+    {
+      "id": "paperless.storage_path:is_insensitive:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "is_insensitive",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:is_insensitive:false",
+      "workflow": "paperless.storage_path",
+      "field": "is_insensitive",
+      "mutation": "false",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": false,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:empty",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:short",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "x",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:ordinary",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "Study value",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-0",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-0",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 0,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-2",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-2",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 2,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-3",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-3",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-4",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-4",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-5",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-5",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 5,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-6",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-6",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 6,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:owner:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "owner",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:owner:null",
+      "workflow": "paperless.storage_path",
+      "field": "owner",
+      "mutation": "null",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": null
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:path:short",
+      "workflow": "paperless.storage_path",
+      "field": "path",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "x",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:path:ordinary",
+      "workflow": "paperless.storage_path",
+      "field": "path",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "Study value",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-1",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-1",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "url",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-2",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-2",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "date",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-3",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-3",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "boolean",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-4",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-4",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "integer",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-5",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-5",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "float",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-6",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-6",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "monetary",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-7",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-7",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "documentlink",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-8",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-8",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "select",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-9",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-9",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "longtext",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:extra_data:omitted",
+      "workflow": "paperless.custom_field",
+      "field": "extra_data",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "string"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:extra_data:null",
+      "workflow": "paperless.custom_field",
+      "field": "extra_data",
+      "mutation": "null",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": null
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:omitted",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "omitted",
+      "producer_payload": {
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:empty",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "",
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:short",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "x",
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:ordinary",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Study value",
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:is_favorite:omitted",
+      "workflow": "vikunja.saved_filter",
+      "field": "is_favorite",
+      "mutation": "omitted",
+      "producer_payload": {
+        "title": "Ordinary saved filter",
+        "description": "<p>Ordinary description</p>",
+        "filters": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:is_favorite:true",
+      "workflow": "vikunja.saved_filter",
+      "field": "is_favorite",
+      "mutation": "true",
+      "producer_payload": {
+        "title": "Ordinary saved filter",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": true
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:title:omitted",
+      "workflow": "vikunja.saved_filter",
+      "field": "title",
+      "mutation": "omitted",
+      "producer_payload": {
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:title:short",
+      "workflow": "vikunja.saved_filter",
+      "field": "title",
+      "mutation": "short",
+      "producer_payload": {
+        "title": "x",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:title:ordinary",
+      "workflow": "vikunja.saved_filter",
+      "field": "title",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "title": "Study value",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:auto_init:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "auto_init",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:auto_init:true",
+      "workflow": "gitea.repository_settings",
+      "field": "auto_init",
+      "mutation": "true",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": true,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:empty",
+      "workflow": "gitea.repository_settings",
+      "field": "default_branch",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": ""
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:short",
+      "workflow": "gitea.repository_settings",
+      "field": "default_branch",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": "x"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:ordinary",
+      "workflow": "gitea.repository_settings",
+      "field": "default_branch",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": "Study value"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:name:empty",
+      "workflow": "gitea.repository_settings",
+      "field": "name",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:name:short",
+      "workflow": "gitea.repository_settings",
+      "field": "name",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "x",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:name:ordinary",
+      "workflow": "gitea.repository_settings",
+      "field": "name",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Study value",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:object_format_name:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "object_format_name",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:object_format_name:enum-1",
+      "workflow": "gitea.repository_settings",
+      "field": "object_format_name",
+      "mutation": "enum-1",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha256",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:private:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "private",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:private:false",
+      "workflow": "gitea.repository_settings",
+      "field": "private",
+      "mutation": "false",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": false,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:template:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "template",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:template:true",
+      "workflow": "gitea.repository_settings",
+      "field": "template",
+      "mutation": "true",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": true,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:enum-1",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "enum-1",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "collaborator"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:enum-2",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "enum-2",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "committer"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:enum-3",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "enum-3",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "collaboratorcommitter"
+      },
+      "cohort": "schema_sample"
+    }
+  ],
+  "selected": [
+    {
+      "id": "paperless.storage_path:is_insensitive:false",
+      "workflow": "paperless.storage_path",
+      "field": "is_insensitive",
+      "mutation": "false",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": false,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:empty",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:owner:null",
+      "workflow": "paperless.storage_path",
+      "field": "owner",
+      "mutation": "null",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": null
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:path:ordinary",
+      "workflow": "paperless.storage_path",
+      "field": "path",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "Study value",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:is_insensitive:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "is_insensitive",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:short",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "x",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-2",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-2",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 2,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:owner:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "owner",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:path:short",
+      "workflow": "paperless.storage_path",
+      "field": "path",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "x",
+        "match": "study",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:match:omitted",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-3",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-3",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 3,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-7",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-7",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "documentlink",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:extra_data:omitted",
+      "workflow": "paperless.custom_field",
+      "field": "extra_data",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "string"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-2",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-2",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "date",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:extra_data:null",
+      "workflow": "paperless.custom_field",
+      "field": "extra_data",
+      "mutation": "null",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "string",
+        "extra_data": null
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-3",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-3",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "boolean",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-4",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-4",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "integer",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-5",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-5",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "float",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-6",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-6",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "monetary",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-1",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-1",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "url",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-8",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-8",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "select",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.custom_field:data_type:enum-9",
+      "workflow": "paperless.custom_field",
+      "field": "data_type",
+      "mutation": "enum-9",
+      "producer_payload": {
+        "name": "Ordinary custom field",
+        "data_type": "longtext",
+        "extra_data": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:omitted",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "omitted",
+      "producer_payload": {
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:short",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "x",
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:empty",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "",
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "grocy.task_category:name:ordinary",
+      "workflow": "grocy.task_category",
+      "field": "name",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Study value",
+        "description": "Ordinary description"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:is_favorite:omitted",
+      "workflow": "vikunja.saved_filter",
+      "field": "is_favorite",
+      "mutation": "omitted",
+      "producer_payload": {
+        "title": "Ordinary saved filter",
+        "description": "<p>Ordinary description</p>",
+        "filters": {}
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:title:omitted",
+      "workflow": "vikunja.saved_filter",
+      "field": "title",
+      "mutation": "omitted",
+      "producer_payload": {
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:is_favorite:true",
+      "workflow": "vikunja.saved_filter",
+      "field": "is_favorite",
+      "mutation": "true",
+      "producer_payload": {
+        "title": "Ordinary saved filter",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": true
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:title:short",
+      "workflow": "vikunja.saved_filter",
+      "field": "title",
+      "mutation": "short",
+      "producer_payload": {
+        "title": "x",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "vikunja.saved_filter:title:ordinary",
+      "workflow": "vikunja.saved_filter",
+      "field": "title",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "title": "Study value",
+        "description": "<p>Ordinary description</p>",
+        "filters": {},
+        "is_favorite": false
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:auto_init:true",
+      "workflow": "gitea.repository_settings",
+      "field": "auto_init",
+      "mutation": "true",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": true,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:ordinary",
+      "workflow": "gitea.repository_settings",
+      "field": "default_branch",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": "Study value"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:name:short",
+      "workflow": "gitea.repository_settings",
+      "field": "name",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "x",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:object_format_name:enum-1",
+      "workflow": "gitea.repository_settings",
+      "field": "object_format_name",
+      "mutation": "enum-1",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha256",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:private:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "private",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:template:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "template",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:auto_init:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "auto_init",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:empty",
+      "workflow": "gitea.repository_settings",
+      "field": "default_branch",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": ""
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:name:empty",
+      "workflow": "gitea.repository_settings",
+      "field": "name",
+      "mutation": "empty",
+      "producer_payload": {
+        "name": "",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:object_format_name:omitted",
+      "workflow": "gitea.repository_settings",
+      "field": "object_format_name",
+      "mutation": "omitted",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:private:false",
+      "workflow": "gitea.repository_settings",
+      "field": "private",
+      "mutation": "false",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": false,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    }
+  ],
+  "unselected": [
+    {
+      "id": "paperless.storage_path:match:ordinary",
+      "workflow": "paperless.storage_path",
+      "field": "match",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "Study value",
+        "matching_algorithm": 1,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-0",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-0",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 0,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-4",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-4",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 4,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-5",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-5",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 5,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "paperless.storage_path:matching_algorithm:enum-6",
+      "workflow": "paperless.storage_path",
+      "field": "matching_algorithm",
+      "mutation": "enum-6",
+      "producer_payload": {
+        "name": "Ordinary storage path",
+        "path": "study-storage",
+        "match": "study",
+        "matching_algorithm": 6,
+        "is_insensitive": true,
+        "owner": 1
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:default_branch:short",
+      "workflow": "gitea.repository_settings",
+      "field": "default_branch",
+      "mutation": "short",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default",
+        "default_branch": "x"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:name:ordinary",
+      "workflow": "gitea.repository_settings",
+      "field": "name",
+      "mutation": "ordinary",
+      "producer_payload": {
+        "name": "Study value",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:template:true",
+      "workflow": "gitea.repository_settings",
+      "field": "template",
+      "mutation": "true",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": true,
+        "object_format_name": "sha1",
+        "trust_model": "default"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:enum-1",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "enum-1",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "collaborator"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:enum-2",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "enum-2",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "committer"
+      },
+      "cohort": "schema_sample"
+    },
+    {
+      "id": "gitea.repository_settings:trust_model:enum-3",
+      "workflow": "gitea.repository_settings",
+      "field": "trust_model",
+      "mutation": "enum-3",
+      "producer_payload": {
+        "name": "study-repo",
+        "description": "Ordinary description",
+        "private": true,
+        "auto_init": false,
+        "template": false,
+        "object_format_name": "sha1",
+        "trust_model": "collaboratorcommitter"
+      },
+      "cohort": "schema_sample"
+    }
+  ],
+  "ordinary_controls": [
+    {
+      "id": "paperless.storage_path:valid:1",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.storage_path:valid:2",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.storage_path:valid:3",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.storage_path:valid:4",
+      "workflow": "paperless.storage_path",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.custom_field:valid:1",
+      "workflow": "paperless.custom_field",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.custom_field:valid:2",
+      "workflow": "paperless.custom_field",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.custom_field:valid:3",
+      "workflow": "paperless.custom_field",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "paperless.custom_field:valid:4",
+      "workflow": "paperless.custom_field",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "grocy.task_category:valid:1",
+      "workflow": "grocy.task_category",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "grocy.task_category:valid:2",
+      "workflow": "grocy.task_category",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "grocy.task_category:valid:3",
+      "workflow": "grocy.task_category",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "grocy.task_category:valid:4",
+      "workflow": "grocy.task_category",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "vikunja.saved_filter:valid:1",
+      "workflow": "vikunja.saved_filter",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "vikunja.saved_filter:valid:2",
+      "workflow": "vikunja.saved_filter",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "vikunja.saved_filter:valid:3",
+      "workflow": "vikunja.saved_filter",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "vikunja.saved_filter:valid:4",
+      "workflow": "vikunja.saved_filter",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "gitea.repository_settings:valid:1",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "gitea.repository_settings:valid:2",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "gitea.repository_settings:valid:3",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control"
+    },
+    {
+      "id": "gitea.repository_settings:valid:4",
+      "workflow": "gitea.repository_settings",
+      "cohort": "valid_control"
+    }
+  ],
+  "scientific_execution_authorized": false,
+  "new_frontend_constraints_inspected": false,
+  "interpretation": "Frozen before new native-workflow validation inspection. Schema-compatible syntax is not business-validity or server-acceptance assurance. Backend serializers were read for Paperless; schema sampling does not omit enum values known to require extra business data. Fields and exclusions are preserved, including one schema-scope exclusion. Apps and shared infrastructure were previously exposed; this is not an untouched-app holdout."
+}

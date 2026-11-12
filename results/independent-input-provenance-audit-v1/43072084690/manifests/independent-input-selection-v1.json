@@ -1,0 +1,92 @@
+{
+  "kind": "independent_input_workflow_selection_v1",
+  "registered_date": "2026-11-11",
+  "seed": "mixed-interface:api-schema-inputs:v1:20261111",
+  "applications": {
+    "paperless": {
+      "version": "3.4.2",
+      "source_commit": "d939d873e11dd14896d1bfe23f65b1baa6513ba7",
+      "image": "ghcr.io/paperless-ngx/paperless-ngx@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84",
+      "image_id": "sha256:1135cf639679fb573eabf9af76d87dc1a74868f5830291ae3287e5c6992aedc5",
+      "prior_registry": "manifests/paperless-execution-v1.json",
+      "prior_registry_sha256": "103644ea7c116c740394890d552a1a5457089d4893832d2177d28dfa5fd033c2"
+    },
+    "grocy": {
+      "version": "4.7.1",
+      "source_commit": "7d15c46bbdc35d4958cae99209ba170667dc1d64",
+      "image": "docker.io/linuxserver/grocy@sha256:e4e34a0a84f407b1bcd2c3b6cd1999bf99bcad1defa8847adea7dc82a9cd6b8c",
+      "image_id": "sha256:80a50f603077d272c0c215ed0667a106d3c652a30a322ec1dfe64f34d31f80b1",
+      "prior_registry": "manifests/grocy-execution-v1.json",
+      "prior_registry_sha256": "4f8c8ddceb838009975f2f3b813f3fae8c0e6bb5ea9c35beaf7784a055c48bb3"
+    },
+    "vikunja": {
+      "version": "v2.8.0",
+      "source_commit": "6e788bf87cebe50e2b8d034b213fcf94ae5449ee",
+      "image": "vikunja/vikunja@sha256:35d937baf3b5d5803bed6b9e11d007448b7b536df9e4346dc35551e1072636c3",
+      "image_id": "sha256:a5e3816da40bbb9bab752ff1efc2067008b8d1397238e8f2ffb91170514d7786",
+      "prior_registry": "manifests/vikunja-execution-v1.json",
+      "prior_registry_sha256": "1a864b301d251a91939c7c83eb705527e1c44214e17b1b537e17896d9595050b"
+    },
+    "gitea": {
+      "version": "28.3.0",
+      "source_commit": "4f5a3e13e5f3aca85d830e3a9024c893b0bbf1e1",
+      "image": "gitea/gitea@sha256:8967bf9deaf3c5c4adae13519436dc1b20c646ac83fe37ae810c933a1045227d",
+      "image_id": "sha256:361e24f5ef63c7ff4af6a571371511bbc677d8b291dd597c12f338e36ae48b77",
+      "prior_registry": "manifests/gitea-execution-v1.json",
+      "prior_registry_sha256": "09bcfb08a81adf6987ebb3031f8ef6e05b98eb2c1fec419fbbed575f3aad2410"
+    }
+  },
+  "workflows": [
+    {
+      "id": "paperless.storage_path",
+      "application": "paperless",
+      "resource": "storage_paths",
+      "prior_exposure": "MatchingModel inspected for other resources; no storage-path edit continuation executed."
+    },
+    {
+      "id": "paperless.custom_field",
+      "application": "paperless",
+      "resource": "custom_fields",
+      "prior_exposure": "Application exposed; custom-field creation/edit not previously qualified."
+    },
+    {
+      "id": "grocy.shopping_list",
+      "application": "grocy",
+      "resource": "shopping_lists",
+      "prior_exposure": "Generic API infrastructure exposed; shopping-list edit continuation not previously qualified."
+    },
+    {
+      "id": "grocy.task_category",
+      "application": "grocy",
+      "resource": "task_categories",
+      "prior_exposure": "Collection queried as a reference domain in prior task tests; category creation/edit continuation not previously qualified."
+    },
+    {
+      "id": "vikunja.saved_filter",
+      "application": "vikunja",
+      "resource": "saved_filters",
+      "prior_exposure": "Application task/project infrastructure exposed; saved-filter edit continuation not previously qualified."
+    },
+    {
+      "id": "gitea.repository_settings",
+      "application": "gitea",
+      "resource": "repositories",
+      "prior_exposure": "Repository create used for fixtures and API structs inspected; native repository-settings edit not previously qualified."
+    }
+  ],
+  "replacements_authorized": false,
+  "application_holdout": false,
+  "workflow_holdout": "Only native continuation workflows are new; prior infrastructure and incidental source exposure disclosed.",
+  "input_freeze_required_before_frontend_constraint_inspection": true,
+  "execution_authorized": false,
+  "maximum_selected_inputs_per_workflow": 12,
+  "ordinary_controls_per_workflow": 4,
+  "maximum_initial_pairs": 96,
+  "maximum_followup_pairs": 288,
+  "maximum_total_finite_pairs": 384,
+  "maximum_qualification_versions_per_workflow": 3,
+  "maximum_parallel_jobs": 3,
+  "paid_model_calls": 0,
+  "cash_ceiling_usd": 100,
+  "selection_basis": "Fixed domain-resource list before new API/UI outcome testing. Eligibility requires documented API producer/update, native unrelated edit and two API-writable fields. Keep unavailable/unqualified resources as exclusions; no replacements based on outcomes."
+}
