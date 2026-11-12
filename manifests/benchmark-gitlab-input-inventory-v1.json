@@ -1,0 +1,1563 @@
+{
+  "kind": "benchmark_gitlab_input_inventory_v1",
+  "application_version": "15.7.5",
+  "application_revision": "358d690d91c",
+  "scientific_execution_authorized": false,
+  "specification_count": 24,
+  "contracts": {
+    "project_create": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/projects.md",
+      "sha256": "5345c428476f916650f99c69ebc1cd5d90540c49d7092a0d83216cd1e262cd52",
+      "heading": "Create project",
+      "start_line": 1183,
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "required_text": "**{check-circle}** Yes (if path isn't provided)",
+          "description": "The name of the new project. Equals path if not provided.",
+          "source_line": 1207
+        },
+        {
+          "name": "path",
+          "type": "string",
+          "required_text": "**{check-circle}** Yes (if name isn't provided)",
+          "description": "Repository name for new project. Generated based on name if not provided (generated as lowercase with dashes). Starting with GitLab 14.9, path must not start or end with a special character and must not contain consecutive special characters.",
+          "source_line": 1208
+        },
+        {
+          "name": "allow_merge_on_skipped_pipeline",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Set whether or not merge requests can be merged with skipped jobs.",
+          "source_line": 1209
+        },
+        {
+          "name": "only_allow_merge_if_all_status_checks_passed",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default.",
+          "source_line": 1210
+        },
+        {
+          "name": "analytics_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private` or `enabled`",
+          "source_line": 1211
+        },
+        {
+          "name": "approvals_before_merge",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md).",
+          "source_line": 1212
+        },
+        {
+          "name": "auto_cancel_pending_pipelines",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled.",
+          "source_line": 1213
+        },
+        {
+          "name": "auto_devops_deploy_strategy",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`).",
+          "source_line": 1214
+        },
+        {
+          "name": "auto_devops_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable Auto DevOps for this project.",
+          "source_line": 1215
+        },
+        {
+          "name": "autoclose_referenced_issues",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Set whether auto-closing referenced issues on default branch.",
+          "source_line": 1216
+        },
+        {
+          "name": "avatar",
+          "type": "mixed",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Image file for avatar of the project.",
+          "source_line": 1217
+        },
+        {
+          "name": "build_git_strategy",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The Git strategy. Defaults to `fetch`.",
+          "source_line": 1218
+        },
+        {
+          "name": "build_timeout",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The maximum amount of time, in seconds, that a job can run.",
+          "source_line": 1219
+        },
+        {
+          "name": "builds_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1220
+        },
+        {
+          "name": "ci_config_path",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The path to CI configuration file.",
+          "source_line": 1221
+        },
+        {
+          "name": "container_expiration_policy_attributes",
+          "type": "hash",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [Container Registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n` and `older_than` values.",
+          "source_line": 1222
+        },
+        {
+          "name": "container_registry_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`.",
+          "source_line": 1223
+        },
+        {
+          "name": "container_registry_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead.",
+          "source_line": 1224
+        },
+        {
+          "name": "default_branch",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`.",
+          "source_line": 1225
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Short project description.",
+          "source_line": 1226
+        },
+        {
+          "name": "emails_disabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Disable email notifications.",
+          "source_line": 1227
+        },
+        {
+          "name": "external_authorization_classification_label",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The classification label for the project.",
+          "source_line": 1228
+        },
+        {
+          "name": "forking_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1229
+        },
+        {
+          "name": "group_with_project_templates_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true.",
+          "source_line": 1230
+        },
+        {
+          "name": "import_url",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "URL to import repository from. When this isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`.",
+          "source_line": 1231
+        },
+        {
+          "name": "initialize_with_readme",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Whether to create a Git repository with just a `README.md` file. Default is `false`. When this is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`.",
+          "source_line": 1232
+        },
+        {
+          "name": "issues_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1233
+        },
+        {
+          "name": "issues_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead.",
+          "source_line": 1234
+        },
+        {
+          "name": "jobs_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead.",
+          "source_line": 1235
+        },
+        {
+          "name": "lfs_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable LFS.",
+          "source_line": 1236
+        },
+        {
+          "name": "merge_method",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Set the [merge method](#project-merge-method) used.",
+          "source_line": 1237
+        },
+        {
+          "name": "merge_pipelines_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable or disable merge pipelines.",
+          "source_line": 1238
+        },
+        {
+          "name": "merge_requests_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1239
+        },
+        {
+          "name": "merge_requests_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead.",
+          "source_line": 1240
+        },
+        {
+          "name": "merge_trains_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable or disable merge trains.",
+          "source_line": 1241
+        },
+        {
+          "name": "mirror_trigger_builds",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Pull mirroring triggers builds.",
+          "source_line": 1242
+        },
+        {
+          "name": "mirror",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enables pull mirroring in a project.",
+          "source_line": 1243
+        },
+        {
+          "name": "namespace_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Namespace for the new project (defaults to the current user's namespace).",
+          "source_line": 1244
+        },
+        {
+          "name": "only_allow_merge_if_all_discussions_are_resolved",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Set whether merge requests can only be merged when all the discussions are resolved.",
+          "source_line": 1245
+        },
+        {
+          "name": "only_allow_merge_if_pipeline_succeeds",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge) in the project settings.",
+          "source_line": 1246
+        },
+        {
+          "name": "operations_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1247
+        },
+        {
+          "name": "packages_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable or disable packages repository feature.",
+          "source_line": 1248
+        },
+        {
+          "name": "pages_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, `enabled`, or `public`.",
+          "source_line": 1249
+        },
+        {
+          "name": "printing_merge_request_link_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Show link to create/view merge request when pushing from the command line.",
+          "source_line": 1250
+        },
+        {
+          "name": "public_builds",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "If `true`, jobs can be viewed by non-project members.",
+          "source_line": 1251
+        },
+        {
+          "name": "releases_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1252
+        },
+        {
+          "name": "environments_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1253
+        },
+        {
+          "name": "feature_flags_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1254
+        },
+        {
+          "name": "infrastructure_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1255
+        },
+        {
+          "name": "monitor_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1256
+        },
+        {
+          "name": "remove_source_branch_after_merge",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable `Delete source branch` option by default for all new merge requests.",
+          "source_line": 1257
+        },
+        {
+          "name": "repository_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1258
+        },
+        {
+          "name": "repository_storage",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Which storage shard the repository is on. _(administrator only)_",
+          "source_line": 1259
+        },
+        {
+          "name": "request_access_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Allow users to request member access.",
+          "source_line": 1260
+        },
+        {
+          "name": "requirements_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private` or `enabled`",
+          "source_line": 1261
+        },
+        {
+          "name": "resolve_outdated_diff_discussions",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Automatically resolve merge request diffs discussions on lines changed with a push.",
+          "source_line": 1262
+        },
+        {
+          "name": "security_and_compliance_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "(GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1263
+        },
+        {
+          "name": "shared_runners_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Enable shared runners for this project.",
+          "source_line": 1264
+        },
+        {
+          "name": "snippets_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1265
+        },
+        {
+          "name": "snippets_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead.",
+          "source_line": 1266
+        },
+        {
+          "name": "squash_option",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `never`, `always`, `default_on`, or `default_off`.",
+          "source_line": 1267
+        },
+        {
+          "name": "tag_list",
+          "type": "array",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead.",
+          "source_line": 1268
+        },
+        {
+          "name": "template_name",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "When used without `use_custom_template`, name of a [built-in project template](../user/project/working_with_projects.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template.",
+          "source_line": 1269
+        },
+        {
+          "name": "template_project_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "When used with `use_custom_template`, project ID of a custom project template. This is preferable to using `template_name` since `template_name` may be ambiguous.",
+          "source_line": 1270
+        },
+        {
+          "name": "topics",
+          "type": "array",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The list of topics for a project; put array of topics, that should be finally assigned to a project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_",
+          "source_line": 1271
+        },
+        {
+          "name": "use_custom_template",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template.",
+          "source_line": 1272
+        },
+        {
+          "name": "visibility",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "See [project visibility level](#project-visibility-level).",
+          "source_line": 1273
+        },
+        {
+          "name": "wiki_access_level",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "One of `disabled`, `private`, or `enabled`.",
+          "source_line": 1274
+        },
+        {
+          "name": "wiki_enabled",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "_(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead.",
+          "source_line": 1275
+        }
+      ]
+    },
+    "issue_create": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/issues.md",
+      "sha256": "456efd5189c9febc7f52fdb374ebb06fea596609491ff36f1b1cc51906bcb775",
+      "heading": "New issue",
+      "start_line": 994,
+      "fields": [
+        {
+          "name": "assignee_id",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The ID of the user to assign the issue to. Only appears on GitLab Free.",
+          "source_line": 1006
+        },
+        {
+          "name": "assignee_ids",
+          "type": "integer array",
+          "required_text": "no",
+          "description": "The IDs of the users to assign the issue to.",
+          "source_line": 1007
+        },
+        {
+          "name": "confidential",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "Set an issue to be confidential. Default is `false`.",
+          "source_line": 1008
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "required_text": "no",
+          "description": "When the issue was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights.",
+          "source_line": 1009
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required_text": "no",
+          "description": "The description of an issue. Limited to 1,048,576 characters.",
+          "source_line": 1010
+        },
+        {
+          "name": "discussion_to_resolve",
+          "type": "string",
+          "required_text": "no",
+          "description": "The ID of a discussion to resolve. This fills out the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`.",
+          "source_line": 1011
+        },
+        {
+          "name": "due_date",
+          "type": "string",
+          "required_text": "no",
+          "description": "The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`",
+          "source_line": 1012
+        },
+        {
+          "name": "epic_id",
+          "type": "integer",
+          "required_text": "no",
+          "description": "ID of the epic to add the issue to. Valid values are greater than or equal to 0.",
+          "source_line": 1013
+        },
+        {
+          "name": "epic_iid",
+          "type": "integer",
+          "required_text": "no",
+          "description": "IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5)",
+          "source_line": 1014
+        },
+        {
+          "name": "id",
+          "type": "integer/string",
+          "required_text": "yes",
+          "description": "The global ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user",
+          "source_line": 1015
+        },
+        {
+          "name": "iid",
+          "type": "integer/string",
+          "required_text": "no",
+          "description": "The internal ID of the project's issue (requires administrator or project owner rights)",
+          "source_line": 1016
+        },
+        {
+          "name": "issue_type",
+          "type": "string",
+          "required_text": "no",
+          "description": "The type of issue. One of `issue`, `incident`, or `test_case`. Default is `issue`.",
+          "source_line": 1017
+        },
+        {
+          "name": "labels",
+          "type": "string",
+          "required_text": "no",
+          "description": "Comma-separated label names for an issue",
+          "source_line": 1018
+        },
+        {
+          "name": "merge_request_to_resolve_discussions_of",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.",
+          "source_line": 1019
+        },
+        {
+          "name": "milestone_id",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#single-project-issue) to retrieve the issue's details.",
+          "source_line": 1020
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required_text": "yes",
+          "description": "The title of an issue",
+          "source_line": 1021
+        },
+        {
+          "name": "weight",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The weight of the issue. Valid values are greater than or equal to 0.",
+          "source_line": 1022
+        }
+      ]
+    },
+    "issue_update": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/issues.md",
+      "sha256": "456efd5189c9febc7f52fdb374ebb06fea596609491ff36f1b1cc51906bcb775",
+      "heading": "Edit issue",
+      "start_line": 1147,
+      "fields": [
+        {
+          "name": "add_labels",
+          "type": "string",
+          "required_text": "no",
+          "description": "Comma-separated label names to add to an issue.",
+          "source_line": 1175
+        },
+        {
+          "name": "assignee_ids",
+          "type": "integer array",
+          "required_text": "no",
+          "description": "The ID of the users to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.",
+          "source_line": 1176
+        },
+        {
+          "name": "confidential",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "Updates an issue to be confidential",
+          "source_line": 1177
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required_text": "no",
+          "description": "The description of an issue. Limited to 1,048,576 characters.",
+          "source_line": 1178
+        },
+        {
+          "name": "discussion_locked",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments.",
+          "source_line": 1179
+        },
+        {
+          "name": "due_date",
+          "type": "string",
+          "required_text": "no",
+          "description": "The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`",
+          "source_line": 1180
+        },
+        {
+          "name": "epic_id",
+          "type": "integer",
+          "required_text": "no",
+          "description": "ID of the epic to add the issue to. Valid values are greater than or equal to 0.",
+          "source_line": 1181
+        },
+        {
+          "name": "epic_iid",
+          "type": "integer",
+          "required_text": "no",
+          "description": "IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5)",
+          "source_line": 1182
+        },
+        {
+          "name": "id",
+          "type": "integer/string",
+          "required_text": "yes",
+          "description": "The global ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user",
+          "source_line": 1183
+        },
+        {
+          "name": "issue_iid",
+          "type": "integer",
+          "required_text": "yes",
+          "description": "The internal ID of a project's issue",
+          "source_line": 1184
+        },
+        {
+          "name": "issue_type",
+          "type": "string",
+          "required_text": "no",
+          "description": "Updates the type of issue. One of `issue`, `incident`, or `test_case`.",
+          "source_line": 1185
+        },
+        {
+          "name": "labels",
+          "type": "string",
+          "required_text": "no",
+          "description": "Comma-separated label names for an issue. Set to an empty string to unassign all labels.",
+          "source_line": 1186
+        },
+        {
+          "name": "milestone_id",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.",
+          "source_line": 1187
+        },
+        {
+          "name": "remove_labels",
+          "type": "string",
+          "required_text": "no",
+          "description": "Comma-separated label names to remove from an issue.",
+          "source_line": 1188
+        },
+        {
+          "name": "state_event",
+          "type": "string",
+          "required_text": "no",
+          "description": "The state event of an issue. Set `close` to close the issue and `reopen` to reopen it",
+          "source_line": 1189
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required_text": "no",
+          "description": "The title of an issue",
+          "source_line": 1190
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "required_text": "no",
+          "description": "When the issue was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires administrator or project owner rights). Empty string or null values are not accepted.",
+          "source_line": 1191
+        },
+        {
+          "name": "weight",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The weight of the issue. Valid values are greater than or equal to 0. 0",
+          "source_line": 1192
+        }
+      ]
+    },
+    "mr_create": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/merge_requests.md",
+      "sha256": "6d1a9cc203ef38835beff214f9d7a03a4c8ba6cae2f08f14787f9c3fb0462071",
+      "heading": "Create MR",
+      "start_line": 1263,
+      "fields": [
+        {
+          "name": "id",
+          "type": "integer or string",
+          "required_text": "**{check-circle}** Yes",
+          "description": "The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user",
+          "source_line": 1273
+        },
+        {
+          "name": "source_branch",
+          "type": "string",
+          "required_text": "**{check-circle}** Yes",
+          "description": "The source branch.",
+          "source_line": 1274
+        },
+        {
+          "name": "target_branch",
+          "type": "string",
+          "required_text": "**{check-circle}** Yes",
+          "description": "The target branch.",
+          "source_line": 1275
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required_text": "**{check-circle}** Yes",
+          "description": "Title of MR.",
+          "source_line": 1276
+        },
+        {
+          "name": "allow_collaboration",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Allow commits from members who can merge to the target branch.",
+          "source_line": 1277
+        },
+        {
+          "name": "allow_maintainer_to_push",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Alias of `allow_collaboration`.",
+          "source_line": 1278
+        },
+        {
+          "name": "approvals_before_merge",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Number of approvals required before this can be merged (see below).",
+          "source_line": 1279
+        },
+        {
+          "name": "assignee_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Assignee user ID.",
+          "source_line": 1280
+        },
+        {
+          "name": "assignee_ids",
+          "type": "integer array",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.",
+          "source_line": 1281
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Description of the merge request. Limited to 1,048,576 characters.",
+          "source_line": 1282
+        },
+        {
+          "name": "labels",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Labels for the merge request, as a comma-separated list.",
+          "source_line": 1283
+        },
+        {
+          "name": "milestone_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The global ID of a milestone.",
+          "source_line": 1284
+        },
+        {
+          "name": "remove_source_branch",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Flag indicating if a merge request should remove the source branch when merging.",
+          "source_line": 1285
+        },
+        {
+          "name": "reviewer_ids",
+          "type": "integer array",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The ID of the users added as a reviewer to the merge request. If set to `0` or left empty, no reviewers are added. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8.",
+          "source_line": 1286
+        },
+        {
+          "name": "squash",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Squash commits into a single commit when merging.",
+          "source_line": 1287
+        },
+        {
+          "name": "target_project_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Numeric ID of the target project.",
+          "source_line": 1288
+        }
+      ]
+    },
+    "mr_update": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/merge_requests.md",
+      "sha256": "6d1a9cc203ef38835beff214f9d7a03a4c8ba6cae2f08f14787f9c3fb0462071",
+      "heading": "Update MR",
+      "start_line": 1432,
+      "fields": [
+        {
+          "name": "id",
+          "type": "integer or string",
+          "required_text": "**{check-circle}** Yes",
+          "description": "The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.",
+          "source_line": 1442
+        },
+        {
+          "name": "merge_request_iid",
+          "type": "integer",
+          "required_text": "**{check-circle}** Yes",
+          "description": "The ID of a merge request.",
+          "source_line": 1443
+        },
+        {
+          "name": "add_labels",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Comma-separated label names to add to a merge request.",
+          "source_line": 1444
+        },
+        {
+          "name": "allow_collaboration",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Allow commits from members who can merge to the target branch.",
+          "source_line": 1445
+        },
+        {
+          "name": "allow_maintainer_to_push",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Alias of `allow_collaboration`.",
+          "source_line": 1446
+        },
+        {
+          "name": "assignee_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.",
+          "source_line": 1447
+        },
+        {
+          "name": "assignee_ids",
+          "type": "integer array",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.",
+          "source_line": 1448
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Description of the merge request. Limited to 1,048,576 characters.",
+          "source_line": 1449
+        },
+        {
+          "name": "discussion_locked",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments.",
+          "source_line": 1450
+        },
+        {
+          "name": "labels",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Comma-separated label names for a merge request. Set to an empty string to unassign all labels.",
+          "source_line": 1451
+        },
+        {
+          "name": "milestone_id",
+          "type": "integer",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.",
+          "source_line": 1452
+        },
+        {
+          "name": "remove_labels",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Comma-separated label names to remove from a merge request.",
+          "source_line": 1453
+        },
+        {
+          "name": "remove_source_branch",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Flag indicating if a merge request should remove the source branch when merging.",
+          "source_line": 1454
+        },
+        {
+          "name": "reviewer_ids",
+          "type": "integer array",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The ID of the users set as a reviewer to the merge request. Set the value to `0` or provide an empty value to unset all reviewers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8.",
+          "source_line": 1455
+        },
+        {
+          "name": "squash",
+          "type": "boolean",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Squash commits into a single commit when merging.",
+          "source_line": 1456
+        },
+        {
+          "name": "state_event",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "New state (close/reopen).",
+          "source_line": 1457
+        },
+        {
+          "name": "target_branch",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "The target branch.",
+          "source_line": 1458
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required_text": "**{dotted-circle}** No",
+          "description": "Title of MR.",
+          "source_line": 1459
+        }
+      ]
+    },
+    "member_create": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/members.md",
+      "sha256": "37bc02b52eed8a3c5484e48fb29b4ae8b2b94368feb0f84ae97be51df457f09a",
+      "heading": "Add a member to a group or project",
+      "start_line": 511,
+      "fields": [
+        {
+          "name": "id",
+          "type": "integer/string",
+          "required_text": "yes",
+          "description": "The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user",
+          "source_line": 522
+        },
+        {
+          "name": "user_id",
+          "type": "integer/string",
+          "required_text": "yes",
+          "description": "The user ID of the new member or multiple IDs separated by commas",
+          "source_line": 523
+        },
+        {
+          "name": "access_level",
+          "type": "integer",
+          "required_text": "yes",
+          "description": "A valid access level",
+          "source_line": 524
+        },
+        {
+          "name": "expires_at",
+          "type": "string",
+          "required_text": "no",
+          "description": "A date string in the format `YEAR-MONTH-DAY`",
+          "source_line": 525
+        },
+        {
+          "name": "invite_source",
+          "type": "string",
+          "required_text": "no",
+          "description": "The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120).",
+          "source_line": 526
+        },
+        {
+          "name": "tasks_to_be_done",
+          "type": "array of strings",
+          "required_text": "no",
+          "description": "Tasks the inviter wants the member to focus on. The tasks are added as issues to a specified project. The possible values are: `ci`, `code` and `issues`. If specified, requires `tasks_project_id`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69299) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `invite_members_for_task`. Disabled by default.",
+          "source_line": 527
+        },
+        {
+          "name": "tasks_project_id",
+          "type": "integer",
+          "required_text": "no",
+          "description": "The project ID in which to create the task issues. If specified, requires `tasks_to_be_done`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69299) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `invite_members_for_task`. Disabled by default.",
+          "source_line": 528
+        }
+      ]
+    },
+    "file_create": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/repository_files.md",
+      "sha256": "1e1e40681dcde3279cb547cb870a729f252f5eeca8e64f14c22737269980ca69",
+      "heading": "Create new file in repository",
+      "start_line": 226,
+      "fields": [
+        {
+          "name": "branch",
+          "type": "string",
+          "required_text": "yes",
+          "description": "Name of the new branch to create. The commit is added to this branch.",
+          "source_line": 239
+        },
+        {
+          "name": "commit_message",
+          "type": "string",
+          "required_text": "yes",
+          "description": "The commit message.",
+          "source_line": 240
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "required_text": "yes",
+          "description": "The file's content.",
+          "source_line": 241
+        },
+        {
+          "name": "file_path",
+          "type": "string",
+          "required_text": "yes",
+          "description": "URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`.",
+          "source_line": 242
+        },
+        {
+          "name": "id",
+          "type": "integer or string",
+          "required_text": "yes",
+          "description": "The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.",
+          "source_line": 243
+        },
+        {
+          "name": "author_email",
+          "type": "string",
+          "required_text": "no",
+          "description": "The commit author's email address.",
+          "source_line": 244
+        },
+        {
+          "name": "author_name",
+          "type": "string",
+          "required_text": "no",
+          "description": "The commit author's name.",
+          "source_line": 245
+        },
+        {
+          "name": "encoding",
+          "type": "string",
+          "required_text": "no",
+          "description": "Change encoding to `base64`. Default is `text`.",
+          "source_line": 246
+        },
+        {
+          "name": "execute_filemode",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "Enables or disables the `execute` flag on the file. Can be `true` or `false`.",
+          "source_line": 247
+        },
+        {
+          "name": "start_branch",
+          "type": "string",
+          "required_text": "no",
+          "description": "Name of the base branch to create the new branch from.",
+          "source_line": 248
+        }
+      ]
+    },
+    "commit_create": {
+      "source": "results/benchmark-gitlab-image-inspection-v1-ci-43166622248/gitlab-image-inspection-43166622248/extracted/doc/api/commits.md",
+      "sha256": "5342df4f21135e464732150309c537d8fce648d3b2eafb95a369d7babc3c48f0",
+      "heading": "Create a commit with multiple files and actions",
+      "start_line": 81,
+      "fields": [
+        {
+          "name": "id",
+          "type": "integer/string",
+          "required_text": "yes",
+          "description": "The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding)",
+          "source_line": 91
+        },
+        {
+          "name": "branch",
+          "type": "string",
+          "required_text": "yes",
+          "description": "Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.",
+          "source_line": 92
+        },
+        {
+          "name": "commit_message",
+          "type": "string",
+          "required_text": "yes",
+          "description": "Commit message",
+          "source_line": 93
+        },
+        {
+          "name": "start_branch",
+          "type": "string",
+          "required_text": "no",
+          "description": "Name of the branch to start the new branch from",
+          "source_line": 94
+        },
+        {
+          "name": "start_sha",
+          "type": "string",
+          "required_text": "no",
+          "description": "SHA of the commit to start the new branch from",
+          "source_line": 95
+        },
+        {
+          "name": "start_project",
+          "type": "integer/string",
+          "required_text": "no",
+          "description": "The project ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) to start the new branch from. Defaults to the value of `id`.",
+          "source_line": 96
+        },
+        {
+          "name": "actions[]",
+          "type": "array",
+          "required_text": "yes",
+          "description": "An array of action hashes to commit as a batch. See the next table for what attributes it can take.",
+          "source_line": 97
+        },
+        {
+          "name": "author_email",
+          "type": "string",
+          "required_text": "no",
+          "description": "Specify the commit author's email address",
+          "source_line": 98
+        },
+        {
+          "name": "author_name",
+          "type": "string",
+          "required_text": "no",
+          "description": "Specify the commit author's name",
+          "source_line": 99
+        },
+        {
+          "name": "stats",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "Include commit stats. Default is true",
+          "source_line": 100
+        },
+        {
+          "name": "force",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha`",
+          "source_line": 101
+        },
+        {
+          "name": "actions[]",
+          "type": "Type",
+          "required_text": "Required",
+          "description": "Description",
+          "source_line": 103
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "required_text": "yes",
+          "description": "The action to perform: `create`, `delete`, `move`, `update`, or `chmod`.",
+          "source_line": 105
+        },
+        {
+          "name": "file_path",
+          "type": "string",
+          "required_text": "yes",
+          "description": "Full path to the file. For example: `lib/class.rb`.",
+          "source_line": 106
+        },
+        {
+          "name": "previous_path",
+          "type": "string",
+          "required_text": "no",
+          "description": "Original full path to the file being moved. For example `lib/class1.rb`. Only considered for `move` action.",
+          "source_line": 107
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "required_text": "no",
+          "description": "File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` preserve the existing file content, and any other value of `content` overwrites the file content.",
+          "source_line": 108
+        },
+        {
+          "name": "encoding",
+          "type": "string",
+          "required_text": "no",
+          "description": "`text` or `base64`. `text` is default.",
+          "source_line": 109
+        },
+        {
+          "name": "last_commit_id",
+          "type": "string",
+          "required_text": "no",
+          "description": "Last known file commit ID. Only considered in update, move, and delete actions.",
+          "source_line": 110
+        },
+        {
+          "name": "execute_filemode",
+          "type": "boolean",
+          "required_text": "no",
+          "description": "When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action.",
+          "source_line": 111
+        }
+      ]
+    }
+  },
+  "families": [
+    {
+      "family": "gitlab.repository_readme",
+      "representative_task_id": 558,
+      "producer_contract": "project_create",
+      "continuation_contract": "file_create",
+      "specifications": [
+        {
+          "id": "gitlab.repository_readme.ordinary",
+          "optional_field_patch": {},
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.repository_readme.description_empty",
+          "optional_field_patch": {
+            "description": ""
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.repository_readme.description_ascii",
+          "optional_field_patch": {
+            "description": "Continuation study"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.repository_readme.description_unicode",
+          "optional_field_patch": {
+            "description": "Café 東京"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.repository_readme.initialize_with_readme_false",
+          "optional_field_patch": {
+            "initialize_with_readme": false
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.repository_readme.initialize_with_readme_true",
+          "optional_field_patch": {
+            "initialize_with_readme": true
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "lifecycle_control",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        }
+      ]
+    },
+    {
+      "family": "gitlab.issue_assignment",
+      "representative_task_id": 659,
+      "producer_contract": "issue_create",
+      "continuation_contract": "issue_update",
+      "specifications": [
+        {
+          "id": "gitlab.issue_assignment.ordinary",
+          "optional_field_patch": {},
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.issue_assignment.description_empty",
+          "optional_field_patch": {
+            "description": ""
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.issue_assignment.description_ascii",
+          "optional_field_patch": {
+            "description": "Continuation study"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.issue_assignment.description_unicode",
+          "optional_field_patch": {
+            "description": "Café 東京"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.issue_assignment.confidential_false",
+          "optional_field_patch": {
+            "confidential": false
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.issue_assignment.confidential_true",
+          "optional_field_patch": {
+            "confidential": true
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        }
+      ]
+    },
+    {
+      "family": "gitlab.merge_request_reviewer",
+      "representative_task_id": 805,
+      "producer_contract": "mr_create",
+      "continuation_contract": "mr_update",
+      "specifications": [
+        {
+          "id": "gitlab.merge_request_reviewer.ordinary",
+          "optional_field_patch": {},
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.merge_request_reviewer.description_empty",
+          "optional_field_patch": {
+            "description": ""
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.merge_request_reviewer.description_ascii",
+          "optional_field_patch": {
+            "description": "Continuation study"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.merge_request_reviewer.description_unicode",
+          "optional_field_patch": {
+            "description": "Café 東京"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.merge_request_reviewer.squash_false",
+          "optional_field_patch": {
+            "squash": false
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.merge_request_reviewer.squash_true",
+          "optional_field_patch": {
+            "squash": true
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        }
+      ]
+    },
+    {
+      "family": "gitlab.project_members",
+      "representative_task_id": 746,
+      "producer_contract": "project_create",
+      "continuation_contract": "member_create",
+      "specifications": [
+        {
+          "id": "gitlab.project_members.ordinary",
+          "optional_field_patch": {},
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.project_members.description_empty",
+          "optional_field_patch": {
+            "description": ""
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.project_members.description_ascii",
+          "optional_field_patch": {
+            "description": "Continuation study"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.project_members.description_unicode",
+          "optional_field_patch": {
+            "description": "Café 東京"
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.project_members.initialize_with_readme_false",
+          "optional_field_patch": {
+            "initialize_with_readme": false
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        },
+        {
+          "id": "gitlab.project_members.initialize_with_readme_true",
+          "optional_field_patch": {
+            "initialize_with_readme": true
+          },
+          "required_bindings_status": "unresolved_until_fixture_freeze",
+          "stratum": "task_compatibility_pending",
+          "runtime_validity": "unobserved",
+          "native_representability": "unobserved"
+        }
+      ]
+    }
+  ],
+  "retained_unqualified_families": [
+    "reddit.post_comment",
+    "gitlab.directory_file"
+  ],
+  "protocol_sha256": "6cf886e2953b41c5e1ed8f1e4869224f95cb2beee506853e23635b988d8a83cd",
+  "selection_sha256": "29594ae4e93e125cee14b24249d3b0819cd1c53c088b9aa42bb85b6df52d761b"
+}
