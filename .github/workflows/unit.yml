@@ -171,6 +171,8 @@ jobs:
           python -m venv "$RUNNER_TEMP/adapter-schema-validator"
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" scripts/extension/validate_adapter_inputs_v1.py --verify
+      - name: Reconstruct benchmark representative contexts
+        run: python scripts/extension/build_benchmark_representative_context_v1.py --verify
       - name: Reconstruct source-derived GitLab input specifications
         run: python scripts/extension/build_benchmark_gitlab_inputs_v1.py --verify
       - name: Reconstruct pinned GitLab source inspection

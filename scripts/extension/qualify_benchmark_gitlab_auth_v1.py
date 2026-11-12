@@ -76,6 +76,14 @@ def main():
             raise ValueError('Authenticated actor differs from benchmark fixture')
         projects = get_json('/api/v4/projects?membership=true&search=empathy-prompts&per_page=100')
         evidence['issue_project_candidates'] = [{k:p.get(k) for k in ('id','path_with_namespace','default_branch','visibility','permissions')} for p in projects]
+        context = json.loads((ROOT / 'manifests/benchmark-representative-context-v1.json').read_text())
+        mr = next(row for row in context['representatives'] if row['family'] == 'gitlab.merge_request_reviewer')
+        project_path = mr['start_urls'][0].removeprefix('__GITLAB__/')
+        project = get_json('/api/v4/projects/' + urllib.parse.quote(project_path, safe=''))
+        evidence['mr_project'] = {k:project.get(k) for k in ('id','path_with_namespace','default_branch','visibility','permissions')}
+        branches = get_json('/api/v4/projects/' + str(project['id']) + '/repository/branches?per_page=100')
+        evidence['mr_branch_candidates'] = [{k:b.get(k) for k in ('name','default','protected')} for b in branches]
+        evidence['mr_branch_listing_may_be_truncated'] = len(branches) == 100
         evidence['user_candidates'] = {}
         for name in ('Roshan','primer','convexegg','abishek'):
             users = get_json('/api/v4/users?search='+urllib.parse.quote(name)+'&per_page=100')
