@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/defects4rest-feasibility-screen-v1.json',
+    'manifests/vibe-per-test-pilot-results-v1.json',
     'manifests/vibe-released-evaluation-audit-v1.json',
     'manifests/vibe-mutation-source-audit-v1.json',
     'manifests/vibe-per-test-pilot-registration-v1.json',

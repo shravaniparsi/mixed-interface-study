@@ -1,0 +1,59 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::test_create_author_happy_path PASSED                      [  3%]
+test_suite.py::test_create_author_missing_required_field PASSED          [  6%]
+test_suite.py::test_create_author_invalid_born_year PASSED               [ 10%]
+test_suite.py::test_list_authors_happy_path PASSED                       [ 13%]
+test_suite.py::test_list_authors_with_skip_and_limit PASSED              [ 16%]
+test_suite.py::test_get_author_happy_path PASSED                         [ 20%]
+test_suite.py::test_get_nonexistent_author FAILED                        [ 23%]
+test_suite.py::test_get_author_with_etag_not_modified PASSED             [ 26%]
+test_suite.py::test_update_author_happy_path PASSED                      [ 30%]
+test_suite.py::test_update_author_with_etag_mismatch PASSED              [ 33%]
+test_suite.py::test_delete_author_with_books_fails PASSED                [ 36%]
+test_suite.py::test_create_book_happy_path PASSED                        [ 40%]
+test_suite.py::test_create_book_duplicate_isbn PASSED                    [ 43%]
+test_suite.py::test_create_book_invalid_price PASSED                     [ 46%]
+test_suite.py::test_list_books_happy_path PASSED                         [ 50%]
+test_suite.py::test_list_books_with_filters PASSED                       [ 53%]
+test_suite.py::test_get_book_happy_path PASSED                           [ 56%]
+test_suite.py::test_get_soft_deleted_book PASSED                         [ 60%]
+test_suite.py::test_update_book_happy_path PASSED                        [ 63%]
+test_suite.py::test_soft_delete_book_happy_path PASSED                   [ 66%]
+test_suite.py::test_restore_book_happy_path FAILED                       [ 70%]
+test_suite.py::test_restore_non_deleted_book PASSED                      [ 73%]
+test_suite.py::test_apply_discount_happy_path PASSED                     [ 76%]
+test_suite.py::test_apply_discount_to_new_book PASSED                    [ 80%]
+test_suite.py::test_apply_discount_rate_limit_exceeded FAILED            [ 83%]
+test_suite.py::test_update_stock_happy_path PASSED                       [ 86%]
+test_suite.py::test_update_stock_insufficient PASSED                     [ 90%]
+test_suite.py::test_create_review_happy_path PASSED                      [ 93%]
+test_suite.py::test_list_reviews_happy_path PASSED                       [ 96%]
+test_suite.py::test_get_book_rating_happy_path PASSED                    [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_get_nonexistent_author __________________________
+test_suite.py:117: in test_get_nonexistent_author
+    assert r.status_code == 404
+E   assert 500 == 404
+E    +  where 500 = <Response [500]>.status_code
+_________________________ test_restore_book_happy_path _________________________
+test_suite.py:258: in test_restore_book_happy_path
+    assert r.json()["is_deleted"] is False
+E   KeyError: 'is_deleted'
+___________________ test_apply_discount_rate_limit_exceeded ____________________
+test_suite.py:290: in test_apply_discount_rate_limit_exceeded
+    assert r.status_code == 200
+E   assert 429 == 200
+E    +  where 429 = <Response [429]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_mistral--RAISE_TO_PASS/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::test_get_nonexistent_author - assert 500 == 404
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_restore_book_happy_path - KeyError: 'is_deleted'
+FAILED test_suite.py::test_apply_discount_rate_limit_exceeded - assert 429 == 200
+ +  where 429 = <Response [429]>.status_code
+========================= 3 failed, 27 passed in 0.63s =========================

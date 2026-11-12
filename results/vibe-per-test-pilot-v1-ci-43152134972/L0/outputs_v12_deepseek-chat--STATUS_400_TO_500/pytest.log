@@ -1,0 +1,49 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::test_health_check_success PASSED                          [  3%]
+test_suite.py::test_create_author_valid_data PASSED                      [  6%]
+test_suite.py::test_create_author_missing_name PASSED                    [ 10%]
+test_suite.py::test_list_authors_with_pagination PASSED                  [ 13%]
+test_suite.py::test_get_author_by_id PASSED                              [ 16%]
+test_suite.py::test_get_author_not_found PASSED                          [ 20%]
+test_suite.py::test_update_author_with_etag_mismatch PASSED              [ 23%]
+test_suite.py::test_create_book_valid_data PASSED                        [ 26%]
+test_suite.py::test_create_book_invalid_isbn_length PASSED               [ 30%]
+test_suite.py::test_list_books_with_filters PASSED                       [ 33%]
+test_suite.py::test_get_book_by_id PASSED                                [ 36%]
+test_suite.py::test_get_book_soft_deleted PASSED                         [ 40%]
+test_suite.py::test_soft_delete_book PASSED                              [ 43%]
+test_suite.py::test_delete_book_already_deleted PASSED                   [ 46%]
+test_suite.py::test_restore_soft_deleted_book PASSED                     [ 50%]
+test_suite.py::test_create_review_for_book PASSED                        [ 53%]
+test_suite.py::test_create_review_for_deleted_book PASSED                [ 56%]
+test_suite.py::test_apply_discount_within_limit PASSED                   [ 60%]
+test_suite.py::test_apply_discount_exceed_rate_limit PASSED              [ 63%]
+test_suite.py::test_upload_cover_valid_file PASSED                       [ 66%]
+test_suite.py::test_upload_cover_file_too_large PASSED                   [ 70%]
+test_suite.py::test_bulk_create_books_without_api_key PASSED             [ 73%]
+test_suite.py::test_create_order_with_items PASSED                       [ 76%]
+test_suite.py::test_create_order_empty_items PASSED                      [ 80%]
+test_suite.py::test_update_order_status_valid FAILED                     [ 83%]
+test_suite.py::test_update_order_status_invalid PASSED                   [ 86%]
+test_suite.py::test_start_book_export_without_api_key PASSED             [ 90%]
+test_suite.py::test_get_export_job_processing PASSED                     [ 93%]
+test_suite.py::test_toggle_maintenance_without_api_key PASSED            [ 96%]
+test_suite.py::test_get_statistics_without_api_key PASSED                [100%]
+
+=================================== FAILURES ===================================
+________________________ test_update_order_status_valid ________________________
+test_suite.py:365: in test_update_order_status_valid
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text[:200]}"
+E   AssertionError: Expected 200, got 400: {"detail":"Cannot transition from 'pending' to 'shipped'. Allowed transitions: ['confirmed', 'cancelled']"}
+E   assert 400 == 200
+E    +  where 400 = <Response [400]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_deepseek-chat--STATUS_400_TO_500/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::test_update_order_status_valid - AssertionError: Expected 200, got 400: {"detail":"Cannot transition from 'pending' to 'shipped'. Allowed transitions: ['confirmed', 'cancelled']"}
+assert 400 == 200
+ +  where 400 = <Response [400]>.status_code
+========================= 1 failed, 29 passed in 0.57s =========================

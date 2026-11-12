@@ -1,0 +1,75 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::test_health_check_returns_200 PASSED                      [  3%]
+test_suite.py::test_create_author_with_valid_data PASSED                 [  6%]
+test_suite.py::test_create_author_missing_required_field PASSED          [ 10%]
+test_suite.py::test_create_author_invalid_name_length PASSED             [ 13%]
+test_suite.py::test_list_authors_with_default_pagination PASSED          [ 16%]
+test_suite.py::test_list_authors_with_custom_pagination PASSED           [ 20%]
+test_suite.py::test_get_existing_author FAILED                           [ 23%]
+test_suite.py::test_get_nonexistent_author PASSED                        [ 26%]
+test_suite.py::test_get_author_with_etag_not_modified FAILED             [ 30%]
+test_suite.py::test_update_author_with_valid_data PASSED                 [ 33%]
+test_suite.py::test_update_author_with_etag_mismatch FAILED              [ 36%]
+test_suite.py::test_delete_existing_author PASSED                        [ 40%]
+test_suite.py::test_create_book_with_valid_data PASSED                   [ 43%]
+test_suite.py::test_create_book_missing_required_field PASSED            [ 46%]
+test_suite.py::test_list_books_with_default_pagination PASSED            [ 50%]
+test_suite.py::test_list_books_with_filters PASSED                       [ 53%]
+test_suite.py::test_get_existing_book FAILED                             [ 56%]
+test_suite.py::test_get_soft_deleted_book PASSED                         [ 60%]
+test_suite.py::test_get_nonexistent_book PASSED                          [ 63%]
+test_suite.py::test_update_book_with_valid_data PASSED                   [ 66%]
+test_suite.py::test_update_book_with_etag_mismatch FAILED                [ 70%]
+test_suite.py::test_soft_delete_existing_book PASSED                     [ 73%]
+test_suite.py::test_delete_already_deleted_book PASSED                   [ 76%]
+test_suite.py::test_restore_soft_deleted_book PASSED                     [ 80%]
+test_suite.py::test_restore_non_deleted_book PASSED                      [ 83%]
+test_suite.py::test_apply_valid_discount PASSED                          [ 86%]
+test_suite.py::test_apply_discount_exceeding_rate_limit PASSED           [ 90%]
+test_suite.py::test_upload_valid_cover_image PASSED                      [ 93%]
+test_suite.py::test_upload_oversized_cover_image PASSED                  [ 96%]
+test_suite.py::test_upload_invalid_file_type PASSED                      [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_get_existing_author ___________________________
+test_suite.py:104: in test_get_existing_author
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+____________________ test_get_author_with_etag_not_modified ____________________
+test_suite.py:116: in test_get_author_with_etag_not_modified
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+____________________ test_update_author_with_etag_mismatch _____________________
+test_suite.py:135: in test_update_author_with_etag_mismatch
+    assert response.status_code == 412
+E   assert 500 == 412
+E    +  where 500 = <Response [500]>.status_code
+____________________________ test_get_existing_book ____________________________
+test_suite.py:182: in test_get_existing_book
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+_____________________ test_update_book_with_etag_mismatch ______________________
+test_suite.py:210: in test_update_book_with_etag_mismatch
+    assert response.status_code == 412
+E   assert 500 == 412
+E    +  where 500 = <Response [500]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_mistral--RETURN_NONE/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::test_get_existing_author - assert 500 == 200
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_get_author_with_etag_not_modified - assert 500 == 200
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_update_author_with_etag_mismatch - assert 500 == 412
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_get_existing_book - assert 500 == 200
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_update_book_with_etag_mismatch - assert 500 == 412
+ +  where 500 = <Response [500]>.status_code
+========================= 5 failed, 25 passed in 0.47s =========================

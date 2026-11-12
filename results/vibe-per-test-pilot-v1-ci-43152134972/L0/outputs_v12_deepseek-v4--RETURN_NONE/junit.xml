@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="30" time="0.914" timestamp="2026-11-12T04:04:04.693773+00:00" hostname="runnervm7aw5e"><testcase classname="test_suite" name="test_health_check_success" time="0.003" /><testcase classname="test_suite" name="test_create_author_valid" time="0.018" /><testcase classname="test_suite" name="test_create_author_missing_name" time="0.002" /><testcase classname="test_suite" name="test_list_authors_default_pagination" time="0.006" /><testcase classname="test_suite" name="test_get_author_not_found" time="0.004" /><testcase classname="test_suite" name="test_update_author_etag_mismatch" time="0.007"><failure message="assert 500 == 412&#10; +  where 500 = &lt;Response [500]&gt;.status_code">test_suite.py:125: in test_update_author_etag_mismatch
+    assert r.status_code == 412
+E   assert 500 == 412
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="test_suite" name="test_delete_author_success" time="0.011" /><testcase classname="test_suite" name="test_create_category_valid" time="0.006" /><testcase classname="test_suite" name="test_get_category_not_modified" time="0.009"><failure message="requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))">/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:793: in urlopen
+    response = self._make_request(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:540: in _make_request
+    response = conn.getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connection.py:638: in getresponse
+    httplib_response = super().getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:1478: in getresponse
+    response.begin()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:343: in begin
+    version, status, reason = self._read_status()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:304: in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/socket.py:720: in readinto
+    return self._sock.recv_into(b)
+E   ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/adapters.py:667: in send
+    resp = conn.urlopen(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:847: in urlopen
+    retries = retries.increment(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/util/retry.py:510: in increment
+    raise reraise(type(error), error, _stacktrace)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/util/util.py:38: in reraise
+    raise value.with_traceback(tb)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:793: in urlopen
+    response = self._make_request(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:540: in _make_request
+    response = conn.getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connection.py:638: in getresponse
+    httplib_response = super().getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:1478: in getresponse
+    response.begin()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:343: in begin
+    version, status, reason = self._read_status()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:304: in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/socket.py:720: in readinto
+    return self._sock.recv_into(b)
+E   urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+test_suite.py:149: in test_get_category_not_modified
+    r2 = session.get(f"{BASE_URL}/categories/{category_id}", headers={"If-None-Match": etag}, timeout=TIMEOUT)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/sessions.py:602: in get
+    return self.request("GET", url, **kwargs)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+../plugin/vibe_trace_plugin_v1.py:35: in send
+    response = ORIGINAL_SEND(session, request, **kwargs)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/adapters.py:682: in send
+    raise ConnectionError(err, request=request)
+E   requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))</failure></testcase><testcase classname="test_suite" name="test_create_book_valid" time="0.018" /><testcase classname="test_suite" name="test_create_book_negative_price" time="0.008" /><testcase classname="test_suite" name="test_list_books_filter_by_author" time="0.031" /><testcase classname="test_suite" name="test_list_books_price_range" time="0.027" /><testcase classname="test_suite" name="test_get_soft_deleted_book" time="0.036" /><testcase classname="test_suite" name="test_update_book_etag_mismatch" time="0.016"><failure message="assert 500 == 412&#10; +  where 500 = &lt;Response [500]&gt;.status_code">test_suite.py:223: in test_update_book_etag_mismatch
+    assert r.status_code == 412
+E   assert 500 == 412
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="test_suite" name="test_delete_book_already_deleted" time="0.016" /><testcase classname="test_suite" name="test_restore_not_deleted_book" time="0.013" /><testcase classname="test_suite" name="test_create_review_valid" time="0.016" /><testcase classname="test_suite" name="test_get_rating_no_reviews" time="0.014" /><testcase classname="test_suite" name="test_apply_discount_rate_limit" time="0.047" /><testcase classname="test_suite" name="test_update_stock_negative_quantity" time="0.013" /><testcase classname="test_suite" name="test_upload_cover_unsupported_type" time="0.013" /><testcase classname="test_suite" name="test_get_cover_not_found" time="0.013" /><testcase classname="test_suite" name="test_create_tag_name_too_long" time="0.003" /><testcase classname="test_suite" name="test_add_tags_to_book_valid" time="0.041" /><testcase classname="test_suite" name="test_create_order_valid" time="0.156" /><testcase classname="test_suite" name="test_create_order_empty_items" time="0.003" /><testcase classname="test_suite" name="test_update_order_status_invalid" time="0.018" /><testcase classname="test_suite" name="test_add_item_to_order_valid" time="0.051" /><testcase classname="test_suite" name="test_bulk_create_missing_api_key" time="0.008" /></testsuite></testsuites>

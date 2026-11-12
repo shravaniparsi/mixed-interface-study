@@ -1,0 +1,75 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::test_health_check_success PASSED                          [  3%]
+test_suite.py::test_create_author_success PASSED                         [  6%]
+test_suite.py::test_create_author_invalid_name PASSED                    [ 10%]
+test_suite.py::test_get_author_not_found FAILED                          [ 13%]
+test_suite.py::test_create_book_success PASSED                           [ 16%]
+test_suite.py::test_create_book_invalid_price PASSED                     [ 20%]
+test_suite.py::test_get_deleted_book_gone PASSED                         [ 23%]
+test_suite.py::test_get_book_etag_not_modified PASSED                    [ 26%]
+test_suite.py::test_delete_book_success PASSED                           [ 30%]
+test_suite.py::test_restore_active_book_error PASSED                     [ 33%]
+test_suite.py::test_apply_discount_rate_limit PASSED                     [ 36%]
+test_suite.py::test_apply_discount_invalid_value FAILED                  [ 40%]
+test_suite.py::test_upload_cover_unsupported_type PASSED                 [ 43%]
+test_suite.py::test_upload_cover_too_large PASSED                        [ 46%]
+test_suite.py::test_bulk_create_unauthorized PASSED                      [ 50%]
+test_suite.py::test_bulk_create_limit_exceeded PASSED                    [ 53%]
+test_suite.py::test_create_order_success FAILED                          [ 56%]
+test_suite.py::test_create_order_empty_items PASSED                      [ 60%]
+test_suite.py::test_update_order_status_invalid PASSED                   [ 63%]
+test_suite.py::test_start_export_unauthorized PASSED                     [ 66%]
+test_suite.py::test_start_export_success FAILED                          [ 70%]
+test_suite.py::test_get_export_job_not_found PASSED                      [ 73%]
+test_suite.py::test_toggle_maintenance_unauthorized PASSED               [ 76%]
+test_suite.py::test_get_statistics_success FAILED                        [ 80%]
+test_suite.py::test_list_categories_success PASSED                       [ 83%]
+test_suite.py::test_create_tag_too_long PASSED                           [ 86%]
+test_suite.py::test_create_review_invalid_rating PASSED                  [ 90%]
+test_suite.py::test_update_stock_success PASSED                          [ 93%]
+test_suite.py::test_add_tags_invalid_format PASSED                       [ 96%]
+test_suite.py::test_add_tags_empty_array PASSED                          [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_get_author_not_found ___________________________
+test_suite.py:68: in test_get_author_not_found
+    assert r.status_code == 404
+E   assert 500 == 404
+E    +  where 500 = <Response [500]>.status_code
+______________________ test_apply_discount_invalid_value _______________________
+test_suite.py:114: in test_apply_discount_invalid_value
+    assert r.status_code == 422
+E   assert 429 == 422
+E    +  where 429 = <Response [429]>.status_code
+__________________________ test_create_order_success ___________________________
+test_suite.py:141: in test_create_order_success
+    assert r.status_code == 200
+E   assert 400 == 200
+E    +  where 400 = <Response [400]>.status_code
+__________________________ test_start_export_success ___________________________
+test_suite.py:158: in test_start_export_success
+    assert r.status_code == 202
+E   assert 401 == 202
+E    +  where 401 = <Response [401]>.status_code
+_________________________ test_get_statistics_success __________________________
+test_suite.py:171: in test_get_statistics_success
+    assert r.status_code == 200
+E   assert 401 == 200
+E    +  where 401 = <Response [401]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_gemini--RAISE_TO_PASS/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::test_get_author_not_found - assert 500 == 404
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_apply_discount_invalid_value - assert 429 == 422
+ +  where 429 = <Response [429]>.status_code
+FAILED test_suite.py::test_create_order_success - assert 400 == 200
+ +  where 400 = <Response [400]>.status_code
+FAILED test_suite.py::test_start_export_success - assert 401 == 202
+ +  where 401 = <Response [401]>.status_code
+FAILED test_suite.py::test_get_statistics_success - assert 401 == 200
+ +  where 401 = <Response [401]>.status_code
+========================= 5 failed, 25 passed in 2.02s =========================

@@ -1,0 +1,111 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::test_health_check_success PASSED                          [  3%]
+test_suite.py::test_create_author_valid PASSED                           [  6%]
+test_suite.py::test_create_author_missing_name PASSED                    [ 10%]
+test_suite.py::test_list_authors_default_pagination PASSED               [ 13%]
+test_suite.py::test_get_author_not_found PASSED                          [ 16%]
+test_suite.py::test_update_author_etag_mismatch FAILED                   [ 20%]
+test_suite.py::test_delete_author_success PASSED                         [ 23%]
+test_suite.py::test_create_category_valid PASSED                         [ 26%]
+test_suite.py::test_get_category_not_modified FAILED                     [ 30%]
+test_suite.py::test_create_book_valid PASSED                             [ 33%]
+test_suite.py::test_create_book_negative_price PASSED                    [ 36%]
+test_suite.py::test_list_books_filter_by_author PASSED                   [ 40%]
+test_suite.py::test_list_books_price_range PASSED                        [ 43%]
+test_suite.py::test_get_soft_deleted_book PASSED                         [ 46%]
+test_suite.py::test_update_book_etag_mismatch FAILED                     [ 50%]
+test_suite.py::test_delete_book_already_deleted PASSED                   [ 53%]
+test_suite.py::test_restore_not_deleted_book PASSED                      [ 56%]
+test_suite.py::test_create_review_valid PASSED                           [ 60%]
+test_suite.py::test_get_rating_no_reviews PASSED                         [ 63%]
+test_suite.py::test_apply_discount_rate_limit PASSED                     [ 66%]
+test_suite.py::test_update_stock_negative_quantity PASSED                [ 70%]
+test_suite.py::test_upload_cover_unsupported_type PASSED                 [ 73%]
+test_suite.py::test_get_cover_not_found PASSED                           [ 76%]
+test_suite.py::test_create_tag_name_too_long PASSED                      [ 80%]
+test_suite.py::test_add_tags_to_book_valid PASSED                        [ 83%]
+test_suite.py::test_create_order_valid PASSED                            [ 86%]
+test_suite.py::test_create_order_empty_items PASSED                      [ 90%]
+test_suite.py::test_update_order_status_invalid PASSED                   [ 93%]
+test_suite.py::test_add_item_to_order_valid PASSED                       [ 96%]
+test_suite.py::test_bulk_create_missing_api_key PASSED                   [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_update_author_etag_mismatch _______________________
+test_suite.py:125: in test_update_author_etag_mismatch
+    assert r.status_code == 412
+E   assert 500 == 412
+E    +  where 500 = <Response [500]>.status_code
+________________________ test_get_category_not_modified ________________________
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:793: in urlopen
+    response = self._make_request(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:540: in _make_request
+    response = conn.getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connection.py:638: in getresponse
+    httplib_response = super().getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:1478: in getresponse
+    response.begin()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:343: in begin
+    version, status, reason = self._read_status()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:304: in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/socket.py:720: in readinto
+    return self._sock.recv_into(b)
+E   ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/adapters.py:667: in send
+    resp = conn.urlopen(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:847: in urlopen
+    retries = retries.increment(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/util/retry.py:510: in increment
+    raise reraise(type(error), error, _stacktrace)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/util/util.py:38: in reraise
+    raise value.with_traceback(tb)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:793: in urlopen
+    response = self._make_request(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connectionpool.py:540: in _make_request
+    response = conn.getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/urllib3/connection.py:638: in getresponse
+    httplib_response = super().getresponse()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:1478: in getresponse
+    response.begin()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:343: in begin
+    version, status, reason = self._read_status()
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/http/client.py:304: in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/socket.py:720: in readinto
+    return self._sock.recv_into(b)
+E   urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+test_suite.py:149: in test_get_category_not_modified
+    r2 = session.get(f"{BASE_URL}/categories/{category_id}", headers={"If-None-Match": etag}, timeout=TIMEOUT)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/sessions.py:602: in get
+    return self.request("GET", url, **kwargs)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+../plugin/vibe_trace_plugin_v1.py:35: in send
+    response = ORIGINAL_SEND(session, request, **kwargs)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/requests/adapters.py:682: in send
+    raise ConnectionError(err, request=request)
+E   requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+________________________ test_update_book_etag_mismatch ________________________
+test_suite.py:223: in test_update_book_etag_mismatch
+    assert r.status_code == 412
+E   assert 500 == 412
+E    +  where 500 = <Response [500]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_deepseek-v4--RETURN_NONE/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::test_update_author_etag_mismatch - assert 500 == 412
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_get_category_not_modified - requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+FAILED test_suite.py::test_update_book_etag_mismatch - assert 500 == 412
+ +  where 500 = <Response [500]>.status_code
+========================= 3 failed, 27 passed in 0.91s =========================

@@ -1,0 +1,63 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::test_health_check PASSED                                  [  3%]
+test_suite.py::test_create_author_valid_data PASSED                      [  6%]
+test_suite.py::test_create_author_missing_name PASSED                    [ 10%]
+test_suite.py::test_get_author_with_etag PASSED                          [ 13%]
+test_suite.py::test_get_author_not_found PASSED                          [ 16%]
+test_suite.py::test_delete_author_with_books_conflict FAILED             [ 20%]
+test_suite.py::test_create_category_duplicate_name PASSED                [ 23%]
+test_suite.py::test_create_book_duplicate_isbn PASSED                    [ 26%]
+test_suite.py::test_create_book_invalid_author_id PASSED                 [ 30%]
+test_suite.py::test_get_soft_deleted_book PASSED                         [ 33%]
+test_suite.py::test_soft_delete_book PASSED                              [ 36%]
+test_suite.py::test_restore_already_active_book PASSED                   [ 40%]
+test_suite.py::test_apply_discount_new_book PASSED                       [ 43%]
+test_suite.py::test_discount_rate_limit_exceeded FAILED                  [ 46%]
+test_suite.py::test_update_stock_insufficient PASSED                     [ 50%]
+test_suite.py::test_upload_cover_unsupported_type PASSED                 [ 53%]
+test_suite.py::test_upload_cover_too_large PASSED                        [ 56%]
+test_suite.py::test_create_review_on_deleted_book PASSED                 [ 60%]
+test_suite.py::test_delete_tag_with_books PASSED                         [ 63%]
+test_suite.py::test_create_order_insufficient_stock PASSED               [ 66%]
+test_suite.py::test_create_order_duplicate_book_ids PASSED               [ 70%]
+test_suite.py::test_update_order_status_invalid_transition PASSED        [ 73%]
+test_suite.py::test_get_invoice_pending_order PASSED                     [ 76%]
+test_suite.py::test_add_item_to_non_pending_order PASSED                 [ 80%]
+test_suite.py::test_bulk_create_without_api_key PASSED                   [ 83%]
+test_suite.py::test_bulk_create_partial_success FAILED                   [ 86%]
+test_suite.py::test_clone_book_duplicate_isbn PASSED                     [ 90%]
+test_suite.py::test_export_books_without_api_key PASSED                  [ 93%]
+test_suite.py::test_toggle_maintenance_without_api_key PASSED            [ 96%]
+test_suite.py::test_get_statistics_without_api_key PASSED                [100%]
+
+=================================== FAILURES ===================================
+____________________ test_delete_author_with_books_conflict ____________________
+test_suite.py:119: in test_delete_author_with_books_conflict
+    assert r.status_code == 409
+E   assert 500 == 409
+E    +  where 500 = <Response [500]>.status_code
+______________________ test_discount_rate_limit_exceeded _______________________
+test_suite.py:210: in test_discount_rate_limit_exceeded
+    assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
+E   AssertionError: Expected 200, got 429: {"detail":"Rate limit exceeded for this endpoint. Try again later."}
+E   assert 429 == 200
+E    +  where 429 = <Response [429]>.status_code
+_______________________ test_bulk_create_partial_success _______________________
+test_suite.py:364: in test_bulk_create_partial_success
+    assert r.status_code == 207
+E   assert 500 == 207
+E    +  where 500 = <Response [500]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_deepseek-chat--FALSE_TO_TRUE/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::test_delete_author_with_books_conflict - assert 500 == 409
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::test_discount_rate_limit_exceeded - AssertionError: Expected 200, got 429: {"detail":"Rate limit exceeded for this endpoint. Try again later."}
+assert 429 == 200
+ +  where 429 = <Response [429]>.status_code
+FAILED test_suite.py::test_bulk_create_partial_success - assert 500 == 207
+ +  where 500 = <Response [500]>.status_code
+========================= 3 failed, 27 passed in 0.59s =========================

@@ -1,0 +1,68 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::TestHealthCheck::test_health_check_returns_ok PASSED      [  3%]
+test_suite.py::TestAuthorsPost::test_create_author_with_all_fields PASSED [  6%]
+test_suite.py::TestAuthorsPost::test_create_author_missing_name PASSED   [ 10%]
+test_suite.py::TestAuthorsPost::test_create_author_born_year_out_of_range PASSED [ 13%]
+test_suite.py::TestAuthorsGet::test_get_author_returns_etag_header FAILED [ 16%]
+test_suite.py::TestAuthorsGet::test_get_author_with_if_none_match_etag FAILED [ 20%]
+test_suite.py::TestAuthorsGet::test_get_nonexistent_author PASSED        [ 23%]
+test_suite.py::TestAuthorsPut::test_update_author_with_if_match_success PASSED [ 26%]
+test_suite.py::TestAuthorsPut::test_update_author_with_stale_etag FAILED [ 30%]
+test_suite.py::TestAuthorsDelete::test_delete_author_with_associated_books PASSED [ 33%]
+test_suite.py::TestCategoriesPost::test_create_category_unique_name PASSED [ 36%]
+test_suite.py::TestCategoriesPost::test_create_category_duplicate_name PASSED [ 40%]
+test_suite.py::TestBooksPost::test_create_book_with_valid_isbn PASSED    [ 43%]
+test_suite.py::TestBooksPost::test_create_book_duplicate_isbn PASSED     [ 46%]
+test_suite.py::TestBooksPost::test_create_book_isbn_too_short PASSED     [ 50%]
+test_suite.py::TestBooksPost::test_create_book_negative_price PASSED     [ 53%]
+test_suite.py::TestBooksGet::test_get_soft_deleted_book PASSED           [ 56%]
+test_suite.py::TestBooksDelete::test_soft_delete_book_sets_is_deleted PASSED [ 60%]
+test_suite.py::TestBooksRestore::test_restore_soft_deleted_book PASSED   [ 63%]
+test_suite.py::TestBooksRestore::test_restore_non_deleted_book PASSED    [ 66%]
+test_suite.py::TestBooksDiscount::test_apply_discount_to_old_book PASSED [ 70%]
+test_suite.py::TestBooksDiscount::test_apply_discount_to_new_book PASSED [ 73%]
+test_suite.py::TestBooksDiscount::test_discount_rate_limit_exceeded FAILED [ 76%]
+test_suite.py::TestBooksStock::test_increase_stock_quantity PASSED       [ 80%]
+test_suite.py::TestBooksStock::test_decrease_stock_below_zero PASSED     [ 83%]
+test_suite.py::TestBooksCover::test_upload_cover_valid_jpeg PASSED       [ 86%]
+test_suite.py::TestBooksCover::test_upload_cover_unsupported_type PASSED [ 90%]
+test_suite.py::TestBooksCover::test_upload_cover_exceeds_size_limit PASSED [ 93%]
+test_suite.py::TestBooksReviews::test_create_review_valid_rating PASSED  [ 96%]
+test_suite.py::TestBooksReviews::test_create_review_on_deleted_book PASSED [100%]
+
+=================================== FAILURES ===================================
+______________ TestAuthorsGet.test_get_author_returns_etag_header ______________
+test_suite.py:138: in test_get_author_returns_etag_header
+    assert r.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+____________ TestAuthorsGet.test_get_author_with_if_none_match_etag ____________
+test_suite.py:147: in test_get_author_with_if_none_match_etag
+    assert r1.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <Response [500]>.status_code
+______________ TestAuthorsPut.test_update_author_with_stale_etag _______________
+test_suite.py:187: in test_update_author_with_stale_etag
+    assert r2.status_code == 412
+E   assert 200 == 412
+E    +  where 200 = <Response [200]>.status_code
+_____________ TestBooksDiscount.test_discount_rate_limit_exceeded ______________
+test_suite.py:393: in test_discount_rate_limit_exceeded
+    assert r.status_code == 200
+E   assert 429 == 200
+E    +  where 429 = <Response [429]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_claude--RETURN_NONE/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::TestAuthorsGet::test_get_author_returns_etag_header - assert 500 == 200
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::TestAuthorsGet::test_get_author_with_if_none_match_etag - assert 500 == 200
+ +  where 500 = <Response [500]>.status_code
+FAILED test_suite.py::TestAuthorsPut::test_update_author_with_stale_etag - assert 200 == 412
+ +  where 200 = <Response [200]>.status_code
+FAILED test_suite.py::TestBooksDiscount::test_discount_rate_limit_exceeded - assert 429 == 200
+ +  where 429 = <Response [429]>.status_code
+========================= 4 failed, 26 passed in 0.53s =========================

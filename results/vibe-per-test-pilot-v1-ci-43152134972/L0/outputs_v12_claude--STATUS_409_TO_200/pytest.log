@@ -1,0 +1,54 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.3.3, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+rootdir: /home/runner/work/_temp/vibe-evidence/working
+collecting ... collected 30 items
+
+test_suite.py::TestHealth::test_health_check_success PASSED              [  3%]
+test_suite.py::TestAuthorsPost::test_create_author_success PASSED        [  6%]
+test_suite.py::TestAuthorsPost::test_create_author_missing_name PASSED   [ 10%]
+test_suite.py::TestAuthorsPost::test_create_author_invalid_born_year PASSED [ 13%]
+test_suite.py::TestAuthorsGet::test_list_authors_default_pagination PASSED [ 16%]
+test_suite.py::TestAuthorsGet::test_list_authors_custom_pagination PASSED [ 20%]
+test_suite.py::TestAuthorsGetById::test_get_author_success PASSED        [ 23%]
+test_suite.py::TestAuthorsGetById::test_get_author_not_found PASSED      [ 26%]
+test_suite.py::TestAuthorsPut::test_update_author_success PASSED         [ 30%]
+test_suite.py::TestAuthorsPut::test_update_author_etag_mismatch PASSED   [ 33%]
+test_suite.py::TestAuthorsDelete::test_delete_author_success PASSED      [ 36%]
+test_suite.py::TestBooksPost::test_create_book_success PASSED            [ 40%]
+test_suite.py::TestBooksPost::test_create_book_invalid_isbn_length PASSED [ 43%]
+test_suite.py::TestBooksPost::test_create_book_negative_price PASSED     [ 46%]
+test_suite.py::TestBooksGet::test_list_books_default_pagination PASSED   [ 50%]
+test_suite.py::TestBooksGet::test_list_books_with_filters PASSED         [ 53%]
+test_suite.py::TestBooksGet::test_list_books_invalid_page_size PASSED    [ 56%]
+test_suite.py::TestBooksGetById::test_get_book_success PASSED            [ 60%]
+test_suite.py::TestBooksGetById::test_get_deleted_book PASSED            [ 63%]
+test_suite.py::TestBooksPut::test_update_book_success PASSED             [ 66%]
+test_suite.py::TestBooksPut::test_update_book_etag_mismatch PASSED       [ 70%]
+test_suite.py::TestBooksDelete::test_delete_book_soft_delete PASSED      [ 73%]
+test_suite.py::TestBooksDelete::test_delete_already_deleted_book PASSED  [ 76%]
+test_suite.py::TestBooksRestore::test_restore_deleted_book_success PASSED [ 80%]
+test_suite.py::TestBooksRestore::test_restore_non_deleted_book PASSED    [ 83%]
+test_suite.py::TestBooksDiscount::test_apply_discount_success PASSED     [ 86%]
+test_suite.py::TestBooksDiscount::test_apply_discount_exceeds_max PASSED [ 90%]
+test_suite.py::TestBooksDiscount::test_apply_discount_rate_limit FAILED  [ 93%]
+test_suite.py::TestBooksStock::test_update_stock_success FAILED          [ 96%]
+test_suite.py::TestBooksReviews::test_create_review_success PASSED       [100%]
+
+=================================== FAILURES ===================================
+_______________ TestBooksDiscount.test_apply_discount_rate_limit _______________
+test_suite.py:510: in test_apply_discount_rate_limit
+    assert response.status_code == 200
+E   assert 429 == 200
+E    +  where 429 = <Response [429]>.status_code
+___________________ TestBooksStock.test_update_stock_success ___________________
+test_suite.py:531: in test_update_stock_success
+    assert response.status_code == 200
+E   assert 422 == 200
+E    +  where 422 = <Response [422]>.status_code
+- generated xml file: /home/runner/work/_temp/vibe-evidence/outputs_v12_claude--STATUS_409_TO_200/junit.xml -
+=========================== short test summary info ============================
+FAILED test_suite.py::TestBooksDiscount::test_apply_discount_rate_limit - assert 429 == 200
+ +  where 429 = <Response [429]>.status_code
+FAILED test_suite.py::TestBooksStock::test_update_stock_success - assert 422 == 200
+ +  where 422 = <Response [422]>.status_code
+========================= 2 failed, 28 passed in 0.52s =========================

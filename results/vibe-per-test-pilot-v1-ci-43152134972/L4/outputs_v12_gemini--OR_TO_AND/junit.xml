@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="30" time="0.448" timestamp="2026-11-12T04:07:14.003359+00:00" hostname="runnervm7aw5e"><testcase classname="test_suite" name="test_create_author_valid" time="0.020" /><testcase classname="test_suite" name="test_create_author_invalid_name" time="0.003" /><testcase classname="test_suite" name="test_get_author_not_found" time="0.004" /><testcase classname="test_suite" name="test_create_duplicate_category" time="0.009" /><testcase classname="test_suite" name="test_create_book_invalid_isbn" time="0.011" /><testcase classname="test_suite" name="test_create_book_negative_price" time="0.009" /><testcase classname="test_suite" name="test_get_soft_deleted_book" time="0.023" /><testcase classname="test_suite" name="test_restore_non_deleted_book" time="0.015"><failure message="assert 400 == 422&#10; +  where 400 = &lt;Response [400]&gt;.status_code">test_suite.py:96: in test_restore_non_deleted_book
+    assert r.status_code == 422
+E   assert 400 == 422
+E    +  where 400 = &lt;Response [400]&gt;.status_code</failure></testcase><testcase classname="test_suite" name="test_apply_discount_new_book" time="0.016" /><testcase classname="test_suite" name="test_apply_discount_invalid_percent" time="0.021" /><testcase classname="test_suite" name="test_update_stock_insufficient" time="0.014" /><testcase classname="test_suite" name="test_upload_cover_unsupported_type" time="0.015" /><testcase classname="test_suite" name="test_create_review_invalid_rating" time="0.016" /><testcase classname="test_suite" name="test_create_tag_too_long" time="0.003" /><testcase classname="test_suite" name="test_create_order_insufficient_stock" time="0.010"><failure message="AssertionError: Helper failed 409: {&quot;detail&quot;:&quot;Book with ISBN '1234567890' already exists&quot;}&#10;assert 409 == 201&#10; +  where 409 = &lt;Response [409]&gt;.status_code">test_suite.py:142: in test_create_order_insufficient_stock
+    b = create_book(a["id"], c["id"], isbn="1234567890")
+test_suite.py:40: in create_book
+    assert r.status_code == 201, f"Helper failed {r.status_code}: {r.text[:200]}"
+E   AssertionError: Helper failed 409: {"detail":"Book with ISBN '1234567890' already exists"}
+E   assert 409 == 201
+E    +  where 409 = &lt;Response [409]&gt;.status_code</failure></testcase><testcase classname="test_suite" name="test_create_order_duplicate_book" time="0.010"><failure message="AssertionError: Helper failed 409: {&quot;detail&quot;:&quot;Book with ISBN '1234567890' already exists&quot;}&#10;assert 409 == 201&#10; +  where 409 = &lt;Response [409]&gt;.status_code">test_suite.py:152: in test_create_order_duplicate_book
+    b = create_book(a["id"], c["id"], isbn="1234567890")
+test_suite.py:40: in create_book
+    assert r.status_code == 201, f"Helper failed {r.status_code}: {r.text[:200]}"
+E   AssertionError: Helper failed 409: {"detail":"Book with ISBN '1234567890' already exists"}
+E   assert 409 == 201
+E    +  where 409 = &lt;Response [409]&gt;.status_code</failure></testcase><testcase classname="test_suite" name="test_update_status_invalid_transition" time="0.015"><failure message="KeyError: 'id'">test_suite.py:167: in test_update_status_invalid_transition
+    r = requests.patch(f"{BASE_URL}/orders/{order['id']}/status", json={"status": "delivered"}, timeout=TIMEOUT)
+E   KeyError: 'id'</failure></testcase><testcase classname="test_suite" name="test_get_invoice_pending_order" time="0.015"><failure message="KeyError: 'id'">test_suite.py:178: in test_get_invoice_pending_order
+    r = requests.get(f"{BASE_URL}/orders/{order['id']}/invoice", timeout=TIMEOUT)
+E   KeyError: 'id'</failure></testcase><testcase classname="test_suite" name="test_bulk_create_unauthorized" time="0.003" /><testcase classname="test_suite" name="test_bulk_create_limit_exceeded" time="0.033" /><testcase classname="test_suite" name="test_clone_book_duplicate_isbn" time="0.036"><failure message="AssertionError: Helper failed 409: {&quot;detail&quot;:&quot;Book with ISBN '1234567890' already exists&quot;}&#10;assert 409 == 201&#10; +  where 409 = &lt;Response [409]&gt;.status_code">test_suite.py:199: in test_clone_book_duplicate_isbn
+    b = create_book(a["id"], c["id"], isbn="1234567890")
+test_suite.py:40: in create_book
+    assert r.status_code == 201, f"Helper failed {r.status_code}: {r.text[:200]}"
+E   AssertionError: Helper failed 409: {"detail":"Book with ISBN '1234567890' already exists"}
+E   assert 409 == 201
+E    +  where 409 = &lt;Response [409]&gt;.status_code</failure></testcase><testcase classname="test_suite" name="test_export_books_unauthorized" time="0.002" /><testcase classname="test_suite" name="test_get_nonexistent_export" time="0.002" /><testcase classname="test_suite" name="test_toggle_maintenance_unauthorized" time="0.002" /><testcase classname="test_suite" name="test_get_stats_unauthorized" time="0.002" /><testcase classname="test_suite" name="test_catalog_redirect" time="0.002" /><testcase classname="test_suite" name="test_list_books_pagination_invalid" time="0.002" /><testcase classname="test_suite" name="test_list_author_books_invalid_size" time="0.006" /><testcase classname="test_suite" name="test_remove_nonexistent_tag_from_book" time="0.017" /><testcase classname="test_suite" name="test_delete_shipped_order" time="0.015"><failure message="KeyError: 'id'">test_suite.py:247: in test_delete_shipped_order
+    requests.patch(f"{BASE_URL}/orders/{order['id']}/status", json={"status": "confirmed"}, timeout=TIMEOUT)
+E   KeyError: 'id'</failure></testcase></testsuite></testsuites>

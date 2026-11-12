@@ -65,7 +65,15 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('--verify', action='store_true'); args = p.parse_args()
     value = build(); out = ROOT / 'manifests/vibe-mutation-source-audit-v1.json'
     if args.verify:
-        assert json.loads(out.read_text()) == value
+        # Python 3.9 and 3.12 phrase the same SyntaxError differently.
+        # Preserve the recorded diagnostic but compare source bytes, category,
+        # failing line and text rather than interpreter-specific wording.
+        expected = json.loads(out.read_text())
+        for result in [expected, value]:
+            for row in result['operators']:
+                if 'syntax_error' in row:
+                    row['syntax_error'].pop('message', None)
+        assert expected == value
     else:
         assert not out.exists(); out.write_text(json.dumps(value, indent=2) + '\n')
     print(json.dumps(value['source_class_counts']))
