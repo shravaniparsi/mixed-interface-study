@@ -1,0 +1,55 @@
+name: RESTestBench mutant runtime qualification v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        service: [fastapi, nestjs-realworld, todoapp]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      STUDY_SERVICE: ${{ matrix.service }}
+    steps:
+      - name: Initialize evidence
+        run: |
+          mkdir -p "$RUNNER_TEMP/restestbench-mutant-evidence"
+          printf '%s\n' 'Registered mutant runtime qualification; no model calls.' > "$RUNNER_TEMP/restestbench-mutant-evidence/scope.txt"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: casablancahotelsoftware/RESTestBench
+          ref: 4decc1e36ea3dd41b64ce3e3ac6a85bc72df36ae
+          path: upstream-benchmark
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Install test-only dependencies
+        run: |
+          set -o pipefail
+          python -m pip install pytest==8.4.2 requests==2.32.5 2>&1 | tee "$RUNNER_TEMP/restestbench-mutant-evidence/dependencies.log"
+          docker version > "$RUNNER_TEMP/restestbench-mutant-evidence/docker-version.txt"
+          docker compose version >> "$RUNNER_TEMP/restestbench-mutant-evidence/docker-version.txt"
+          git rev-parse HEAD > "$RUNNER_TEMP/restestbench-mutant-evidence/study-head.txt"
+          sha256sum scripts/extension/run_restestbench_mutant_runtime_v1.py > "$RUNNER_TEMP/restestbench-mutant-evidence/instrument-sha256.txt"
+      - name: Run bounded qualification
+        run: python scripts/extension/run_restestbench_mutant_runtime_v1.py --benchmark upstream-benchmark --service "$STUDY_SERVICE" --output "$RUNNER_TEMP/restestbench-mutant-evidence"
+      - name: Preserve all qualification evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: restestbench-mutant-${{ matrix.service }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/restestbench-mutant-evidence/
+          retention-days: 7
+          if-no-files-found: error
