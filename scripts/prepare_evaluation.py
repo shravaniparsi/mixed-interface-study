@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/independent-input-missingness-audit-v1.json',
+    'manifests/benchmark-structure-screen-v1.json',
     'manifests/openapi-adapter-results-v1.json',
     'manifests/openapi-adapter-correction-v2.json',
     'manifests/openapi-adapter-execution-v1.json',
