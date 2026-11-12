@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/openapi-adapter-input-validation-v1.json',
     'manifests/openapi-adapter-input-inventory-v1.json',
     'manifests/openapi-adapter-feasibility-selection-v1.json',
     'manifests/netbox-information-reference-replay-v1.json',
