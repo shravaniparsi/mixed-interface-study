@@ -1,0 +1,44 @@
+name: Pinned GitLab ordinary issue controls v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        branch: [native_native, api_native, api_api]
+    env:
+      CONTROL_BRANCH: ${{ matrix.branch }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Install existing pinned browser tooling
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-issue-control-v1"
+          export CI_ARTIFACT_DIR="$RUNNER_TEMP/gitlab-issue-control-v1"
+          timeout 5m bash scripts/ci/install_browser.sh
+      - name: Execute ordinary issue control branch
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-issue-control-v1"
+          git rev-parse HEAD > "$RUNNER_TEMP/gitlab-issue-control-v1/head.txt"
+          bash scripts/extension/qualify_benchmark_gitlab_issue_runtime_v1.sh "$RUNNER_TEMP/gitlab-issue-control-v1"
+      - name: Retain each ordinary control attempt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gitlab-issue-control-v1-${{ matrix.branch }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/gitlab-issue-control-v1/
+          retention-days: 30
