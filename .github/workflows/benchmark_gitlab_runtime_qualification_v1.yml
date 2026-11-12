@@ -1,0 +1,28 @@
+name: Pinned GitLab startup qualification v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Qualify isolated startup without scientific cases
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-startup"
+          git rev-parse HEAD > "$RUNNER_TEMP/gitlab-startup/head.txt"
+          bash scripts/extension/qualify_benchmark_gitlab_runtime_v1.sh "$RUNNER_TEMP/gitlab-startup"
+      - name: Retain startup evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gitlab-startup-${{ github.run_id }}
+          path: ${{ runner.temp }}/gitlab-startup/
+          retention-days: 30
