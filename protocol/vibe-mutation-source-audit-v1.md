@@ -1,0 +1,7 @@
+# Vibe Testing mutation source qualification v1
+
+This is a post-hoc static follow-up to the complete released-record audit. The researcher has inspected all released outcomes in machine-readable form and the first substitution context of all 15 operator definitions. The first GT_TO_GE substitution targets a return annotation arrow; AND_TO_OR targets a function docstring; OR_TO_AND targets an exception-message string. These observations motivate a complete operator census, not selective inspection of positive findings.
+
+Load the unchanged literal operator list from the archived worker's AST, without executing the worker. Apply each of its 15 regex replacements exactly once to the same pristine archived crud.py. Record missing matches, before/after hashes, source locations, and Python syntax-parse success. For parseable variants, compare ASTs after removing only leading module/class/function docstrings. Record changes confined to docstrings separately. This does not prove full observational equivalence: Python introspection can observe docstrings. Do not label arbitrary string changes equivalent or infer startup success from syntax alone.
+
+Join every operator to every released per-suite record and preserve its application, error, survival and kill counts. No source repair, runtime execution, score correction, ranking claim or claim of newly discovered application defects is made. Any runtime counterfactual must be separately registered with fixed suites, repeated original controls, per-test identities and unchanged source/suite hashes before execution.

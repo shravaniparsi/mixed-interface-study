@@ -164,6 +164,10 @@ jobs:
         run: |
           python scripts/extension/verify_fastdash_cascade_v2.py --archive results/fastdash-cascade-v1-ci-43088065630 --verify manifests/fastdash-cascade-results-v2.json
           python scripts/extension/build_fastdash_cascade_cost_v1.py --verify
+      - name: Verify independent Vibe archive and scoring audits
+        run: |
+          python scripts/extension/audit_vibe_released_v1.py --verify
+          python scripts/extension/audit_vibe_mutation_source_v1.py --verify
       - name: Reconstruct final TestPlanIt exclusions and closed cohort
         run: |
           python scripts/extension/verify_testplanit_tags_v1.py --archive results/testplanit-tags-v1-ci-43090047548 --verify manifests/testplanit-tags-attempt1-v1.json
