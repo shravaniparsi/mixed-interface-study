@@ -171,6 +171,11 @@ jobs:
           python -m venv "$RUNNER_TEMP/adapter-schema-validator"
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" scripts/extension/validate_adapter_inputs_v1.py --verify
+      - name: Verify bounded adapter setup correction and initial archive
+        run: |
+          python scripts/extension/verify_adapter_correction_v2.py
+          python scripts/extension/verify_adapter_comparison_archive_v1.py results/openapi-adapter-comparison-v1-ci-43163040718/adapter-prefect-43163040718-1/comparison
+          python scripts/extension/verify_adapter_comparison_archive_v1.py results/openapi-adapter-comparison-v1-ci-43163040718/adapter-ivo-toby-43163040718-1/comparison
       - name: Verify frozen adapter comparison
         run: python scripts/extension/verify_adapter_execution_freeze_v1.py
       - name: Reconstruct reference backend calibration

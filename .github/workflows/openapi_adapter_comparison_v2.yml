@@ -1,0 +1,74 @@
+name: OpenAPI adapter peer-dependency correction v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        subject: [punkpeye]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SUBJECT: ${{ matrix.subject }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22.19.0'
+          package-manager-cache: false
+      - name: Verify frozen preparation
+        run: |
+          python scripts/extension/verify_adapter_execution_freeze_v1.py
+          python scripts/extension/verify_adapter_correction_v2.py
+          mkdir -p "$RUNNER_TEMP/adapter-artifacts"
+          git rev-parse HEAD > "$RUNNER_TEMP/adapter-artifacts/head.txt"
+          python --version > "$RUNNER_TEMP/adapter-artifacts/python-version.txt"
+          node --version > "$RUNNER_TEMP/adapter-artifacts/node-version.txt"
+      - name: Install locked measurement environment
+        run: |
+          python -m venv "$RUNNER_TEMP/measurement"
+          "$RUNNER_TEMP/measurement/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt 2>&1 | tee "$RUNNER_TEMP/adapter-artifacts/measurement-install.log"
+      - name: Install locked converter environment
+        run: |
+          if [ "$SUBJECT" = prefect ]; then
+            python -m venv "$RUNNER_TEMP/converter"
+            "$RUNNER_TEMP/converter/bin/python" -m pip install --disable-pip-version-check --require-hashes -r evidence/openapi-adapter-environments-v1/prefect/requirements.txt 2>&1 | tee "$RUNNER_TEMP/adapter-artifacts/converter-install.log"
+            "$RUNNER_TEMP/converter/bin/python" -m pip freeze > "$RUNNER_TEMP/adapter-artifacts/installed.txt"
+          else
+            cp evidence/openapi-adapter-environments-v2/punkpeye/package*.json evidence/openapi-adapter-environments-v1/punkpeye/
+            cd "evidence/openapi-adapter-environments-v1/$SUBJECT"
+            npm ci --ignore-scripts --no-audit --no-fund 2>&1 | tee "$RUNNER_TEMP/adapter-artifacts/converter-install.log"
+            npm ls --all --json > "$RUNNER_TEMP/adapter-artifacts/installed.json"
+          fi
+      - name: Run reference controls
+        run: |
+          "$RUNNER_TEMP/measurement/bin/python" scripts/extension/calibrate_adapter_reference_v1.py --output "$RUNNER_TEMP/adapter-artifacts/calibration"
+          python scripts/extension/verify_adapter_reference_v1.py --archive "$RUNNER_TEMP/adapter-artifacts/calibration" --runtime
+      - name: Execute frozen paired cases
+        run: |
+          "$RUNNER_TEMP/measurement/bin/python" scripts/extension/run_adapter_comparison_v1.py --subject "$SUBJECT" --converter-python "$RUNNER_TEMP/converter/bin/python" --output "$RUNNER_TEMP/adapter-artifacts/comparison"
+      - name: Score available observations
+        if: ${{ always() }}
+        run: |
+          if [ -f "$RUNNER_TEMP/adapter-artifacts/comparison/observations.json" ]; then
+            python scripts/extension/score_adapter_comparison_v1.py "$RUNNER_TEMP/adapter-artifacts/comparison"
+          fi
+      - name: Preserve all evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: adapter-v2-${{ matrix.subject }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/adapter-artifacts/
+          retention-days: 30

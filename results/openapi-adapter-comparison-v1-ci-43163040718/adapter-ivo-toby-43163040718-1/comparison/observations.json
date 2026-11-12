@@ -1,0 +1,199 @@
+{
+  "subject": "ivo-toby",
+  "terminal": "failed",
+  "records": [],
+  "paid_model_calls": 0,
+  "initialize": {
+    "result": {
+      "protocolVersion": "2025-03-26",
+      "capabilities": {
+        "tools": {
+          "list": true,
+          "execute": true
+        }
+      },
+      "serverInfo": {
+        "name": "adapter-study",
+        "version": "1.0.0"
+      }
+    },
+    "jsonrpc": "2.0",
+    "id": 1
+  },
+  "tools_response": {
+    "result": {
+      "tools": [
+        {
+          "name": "crt-record",
+          "description": "Create a new record. Omitted top-level fields receive declared server defaults. Present values including null, false, zero, empty containers and empty strings are preserved. Nested objects are not populated with additional defaults.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "nullable": true,
+                "default": "new"
+              },
+              "enabled": {
+                "type": "boolean",
+                "nullable": true,
+                "default": true
+              },
+              "quota": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "maximum": 100,
+                "default": 7
+              },
+              "tags": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                },
+                "default": [
+                  "default"
+                ]
+              },
+              "metadata": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": false,
+                "properties": {
+                  "owner": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "flags": {
+                    "type": "object",
+                    "nullable": true,
+                    "additionalProperties": false,
+                    "properties": {
+                      "pinned": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "audit": {
+                        "type": "boolean",
+                        "nullable": true
+                      }
+                    }
+                  }
+                },
+                "default": {
+                  "owner": "new",
+                  "flags": {}
+                }
+              }
+            },
+            "x-content-type": "application/json"
+          },
+          "tags": [],
+          "httpMethod": "POST",
+          "resourceName": "records",
+          "originalPath": "/records",
+          "x-original-path": "/records"
+        },
+        {
+          "name": "ptch-record",
+          "description": "Update an existing record using JSON Merge Patch object semantics. Missing members are unchanged; null removes a member; objects merge recursively; arrays and scalars replace. No default values are inserted. This fixture accepts the same algorithm under both declared media types.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "description": "record_id parameter",
+                "x-parameter-location": "path",
+                "type": "string"
+              },
+              "label": {
+                "type": "string",
+                "nullable": true
+              },
+              "enabled": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "quota": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "maximum": 100
+              },
+              "tags": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": false,
+                "properties": {
+                  "owner": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "flags": {
+                    "type": "object",
+                    "nullable": true,
+                    "additionalProperties": false,
+                    "properties": {
+                      "pinned": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "audit": {
+                        "type": "boolean",
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "x-content-type": "application/json",
+            "required": [
+              "record_id"
+            ]
+          },
+          "tags": [],
+          "httpMethod": "PATCH",
+          "resourceName": "records",
+          "originalPath": "/records/{record_id}",
+          "x-original-path": "/records/{record_id}"
+        },
+        {
+          "name": "read-record",
+          "description": "Read the persisted resource.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "description": "record_id parameter",
+                "x-parameter-location": "path",
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ]
+          },
+          "tags": [],
+          "httpMethod": "GET",
+          "resourceName": "records",
+          "originalPath": "/records/{record_id}",
+          "x-original-path": "/records/{record_id}"
+        }
+      ]
+    },
+    "jsonrpc": "2.0",
+    "id": 2
+  },
+  "error": "AssertionError(('ambiguous/missing operation binding', 'create_record'))",
+  "elapsed_seconds": 0.36962469200000214,
+  "backend_reaped": true,
+  "converter_reaped": true
+}
