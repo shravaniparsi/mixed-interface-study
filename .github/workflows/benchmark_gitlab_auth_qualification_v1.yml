@@ -1,0 +1,40 @@
+name: Pinned GitLab authentication qualification v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Require the frozen startup qualification to have passed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run view 43168226517 --json status,conclusion,headSha > "$RUNNER_TEMP/startup-prerequisite.json"
+          python3 - "$RUNNER_TEMP/startup-prerequisite.json" <<'PYTHON'
+          import json, sys
+          run = json.load(open(sys.argv[1]))
+          assert run['status'] == 'completed' and run['conclusion'] == 'success'
+          assert run['headSha'] == '15ab5131acd21630381ea3dacc0f3694a06d56f7'
+          PYTHON
+      - name: Qualify same-actor authentication without scientific cases
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-auth"
+          git rev-parse HEAD > "$RUNNER_TEMP/gitlab-auth/head.txt"
+          bash scripts/extension/qualify_benchmark_gitlab_auth_runtime_v1.sh "$RUNNER_TEMP/gitlab-auth"
+      - name: Retain authentication evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gitlab-auth-${{ github.run_id }}
+          path: ${{ runner.temp }}/gitlab-auth/
+          retention-days: 30
