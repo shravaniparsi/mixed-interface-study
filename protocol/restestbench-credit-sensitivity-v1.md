@@ -1,0 +1,9 @@
+# Post-hoc sensitivity to confirmed unsupported credits
+
+This analysis uses the already exposed released data and six failed-application credits established by the complete status audit. It is post-hoc, not a new prospective discovery claim. It does not depend on the currently running mutant qualification.
+
+Select every consolidated CSV row with tool=zero-shot and generation_context=valid from all three pinned released run groups. Analyze all three services and both description modes. Retain every model in each group; do not select only a model or comparison whose rank changes. Use exact rational score/max_score from the recorded integer scores, not the rounded percentage column. Average the three released repetitions with equal weights within each service/description/model; this is an explicitly defined sensitivity analysis, not an assertion about the paper's plot implementation.
+
+For each verified unsupported credit, compute a lower endpoint by removing that one credit and an upper endpoint retaining it. Keep the original mutant denominator fixed. These are reported-credit bounds under the binary missing-outcome assumption, not confidence intervals or corrected unbiased scores. Excluding an ineligible mutant entirely would require a different denominator policy and is outside this analysis. Other errors remain unaudited by this calculation.
+
+For all model pairs within each service/description group, preserve the original ordering and determine whether the intervals certify the same strict ordering, retain an exact point tie, or overlap. Interval overlap does not prove that a ranking actually reverses, that all endpoint assignments are jointly feasible, or that a paper conclusion changes. Report counts and all affected pairs, including null sensitivity results. Do not perform significance tests treating correlated model/mutant records as independent defects.
