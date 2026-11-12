@@ -1,0 +1,9 @@
+# Qualification retry after demonstrated runner recovery
+
+The user requested proceeding with the minimal diagnostic and subsequent isolation rather than stopping at preparation. Diagnostic run 43132605142 at b97b70bb08af8dd3ea5c40cb98f6ef0d72fc0baa completed successfully: one ubuntu-24.04 job executed echo hello, without checkout, dependencies, a matrix or a concurrency group. GitHub metadata confirms the repository remains public and Actions enabled. This establishes current basic runner availability; it does not prove the cause of historical startup failures or qualify the larger workflow.
+
+The qualification run is terminal with startup_failure and zero jobs before recovery. Its current metadata is archived beside the diagnostic. Permit one recovery retry of run 43096414710 using its existing registered commit b137f849a95b28adf0013c3d0a36458dbb819920. No application source, golden test, service selection, runner class or job-minute ceiling changes. All 106 valid-service tests remain selected; no successful scientific outcome has yet occurred. Previously zero-job attempts remain archived rather than relabelled as successful experiments.
+
+This is a user-authorized extension after evidence of platform recovery, distinct from the exhausted blind platform-retry allowance. Count every started application job across the retry against the original initial limit of three jobs/75 minutes and aggregate ceiling of four jobs/100 minutes. The three-second echo diagnostic is infrastructure evidence, not an application experiment. No paid model calls or paid runners are introduced.
+
+If the unchanged qualification cannot start while the echo workflow can, inspect its current annotation and isolate orchestration features with bounded diagnostics; do not change application tests in response to a startup error. No automatic repeated qualification dispatch is authorized by this note.
