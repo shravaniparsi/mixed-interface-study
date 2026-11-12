@@ -1,0 +1,450 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Controlled write-preservation feasibility fixture",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8765"
+    }
+  ],
+  "paths": {
+    "/records": {
+      "post": {
+        "operationId": "create_record",
+        "description": "Create a new record. Omitted top-level fields receive declared server defaults. Present values including null, false, zero, empty containers and empty strings are preserved. Nested objects are not populated with additional defaults.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": "new"
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "nullable": true,
+                    "default": true
+                  },
+                  "quota": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "default": 7
+                  },
+                  "tags": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": [
+                      "default"
+                    ]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "nullable": true,
+                    "additionalProperties": false,
+                    "properties": {
+                      "owner": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "flags": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": false,
+                        "properties": {
+                          "pinned": {
+                            "type": "boolean",
+                            "nullable": true
+                          },
+                          "audit": {
+                            "type": "boolean",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    },
+                    "default": {
+                      "owner": "new",
+                      "flags": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Persisted resource and stable identifier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "data"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "enabled": {
+                          "type": "boolean",
+                          "nullable": true
+                        },
+                        "quota": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "tags": {
+                          "type": "array",
+                          "nullable": true,
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "nullable": true,
+                          "additionalProperties": false,
+                          "properties": {
+                            "owner": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "flags": {
+                              "type": "object",
+                              "nullable": true,
+                              "additionalProperties": false,
+                              "properties": {
+                                "pinned": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "audit": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/{record_id}": {
+      "parameters": [
+        {
+          "name": "record_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "operationId": "patch_record",
+        "description": "Update an existing record using JSON Merge Patch object semantics. Missing members are unchanged; null removes a member; objects merge recursively; arrays and scalars replace. No default values are inserted. This fixture accepts the same algorithm under both declared media types.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/merge-patch+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "quota": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "tags": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "nullable": true,
+                    "additionalProperties": false,
+                    "properties": {
+                      "owner": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "flags": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": false,
+                        "properties": {
+                          "pinned": {
+                            "type": "boolean",
+                            "nullable": true
+                          },
+                          "audit": {
+                            "type": "boolean",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "quota": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "tags": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "nullable": true,
+                    "additionalProperties": false,
+                    "properties": {
+                      "owner": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "flags": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": false,
+                        "properties": {
+                          "pinned": {
+                            "type": "boolean",
+                            "nullable": true
+                          },
+                          "audit": {
+                            "type": "boolean",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted resource and stable identifier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "data"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "enabled": {
+                          "type": "boolean",
+                          "nullable": true
+                        },
+                        "quota": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "tags": {
+                          "type": "array",
+                          "nullable": true,
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "nullable": true,
+                          "additionalProperties": false,
+                          "properties": {
+                            "owner": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "flags": {
+                              "type": "object",
+                              "nullable": true,
+                              "additionalProperties": false,
+                              "properties": {
+                                "pinned": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "audit": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "read_record",
+        "description": "Read the persisted resource.",
+        "responses": {
+          "200": {
+            "description": "Persisted resource and stable identifier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "data"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "enabled": {
+                          "type": "boolean",
+                          "nullable": true
+                        },
+                        "quota": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "tags": {
+                          "type": "array",
+                          "nullable": true,
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "nullable": true,
+                          "additionalProperties": false,
+                          "properties": {
+                            "owner": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "flags": {
+                              "type": "object",
+                              "nullable": true,
+                              "additionalProperties": false,
+                              "properties": {
+                                "pinned": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "audit": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
