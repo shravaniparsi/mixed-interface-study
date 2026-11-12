@@ -171,6 +171,8 @@ jobs:
           python -m venv "$RUNNER_TEMP/adapter-schema-validator"
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" scripts/extension/validate_adapter_inputs_v1.py --verify
+      - name: Reconstruct pinned GitLab source inspection
+        run: python scripts/extension/verify_gitlab_image_inspection_v1.py --archive results/benchmark-gitlab-image-inspection-v1-ci-43166622248 --verify
       - name: Verify benchmark capacity and image metadata evidence
         run: python scripts/extension/verify_benchmark_capacity_v1.py --verify
       - name: Verify benchmark-authored continuation candidate selection
