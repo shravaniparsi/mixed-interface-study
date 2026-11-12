@@ -1,5 +1,16 @@
 # Mixed-interface workflow testing
 
+## Evidence status, 12 November 2026
+
+The independent Vibe per-test pilot completed all 170 registered records: 150 executed suite trials and 20 static nonexecutions. Across 130 qualified mutant comparisons, aggregate scoring and individually identified new failures agreed in every case. There were 50 detected mutants, no observed scoring disagreements, and zero paid model calls. This null result does not establish semantic correctness of every kill.
+
+[Completed pilot and research decision](notes/vibe_pilot_results_20261112.md) · [Reconstructable results](manifests/vibe-per-test-pilot-results-v1.json)
+
+Generic assertion-decay analysis, mutation/real-fault correlation, and configuration-dependent testing have prior art. The existing evidence is **not sufficient for submission claiming a new superior testing method**. The exposed NetBox historical calibration completed 24 cases: six configuration violations on the faulty version and none on its adjacent repaired version, although status checks passed all cases. These are variants of one known defect, not independent discoveries. The first attempt failed before scientific execution; the sole correction used the same-version prebuilt PostgreSQL driver. The oracle interpretation rule remains handwritten. [Complete result and limits](notes/netbox_config_defaults_results_20261112.md).
+
+[Calibration protocol](protocol/netbox-config-defaults-calibration-v1.md) · [Single infrastructure correction](protocol/netbox-config-defaults-calibration-v2.md) · [Prior-art constraints](notes/configuration_oracle_prior_art_20261112.md)
+
+
 ## Current status, 11 November 2026
 
 The independently selected API-input study is complete. Its finite schedule contains **44 scientific paired executions** across three qualified workflows in previously exposed applications: 28 initial sampled inputs, 12 initial valid controls and four followup pairs. The initial sampled inputs yielded 24 clean pairs, three producer rejections and one channel difference covered by the shared baseline. There were **zero additional native-only detections and zero confirmed natural defects**. Three of the six candidate workflows were excluded before scientific execution; a Paperless owner-fixture correction is disclosed. This is not untouched-application validation.

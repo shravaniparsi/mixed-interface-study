@@ -164,6 +164,10 @@ jobs:
         run: |
           python scripts/extension/verify_fastdash_cascade_v2.py --archive results/fastdash-cascade-v1-ci-43088065630 --verify manifests/fastdash-cascade-results-v2.json
           python scripts/extension/build_fastdash_cascade_cost_v1.py --verify
+      - name: Reconstruct NetBox configuration calibration attempts
+        run: |
+          python scripts/extension/verify_netbox_config_defaults_v1.py --archive results/netbox-config-defaults-v1-ci-43156734009 --output manifests/netbox-config-defaults-attempt1-v1.json --verify
+          python scripts/extension/verify_netbox_config_defaults_v1.py --corrected --archive results/netbox-config-defaults-v2-ci-43157153410 --output manifests/netbox-config-defaults-results-v2.json --verify
       - name: Verify independent Vibe archive and scoring audits
         run: |
           python scripts/extension/audit_vibe_released_v1.py --verify
