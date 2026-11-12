@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/benchmark-continuation-selection-v1.json',
     'manifests/benchmark-task-intent-screen-v1.json',
     'manifests/independent-input-missingness-audit-v1.json',
     'manifests/benchmark-structure-screen-v1.json',
