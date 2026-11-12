@@ -1,0 +1,151 @@
+{
+  "architecture": "amd64",
+  "config": {
+    "ExposedPorts": {
+      "22/tcp": {},
+      "443/tcp": {},
+      "80/tcp": {},
+      "8023/tcp": {},
+      "8025/tcp": {},
+      "8877/tcp": {}
+    },
+    "Env": [
+      "BUILD_TIMEOUT=300",
+      "BUILD_DRY_RUN=false",
+      "BUILD_ENV_CTRL_SRC=/build-env-ctrl",
+      "WA_ENV_CTRL_ROOT=/opt",
+      "WA_ENV_CTRL_TYPE=gitlab",
+      "BUILD_BASE_URL=http://localhost:50387/",
+      "PATH=/opt/gitlab/embedded/bin:/opt/gitlab/bin:/assets:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LANG=C.UTF-8",
+      "EDITOR=/bin/vi",
+      "TERM=xterm",
+      "WA_ENV_CTRL_AVAILABLE=true",
+      "WA_ENV_CTRL_ENABLE=true",
+      "WA_ENV_CTRL_PORT=8877",
+      "WA_ENV_CTRL_EXTERNAL_SITE_URL=http://localhost:8023",
+      "WA_CONTAINER_PORT=8023"
+    ],
+    "Entrypoint": [
+      "/opt/entrypoint.sh"
+    ],
+    "Healthcheck": {
+      "Test": [
+        "CMD-SHELL",
+        "/opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10"
+      ],
+      "Interval": 60000000000,
+      "Timeout": 30000000000,
+      "Retries": 5
+    }
+  },
+  "created": "2026-01-31T18:09:08.610373124+01:00",
+  "history": [
+    {
+      "created": "2026-01-31T11:34:02.038356Z"
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ARG ENV_CTRL_PORT=8877",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ENV WA_ENV_CTRL_TYPE=gitlab",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ENV WA_ENV_CTRL_AVAILABLE=true",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ENV WA_ENV_CTRL_ENABLE=true",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ENV WA_ENV_CTRL_PORT=8877",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ENV WA_ENV_CTRL_EXTERNAL_SITE_URL=http://localhost:8023",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "ENV WA_CONTAINER_PORT=8023",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:01:22.540767369+01:00",
+      "created_by": "COPY packages/environment_control/environment_control /usr/local/environment_control # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:01:23.180302524+01:00",
+      "created_by": "COPY --chmod=755 packages/environment_control/environment_control/env-ctrl /usr/local/bin/env-ctrl # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:01:24.491238933+01:00",
+      "created_by": "RUN |1 ENV_CTRL_PORT=8877 /bin/sh -c ln -sf /opt/gitlab/embedded/bin/python3 /usr/local/bin/python3 # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:01:25.322717351+01:00",
+      "created_by": "COPY contributing/environments/docker/sites/gitlab/docker_overrides/gitlab.rb /opt/gitlab-configs/gitlab.rb # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:01:27.624248045+01:00",
+      "created_by": "COPY contributing/environments/docker/sites/gitlab/docker_overrides/gitlab.small.rb /opt/gitlab-configs/gitlab.small.rb # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:01:28.455229044+01:00",
+      "created_by": "COPY contributing/environments/docker/sites/gitlab/docker_overrides/gitlab.large.rb /opt/gitlab-configs/gitlab.large.rb # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:09:08.610373124+01:00",
+      "created_by": "COPY --chmod=755 contributing/environments/docker/sites/gitlab/docker_overrides/entrypoint.sh /opt/entrypoint.sh # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    },
+    {
+      "created": "2026-01-31T18:09:08.610373124+01:00",
+      "created_by": "ENTRYPOINT [\"/opt/entrypoint.sh\"]",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    },
+    {
+      "created": "2026-01-31T18:09:08.610373124+01:00",
+      "created_by": "EXPOSE [8877/tcp 8023/tcp]",
+      "comment": "buildkit.dockerfile.v0",
+      "empty_layer": true
+    }
+  ],
+  "os": "linux",
+  "rootfs": {
+    "type": "layers",
+    "diff_ids": [
+      "sha256:0eadb0d0ea99c8513b29b5b49167d47f31f32e8afbb0e2ae7b624bc561907478",
+      "sha256:880d71f18bdd81ecc7c696995d056838bff11fb9141f1c5e255b3bc4e5445f85",
+      "sha256:a6653a331230683ccf88de3a87a04a49fb5ea01b233cef0ccbe2c593528930d9",
+      "sha256:e173d45b1e3773c5b46afda52cee64bc96cbef79f15a4da4c103e09acb0bd473",
+      "sha256:3dab557db0ebe16c327044fffa8044980411af9baf485f75fe2fa7f38d1c7e5d",
+      "sha256:d317e57629641104fb8aa9f7bc509e8d3a88bb8ba8325faaefc061e0e1aff201",
+      "sha256:752a548f595a1053b407ab7637294e32f26a148c86cd3f2158c09abbd56d7495",
+      "sha256:eaa798d610cf89bb6098d4e43b9e27295286fb887b888af3838d743bc3678e1f"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+name: Benchmark host capacity inspection v1
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Record capacity without downloads or cleanup
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/host-capacity"
+          date -u +%FT%TZ > "$RUNNER_TEMP/host-capacity/time.txt"
+          df -B1 / /mnt > "$RUNNER_TEMP/host-capacity/filesystems.txt"
+          free -b > "$RUNNER_TEMP/host-capacity/memory.txt"
+          nproc > "$RUNNER_TEMP/host-capacity/cpus.txt"
+          for path in /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL; do
+            if [ -d "$path" ]; then
+              sudo du -sx -B1 "$path"
+            fi
+          done > "$RUNNER_TEMP/host-capacity/optional-tool-sizes.txt"
+          printf '%s\n' 'Read-only host capacity inspection. No image layers downloaded; no applications started; no cleanup performed.' > "$RUNNER_TEMP/host-capacity/scope.txt"
+      - name: Retain capacity evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: benchmark-host-capacity-${{ github.run_id }}
+          path: ${{ runner.temp }}/host-capacity/
+          retention-days: 30
