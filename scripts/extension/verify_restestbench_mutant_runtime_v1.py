@@ -103,7 +103,9 @@ def validate_service(folder,registration,expected,mutations):
                 outcome=classify(trial['return_code'],trial['timeout'],counts)
                 if mutant and outcome=='passed':outcome='survived'
                 assert trial['outcome']==outcome
-        else:assert key+'-test' not in commands
+        else:
+            assert key+'-test' not in commands
+            assert trial['outcome'] in ['source_restore_failure','mutation_install_failure','reset_or_readiness_failure','installed_source_verification_failure','test_execution_failure']
         candidate=bool(mutant and trial['control_passed'] and trial['mutation_applied'] and trial['bytes_changed'] and trial.get('execution_setup_qualified') and trial['test_executed'] and trial['outcome']=='execution_qualified_test_failure')
         assert trial['candidate_detection']==candidate
         if not mutant:controls[req]=trial['outcome']=='passed'
