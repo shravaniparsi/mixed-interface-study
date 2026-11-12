@@ -1,0 +1,100 @@
+todoapp-api  |       Request starting HTTP/1.1 GET http://localhost:5000/scalar/v1 - - -
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+todoapp-api  |       Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.ContentResult[2]
+todoapp-api  |       Write content with HTTP Response ContentType of text/html
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+todoapp-api  |       Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+todoapp-api  | info: Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware[9]
+todoapp-api  |       Request and Response:
+todoapp-api  |       Content-Type: text/html
+todoapp-api  |       Content-Length: 977
+todoapp-api  |       ResponseBody: <!doctype html>
+todoapp-api  |       <html>
+todoapp-api  |       <head>
+todoapp-api  |           <title>Scalar API Reference</title>
+todoapp-api  |           <meta charset="utf-8" />
+todoapp-api  |           <meta name="viewport" content="width=device-width, initial-scale=1" />
+todoapp-api  |           
+todoapp-api  |       </head>
+todoapp-api  |       <body>
+todoapp-api  |           
+todoapp-api  |           <div id="app"></div>
+todoapp-api  |           <script src="scalar.js"></script>
+todoapp-api  |           <script type="module" src="scalar.aspnetcore.js"></script>
+todoapp-api  |           <script type="module">
+todoapp-api  |               import { initialize } from './scalar.aspnetcore.js'
+todoapp-api  |               initialize(
+todoapp-api  |               '/scalar/v1',
+todoapp-api  |               false,
+todoapp-api  |               {"showSidebar":true,"hideModels":false,"hideTestRequestButton":false,"darkMode":true,"hideDarkModeToggle":false,"servers":[],"defaultHttpClient":{"targetKey":"shell","clientKey":"curl"},"authentication":{"preferredSecurityScheme":["Identity.Bearer"]},"withDefaultFonts":true,"defaultOpenAllTags":false,"theme":"purple","layout":"modern","_integration":"dotnet","hideClientButton":false,"sources":[{"title":"v1","url":"openapi/v1.json"}],"persistAuth":false},
+todoapp-api  |               '')
+todoapp-api  |           </script>
+todoapp-api  |       </body>
+todoapp-api  |       </html>
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 GET http://localhost:5000/scalar/v1 - 200 977 text/html 5.8648ms
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 GET http://localhost:5000/scalar/v1 - 200 977 text/html 63.8805ms
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+todoapp-api  |       Request starting HTTP/1.1 GET http://localhost:5000/todos - - -
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+todoapp-api  |       Executing endpoint 'HTTP: GET /todos/'
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+todoapp-api  |       Executed endpoint 'HTTP: GET /todos/'
+todoapp-api  | fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+todoapp-api  |       An unhandled exception has occurred while executing the request.
+todoapp-api  |       System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+todoapp-api  |        ---> System.ArgumentNullException: Value cannot be null. (Parameter 'principal')
+todoapp-api  |          at System.ArgumentNullException.Throw(String paramName)
+todoapp-api  |          at System.ArgumentNullException.ThrowIfNull(Object argument, String paramName)
+todoapp-api  |          at System.Security.Claims.PrincipalExtensions.FindFirstValue(ClaimsPrincipal principal, String claimType)
+todoapp-api  |          at TodoApi.CurrentUser.get_Id() in /src/Todo.Api/Authorization/CurrentUser.cs:line 11
+todoapp-api  |          at System.Linq.Expressions.Interpreter.FuncCallInstruction`2.Run(InterpretedFrame frame)
+todoapp-api  |          at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)
+todoapp-api  |          at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)
+todoapp-api  |          at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+todoapp-api  |          --- End of inner exception stack trace ---
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Evaluate(Expression expression, String& parameterName, Boolean& isContextAccessor)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ProcessEvaluatableRoot(Expression evaluatableRoot, State& state, Boolean forceEvaluation)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitBinary(BinaryExpression binary)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitLambda[T](Expression`1 lambda)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitUnary(UnaryExpression unary)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues, Boolean precompiledQuery, IReadOnlySet`1& nonNullableReferenceTypeParameters)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean compiledQuery, Boolean generateContextAccessors)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteCore[TResult](Expression query, Boolean async, CancellationToken cancellationToken)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+todoapp-api  |          at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetAsyncEnumerator(CancellationToken cancellationToken)
+todoapp-api  |          at System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable`1.GetAsyncEnumerator()
+todoapp-api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+todoapp-api  |          at TodoApi.TodoApi.<>c.<<MapTodos>b__0_0>d.MoveNext() in /src/Todo.Api/Todos/TodoApi.cs:line 26
+todoapp-api  |       --- End of stack trace from previous location ---
+todoapp-api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.<ExecuteTaskOfT>g__ExecuteAwaited|132_0[T](Task`1 task, HttpContext httpContext, JsonTypeInfo`1 jsonTypeInfo)
+todoapp-api  |          at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+todoapp-api  |          at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+todoapp-api  |          at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)
+todoapp-api  |          at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)
+todoapp-api  |          at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+todoapp-api  |          at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+todoapp-api  |          at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 GET http://localhost:5000/todos - 500 - text/plain;+charset=utf-8 55.7732ms

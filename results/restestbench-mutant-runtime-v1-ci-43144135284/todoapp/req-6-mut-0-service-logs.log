@@ -1,0 +1,100 @@
+todoapp-api  |       FROM "AspNetUsers" AS "a"
+todoapp-api  |       WHERE "a"."Id" = @__p_0
+todoapp-api  |       LIMIT 1
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+todoapp-api  |       Executing endpoint 'HTTP: POST /todos/'
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Boolean), @p1='?' (Size = 36), @p2='?' (Size = 14)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       INSERT INTO "Todos" ("IsComplete", "OwnerId", "Title")
+todoapp-api  |       VALUES (@p0, @p1, @p2)
+todoapp-api  |       RETURNING "Id";
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.CreatedResult[1]
+todoapp-api  |       Setting HTTP status code 201.
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.CreatedResult[3]
+todoapp-api  |       Writing value of type 'TodoItem' as Json.
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+todoapp-api  |       Executed endpoint 'HTTP: POST /todos/'
+todoapp-api  | info: Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware[9]
+todoapp-api  |       Request and Response:
+todoapp-api  |       Content-Type: application/json; charset=utf-8
+todoapp-api  |       Location: /todos/1
+todoapp-api  |       ResponseBody: {"id":1,"title":"Todo to Delete","isComplete":false}
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 POST http://localhost:5000/todos - 201 - application/json;+charset=utf-8 62.6790ms
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+todoapp-api  |       Request starting HTTP/1.1 GET http://localhost:5000/todos/1 - - -
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@__p_0='?' (Size = 36)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       SELECT "a"."Id", "a"."AccessFailedCount", "a"."ConcurrencyStamp", "a"."Email", "a"."EmailConfirmed", "a"."LockoutEnabled", "a"."LockoutEnd", "a"."NormalizedEmail", "a"."NormalizedUserName", "a"."PasswordHash", "a"."PhoneNumber", "a"."PhoneNumberConfirmed", "a"."SecurityStamp", "a"."TwoFactorEnabled", "a"."UserName"
+todoapp-api  |       FROM "AspNetUsers" AS "a"
+todoapp-api  |       WHERE "a"."Id" = @__p_0
+todoapp-api  |       LIMIT 1
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+todoapp-api  |       Executing endpoint 'HTTP: GET /todos/{id}'
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       SELECT "t"."Id", "t"."IsComplete", "t"."OwnerId", "t"."Title"
+todoapp-api  |       FROM "Todos" AS "t"
+todoapp-api  |       WHERE "t"."Id" = @__p_0
+todoapp-api  |       LIMIT 1
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+todoapp-api  |       Setting HTTP status code 200.
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+todoapp-api  |       Writing value of type 'TodoItem' as Json.
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+todoapp-api  |       Executed endpoint 'HTTP: GET /todos/{id}'
+todoapp-api  | info: Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware[9]
+todoapp-api  |       Request and Response:
+todoapp-api  |       Content-Type: application/json; charset=utf-8
+todoapp-api  |       ResponseBody: {"id":1,"title":"Todo to Delete","isComplete":false}
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 GET http://localhost:5000/todos/1 - 200 - application/json;+charset=utf-8 10.5581ms
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+todoapp-api  |       Request starting HTTP/1.1 DELETE http://localhost:5000/todos/1 - - 0
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@__p_0='?' (Size = 36)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       SELECT "a"."Id", "a"."AccessFailedCount", "a"."ConcurrencyStamp", "a"."Email", "a"."EmailConfirmed", "a"."LockoutEnabled", "a"."LockoutEnd", "a"."NormalizedEmail", "a"."NormalizedUserName", "a"."PasswordHash", "a"."PhoneNumber", "a"."PhoneNumberConfirmed", "a"."SecurityStamp", "a"."TwoFactorEnabled", "a"."UserName"
+todoapp-api  |       FROM "AspNetUsers" AS "a"
+todoapp-api  |       WHERE "a"."Id" = @__p_0
+todoapp-api  |       LIMIT 1
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+todoapp-api  |       Executing endpoint 'HTTP: DELETE /todos/{id}'
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Int32), @__owner_Id_1='?' (Size = 36)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       SELECT COUNT(*)
+todoapp-api  |       FROM "Todos" AS "t"
+todoapp-api  |       WHERE "t"."Id" = @__id_0 AND "t"."OwnerId" = @__owner_Id_1
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+todoapp-api  |       Setting HTTP status code 200.
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+todoapp-api  |       Executed endpoint 'HTTP: DELETE /todos/{id}'
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 DELETE http://localhost:5000/todos/1 - 200 0 - 16.8334ms
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+todoapp-api  |       Request starting HTTP/1.1 GET http://localhost:5000/todos/1 - - -
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@__p_0='?' (Size = 36)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       SELECT "a"."Id", "a"."AccessFailedCount", "a"."ConcurrencyStamp", "a"."Email", "a"."EmailConfirmed", "a"."LockoutEnabled", "a"."LockoutEnd", "a"."NormalizedEmail", "a"."NormalizedUserName", "a"."PasswordHash", "a"."PhoneNumber", "a"."PhoneNumberConfirmed", "a"."SecurityStamp", "a"."TwoFactorEnabled", "a"."UserName"
+todoapp-api  |       FROM "AspNetUsers" AS "a"
+todoapp-api  |       WHERE "a"."Id" = @__p_0
+todoapp-api  |       LIMIT 1
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+todoapp-api  |       Executing endpoint 'HTTP: GET /todos/{id}'
+todoapp-api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+todoapp-api  |       Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+todoapp-api  |       SELECT "t"."Id", "t"."IsComplete", "t"."OwnerId", "t"."Title"
+todoapp-api  |       FROM "Todos" AS "t"
+todoapp-api  |       WHERE "t"."Id" = @__p_0
+todoapp-api  |       LIMIT 1
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+todoapp-api  |       Setting HTTP status code 200.
+todoapp-api  | info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+todoapp-api  |       Writing value of type 'TodoItem' as Json.
+todoapp-api  | info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+todoapp-api  |       Executed endpoint 'HTTP: GET /todos/{id}'
+todoapp-api  | info: Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware[9]
+todoapp-api  |       Request and Response:
+todoapp-api  |       Content-Type: application/json; charset=utf-8
+todoapp-api  |       ResponseBody: {"id":1,"title":"Todo to Delete","isComplete":false}
+todoapp-api  | info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+todoapp-api  |       Request finished HTTP/1.1 GET http://localhost:5000/todos/1 - 200 - application/json;+charset=utf-8 2.6943ms

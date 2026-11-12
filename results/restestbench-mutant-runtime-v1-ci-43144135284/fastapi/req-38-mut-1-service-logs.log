@@ -1,0 +1,100 @@
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+backend-1  |     rec.execute(self)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+backend-1  |     util.preloaded.orm_persistence.save_obj(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/persistence.py", line 85, in save_obj
+backend-1  |     _emit_update_statements(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/persistence.py", line 912, in _emit_update_statements
+backend-1  |     c = connection.execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+backend-1  |     return meth(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+backend-1  |     return connection._execute_clauseelement(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+backend-1  |     ret = self._execute_context(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+backend-1  |     return self._exec_single_context(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+backend-1  |     self._handle_dbapi_exception(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+backend-1  |     raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+backend-1  |     self.dialect.do_execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+backend-1  |     cursor.execute(statement, parameters)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/psycopg/cursor.py", line 97, in execute
+backend-1  |     raise ex.with_traceback(None)
+backend-1  | sqlalchemy.exc.IntegrityError: (psycopg.errors.UniqueViolation) duplicate key value violates unique constraint "ix_user_email"
+backend-1  | DETAIL:  Key (email)=(user2_8b9ee42f@example.com) already exists.
+backend-1  | [SQL: UPDATE "user" SET email=%(email)s::VARCHAR WHERE "user".id = %(user_id)s::UUID]
+backend-1  | [parameters: {'email': 'user2_8b9ee42f@example.com', 'user_id': UUID('7c020209-0183-4d5f-9edb-5ce9a31a9eec')}]
+backend-1  | (Background on this error at: https://sqlalche.me/e/20/gkpj)
+backend-1  | INFO:watchfiles.main:6 changes detected
+backend-1  | WARNING:  WatchFiles detected changes in 'app/models.py', 'app/crud.py', 'app/api/routes/items.py', 'app/api/deps.py', 'app/api/routes/users.py', 'app/api/routes/login.py'. Reloading...
+backend-1  | INFO:     Shutting down
+backend-1  | INFO:     Waiting for application shutdown.
+backend-1  | INFO:     Application shutdown complete.
+backend-1  | INFO:     Finished server process [8]
+backend-1  | INFO:     Stopping reloader process [1]
+backend-1  | INFO     Using path app/main.py                                                 
+backend-1  | INFO     Resolved absolute path /app/app/main.py                                
+backend-1  | INFO     Searching for package file structure from directories with __init__.py 
+backend-1  |          files                                                                  
+backend-1  | INFO     Importing from /app                                                    
+backend-1  |                                                                                 
+backend-1  |  ╭─ Python package file structure ─╮                                            
+backend-1  |  │                                 │                                            
+backend-1  |  │  📁 app                         │                                            
+backend-1  |  │  ├── 🐍 __init__.py             │                                            
+backend-1  |  │  └── 🐍 main.py                 │                                            
+backend-1  |  │                                 │                                            
+backend-1  |  ╰─────────────────────────────────╯                                            
+backend-1  |                                                                                 
+backend-1  | INFO     Importing module app.main                                              
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | INFO     Found importable FastAPI app                                           
+backend-1  |                                                                                 
+backend-1  |  ╭── Importable FastAPI app ──╮                                                 
+backend-1  |  │                            │                                                 
+backend-1  |  │  from app.main import app  │                                                 
+backend-1  |  │                            │                                                 
+backend-1  |  ╰────────────────────────────╯                                                 
+backend-1  |                                                                                 
+backend-1  | INFO     Using import string app.main:app                                       
+backend-1  |                                                                                 
+backend-1  |  ╭─────────── FastAPI CLI - Production mode ───────────╮                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  Serving at: http://0.0.0.0:8000                    │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  API docs: http://0.0.0.0:8000/docs                 │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  Running in production mode, for development use:   │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  fastapi dev                                        │                        
+backend-1  |  │                                                     │                        
+backend-1  |  ╰─────────────────────────────────────────────────────╯                        
+backend-1  |                                                                                 
+backend-1  | INFO:     Will watch for changes in these directories: ['/app']
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:     Started reloader process [1] using WatchFiles
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | INFO:     Started server process [8]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     172.18.0.1:51414 - "GET /docs HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:51422 - "GET /docs HTTP/1.1" 200 OK
+backend-1  | WARNING:passlib.handlers.bcrypt:(trapped) error reading bcrypt version
+backend-1  | Traceback (most recent call last):
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+backend-1  |     version = _bcrypt.__about__.__version__
+backend-1  | AttributeError: module 'bcrypt' has no attribute '__about__'
+backend-1  | INFO:     172.18.0.1:51432 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:51442 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:51446 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:51456 - "PATCH /api/v1/users/31c0626d-1bbd-4990-9611-3094d081d7e7 HTTP/1.1" 409 Conflict

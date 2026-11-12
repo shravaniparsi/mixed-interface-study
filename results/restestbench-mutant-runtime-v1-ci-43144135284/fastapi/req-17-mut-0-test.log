@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.4.2, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/mixed-interface-study/mixed-interface-study/upstream-benchmark
+collecting ... collected 1 item
+
+data/tests/fastapi/test_17.py::test_reset_password FAILED                [100%]
+
+=================================== FAILURES ===================================
+_____________________________ test_reset_password ______________________________
+data/tests/fastapi/test_17.py:58: in test_reset_password
+    assert response_json == {"message": "Password updated successfully"}
+E   AssertionError: assert {'message': '...reset failed'} == {'message': '...successfully'}
+E     
+E     Differing items:
+E     {'message': 'Password reset failed'} != {'message': 'Password updated successfully'}
+E     
+E     Full diff:
+E       {
+E     -     'message': 'Password updated successfully',
+E     +     'message': 'Password reset failed',
+E       }
+- generated xml file: /home/runner/work/_temp/restestbench-mutant-evidence/req-17-mut-0.xml -
+=========================== short test summary info ============================
+FAILED data/tests/fastapi/test_17.py::test_reset_password - AssertionError: assert {'message': '...reset failed'} == {'message': '...successfully'}
+  
+  Differing items:
+  {'message': 'Password reset failed'} != {'message': 'Password updated successfully'}
+  
+  Full diff:
+    {
+  -     'message': 'Password updated successfully',
+  +     'message': 'Password reset failed',
+    }
+============================== 1 failed in 1.06s ===============================

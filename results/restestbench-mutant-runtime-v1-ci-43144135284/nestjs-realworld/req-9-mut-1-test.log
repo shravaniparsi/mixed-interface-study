@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.4.2, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/mixed-interface-study/mixed-interface-study/upstream-benchmark
+collecting ... collected 1 item
+
+data/tests/nestjs-realworld/test_9.py::test_user_creation_rejects_duplicates FAILED [100%]
+
+=================================== FAILURES ===================================
+____________________ test_user_creation_rejects_duplicates _____________________
+data/tests/nestjs-realworld/test_9.py:36: in test_user_creation_rejects_duplicates
+    assert response_dup_username.status_code == 400, f"Expected 400 for duplicate username, got {response_dup_username.status_code}: {response_dup_username.text}"
+E   AssertionError: Expected 400 for duplicate username, got 201: {"user":{"id":2,"username":"uniqueuser1","email":"different@test.com","bio":"","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ1bmlxdWV1c2VyMSIsImVtYWlsIjoiZGlmZmVyZW50QHRlc3QuY29tIiwiZXhwIjoxNzk5NjM3NDQ5LjQ3NywiaWF0IjoxNzk0NDUzNDQ5fQ.68mKAfxiOYbPFQJ1ZTbLtEEjLUWR-jF6PvST_eVYPgM","image":""}}
+E   assert 201 == 400
+E    +  where 201 = <Response [201]>.status_code
+- generated xml file: /home/runner/work/_temp/restestbench-mutant-evidence/req-9-mut-1.xml -
+=========================== short test summary info ============================
+FAILED data/tests/nestjs-realworld/test_9.py::test_user_creation_rejects_duplicates - AssertionError: Expected 400 for duplicate username, got 201: {"user":{"id":2,"username":"uniqueuser1","email":"different@test.com","bio":"","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ1bmlxdWV1c2VyMSIsImVtYWlsIjoiZGlmZmVyZW50QHRlc3QuY29tIiwiZXhwIjoxNzk5NjM3NDQ5LjQ3NywiaWF0IjoxNzk0NDUzNDQ5fQ.68mKAfxiOYbPFQJ1ZTbLtEEjLUWR-jF6PvST_eVYPgM","image":""}}
+assert 201 == 400
+ +  where 201 = <Response [201]>.status_code
+============================== 1 failed in 0.16s ===============================

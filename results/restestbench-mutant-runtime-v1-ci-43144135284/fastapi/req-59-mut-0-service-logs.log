@@ -1,0 +1,100 @@
+backend-1  | Traceback (most recent call last):
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+backend-1  |     self.dialect.do_execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+backend-1  |     cursor.execute(statement, parameters)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/psycopg/cursor.py", line 97, in execute
+backend-1  |     raise ex.with_traceback(None)
+backend-1  | psycopg.errors.InvalidTextRepresentation: invalid input syntax for type uuid: "not-a-uuid"
+backend-1  | CONTEXT:  unnamed portal parameter $1 = '...'
+backend-1  | 
+backend-1  | The above exception was the direct cause of the following exception:
+backend-1  | 
+backend-1  | Traceback (most recent call last):
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/uvicorn/protocols/http/httptools_impl.py", line 401, in run_asgi
+backend-1  |     result = await app(  # type: ignore[func-returns-value]
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 70, in __call__
+backend-1  |     return await self.app(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/fastapi/applications.py", line 1054, in __call__
+backend-1  |     await super().__call__(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/applications.py", line 113, in __call__
+backend-1  |     await self.middleware_stack(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 187, in __call__
+backend-1  |     raise exc
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 165, in __call__
+backend-1  |     await self.app(scope, receive, _send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 85, in __call__
+backend-1  |     await self.app(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+backend-1  |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+backend-1  |     raise exc
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+backend-1  |     await app(scope, receive, sender)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 715, in __call__
+backend-1  |     await self.middleware_stack(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 735, in app
+backend-1  |     await route.handle(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 288, in handle
+backend-1  |     await self.app(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 76, in app
+backend-1  |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+backend-1  |     raise exc
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+backend-1  |     await app(scope, receive, sender)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 73, in app
+backend-1  |     response = await f(request)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 301, in app
+backend-1  |     raw_response = await run_endpoint_function(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 214, in run_endpoint_function
+backend-1  |     return await run_in_threadpool(dependant.call, **values)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 39, in run_in_threadpool
+backend-1  |     return await anyio.to_thread.run_sync(func, *args)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 56, in run_sync
+backend-1  |     return await get_async_backend().run_sync_in_worker_thread(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2405, in run_sync_in_worker_thread
+backend-1  |     return await future
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 914, in run
+backend-1  |     result = context.run(func, *args)
+backend-1  |   File "/app/app/api/routes/users.py", line 165, in read_user_by_id
+backend-1  |     user = session.get(User, user_id)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 3693, in get
+backend-1  |     return self._get_impl(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 3873, in _get_impl
+backend-1  |     return db_load_fn(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/loading.py", line 694, in load_on_pk_identity
+backend-1  |     session.execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlmodel/orm/session.py", line 127, in execute
+backend-1  |     return super().execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2362, in execute
+backend-1  |     return self._execute_internal(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2247, in _execute_internal
+backend-1  |     result: Result[Any] = compile_state_cls.orm_execute_statement(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/context.py", line 305, in orm_execute_statement
+backend-1  |     result = conn.execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+backend-1  |     return meth(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+backend-1  |     return connection._execute_clauseelement(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+backend-1  |     ret = self._execute_context(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+backend-1  |     return self._exec_single_context(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+backend-1  |     self._handle_dbapi_exception(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+backend-1  |     raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+backend-1  |     self.dialect.do_execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+backend-1  |     cursor.execute(statement, parameters)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/psycopg/cursor.py", line 97, in execute
+backend-1  |     raise ex.with_traceback(None)
+backend-1  | sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type uuid: "not-a-uuid"
+backend-1  | CONTEXT:  unnamed portal parameter $1 = '...'
+backend-1  | [SQL: SELECT "user".email AS user_email, "user".is_active AS user_is_active, "user".is_superuser AS user_is_superuser, "user".full_name AS user_full_name, "user".id AS user_id, "user".hashed_password AS user_hashed_password 
+backend-1  | FROM "user" 
+backend-1  | WHERE "user".id = %(pk_1)s::UUID]
+backend-1  | [parameters: {'pk_1': 'not-a-uuid'}]
+backend-1  | (Background on this error at: https://sqlalche.me/e/20/9h9h)

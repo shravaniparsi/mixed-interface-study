@@ -1,0 +1,100 @@
+backend-1  | INFO     Importing from /app                                                    
+backend-1  |                                                                                 
+backend-1  |  ╭─ Python package file structure ─╮                                            
+backend-1  |  │                                 │                                            
+backend-1  |  │  📁 app                         │                                            
+backend-1  |  │  ├── 🐍 __init__.py             │                                            
+backend-1  |  │  └── 🐍 main.py                 │                                            
+backend-1  |  │                                 │                                            
+backend-1  |  ╰─────────────────────────────────╯                                            
+backend-1  |                                                                                 
+backend-1  | INFO     Importing module app.main                                              
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | INFO     Found importable FastAPI app                                           
+backend-1  |                                                                                 
+backend-1  |  ╭── Importable FastAPI app ──╮                                                 
+backend-1  |  │                            │                                                 
+backend-1  |  │  from app.main import app  │                                                 
+backend-1  |  │                            │                                                 
+backend-1  |  ╰────────────────────────────╯                                                 
+backend-1  |                                                                                 
+backend-1  | INFO     Using import string app.main:app                                       
+backend-1  |                                                                                 
+backend-1  |  ╭─────────── FastAPI CLI - Production mode ───────────╮                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  Serving at: http://0.0.0.0:8000                    │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  API docs: http://0.0.0.0:8000/docs                 │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  Running in production mode, for development use:   │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  fastapi dev                                        │                        
+backend-1  |  │                                                     │                        
+backend-1  |  ╰─────────────────────────────────────────────────────╯                        
+backend-1  |                                                                                 
+backend-1  | INFO:     Will watch for changes in these directories: ['/app']
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:     Started reloader process [1] using WatchFiles
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | INFO:     Started server process [8]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     172.18.0.1:39978 - "GET /docs HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:39988 - "GET /docs HTTP/1.1" 200 OK
+backend-1  | WARNING:passlib.handlers.bcrypt:(trapped) error reading bcrypt version
+backend-1  | Traceback (most recent call last):
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+backend-1  |     version = _bcrypt.__about__.__version__
+backend-1  | AttributeError: module 'bcrypt' has no attribute '__about__'
+backend-1  | INFO:     172.18.0.1:39998 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:40000 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:40016 - "GET /api/v1/users/2bccaa7f-f1d8-4aca-b922-830c933a4e2e HTTP/1.1" 500 Internal Server Error
+backend-1  | ERROR:    Exception in ASGI application
+backend-1  | Traceback (most recent call last):
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/uvicorn/protocols/http/httptools_impl.py", line 401, in run_asgi
+backend-1  |     result = await app(  # type: ignore[func-returns-value]
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 70, in __call__
+backend-1  |     return await self.app(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/fastapi/applications.py", line 1054, in __call__
+backend-1  |     await super().__call__(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/applications.py", line 113, in __call__
+backend-1  |     await self.middleware_stack(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 187, in __call__
+backend-1  |     raise exc
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 165, in __call__
+backend-1  |     await self.app(scope, receive, _send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 85, in __call__
+backend-1  |     await self.app(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+backend-1  |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+backend-1  |     raise exc
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+backend-1  |     await app(scope, receive, sender)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 715, in __call__
+backend-1  |     await self.middleware_stack(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 735, in app
+backend-1  |     await route.handle(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 288, in handle
+backend-1  |     await self.app(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 76, in app
+backend-1  |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+backend-1  |     raise exc
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+backend-1  |     await app(scope, receive, sender)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/starlette/routing.py", line 73, in app
+backend-1  |     response = await f(request)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 327, in app
+backend-1  |     content = await serialize_response(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 176, in serialize_response
+backend-1  |     raise ResponseValidationError(
+backend-1  | fastapi.exceptions.ResponseValidationError: 1 validation errors:
+backend-1  |   {'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+backend-1  | 

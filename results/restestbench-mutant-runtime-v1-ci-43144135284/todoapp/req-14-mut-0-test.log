@@ -1,0 +1,141 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.4.2, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/mixed-interface-study/mixed-interface-study/upstream-benchmark
+collecting ... collected 1 item
+
+data/tests/todoapp/test_14.py::test_access_todos_without_auth_returns_401 FAILED [100%]
+
+=================================== FAILURES ===================================
+__________________ test_access_todos_without_auth_returns_401 __________________
+data/tests/todoapp/test_14.py:17: in test_access_todos_without_auth_returns_401
+    assert response.status_code == 401, f"Expected 401, got {response.status_code}: {response.text}"
+E   AssertionError: Expected 401, got 500: System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+E      ---> System.ArgumentNullException: Value cannot be null. (Parameter 'principal')
+E        at System.ArgumentNullException.Throw(String paramName)
+E        at System.ArgumentNullException.ThrowIfNull(Object argument, String paramName)
+E        at System.Security.Claims.PrincipalExtensions.FindFirstValue(ClaimsPrincipal principal, String claimType)
+E        at TodoApi.CurrentUser.get_Id() in /src/Todo.Api/Authorization/CurrentUser.cs:line 11
+E        at System.Linq.Expressions.Interpreter.FuncCallInstruction`2.Run(InterpretedFrame frame)
+E        at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)
+E        at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)
+E        at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+E        --- End of inner exception stack trace ---
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Evaluate(Expression expression, String& parameterName, Boolean& isContextAccessor)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ProcessEvaluatableRoot(Expression evaluatableRoot, State& state, Boolean forceEvaluation)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitBinary(BinaryExpression binary)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitLambda[T](Expression`1 lambda)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitUnary(UnaryExpression unary)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues, Boolean precompiledQuery, IReadOnlySet`1& nonNullableReferenceTypeParameters)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean compiledQuery, Boolean generateContextAccessors)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteCore[TResult](Expression query, Boolean async, CancellationToken cancellationToken)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+E        at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetAsyncEnumerator(CancellationToken cancellationToken)
+E        at System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable`1.GetAsyncEnumerator()
+E        at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+E        at TodoApi.TodoApi.<>c.<<MapTodos>b__0_0>d.MoveNext() in /src/Todo.Api/Todos/TodoApi.cs:line 26
+E     --- End of stack trace from previous location ---
+E        at Microsoft.AspNetCore.Http.RequestDelegateFactory.<ExecuteTaskOfT>g__ExecuteAwaited|132_0[T](Task`1 task, HttpContext httpContext, JsonTypeInfo`1 jsonTypeInfo)
+E        at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+E        at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+E        at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)
+E        at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)
+E        at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+E        at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+E        at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+E     
+E     HEADERS
+E     =======
+E     Accept: */*
+E     Connection: keep-alive
+E     Host: localhost:5000
+E     User-Agent: python-requests/2.32.5
+E     Accept-Encoding: gzip, deflate
+E     
+E   assert 500 == 401
+E    +  where 500 = <Response [500]>.status_code
+- generated xml file: /home/runner/work/_temp/restestbench-mutant-evidence/req-14-mut-0.xml -
+=========================== short test summary info ============================
+FAILED data/tests/todoapp/test_14.py::test_access_todos_without_auth_returns_401 - AssertionError: Expected 401, got 500: System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+   ---> System.ArgumentNullException: Value cannot be null. (Parameter 'principal')
+     at System.ArgumentNullException.Throw(String paramName)
+     at System.ArgumentNullException.ThrowIfNull(Object argument, String paramName)
+     at System.Security.Claims.PrincipalExtensions.FindFirstValue(ClaimsPrincipal principal, String claimType)
+     at TodoApi.CurrentUser.get_Id() in /src/Todo.Api/Authorization/CurrentUser.cs:line 11
+     at System.Linq.Expressions.Interpreter.FuncCallInstruction`2.Run(InterpretedFrame frame)
+     at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)
+     at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)
+     at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+     --- End of inner exception stack trace ---
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Evaluate(Expression expression, String& parameterName, Boolean& isContextAccessor)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ProcessEvaluatableRoot(Expression evaluatableRoot, State& state, Boolean forceEvaluation)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitBinary(BinaryExpression binary)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitLambda[T](Expression`1 lambda)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitUnary(UnaryExpression unary)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues, Boolean precompiledQuery, IReadOnlySet`1& nonNullableReferenceTypeParameters)
+     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues)
+     at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean compiledQuery, Boolean generateContextAccessors)
+     at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteCore[TResult](Expression query, Boolean async, CancellationToken cancellationToken)
+     at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+     at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+     at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetAsyncEnumerator(CancellationToken cancellationToken)
+     at System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable`1.GetAsyncEnumerator()
+     at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+     at TodoApi.TodoApi.<>c.<<MapTodos>b__0_0>d.MoveNext() in /src/Todo.Api/Todos/TodoApi.cs:line 26
+  --- End of stack trace from previous location ---
+     at Microsoft.AspNetCore.Http.RequestDelegateFactory.<ExecuteTaskOfT>g__ExecuteAwaited|132_0[T](Task`1 task, HttpContext httpContext, JsonTypeInfo`1 jsonTypeInfo)
+     at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+     at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+     at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)
+     at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)
+     at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+     at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+     at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+  
+  HEADERS
+  =======
+  Accept: */*
+  Connection: keep-alive
+  Host: localhost:5000
+  User-Agent: python-requests/2.32.5
+  Accept-Encoding: gzip, deflate
+  
+assert 500 == 401
+ +  where 500 = <Response [500]>.status_code
+============================== 1 failed in 0.15s ===============================

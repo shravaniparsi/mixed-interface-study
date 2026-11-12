@@ -1,0 +1,2592 @@
+{
+  "kind": "restestbench_assertion_analysis_v1",
+  "post_hoc": true,
+  "services": {
+    "todoapp": {
+      "failure_elements": 22,
+      "sites": {
+        "other_assertion": 8,
+        "http_status_assertion": 14
+      },
+      "mechanisms": {
+        "assertion_failure": 22
+      },
+      "failures_with_observed_5xx": 1
+    },
+    "fastapi": {
+      "failure_elements": 141,
+      "sites": {
+        "http_status_assertion": 83,
+        "other_assertion": 58
+      },
+      "mechanisms": {
+        "assertion_failure": 141
+      },
+      "failures_with_observed_5xx": 20
+    },
+    "nestjs-realworld": {
+      "failure_elements": 64,
+      "sites": {
+        "other_assertion": 52,
+        "http_status_assertion": 12
+      },
+      "mechanisms": {
+        "assertion_failure": 64
+      },
+      "failures_with_observed_5xx": 4
+    }
+  },
+  "rows": [
+    {
+      "service": "fastapi",
+      "key": "req-1-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_1.py",
+      "line": 50,
+      "predicate": "create_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-1-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_1.py",
+      "line": 53,
+      "predicate": "response_json[\"description\"] == item_data[\"description\"]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'FFQvrJTqk9VCCnfJuG0w' == 'Test Description'\n  \n  - Test Description\n  + FFQvrJTqk9VCCnfJuG0w"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-1-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_1.py",
+      "line": 57,
+      "predicate": "response_json[\"owner_id\"] == user_id",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '00000000-000...-000000000001' == '6d837276-2db...-eff8851c1e83'\n  \n  - 6d837276-2db1-45ab-b9e8-eff8851c1e83\n  + 00000000-0000-0000-0000-000000000001"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-2-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_2.py",
+      "line": 42,
+      "predicate": "read_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 404 == 200\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-2-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_2.py",
+      "line": 44,
+      "predicate": "response_json[\"title\"] == created_item[\"title\"]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'WRONG_TITLE' == 'Test Item'\n  \n  - Test Item\n  + WRONG_TITLE"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-2-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_2.py",
+      "line": 47,
+      "predicate": "response_json[\"owner_id\"] == created_item[\"owner_id\"]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '00000000-000...-000000000001' == 'c752984c-cf1...-b5752aa17708'\n  \n  - c752984c-cf16-433d-87bc-b5752aa17708\n  + 00000000-0000-0000-0000-000000000001"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-3-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_3.py",
+      "line": 30,
+      "predicate": "read_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 404\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-3-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_3.py",
+      "line": 30,
+      "predicate": "read_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-4-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_4.py",
+      "line": 68,
+      "predicate": "read_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-4-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_4.py",
+      "line": 68,
+      "predicate": "read_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-4-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_4.py",
+      "line": 70,
+      "predicate": "response_json[\"detail\"] == \"Not enough permissions\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Item not found' == 'Not enough permissions'\n  \n  - Not enough permissions\n  + Item not found"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-5-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_5.py",
+      "line": 53,
+      "predicate": "response_json[\"count\"] == len(response_json[\"data\"])",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 2 == 1\n +  where 1 = len([{'description': 'Test Description 1', 'id': 'a46d6deb-a6cb-4a1e-b385-6ddea5891997', 'owner_id': 'dd23b3ae-8055-461e-9fc7-c237f036d8d7', 'title': 'Test Item 1'}])"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-5-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_5.py",
+      "line": 53,
+      "predicate": "response_json[\"count\"] == len(response_json[\"data\"])",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 0 == 2\n +  where 2 = len([{'description': 'Test Description 1', 'id': '993e1a39-9500-4643-82b0-4b3f403db160', 'owner_id': 'd9351233-773e-4793-a592-56124dc70885', 'title': 'Test Item 1'}, {'description': 'Test Description 2', 'id': 'f371b8c4-e7f4-4a78-a571-b2f63192dcaa', 'owner_id': 'd9351233-773e-4793-a592-56124dc70885', 'title': 'Test Item 2'}])"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-5-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_5.py",
+      "line": 60,
+      "predicate": "items_by_id[item1_id][\"title\"] == \"Test Item 1\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'WRONG' == 'Test Item 1'\n  \n  - Test Item 1\n  + WRONG"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-6-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_6.py",
+      "line": 44,
+      "predicate": "update_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-6-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_6.py",
+      "line": 46,
+      "predicate": "response_json[\"title\"] == update_data[\"title\"]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'WRONG_TITLE' == 'Updated Title'\n  \n  - Updated Title\n  + WRONG_TITLE"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-6-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_6.py",
+      "line": 48,
+      "predicate": "response_json[\"id\"] == item_id",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '00000000-000...-000000000001' == '87bc4d3e-998...-8a2177d4a64d'\n  \n  - 87bc4d3e-9983-4254-83ba-8a2177d4a64d\n  + 00000000-0000-0000-0000-000000000001"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-7-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_7.py",
+      "line": 32,
+      "predicate": "update_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-7-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_7.py",
+      "line": 34,
+      "predicate": "response_json[\"detail\"] == \"Item not found\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '' == 'Item not found'\n  \n  - Item not found"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-7-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_7.py",
+      "line": 32,
+      "predicate": "update_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-8-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_8.py",
+      "line": 70,
+      "predicate": "update_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-8-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_8.py",
+      "line": 72,
+      "predicate": "response_json[\"detail\"] == \"Not enough permissions\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '' == 'Not enough permissions'\n  \n  - Not enough permissions"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-8-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_8.py",
+      "line": 70,
+      "predicate": "update_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 404 == 400\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-9-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_9.py",
+      "line": 38,
+      "predicate": "delete_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-9-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_9.py",
+      "line": 40,
+      "predicate": "response_json[\"message\"] == \"Item deleted successfully\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Item update failed' == 'Item deleted successfully'\n  \n  - Item deleted successfully\n  + Item update failed"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-9-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_9.py",
+      "line": 47,
+      "predicate": "get_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-10-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_10.py",
+      "line": 30,
+      "predicate": "delete_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-10-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_10.py",
+      "line": 32,
+      "predicate": "response_json[\"detail\"] == \"Item not found\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '' == 'Item not found'\n  \n  - Item not found"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-10-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_10.py",
+      "line": 30,
+      "predicate": "delete_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-11-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_11.py",
+      "line": 68,
+      "predicate": "delete_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-11-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_11.py",
+      "line": 70,
+      "predicate": "response_json[\"detail\"] == \"Not enough permissions\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Item not found' == 'Not enough permissions'\n  \n  - Not enough permissions\n  + Item not found"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-12-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_12.py",
+      "line": 19,
+      "predicate": "login_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 401 == 200\n +  where 401 = <Response [401]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-12-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_12.py",
+      "line": 23,
+      "predicate": "response_json[\"token_type\"] == \"bearer\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'basic' == 'bearer'\n  \n  - bearer\n  + basic"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-12-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_12.py",
+      "line": 32,
+      "predicate": "me_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 403 == 200\n +  where 403 = <Response [403]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-13-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_13.py",
+      "line": 30,
+      "predicate": "login_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-13-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_13.py",
+      "line": 30,
+      "predicate": "login_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-13-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_13.py",
+      "line": 31,
+      "predicate": "login_response.json()[\"detail\"] == \"Incorrect email or password\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Incorrect email' == 'Incorrect email or password'\n  \n  - Incorrect email or password\n  + Incorrect email"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-14-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_14.py",
+      "line": 30,
+      "predicate": "response_json[\"email\"] == \"admin@example.com\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@example.com' == 'admin@example.com'\n  \n  - admin@example.com\n  ? ^^^^\n  + wrong@example.com\n  ? ^^^ +"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-14-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_14.py",
+      "line": 28,
+      "predicate": "test_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 200\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-15-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_15.py",
+      "line": 34,
+      "predicate": "response_json[\"message\"] == \"Password recovery email sent\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Recovery email sent' == 'Password recovery email sent'\n  \n  - Password recovery email sent\n  ? ^^^^^^^^^^\n  + Recovery email sent\n  ? ^"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-15-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_15.py",
+      "line": 40,
+      "predicate": "len(messages) >= 1",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: No emails were sent to mailcatcher\nassert 0 >= 1\n +  where 0 = len([])"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-15-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_15.py",
+      "line": 47,
+      "predicate": "email_found",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: No email was sent to test15@example.com\nassert False"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-16-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_16.py",
+      "line": 17,
+      "predicate": "recovery_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-16-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_16.py",
+      "line": 18,
+      "predicate": "recovery_response.json()[\"detail\"] == \"The user with this email does not exist in the system.\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Recovery email sent' == 'The user wit...n the system.'\n  \n  - The user with this email does not exist in the system.\n  + Recovery email sent"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-17-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_17.py",
+      "line": 58,
+      "predicate": "response_json == {\"message\": \"Password updated successfully\"}",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert {'message': '...reset failed'} == {'message': '...successfully'}\n  \n  Differing items:\n  {'message': 'Password reset failed'} != {'message': 'Password updated successfully'}\n  \n  Full diff:\n    {\n  -     'message': 'Password updated successfully',\n  +     'message': 'Password reset failed',\n    }"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-17-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_17.py",
+      "line": 65,
+      "predicate": "login_with_new_password.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Login with new password should succeed\nassert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-18-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_18.py",
+      "line": 30,
+      "predicate": "reset_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-18-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_18.py",
+      "line": 33,
+      "predicate": "response_json[\"detail\"] == \"Invalid token\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Token accepted' == 'Invalid token'\n  \n  - Invalid token\n  + Token accepted"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-19-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_19.py",
+      "line": 47,
+      "predicate": "read_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-19-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_19.py",
+      "line": 49,
+      "predicate": "response_json[\"email\"] == user_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@email.com' == 'pollo@listo.com'\n  \n  - pollo@listo.com\n  + wrong@email.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-19-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_19.py",
+      "line": 50,
+      "predicate": "response_json[\"full_name\"] == \"Pollo Listo\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Wrong Name' == 'Pollo Listo'\n  \n  - Pollo Listo\n  + Wrong Name"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-20-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_20.py",
+      "line": 29,
+      "predicate": "me_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-20-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_20.py",
+      "line": 34,
+      "predicate": "response_json[\"email\"] == \"admin@example.com\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@user.com' == 'admin@example.com'\n  \n  - admin@example.com\n  + wrong@user.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-20-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_20.py",
+      "line": 33,
+      "predicate": "response_json[\"is_superuser\"] == True",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert False == True"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-21-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_21.py",
+      "line": 41,
+      "predicate": "me_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-21-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_21.py",
+      "line": 46,
+      "predicate": "response_json[\"email\"] == user_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@user.com' == 'user_0561ed73@example.com'\n  \n  - user_0561ed73@example.com\n  + wrong@user.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-21-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_21.py",
+      "line": 45,
+      "predicate": "response_json[\"is_superuser\"] == False",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert True == False"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-22-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_22.py",
+      "line": 33,
+      "predicate": "200 <= create_response.status_code < 300",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 < 300\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-22-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_22.py",
+      "line": 35,
+      "predicate": "response_json[\"email\"] == user_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@email.com' == 'user_ff823944@example.com'\n  \n  - user_ff823944@example.com\n  + wrong@email.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-22-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_22.py",
+      "line": 37,
+      "predicate": "response_json[\"is_active\"] == True",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert False == True"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-23-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_23.py",
+      "line": 41,
+      "predicate": "200 <= read_response.status_code < 300",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 < 300\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-23-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_23.py",
+      "line": 43,
+      "predicate": "response_json[\"email\"] == user_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@email.com' == 'user_dc973dce@example.com'\n  \n  - user_dc973dce@example.com\n  + wrong@email.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-23-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_23.py",
+      "line": 45,
+      "predicate": "response_json[\"is_active\"] == True",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert False == True"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-24-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_24.py",
+      "line": 44,
+      "predicate": "200 <= read_response.status_code < 300",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 < 300\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-24-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_24.py",
+      "line": 46,
+      "predicate": "response_json[\"email\"] == user_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'wrong@email.com' == 'user_21c369e2@example.com'\n  \n  - user_21c369e2@example.com\n  + wrong@email.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-24-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_24.py",
+      "line": 47,
+      "predicate": "response_json[\"id\"] == user_id",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert '00000000-000...-000000000000' == 'eb634651-c54...-1cb30c783c74'\n  \n  - eb634651-c54e-44c9-9379-1cb30c783c74\n  + 00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-25-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_25.py",
+      "line": 40,
+      "predicate": "read_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 403\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-25-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_25.py",
+      "line": 42,
+      "predicate": "response_json == {\"detail\": \"The user doesn't have enough privileges\"}",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert {'detail': 'Access granted'} == {'detail': 'T...h privileges'}\n  \n  Differing items:\n  {'detail': 'Access granted'} != {'detail': \"The user doesn't have enough privileges\"}\n  \n  Full diff:\n    {\n  -     'detail': \"The user doesn't have enough privileges\",\n  +     'detail': 'Access granted',\n    }"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-26-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_26.py",
+      "line": 42,
+      "predicate": "create_response2.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-26-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_26.py",
+      "line": 45,
+      "predicate": "response_json[\"detail\"] == \"The user with this email already exists in the system.\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User created successfully' == 'The user wit...n the system.'\n  \n  - The user with this email already exists in the system.\n  + User created successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-27-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_27.py",
+      "line": 42,
+      "predicate": "create_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 403\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-27-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_27.py",
+      "line": 43,
+      "predicate": "create_response.json()[\"detail\"] == \"The user doesn't have enough privileges\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Access granted' == 'The user doe...gh privileges'\n  \n  - The user doesn't have enough privileges\n  + Access granted"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-28-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_28.py",
+      "line": 55,
+      "predicate": "read_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-28-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_28.py",
+      "line": 62,
+      "predicate": "user1_email in user_emails_in_response",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: User 1 email user1_bc914b99@example.com not found in response\nassert 'user1_bc914b99@example.com' in ['admin@example.com']"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-28-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_28.py",
+      "line": 68,
+      "predicate": "user[\"email\"] == user1_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'user2_041a00ce@example.com' == 'user1_2be41d05@example.com'\n  \n  - user1_2be41d05@example.com\n  ?     ^ ^^^  ^ ^\n  + user2_041a00ce@example.com\n  ?     ^ ^  ^ ^^^"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-29-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_29.py",
+      "line": 41,
+      "predicate": "update_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-29-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_29.py",
+      "line": 43,
+      "predicate": "response_json[\"email\"] == new_email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'user_b8fa65c1@example.com' == 'updated_d0099bd7@example.com'\n  \n  - updated_d0099bd7@example.com\n  + user_b8fa65c1@example.com"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-30-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_30.py",
+      "line": 34,
+      "predicate": "update_response1.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-30-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_30.py",
+      "line": 36,
+      "predicate": "response_json1[\"message\"] == \"Password updated successfully\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Password update failed' == 'Password upd... successfully'\n  \n  - Password updated successfully\n  + Password update failed"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-30-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_30.py",
+      "line": 43,
+      "predicate": "login_new_password.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Login with new password should succeed\nassert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-30-mut-3",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_30.py",
+      "line": 55,
+      "predicate": "update_response2.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-30-mut-4",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_30.py",
+      "line": 64,
+      "predicate": "login_original_password.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Login with original password should succeed after revert\nassert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-31-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_31.py",
+      "line": 35,
+      "predicate": "response_json[\"detail\"] == \"Incorrect password\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'New password...e current one' == 'Incorrect password'\n  \n  - Incorrect password\n  + New password cannot be the same as the current one"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-31-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_31.py",
+      "line": 35,
+      "predicate": "response_json[\"detail\"] == \"Incorrect password\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Password accepted' == 'Incorrect password'\n  \n  - Incorrect password\n  + Password accepted"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-31-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_31.py",
+      "line": 33,
+      "predicate": "update_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 401 == 400\n +  where 401 = <Response [401]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-32-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_32.py",
+      "line": 49,
+      "predicate": "update_response.status_code == 409",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 409\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-32-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_32.py",
+      "line": 51,
+      "predicate": "response_json[\"detail\"] == \"User with this email already exists\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Email update successful' == 'User with th...lready exists'\n  \n  - User with this email already exists\n  + Email update successful"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-32-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_32.py",
+      "line": 49,
+      "predicate": "update_response.status_code == 409",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 409\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-33-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_33.py",
+      "line": 31,
+      "predicate": "update_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-33-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_33.py",
+      "line": 33,
+      "predicate": "response_json[\"detail\"] == \"New password cannot be the same as the current one\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Password change accepted' == 'New password...e current one'\n  \n  - New password cannot be the same as the current one\n  + Password change accepted"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-33-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_33.py",
+      "line": 31,
+      "predicate": "update_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-34-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_34.py",
+      "line": 34,
+      "predicate": "response_json[\"full_name\"] == user_full_name",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Wrong Name' == 'User 9ae27094'\n  \n  - User 9ae27094\n  + Wrong Name"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-34-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_34.py",
+      "line": 41,
+      "predicate": "login_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: User should be able to login after registration\nassert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-34-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_34.py",
+      "line": 31,
+      "predicate": "register_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-35-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_35.py",
+      "line": 27,
+      "predicate": "register_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 400\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-35-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_35.py",
+      "line": 29,
+      "predicate": "response_json[\"detail\"] == \"The user with this email already exists in the system\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User registered successfully' == 'The user wit...in the system'\n  \n  - The user with this email already exists in the system\n  + User registered successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-35-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_35.py",
+      "line": 27,
+      "predicate": "register_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-36-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_36.py",
+      "line": 44,
+      "predicate": "response_json[\"full_name\"] == \"Updated_full_name\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert None == 'Updated_full_name'"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-36-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_36.py",
+      "line": 42,
+      "predicate": "update_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-37-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_37.py",
+      "line": 33,
+      "predicate": "update_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-37-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_37.py",
+      "line": 35,
+      "predicate": "response_json[\"detail\"] == \"The user with this id does not exist in the system\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User updated successfully' == 'The user wit...in the system'\n  \n  - The user with this id does not exist in the system\n  + User updated successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-38-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_38.py",
+      "line": 51,
+      "predicate": "update_response.status_code == 409",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 409\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-38-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_38.py",
+      "line": 53,
+      "predicate": "response_json[\"detail\"] == \"User with this email already exists\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'Email updated successfully' == 'User with th...lready exists'\n  \n  - User with this email already exists\n  + Email updated successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-38-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_38.py",
+      "line": 51,
+      "predicate": "update_response.status_code == 409",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 409\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-39-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_39.py",
+      "line": 40,
+      "predicate": "delete_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 403 == 200\n +  where 403 = <Response [403]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-39-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_39.py",
+      "line": 42,
+      "predicate": "response_json[\"message\"] == \"User deleted successfully\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User deletion failed' == 'User deleted successfully'\n  \n  - User deleted successfully\n  + User deletion failed"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-39-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_39.py",
+      "line": 49,
+      "predicate": "login_after_delete.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Login should fail after user is deleted\nassert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-40-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_40.py",
+      "line": 29,
+      "predicate": "delete_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 403\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-40-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_40.py",
+      "line": 31,
+      "predicate": "response_json[\"detail\"] == \"Super users are not allowed to delete themselves\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User deleted successfully' == 'Super users ...te themselves'\n  \n  - Super users are not allowed to delete themselves\n  + User deleted successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-40-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_40.py",
+      "line": 29,
+      "predicate": "delete_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 403\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-41-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_41.py",
+      "line": 42,
+      "predicate": "delete_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 404 == 200\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-41-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_41.py",
+      "line": 44,
+      "predicate": "response_json[\"message\"] == \"User deleted successfully\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User deletion failed' == 'User deleted successfully'\n  \n  - User deleted successfully\n  + User deletion failed"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-41-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_41.py",
+      "line": 51,
+      "predicate": "login_deleted_user.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Login should fail for deleted user\nassert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-42-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_42.py",
+      "line": 31,
+      "predicate": "delete_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-42-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_42.py",
+      "line": 33,
+      "predicate": "response_json[\"detail\"] == \"User not found\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User deleted successfully' == 'User not found'\n  \n  - User not found\n  + User deleted successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-43-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_43.py",
+      "line": 37,
+      "predicate": "delete_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 403\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-43-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_43.py",
+      "line": 39,
+      "predicate": "response_json[\"detail\"] == \"Super users are not allowed to delete themselves\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User deleted successfully' == 'Super users ...te themselves'\n  \n  - Super users are not allowed to delete themselves\n  + User deleted successfully"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-43-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_43.py",
+      "line": 37,
+      "predicate": "delete_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 403\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-44-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_44.py",
+      "line": 50,
+      "predicate": "delete_response.status_code == 403",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 403\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-44-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/fastapi/test_44.py",
+      "line": 52,
+      "predicate": "response_json[\"detail\"] == \"The user doesn't have enough privileges\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: assert 'User success...authenticated' == 'The user doe...gh privileges'\n  \n  - The user doesn't have enough privileges\n  + User successfully authenticated"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-45-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_45.py",
+      "line": 65,
+      "predicate": "delete_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 400 == 200\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-45-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_45.py",
+      "line": 73,
+      "predicate": "get_item_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-46-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_46.py",
+      "line": 71,
+      "predicate": "get_item_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-46-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_46.py",
+      "line": 54,
+      "predicate": "delete_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 200\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-47-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_47.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for 7-char password, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-48-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_48.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for 129-char password, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-49-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_49.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for 256-char full_name, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-50-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_50.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 422 for 7-char new_password, got 200\nassert 200 == 422\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-51-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_51.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 422 for 129-char new_password, got 200\nassert 200 == 422\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-52-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_52.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 422 for 7-char current_password, got 400\nassert 400 == 422\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-53-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_53.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 422 for empty title, got 200\nassert 200 == 422\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-54-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_54.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for 256-char title, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-55-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_55.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for 256-char description, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-56-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_56.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 422 for 7-char new_password, got 400\nassert 400 == 422\n +  where 400 = <Response [400]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-57-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_57.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for invalid email format, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-58-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_58.py",
+      "line": 43,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for invalid email format, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-59-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_59.py",
+      "line": 25,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for invalid UUID format, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-60-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_60.py",
+      "line": 39,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for invalid UUID format, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-61-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_61.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for null email, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-62-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_62.py",
+      "line": 21,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for null password, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "fastapi",
+      "key": "req-63-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/fastapi/test_63.py",
+      "line": 44,
+      "predicate": "response.status_code == 422",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 422 for null title, got 500\nassert 500 == 422\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-1-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_1.py",
+      "line": 48,
+      "predicate": "user[\"username\"] == username",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected username 'testuser123', got 'wrong_username'\nassert 'wrong_username' == 'testuser123'\n  \n  - testuser123\n  + wrong_username"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-1-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_1.py",
+      "line": 52,
+      "predicate": "user[\"email\"] == email",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected email 'test@example.com', got 'wrong@email.com'\nassert 'wrong@email.com' == 'test@example.com'\n  \n  - test@example.com\n  + wrong@email.com"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-2-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_2.py",
+      "line": 60,
+      "predicate": "profile[\"following\"] == True",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected following to be True, got False\nassert False == True"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-2-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_2.py",
+      "line": 78,
+      "predicate": "self_follow_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 400 for self-follow, got 201\nassert 201 == 400\n +  where 201 = <Response [201]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-2-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_2.py",
+      "line": 61,
+      "predicate": "profile[\"username\"] == user2_username",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected username 'followee5ndbrz', got wrong_user\nassert 'wrong_user' == 'followee5ndbrz'\n  \n  - followee5ndbrz\n  + wrong_user"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-3-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_3.py",
+      "line": 55,
+      "predicate": "slug.startswith(\"my-test-article-\")",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Slug should start with 'my-test-article-', got fixed-slug-123\nassert False\n +  where False = <built-in method startswith of str object at 0x7f7d5c305d30>('my-test-article-')\n +    where <built-in method startswith of str object at 0x7f7d5c305d30> = 'fixed-slug-123'.startswith"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-3-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_3.py",
+      "line": 55,
+      "predicate": "slug.startswith(\"my-test-article-\")",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Slug should start with 'my-test-article-', got My-Test-Article-lbckmy\nassert False\n +  where False = <built-in method startswith of str object at 0x7f7a47ffcb30>('my-test-article-')\n +    where <built-in method startswith of str object at 0x7f7a47ffcb30> = 'My-Test-Article-lbckmy'.startswith"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-3-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_3.py",
+      "line": 48,
+      "predicate": "created_article[\"title\"] == \"My Test Article\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected title 'My Test Article', got Wrong Title\nassert 'Wrong Title' == 'My Test Article'\n  \n  - My Test Article\n  + Wrong Title"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-4-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_4.py",
+      "line": 67,
+      "predicate": "updated_article[\"slug\"] == slug",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected slug 'original-title-ks7oj9' to be preserved, got 'updated-title-liig5f'\nassert 'updated-title-liig5f' == 'original-title-ks7oj9'\n  \n  - original-title-ks7oj9\n  + updated-title-liig5f"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-4-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_4.py",
+      "line": 63,
+      "predicate": "updated_article[\"title\"] == \"Updated Title\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected title 'Updated Title', got Original Title\nassert 'Original Title' == 'Updated Title'\n  \n  - Updated Title\n  + Original Title"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-4-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_4.py",
+      "line": 74,
+      "predicate": "retrieved_article[\"title\"] == \"Updated Title\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected title 'Updated Title', got Original Title\nassert 'Original Title' == 'Updated Title'\n  \n  - Updated Title\n  + Original Title"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-6-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_6.py",
+      "line": 95,
+      "predicate": "feed_empty[\"articlesCount\"] == 0",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected articlesCount 0 before following, got 2\nassert 2 == 0"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-6-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_6.py",
+      "line": 112,
+      "predicate": "feed[\"articlesCount\"] == 1",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected articlesCount 1 after following, got 0\nassert 0 == 1"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-6-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_6.py",
+      "line": 112,
+      "predicate": "feed[\"articlesCount\"] == 1",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected articlesCount 1 after following, got 2\nassert 2 == 1"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-6-mut-3",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_6.py",
+      "line": 116,
+      "predicate": "\"Article By Followed\" in article_titles",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Feed should contain 'Article By Followed'\nassert 'Article By Followed' in ['Article By Not Followed']"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-7-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_7.py",
+      "line": 83,
+      "predicate": "found_comment is not None",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Comment with body 'This is my test comment' should exist\nassert None is not None"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-7-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_7.py",
+      "line": 64,
+      "predicate": "len(comment_result[\"article\"][\"comments\"]) >= 1",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Article should have at least 1 comment\nassert 0 >= 1\n +  where 0 = len([])"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-8-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_8.py",
+      "line": 88,
+      "predicate": "comment[\"body\"] != \"Comment to delete\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Deleted comment should not be in comments list\nassert 'Comment to delete' != 'Comment to delete'"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-8-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_8.py",
+      "line": 67,
+      "predicate": "comments[0][\"body\"] == \"Comment to delete\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected comment body 'Comment to delete', got 'overwritten'\nassert 'overwritten' == 'Comment to delete'\n  \n  - Comment to delete\n  + overwritten"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-9-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_9.py",
+      "line": 48,
+      "predicate": "response_dup_email.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 400 for duplicate email, got 201: {\"user\":{\"id\":2,\"username\":\"differentuser\",\"email\":\"unique1@test.com\",\"bio\":\"\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJkaWZmZXJlbnR1c2VyIiwiZW1haWwiOiJ1bmlxdWUxQHRlc3QuY29tIiwiZXhwIjoxNzk5NjM3NDQ0LjA3NywiaWF0IjoxNzk0NDUzNDQ0fQ.cOSjOtAr4e_GJHNy_Rf7XK-lU3is1aHqXOzALqZpcug\",\"image\":\"\"}}\nassert 201 == 400\n +  where 201 = <Response [201]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-9-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_9.py",
+      "line": 36,
+      "predicate": "response_dup_username.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 400 for duplicate username, got 201: {\"user\":{\"id\":2,\"username\":\"uniqueuser1\",\"email\":\"different@test.com\",\"bio\":\"\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ1bmlxdWV1c2VyMSIsImVtYWlsIjoiZGlmZmVyZW50QHRlc3QuY29tIiwiZXhwIjoxNzk5NjM3NDQ5LjQ3NywiaWF0IjoxNzk0NDUzNDQ5fQ.68mKAfxiOYbPFQJ1ZTbLtEEjLUWR-jF6PvST_eVYPgM\",\"image\":\"\"}}\nassert 201 == 400\n +  where 201 = <Response [201]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-10-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_10.py",
+      "line": 56,
+      "predicate": "unfollow_profile[\"following\"] == False",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected following to be False after unfollow, got True\nassert True == False"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-10-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_10.py",
+      "line": 66,
+      "predicate": "get_profile_json[\"profile\"][\"following\"] == False",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Following should be False after unfollow\nassert True == False"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-10-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_10.py",
+      "line": 73,
+      "predicate": "self_unfollow_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 400 for self-unfollow, got 200\nassert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-11-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_11.py",
+      "line": 56,
+      "predicate": "wrong_login_response.status_code == 401",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 401 for wrong password, got 201\nassert 201 == 401\n +  where 201 = <Response [201]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-11-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_11.py",
+      "line": 40,
+      "predicate": "login_response.status_code in [200, 201]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 200/201, got 401: {\"errors\":{\"User\":\" not found\"}}\nassert 401 in [200, 201]\n +  where 401 = <Response [401]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-12-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_12.py",
+      "line": 73,
+      "predicate": "any(f\"First Tagged Article {suffix}\" in t for t in js_titles)",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Should contain 'First Tagged Article pbbkfx', got []\nassert False\n +  where False = any(<generator object test_article_filtering_by_tag.<locals>.<genexpr> at 0x7f88db4113c0>)"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-12-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_12.py",
+      "line": 74,
+      "predicate": "not any(f\"Second Tagged Article {suffix}\" in t for t in js_titles)",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Should NOT contain 'Second Tagged Article x7ksno'\nassert not True\n +  where True = any(<generator object test_article_filtering_by_tag.<locals>.<genexpr> at 0x7fd71a7be330>)"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-13-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_13.py",
+      "line": 73,
+      "predicate": "any(f\"Article By Author1 {suffix}\" in t for t in author1_titles)",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Should contain 'Article By Author1 qvzare', got []\nassert False\n +  where False = any(<generator object test_article_filtering_by_author.<locals>.<genexpr> at 0x7f91ef7cd2f0>)"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-13-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_13.py",
+      "line": 74,
+      "predicate": "not any(f\"Article By Author2 {suffix}\" in t for t in author1_titles)",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Should NOT contain 'Article By Author2 5ksihb'\nassert not True\n +  where True = any(<generator object test_article_filtering_by_author.<locals>.<genexpr> at 0x7ff97cfc9e50>)"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-13-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_13.py",
+      "line": 69,
+      "predicate": "filter_author1_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 200, got 500\nassert 500 == 200\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-14-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_14.py",
+      "line": 65,
+      "predicate": "verified_user[\"bio\"] == f\"Updated bio text {suffix}\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected bio 'Updated bio text 40neoo', got ''\nassert '' == 'Updated bio text 40neoo'\n  \n  - Updated bio text 40neoo"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-14-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_14.py",
+      "line": 66,
+      "predicate": "verified_user[\"image\"] == f\"https://example.com/newimage{suffix}.jpg\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected image URL, got 'wrong_image_url'\nassert 'wrong_image_url' == 'https://exam...agewxvx4b.jpg'\n  \n  - https://example.com/newimagewxvx4b.jpg\n  + wrong_image_url"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-14-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_14.py",
+      "line": 45,
+      "predicate": "update_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 200, got 500: {\"statusCode\":500,\"message\":\"Internal server error\"}\nassert 500 == 200\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-15-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_15.py",
+      "line": 55,
+      "predicate": "len(limit2_result[\"articles\"]) == 2",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 2 articles with limit=2, got 5\nassert 5 == 2\n +  where 5 = len([{'author': {'bio': '', 'email': 'paginuserwso785@test.com', 'id': 1, 'image': '', ...}, 'body': 'Content for article 4', 'created': '2026-11-12T03:19:19.000Z', 'description': 'Article number 4', ...}, {'author': {'bio': '', 'email': 'paginuserwso785@test.com', 'id': 1, 'image': '', ...}, 'body': 'Content for article 5', 'created': '2026-11-12T03:19:19.000Z', 'description': 'Article number 5', ...}, {'author': {'bio': '', 'email': 'paginuserwso785@test.com', 'id': 1, 'image': '', ...}, 'body': 'Content for article 1', 'created': '2026-11-12T03:19:18.000Z', 'description': 'Article number 1', ...}, {'author': {'bio': '', 'email': 'paginuserwso785@test.com', 'id': 1, 'image': '', ...}, 'body': 'Content for article 2', 'created': '2026-11-12T03:19:18.000Z', 'description': 'Article number 2', ...}, {'author': {'bio': '', 'email': 'paginuserwso785@test.com', 'id': 1, 'image': '', ...}, 'body': 'Content for article 3', 'created': '2026-11-12T03:19:18.000Z', 'description': 'Article number 3', ...}])"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-15-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_15.py",
+      "line": 70,
+      "predicate": "slug not in first_batch_slugs",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Offset should return different articles, but pagination-article-4-iwz5e3-bwvtdb appears in both batches\nassert 'pagination-article-4-iwz5e3-bwvtdb' not in ['pagination-article-4-iwz5e3-bwvtdb', 'pagination-article-5-iwz5e3-wpniww']"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-16-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_16.py",
+      "line": 48,
+      "predicate": "profile1[\"following\"] == False",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected following=False before follow, got True\nassert True == False"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-16-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_16.py",
+      "line": 64,
+      "predicate": "profile2[\"following\"] == True",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected following=True after follow, got False\nassert False == True"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-16-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_16.py",
+      "line": 66,
+      "predicate": "profile2[\"username\"] == \"profiletarget1\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected username 'profiletarget1', got wrong_profile_user\nassert 'wrong_profile_user' == 'profiletarget1'\n  \n  - profiletarget1\n  + wrong_profile_user"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-17-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_17.py",
+      "line": 82,
+      "predicate": "user1_articles[\"articlesCount\"] == 1",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 1 article for author1, got 0\nassert 0 == 1"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-17-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_17.py",
+      "line": 57,
+      "predicate": "article1_response.status_code in [200, 201]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 in [200, 201]\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-18-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_18.py",
+      "line": 49,
+      "predicate": "created_article[\"tagList\"] == [\"tag1\", \"tag2\", \"tag3\"]",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected ['tag1', 'tag2', 'tag3'], got []\nassert [] == ['tag1', 'tag2', 'tag3']\n  \n  Right contains 3 more items, first extra item: 'tag1'\n  \n  Full diff:\n  + []\n  - [\n  -     'tag1',\n  -     'tag2',\n  -     'tag3',\n  - ]"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-19-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_19.py",
+      "line": 79,
+      "predicate": "new_updated != original_updated",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Updated timestamp should change after update. Original: 2026-11-12T03:20:26.000Z, New: 2026-11-12T03:20:26.000Z\nassert '2026-11-12T03:20:26.000Z' != '2026-11-12T03:20:26.000Z'"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-19-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_19.py",
+      "line": 76,
+      "predicate": "new_created == original_created",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Created timestamp should not change. Original: 2026-11-12T03:20:33.000Z, New: 2026-11-12T03:20:35.000Z\nassert '2026-11-12T03:20:35.000Z' == '2026-11-12T03:20:33.000Z'\n  \n  - 2026-11-12T03:20:33.000Z\n  ?                   ^\n  + 2026-11-12T03:20:35.000Z\n  ?                   ^"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-20-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_20.py",
+      "line": 68,
+      "predicate": "slug1.startswith(\"duplicate-title-article-\")",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Slug1 should start with 'duplicate-title-article-', got 'duplicate-title-article'\nassert False\n +  where False = <built-in method startswith of str object at 0x7f8a93f39870>('duplicate-title-article-')\n +    where <built-in method startswith of str object at 0x7f8a93f39870> = 'duplicate-title-article'.startswith"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-21-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_21.py",
+      "line": 60,
+      "predicate": "article[\"description\"] == \"Test description content\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected description='Test description content', got 'wrong'\nassert 'wrong' == 'Test description content'\n  \n  - Test description content\n  + wrong"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-21-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_21.py",
+      "line": 56,
+      "predicate": "article[\"title\"] == \"Body Test Article\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected title='Body Test Article', got 'wrong'\nassert 'wrong' == 'Body Test Article'\n  \n  - Body Test Article\n  + wrong"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-22-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_22.py",
+      "line": 60,
+      "predicate": "profile[\"bio\"] == \"This is my bio text\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected bio='This is my bio text', got 'wrong'\nassert 'wrong' == 'This is my bio text'\n  \n  - This is my bio text\n  + wrong"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-22-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_22.py",
+      "line": 64,
+      "predicate": "profile[\"image\"] == \"https://example.com/avatar.jpg\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected image='https://example.com/avatar.jpg', got 'wrong'\nassert 'wrong' == 'https://exam...om/avatar.jpg'\n  \n  - https://example.com/avatar.jpg\n  + wrong"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-22-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_22.py",
+      "line": 56,
+      "predicate": "profile[\"username\"] == \"profilebiouser1\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected username='profilebiouser1', got 'wrong'\nassert 'wrong' == 'profilebiouser1'\n  \n  - profilebiouser1\n  + wrong"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-23-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_23.py",
+      "line": 81,
+      "predicate": "len(feed_data[\"articles\"]) == 2",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 2 articles with limit=2, got 5\nassert 5 == 2\n +  where 5 = len([{'author': {'bio': '', 'email': 'feedpagauthor1@test.com', 'id': 1, 'image': '', ...}, 'body': 'Body of article 1', 'created': '2026-11-12T03:21:34.000Z', 'description': 'Description 1', ...}, {'author': {'bio': '', 'email': 'feedpagauthor1@test.com', 'id': 1, 'image': '', ...}, 'body': 'Body of article 2', 'created': '2026-11-12T03:21:34.000Z', 'description': 'Description 2', ...}, {'author': {'bio': '', 'email': 'feedpagauthor1@test.com', 'id': 1, 'image': '', ...}, 'body': 'Body of article 3', 'created': '2026-11-12T03:21:34.000Z', 'description': 'Description 3', ...}, {'author': {'bio': '', 'email': 'feedpagauthor1@test.com', 'id': 1, 'image': '', ...}, 'body': 'Body of article 4', 'created': '2026-11-12T03:21:34.000Z', 'description': 'Description 4', ...}, {'author': {'bio': '', 'email': 'feedpagauthor1@test.com', 'id': 1, 'image': '', ...}, 'body': 'Body of article 5', 'created': '2026-11-12T03:21:34.000Z', 'description': 'Description 5', ...}])"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-23-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_23.py",
+      "line": 101,
+      "predicate": "title not in first_page_titles",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Article 'Feed Pagination Article 1' appears on both pages - offset not working\nassert 'Feed Pagination Article 1' not in ['Feed Pagination Article 1', 'Feed Pagination Article 2']"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-24-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_24.py",
+      "line": 97,
+      "predicate": "articles[0][\"title\"] == \"Third Article Order\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 'Third Article Order' first (newest), got 'First Article Order'\nassert 'First Article Order' == 'Third Article Order'\n  \n  - Third Article Order\n  ? ^^  ^\n  + First Article Order\n  ? ^  ^^"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-25-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_25.py",
+      "line": 50,
+      "predicate": "payload[\"username\"] == \"jwtuser1\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected username='jwtuser1' in JWT, got 'wrong'\nassert 'wrong' == 'jwtuser1'\n  \n  - jwtuser1\n  + wrong"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-25-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_25.py",
+      "line": 54,
+      "predicate": "payload[\"email\"] == \"jwtuser1@test.com\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected email='jwtuser1@test.com' in JWT, got 'wrong@wrong.com'\nassert 'wrong@wrong.com' == 'jwtuser1@test.com'\n  \n  - jwtuser1@test.com\n  + wrong@wrong.com"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-25-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_25.py",
+      "line": 62,
+      "predicate": "get_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "assert 401 == 200\n +  where 401 = <Response [401]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-26-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_26.py",
+      "line": 83,
+      "predicate": "len(comments) == 3",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 3 comments, got 0\nassert 0 == 3\n +  where 0 = len([])"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-26-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_26.py",
+      "line": 91,
+      "predicate": "\"First comment\" in bodies",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: First comment body not found\nassert 'First comment' in ['overwritten', 'overwritten', 'overwritten']"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-27-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_27.py",
+      "line": 67,
+      "predicate": "feed_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "assert 500 == 200\n +  where 500 = <Response [500]>.status_code"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-27-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_27.py",
+      "line": 71,
+      "predicate": "feed[\"articlesCount\"] == 0",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected articlesCount=0 for user with no follows, got 99\nassert 99 == 0"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-28-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_28.py",
+      "line": 76,
+      "predicate": "updated_article[\"title\"] == \"Hacked By User2\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: PUT response title should be updated, got: Original Owner Article\nassert 'Original Owner Article' == 'Hacked By User2'\n  \n  - Hacked By User2\n  + Original Owner Article"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-28-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_28.py",
+      "line": 82,
+      "predicate": "article[\"title\"] == \"Hacked By User2\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: GET title should be changed by attacker, got: Original Owner Article\nassert 'Original Owner Article' == 'Hacked By User2'\n  \n  - Hacked By User2\n  + Original Owner Article"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-28-mut-2",
+      "kind": "other_assertion",
+      "path": "data/tests/nestjs-realworld/test_28.py",
+      "line": 112,
+      "predicate": "article_data.get(\"article\") is None",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Article should be deleted, got: {'article': {'id': 2, 'slug': 'article-to-delete-iipcah', 'title': 'Article To Delete', 'description': 'This will be deleted by attacker', 'body': 'Article body content', 'created': '2026-11-12T03:23:11.000Z', 'updated': '2026-11-12T03:23:11.000Z', 'tagList': [], 'favoriteCount': 0, 'comments': []}}\nassert {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...} is None\n +  where {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...} = <built-in method get of dict object at 0x7fdc01699b80>('article')\n +    where <built-in method get of dict object at 0x7fdc01699b80> = {'article': {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...}}.get"
+    },
+    {
+      "service": "nestjs-realworld",
+      "key": "req-29-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/nestjs-realworld/test_29.py",
+      "line": 54,
+      "predicate": "delete_response.status_code == 500",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: User delete should fail with FK constraint, got: 200\nassert 200 == 500\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-1-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_1.py",
+      "line": 57,
+      "predicate": "\"UserA's Todo\" in todo_titles",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: UserA's todo should be in the list\nassert \"UserA's Todo\" in []"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-1-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_1.py",
+      "line": 58,
+      "predicate": "\"UserB's Todo\" not in todo_titles",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: UserB's todo should NOT be in the list\nassert \"UserB's Todo\" not in [\"UserA's Todo\", \"UserB's Todo\"]"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-2-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_2.py",
+      "line": 37,
+      "predicate": "response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 400, got 201: {\"id\":1,\"title\":\"\",\"isComplete\":false}\nassert 201 == 400\n +  where 201 = <Response [201]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-2-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_2.py",
+      "line": 46,
+      "predicate": "any(\"The Title field is required\" in msg for msg in title_errors)",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 'The Title field is required' in error messages, got: ['Description is mandatory']\nassert False\n +  where False = any(<generator object test_create_todo_without_title_returns_validation_error.<locals>.<genexpr> at 0x7f7db1a69220>)"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-3-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_3.py",
+      "line": 48,
+      "predicate": "retrieved_todo[\"title\"] == \"Specific Todo Item\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Title mismatch: WRONG_TITLE\nassert 'WRONG_TITLE' == 'Specific Todo Item'\n  \n  - Specific Todo Item\n  + WRONG_TITLE"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-3-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_3.py",
+      "line": 47,
+      "predicate": "retrieved_todo[\"id\"] == todo_id",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: ID mismatch: expected 1, got 9999\nassert 9999 == 1"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-4-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_4.py",
+      "line": 37,
+      "predicate": "response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 404, got 200: {\"id\":99999,\"title\":\"My Todo\",\"isComplete\":false}\nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-5-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_5.py",
+      "line": 48,
+      "predicate": "response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 404, got 200: {\"id\":1,\"title\":\"UserA's Private Todo\",\"isComplete\":false}\nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-6-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_6.py",
+      "line": 49,
+      "predicate": "get_response_after.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Todo should be deleted, expected 404 got 200\nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-6-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_6.py",
+      "line": 45,
+      "predicate": "delete_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Delete failed: \nassert 404 == 200\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-7-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_7.py",
+      "line": 37,
+      "predicate": "response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 404, got 200: \nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-8-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_8.py",
+      "line": 49,
+      "predicate": "delete_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 404, got 200\nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-8-mut-1",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_8.py",
+      "line": 53,
+      "predicate": "get_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Todo should still exist after failed delete\nassert 404 == 200\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-9-mut-0",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_9.py",
+      "line": 57,
+      "predicate": "updated_todo[\"isComplete\"] is True",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: isComplete should be true after update, got False\nassert False is True"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-9-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_9.py",
+      "line": 58,
+      "predicate": "updated_todo[\"title\"] == \"Updated Todo\"",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Title should be 'Updated Todo', got Original Todo\nassert 'Original Todo' == 'Updated Todo'\n  \n  - Updated Todo\n  + Original Todo"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-9-mut-2",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_9.py",
+      "line": 50,
+      "predicate": "update_response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Update failed: \nassert 404 == 200\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-10-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_10.py",
+      "line": 50,
+      "predicate": "update_response.status_code == 400",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 400, got 200: \nassert 200 == 400\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-11-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_11.py",
+      "line": 42,
+      "predicate": "response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 404, got 200: \nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-12-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_12.py",
+      "line": 56,
+      "predicate": "update_response.status_code == 404",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Expected 404, got 200\nassert 200 == 404\n +  where 200 = <Response [200]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-12-mut-1",
+      "kind": "other_assertion",
+      "path": "data/tests/todoapp/test_12.py",
+      "line": 63,
+      "predicate": "unchanged_todo[\"title\"] == original_title",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Title should be unchanged\nassert 'Hacked by UserB' == \"UserA's Original Todo\"\n  \n  - UserA's Original Todo\n  + Hacked by UserB"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-13-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_13.py",
+      "line": 26,
+      "predicate": "response.status_code == 200",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [],
+      "failure_message": "AssertionError: Registration failed: 404: \nassert 404 == 200\n +  where 404 = <Response [404]>.status_code"
+    },
+    {
+      "service": "todoapp",
+      "key": "req-14-mut-0",
+      "kind": "http_status_assertion",
+      "path": "data/tests/todoapp/test_14.py",
+      "line": 17,
+      "predicate": "response.status_code == 401",
+      "failure_mechanism": "assertion_failure",
+      "observed_5xx_in_failure_text": [
+        500
+      ],
+      "failure_message": "AssertionError: Expected 401, got 500: System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.\n   ---> System.ArgumentNullException: Value cannot be null. (Parameter 'principal')\n     at System.ArgumentNullException.Throw(String paramName)\n     at System.ArgumentNullException.ThrowIfNull(Object argument, String paramName)\n     at System.Security.Claims.PrincipalExtensions.FindFirstValue(ClaimsPrincipal principal, String claimType)\n     at TodoApi.CurrentUser.get_Id() in /src/Todo.Api/Authorization/CurrentUser.cs:line 11\n     at System.Linq.Expressions.Interpreter.FuncCallInstruction`2.Run(InterpretedFrame frame)\n     at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)\n     at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)\n     at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)\n     --- End of inner exception stack trace ---\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|75_0(Expression expression, String& parameterName, Boolean& isContextAccessor)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Evaluate(Expression expression, String& parameterName, Boolean& isContextAccessor)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ProcessEvaluatableRoot(Expression evaluatableRoot, State& state, Boolean forceEvaluation)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitBinary(BinaryExpression binary)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitLambda[T](Expression`1 lambda)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitUnary(UnaryExpression unary)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(ReadOnlyCollection`1 expressions, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues, Boolean precompiledQuery, IReadOnlySet`1& nonNullableReferenceTypeParameters)\n     at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues)\n     at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean compiledQuery, Boolean generateContextAccessors)\n     at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteCore[TResult](Expression query, Boolean async, CancellationToken cancellationToken)\n     at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)\n     at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)\n     at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetAsyncEnumerator(CancellationToken cancellationToken)\n     at System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable`1.GetAsyncEnumerator()\n     at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)\n     at TodoApi.TodoApi.<>c.<<MapTodos>b__0_0>d.MoveNext() in /src/Todo.Api/Todos/TodoApi.cs:line 26\n  --- End of stack trace from previous location ---\n     at Microsoft.AspNetCore.Http.RequestDelegateFactory.<ExecuteTaskOfT>g__ExecuteAwaited|132_0[T](Task`1 task, HttpContext httpContext, JsonTypeInfo`1 jsonTypeInfo)\n     at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)\n     at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)\n     at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)\n     at Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware.InvokeInternal(HttpContext context, HttpLoggingOptions options, HttpLoggingAttribute loggingAttribute, HttpLoggingFields loggingFields)\n     at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n     at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)\n     at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)\n  \n  HEADERS\n  =======\n  Accept: */*\n  Connection: keep-alive\n  Host: localhost:5000\n  User-Agent: python-requests/2.32.5\n  Accept-Encoding: gzip, deflate\n  \nassert 500 == 401\n +  where 500 = <Response [500]>.status_code"
+    }
+  ],
+  "interpretation": "Observed first-failure sites only; not a status-only baseline replay, complete response trace, or semantic-defect adjudication.",
+  "source_bundle_sha256": "fae004dc9d904a0a1cb188050d5ad46f17a2b23c5959a4cc0ec8bba8994cd88c",
+  "runtime_manifest_sha256": "7e768695a970058712e71d0e8450c673b976d423a4f3d54e9c7487fa50538b91",
+  "new_application_executions": 0
+}

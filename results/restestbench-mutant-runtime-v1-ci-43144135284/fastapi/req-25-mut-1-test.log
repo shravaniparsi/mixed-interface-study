@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.4.2, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/mixed-interface-study/mixed-interface-study/upstream-benchmark
+collecting ... collected 1 item
+
+data/tests/fastapi/test_25.py::test_get_existing_user_permissions_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_get_existing_user_permissions_error ___________________
+data/tests/fastapi/test_25.py:42: in test_get_existing_user_permissions_error
+    assert response_json == {"detail": "The user doesn't have enough privileges"}
+E   assert {'detail': 'Access granted'} == {'detail': 'T...h privileges'}
+E     
+E     Differing items:
+E     {'detail': 'Access granted'} != {'detail': "The user doesn't have enough privileges"}
+E     
+E     Full diff:
+E       {
+E     -     'detail': "The user doesn't have enough privileges",
+E     +     'detail': 'Access granted',
+E       }
+- generated xml file: /home/runner/work/_temp/restestbench-mutant-evidence/req-25-mut-1.xml -
+=========================== short test summary info ============================
+FAILED data/tests/fastapi/test_25.py::test_get_existing_user_permissions_error - assert {'detail': 'Access granted'} == {'detail': 'T...h privileges'}
+  
+  Differing items:
+  {'detail': 'Access granted'} != {'detail': "The user doesn't have enough privileges"}
+  
+  Full diff:
+    {
+  -     'detail': "The user doesn't have enough privileges",
+  +     'detail': 'Access granted',
+    }
+============================== 1 failed in 0.75s ===============================

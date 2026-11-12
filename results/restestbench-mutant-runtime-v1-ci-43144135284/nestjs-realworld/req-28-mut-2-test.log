@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-8.4.2, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/mixed-interface-study/mixed-interface-study/upstream-benchmark
+collecting ... collected 1 item
+
+data/tests/nestjs-realworld/test_28.py::test_unauthorized_article_update_and_delete FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________ test_unauthorized_article_update_and_delete __________________
+data/tests/nestjs-realworld/test_28.py:112: in test_unauthorized_article_update_and_delete
+    assert article_data.get("article") is None, f"Article should be deleted, got: {article_data}"
+E   AssertionError: Article should be deleted, got: {'article': {'id': 2, 'slug': 'article-to-delete-iipcah', 'title': 'Article To Delete', 'description': 'This will be deleted by attacker', 'body': 'Article body content', 'created': '2026-11-12T03:23:11.000Z', 'updated': '2026-11-12T03:23:11.000Z', 'tagList': [], 'favoriteCount': 0, 'comments': []}}
+E   assert {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...} is None
+E    +  where {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...} = <built-in method get of dict object at 0x7fdc01699b80>('article')
+E    +    where <built-in method get of dict object at 0x7fdc01699b80> = {'article': {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...}}.get
+- generated xml file: /home/runner/work/_temp/restestbench-mutant-evidence/req-28-mut-2.xml -
+=========================== short test summary info ============================
+FAILED data/tests/nestjs-realworld/test_28.py::test_unauthorized_article_update_and_delete - AssertionError: Article should be deleted, got: {'article': {'id': 2, 'slug': 'article-to-delete-iipcah', 'title': 'Article To Delete', 'description': 'This will be deleted by attacker', 'body': 'Article body content', 'created': '2026-11-12T03:23:11.000Z', 'updated': '2026-11-12T03:23:11.000Z', 'tagList': [], 'favoriteCount': 0, 'comments': []}}
+assert {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...} is None
+ +  where {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...} = <built-in method get of dict object at 0x7fdc01699b80>('article')
+ +    where <built-in method get of dict object at 0x7fdc01699b80> = {'article': {'body': 'Article body content', 'comments': [], 'created': '2026-11-12T03:23:11.000Z', 'description': 'This will be deleted by attacker', ...}}.get
+============================== 1 failed in 0.23s ===============================

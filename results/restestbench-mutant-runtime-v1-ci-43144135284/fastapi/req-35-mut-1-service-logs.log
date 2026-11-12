@@ -1,0 +1,100 @@
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 4352, in flush
+backend-1  |     self._flush(objects)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 4487, in _flush
+backend-1  |     with util.safe_reraise():
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+backend-1  |     raise exc_value.with_traceback(exc_tb)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 4448, in _flush
+backend-1  |     flush_context.execute()
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+backend-1  |     rec.execute(self)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+backend-1  |     util.preloaded.orm_persistence.save_obj(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+backend-1  |     _emit_insert_statements(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/orm/persistence.py", line 1048, in _emit_insert_statements
+backend-1  |     result = connection.execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+backend-1  |     return meth(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+backend-1  |     return connection._execute_clauseelement(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+backend-1  |     ret = self._execute_context(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+backend-1  |     return self._exec_single_context(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+backend-1  |     self._handle_dbapi_exception(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+backend-1  |     raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+backend-1  |     self.dialect.do_execute(
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+backend-1  |     cursor.execute(statement, parameters)
+backend-1  |   File "/app/.venv/lib/python3.10/site-packages/psycopg/cursor.py", line 97, in execute
+backend-1  |     raise ex.with_traceback(None)
+backend-1  | sqlalchemy.exc.IntegrityError: (psycopg.errors.UniqueViolation) duplicate key value violates unique constraint "ix_user_email"
+backend-1  | DETAIL:  Key (email)=(admin@example.com) already exists.
+backend-1  | [SQL: INSERT INTO "user" (email, is_active, is_superuser, full_name, id, hashed_password) VALUES (%(email)s::VARCHAR, %(is_active)s, %(is_superuser)s, %(full_name)s::VARCHAR, %(id)s::UUID, %(hashed_password)s::VARCHAR)]
+backend-1  | [parameters: {'email': 'admin@example.com', 'is_active': True, 'is_superuser': False, 'full_name': 'User 5adbdbcd', 'id': UUID('f0c4e8b9-3ff2-41d6-a5ea-ebce09cc63fe'), 'hashed_password': '$2b$12$wd/FFpFVDxwb9lb8eS0DFui5Iry4Cssaa1VLz4P8IRpx/G1/RsobC'}]
+backend-1  | (Background on this error at: https://sqlalche.me/e/20/gkpj)
+backend-1  | INFO:watchfiles.main:6 changes detected
+backend-1  | WARNING:  WatchFiles detected changes in 'app/models.py', 'app/api/routes/users.py', 'app/api/deps.py', 'app/crud.py', 'app/api/routes/items.py', 'app/api/routes/login.py'. Reloading...
+backend-1  | INFO:     Shutting down
+backend-1  | INFO:     Waiting for application shutdown.
+backend-1  | INFO:     Application shutdown complete.
+backend-1  | INFO:     Finished server process [8]
+backend-1  | INFO:     Stopping reloader process [1]
+backend-1  | INFO     Using path app/main.py                                                 
+backend-1  | INFO     Resolved absolute path /app/app/main.py                                
+backend-1  | INFO     Searching for package file structure from directories with __init__.py 
+backend-1  |          files                                                                  
+backend-1  | INFO     Importing from /app                                                    
+backend-1  |                                                                                 
+backend-1  |  ╭─ Python package file structure ─╮                                            
+backend-1  |  │                                 │                                            
+backend-1  |  │  📁 app                         │                                            
+backend-1  |  │  ├── 🐍 __init__.py             │                                            
+backend-1  |  │  └── 🐍 main.py                 │                                            
+backend-1  |  │                                 │                                            
+backend-1  |  ╰─────────────────────────────────╯                                            
+backend-1  |                                                                                 
+backend-1  | INFO     Importing module app.main                                              
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | INFO     Found importable FastAPI app                                           
+backend-1  |                                                                                 
+backend-1  |  ╭── Importable FastAPI app ──╮                                                 
+backend-1  |  │                            │                                                 
+backend-1  |  │  from app.main import app  │                                                 
+backend-1  |  │                            │                                                 
+backend-1  |  ╰────────────────────────────╯                                                 
+backend-1  |                                                                                 
+backend-1  | INFO     Using import string app.main:app                                       
+backend-1  |                                                                                 
+backend-1  |  ╭─────────── FastAPI CLI - Production mode ───────────╮                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  Serving at: http://0.0.0.0:8000                    │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  API docs: http://0.0.0.0:8000/docs                 │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  Running in production mode, for development use:   │                        
+backend-1  |  │                                                     │                        
+backend-1  |  │  fastapi dev                                        │                        
+backend-1  |  │                                                     │                        
+backend-1  |  ╰─────────────────────────────────────────────────────╯                        
+backend-1  |                                                                                 
+backend-1  | INFO:     Will watch for changes in these directories: ['/app']
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:     Started reloader process [1] using WatchFiles
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1  |   warnings.warn(message, stacklevel=1)
+backend-1  | INFO:     Started server process [8]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     172.18.0.1:59518 - "GET /docs HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59530 - "GET /docs HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.1:59542 - "POST /api/v1/users/signup HTTP/1.1" 400 Bad Request
