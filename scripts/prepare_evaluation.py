@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/restestbench-nestjs-reset-correction-v1.json',
     'manifests/restestbench-valid-golden-retry-startup-v1.json',
     'manifests/restestbench-generator-inputs-v1.json',
     'manifests/restestbench-valid-golden-startup-v1.json',

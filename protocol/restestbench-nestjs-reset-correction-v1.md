@@ -1,0 +1,9 @@
+# Single allowed application instrument correction: NestJS reset
+
+The first initial qualification run to receive jobs is 43133202268 at the original registered study commit b137f849a95b28adf0013c3d0a36458dbb819920. NestJS builds, starts and returns HTTP 200 on the health endpoint, but its first reset fails with MySQL error 1146 because article_tags_tag does not exist. No golden test executed. The runner's table list came from the upstream reset script; unlike that script, it checked the command's exit status and stopped.
+
+Pinned ArticleEntity stores tagList as a simple-array column, not a many-to-many relation. UserEntity declares the favorites many-to-many relation. Correct the instrument by removing the nonexistent article_tags_tag entry while retaining the other six tables, including user_favorites_article. Add a checked SELECT COUNT(*) for each of the six tables after reset; require exactly six zero counts before a test may run. Do not alter application source, database schema, requirements or golden tests.
+
+This is the single additional application correction job allowed by protocol/restestbench-valid-golden-v1.md: at most 25 minutes, NestJS only, all 29 original tests in their original order. The three initial jobs remain preserved, and their actual times plus this job must remain within the aggregate 100-minute ceiling. FastAPI and TodoApp are not rerun. No second application correction is allowed under this registration, even if this correction fails. Zero paid model calls.
+
+The correction is registered after observing the reset failure but before its execution; it is not an independent scientific replication or a newly discovered application defect. Test outcomes remain unknown at registration. The input source pin remains RESTestBench 4decc1e36ea3dd41b64ce3e3ac6a85bc72df36ae.
