@@ -1,0 +1,395 @@
+mailcatcher-1  | Starting MailCatcher v0.8.2
+mailcatcher-1  | ==> smtp://0.0.0.0:1025
+mailcatcher-1  | ==> http://0.0.0.0:1080
+mailcatcher-1  | ==> SMTP: Received message from '<noreply@example.com> size=10351' (10505 bytes)
+mailcatcher-1  | ==> SMTP: Received message from '<noreply@example.com> size=8588' (8719 bytes)
+mailcatcher-1  | ==> SMTP: Received message from '<noreply@example.com> size=8588' (8719 bytes)
+mailcatcher-1  | ==> SMTP: Received message from '<noreply@example.com> size=8590' (8721 bytes)
+mailcatcher-1  | ==> SMTP: Received message from '<noreply@example.com> size=8590' (8721 bytes)
+prestart-1     | + python app/backend_pre_start.py
+prestart-1     | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+prestart-1     |   warnings.warn(message, stacklevel=1)
+prestart-1     | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+prestart-1     |   warnings.warn(message, stacklevel=1)
+prestart-1     | INFO:__main__:Initializing service
+prestart-1     | INFO:__main__:Starting call to '__main__.init', this is the 1st time calling it.
+prestart-1     | INFO:__main__:Service finished initializing
+prestart-1     | + alembic upgrade head
+prestart-1     | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+prestart-1     |   warnings.warn(message, stacklevel=1)
+prestart-1     | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+prestart-1     |   warnings.warn(message, stacklevel=1)
+db-1           | The files belonging to this database system will be owned by user "postgres".
+db-1           | This user must also own the server process.
+db-1           | 
+db-1           | The database cluster will be initialized with locale "en_US.utf8".
+db-1           | The default database encoding has accordingly been set to "UTF8".
+db-1           | The default text search configuration will be set to "english".
+db-1           | 
+db-1           | Data page checksums are disabled.
+db-1           | 
+db-1           | fixing permissions on existing directory /var/lib/postgresql/data/pgdata ... ok
+db-1           | creating subdirectories ... ok
+db-1           | selecting dynamic shared memory implementation ... posix
+backend-1      |                                                                                 
+backend-1      | INFO     Using import string app.main:app                                       
+backend-1      |                                                                                 
+backend-1      |  ╭─────────── FastAPI CLI - Production mode ───────────╮                        
+backend-1      |  │                                                     │                        
+db-1           | selecting default "max_connections" ... 100
+db-1           | selecting default "shared_buffers" ... 128MB
+db-1           | selecting default time zone ... Etc/UTC
+db-1           | creating configuration files ... ok
+db-1           | running bootstrap script ... ok
+db-1           | performing post-bootstrap initialization ... ok
+db-1           | syncing data to disk ... ok
+db-1           | initdb: warning: enabling "trust" authentication for local connections
+db-1           | 
+db-1           | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+db-1           | 
+db-1           | Success. You can now start the database server using:
+db-1           | 
+db-1           |     pg_ctl -D /var/lib/postgresql/data/pgdata -l logfile start
+db-1           | 
+db-1           | waiting for server to start....2026-11-12 01:16:18.428 UTC [49] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+db-1           | 2026-11-12 01:16:18.428 UTC [49] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1           | 2026-11-12 01:16:18.431 UTC [52] LOG:  database system was shut down at 2026-11-12 01:16:18 UTC
+db-1           | 2026-11-12 01:16:18.434 UTC [49] LOG:  database system is ready to accept connections
+db-1           |  done
+db-1           | server started
+db-1           | CREATE DATABASE
+db-1           | 
+prestart-1     | INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+prestart-1     | INFO  [alembic.runtime.migration] Will assume transactional DDL.
+prestart-1     | INFO  [alembic.runtime.migration] Running upgrade  -> e2412789c190, Initialize models
+prestart-1     | INFO  [alembic.runtime.migration] Running upgrade e2412789c190 -> 9c0a54914c78, Add max length for string(varchar) fields in User and Items models
+prestart-1     | INFO  [alembic.runtime.migration] Running upgrade 9c0a54914c78 -> d98dd8ec85a3, Edit replace id integers in all models to use UUID instead
+prestart-1     | INFO  [alembic.runtime.migration] Running upgrade d98dd8ec85a3 -> 1a31ce608336, Add cascade delete relationships
+prestart-1     | + python app/initial_data.py
+prestart-1     | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+prestart-1     |   warnings.warn(message, stacklevel=1)
+prestart-1     | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+prestart-1     |   warnings.warn(message, stacklevel=1)
+prestart-1     | INFO:__main__:Creating initial data
+prestart-1     | WARNING:passlib.handlers.bcrypt:(trapped) error reading bcrypt version
+prestart-1     | Traceback (most recent call last):
+prestart-1     |   File "/app/.venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+prestart-1     |     version = _bcrypt.__about__.__version__
+prestart-1     | AttributeError: module 'bcrypt' has no attribute '__about__'
+prestart-1     | INFO:__main__:Initial data created
+backend-1      |  │  Serving at: http://0.0.0.0:8000                    │                        
+backend-1      |  │                                                     │                        
+backend-1      |  │  API docs: http://0.0.0.0:8000/docs                 │                        
+backend-1      |  │                                                     │                        
+backend-1      |  │  Running in production mode, for development use:   │                        
+backend-1      |  │                                                     │                        
+backend-1      |  │  fastapi dev                                        │                        
+backend-1      |  │                                                     │                        
+backend-1      |  ╰─────────────────────────────────────────────────────╯                        
+backend-1      |                                                                                 
+backend-1      | INFO:     Will watch for changes in these directories: ['/app']
+backend-1      | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1      | INFO:     Started reloader process [1] using WatchFiles
+backend-1      | /app/app/core/config.py:104: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+backend-1      |   warnings.warn(message, stacklevel=1)
+backend-1      | /app/app/core/config.py:104: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+backend-1      |   warnings.warn(message, stacklevel=1)
+backend-1      | INFO:     Started server process [8]
+backend-1      | INFO:     Waiting for application startup.
+backend-1      | INFO:     Application startup complete.
+backend-1      | INFO:     172.18.0.1:42596 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:watchfiles.main:3 changes detected
+backend-1      | INFO:watchfiles.main:12 changes detected
+backend-1      | INFO:     172.18.0.1:42598 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | WARNING:passlib.handlers.bcrypt:(trapped) error reading bcrypt version
+backend-1      | Traceback (most recent call last):
+backend-1      |   File "/app/.venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+backend-1      |     version = _bcrypt.__about__.__version__
+backend-1      | AttributeError: module 'bcrypt' has no attribute '__about__'
+backend-1      | INFO:     172.18.0.1:42610 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42624 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42638 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45546 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45548 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45564 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45576 - "GET /api/v1/items/67c60f42-c915-4671-9645-ccadb9552aeb HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45588 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45592 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45598 - "GET /api/v1/items/3d2c662a-8ec0-4c71-99cb-5d39ab186276 HTTP/1.1" 404 Not Found
+backend-1      | INFO:     127.0.0.1:58440 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45606 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45614 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45618 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45622 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45634 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45650 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45660 - "GET /api/v1/items/f3e696fd-2828-4c38-a229-4fb5b9265fb0 HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:45670 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45674 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45682 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45694 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:45704 - "GET /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54538 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54552 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54568 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54584 - "PUT /api/v1/items/736aa783-f40b-45b6-b4e0-37eaeb486051 HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54600 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54606 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54620 - "PUT /api/v1/items/186125e3-aa08-490c-b687-a7103f9225ed HTTP/1.1" 404 Not Found
+backend-1      | INFO:     127.0.0.1:56104 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54624 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54636 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54650 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54654 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54660 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+db-1           | 
+db-1           | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+db-1           | 
+db-1           | waiting for server to shut down...2026-11-12 01:16:18.611 UTC [49] LOG:  received fast shutdown request
+db-1           | .2026-11-12 01:16:18.611 UTC [49] LOG:  aborting any active transactions
+db-1           | 2026-11-12 01:16:18.613 UTC [49] LOG:  background worker "logical replication launcher" (PID 55) exited with exit code 1
+db-1           | 2026-11-12 01:16:18.613 UTC [50] LOG:  shutting down
+db-1           | 2026-11-12 01:16:18.614 UTC [50] LOG:  checkpoint starting: shutdown immediate
+db-1           | 2026-11-12 01:16:18.695 UTC [50] LOG:  checkpoint complete: wrote 925 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.071 s, sync=0.010 s, total=0.082 s; sync files=301, longest=0.007 s, average=0.001 s; distance=4256 kB, estimate=4256 kB; lsn=0/19179A8, redo lsn=0/19179A8
+db-1           | 2026-11-12 01:16:18.702 UTC [49] LOG:  database system is shut down
+db-1           |  done
+db-1           | server stopped
+db-1           | 
+db-1           | PostgreSQL init process complete; ready for start up.
+db-1           | 
+db-1           | 2026-11-12 01:16:18.730 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+db-1           | 2026-11-12 01:16:18.730 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db-1           | 2026-11-12 01:16:18.730 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db-1           | 2026-11-12 01:16:18.731 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1           | 2026-11-12 01:16:18.733 UTC [65] LOG:  database system was shut down at 2026-11-12 01:16:18 UTC
+db-1           | 2026-11-12 01:16:18.737 UTC [1] LOG:  database system is ready to accept connections
+backend-1      | INFO:     172.18.0.1:54668 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54680 - "PUT /api/v1/items/c1b8cb37-d94a-40ab-9008-4a63285aa6e8 HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:54696 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54702 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54718 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54724 - "DELETE /api/v1/items/399ec82f-b165-4569-9c63-67ee9a9e7b20 HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54728 - "GET /api/v1/items/399ec82f-b165-4569-9c63-67ee9a9e7b20 HTTP/1.1" 404 Not Found
+backend-1      | INFO:     172.18.0.1:36534 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36550 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36556 - "DELETE /api/v1/items/6618dbeb-dc9e-4f7e-a445-328df6a2e658 HTTP/1.1" 404 Not Found
+backend-1      | INFO:     172.18.0.1:36572 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:37772 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36578 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36592 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36604 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36614 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36616 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36630 - "DELETE /api/v1/items/4790b66d-d734-41c4-9c77-7af2a0fd60b3 HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:36644 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36652 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36666 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36668 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:36672 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50080 - "POST /api/v1/login/access-token HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:50096 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50110 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50124 - "POST /api/v1/login/test-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50136 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:58058 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50146 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:app.utils:send email result: <emails.backend.SMTPResponse status_code=250 status_text=b'Message accepted'>
+backend-1      | INFO:     172.18.0.1:50154 - "POST /api/v1/password-recovery/test15%40example.com HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50168 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50170 - "POST /api/v1/password-recovery/jVgQr%40example.com HTTP/1.1" 404 Not Found
+backend-1      | INFO:     172.18.0.1:50184 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50200 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50204 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50216 - "POST /api/v1/password-recovery-html-content/user_6f8e3755%40example.com HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:50228 - "POST /api/v1/reset-password/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48830 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48832 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48848 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48862 - "POST /api/v1/reset-password/ HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:48870 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:50954 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48884 - "POST /api/v1/private/users/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48890 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48898 - "GET /api/v1/users/2c66566e-f289-49e1-aa79-2489b42e7f01 HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48902 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48904 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48908 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48924 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48936 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48952 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48956 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34608 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34622 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:app.utils:send email result: <emails.backend.SMTPResponse status_code=250 status_text=b'Message accepted'>
+backend-1      | INFO:     172.18.0.1:34634 - "POST /api/v1/users/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34642 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:53516 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34648 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34664 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34680 - "GET /api/v1/users/b8567847-9c5c-40aa-9921-5c792580f7ca HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34692 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34708 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34712 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34724 - "GET /api/v1/users/1e13cf30-74ab-47e6-a05c-8b1f4f815afd HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34730 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34736 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34752 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42174 - "GET /api/v1/users/aa6b81ec-8a76-4b7e-93f5-1900b8a6d202 HTTP/1.1" 403 Forbidden
+backend-1      | INFO:     172.18.0.1:42186 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42198 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:app.utils:send email result: <emails.backend.SMTPResponse status_code=250 status_text=b'Message accepted'>
+backend-1      | INFO:     172.18.0.1:42200 - "POST /api/v1/users/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42212 - "POST /api/v1/users/ HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:42224 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:48384 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42232 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42248 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42264 - "POST /api/v1/users/ HTTP/1.1" 403 Forbidden
+backend-1      | INFO:     172.18.0.1:42272 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42284 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:app.utils:send email result: <emails.backend.SMTPResponse status_code=250 status_text=b'Message accepted'>
+backend-1      | INFO:     172.18.0.1:42286 - "POST /api/v1/users/ HTTP/1.1" 200 OK
+backend-1      | INFO:app.utils:send email result: <emails.backend.SMTPResponse status_code=250 status_text=b'Message accepted'>
+backend-1      | INFO:     172.18.0.1:42290 - "POST /api/v1/users/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42304 - "GET /api/v1/users/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53618 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53624 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53638 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53646 - "PATCH /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53650 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53658 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53660 - "PATCH /api/v1/users/me/password HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53662 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53678 - "PATCH /api/v1/users/me/password HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53688 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:35754 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53704 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53706 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53718 - "PATCH /api/v1/users/me/password HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:53724 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53734 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53748 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:53756 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54550 - "PATCH /api/v1/users/me HTTP/1.1" 409 Conflict
+backend-1      | INFO:     172.18.0.1:54562 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54576 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54586 - "PATCH /api/v1/users/me/password HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:54602 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:60596 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54610 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54622 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54630 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54634 - "POST /api/v1/users/signup HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:54638 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54654 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54656 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54658 - "PATCH /api/v1/users/217a58e0-1594-4810-b693-2de727ce0686 HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:54664 - "GET /api/v1/users/217a58e0-1594-4810-b693-2de727ce0686 HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47446 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47448 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47458 - "PATCH /api/v1/users/a7a04767-a889-4a87-a60e-770a9dd294de HTTP/1.1" 404 Not Found
+backend-1      | INFO:     172.18.0.1:47474 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47480 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:36486 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47488 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47492 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47498 - "PATCH /api/v1/users/af21ee0e-e91e-4ff4-b8b6-7ed10ccfe3c2 HTTP/1.1" 409 Conflict
+backend-1      | INFO:     172.18.0.1:47510 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47520 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47524 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47526 - "DELETE /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47542 - "POST /api/v1/login/access-token HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:47554 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47570 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47892 - "DELETE /api/v1/users/me HTTP/1.1" 403 Forbidden
+backend-1      | INFO:     172.18.0.1:47894 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47910 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47912 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47918 - "DELETE /api/v1/users/3894cfc3-bebf-4381-8a5f-6e361680919c HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47920 - "POST /api/v1/login/access-token HTTP/1.1" 400 Bad Request
+backend-1      | INFO:     172.18.0.1:47926 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:48824 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47942 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47950 - "DELETE /api/v1/users/1e24bca0-1796-4215-96d9-da1f7cfa2175 HTTP/1.1" 404 Not Found
+backend-1      | INFO:     172.18.0.1:47956 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47968 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47978 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:47988 - "DELETE /api/v1/users/3beb0631-9f01-457c-a117-8e42ccf73299 HTTP/1.1" 403 Forbidden
+backend-1      | INFO:     172.18.0.1:48000 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48006 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:48008 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34978 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34982 - "DELETE /api/v1/users/1760dd3e-15c4-4042-a08a-a9c85a0df90b HTTP/1.1" 403 Forbidden
+backend-1      | INFO:     172.18.0.1:34990 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34998 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35010 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35024 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35030 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35040 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35052 - "DELETE /api/v1/users/db116f2f-60aa-4a7d-9275-28983caaa9e7 HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35062 - "GET /api/v1/items/e645b323-344b-480d-b237-85220e2d922a HTTP/1.1" 404 Not Found
+backend-1      | INFO:     127.0.0.1:40646 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35076 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35086 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35088 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35096 - "POST /api/v1/items/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35104 - "DELETE /api/v1/users/me HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35106 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35114 - "GET /api/v1/items/20e7fcba-f69b-4197-8aa0-44821ad1562f HTTP/1.1" 404 Not Found
+backend-1      | INFO:     172.18.0.1:35124 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35136 - "POST /api/v1/users/signup HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:35632 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35640 - "POST /api/v1/users/signup HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:35646 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35660 - "POST /api/v1/users/signup HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:35670 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35674 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35676 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:49664 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35690 - "PATCH /api/v1/users/me/password HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:35694 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35696 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35702 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35714 - "PATCH /api/v1/users/me/password HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:35730 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35732 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35740 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:35748 - "PATCH /api/v1/users/me/password HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:52240 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52244 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52250 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52254 - "POST /api/v1/items/ HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:52266 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52280 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     127.0.0.1:55614 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52288 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52290 - "POST /api/v1/items/ HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:52304 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52306 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52314 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52326 - "POST /api/v1/items/ HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:52334 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:52342 - "POST /api/v1/reset-password/ HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:42510 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42516 - "POST /api/v1/users/signup HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:42524 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42526 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42532 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42548 - "PATCH /api/v1/users/me HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     127.0.0.1:54236 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42562 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42574 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42576 - "GET /api/v1/users/not-a-uuid HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:42586 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42594 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42608 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:42610 - "GET /api/v1/items/not-a-uuid HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:34070 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34086 - "POST /api/v1/users/signup HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     172.18.0.1:34102 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34112 - "POST /api/v1/users/signup HTTP/1.1" 422 Unprocessable Entity
+backend-1      | INFO:     127.0.0.1:55178 - "GET /api/v1/utils/health-check/ HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34114 - "GET /docs HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34124 - "POST /api/v1/users/signup HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34126 - "POST /api/v1/login/access-token HTTP/1.1" 200 OK
+backend-1      | INFO:     172.18.0.1:34138 - "POST /api/v1/items/ HTTP/1.1" 422 Unprocessable Entity
