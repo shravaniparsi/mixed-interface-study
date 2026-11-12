@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/netbox-config-defaults-registration-v1.json',
     'manifests/defects4rest-feasibility-screen-v1.json',
     'manifests/vibe-per-test-pilot-results-v1.json',
     'manifests/vibe-released-evaluation-audit-v1.json',
