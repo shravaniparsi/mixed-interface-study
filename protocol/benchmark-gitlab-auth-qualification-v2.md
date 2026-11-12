@@ -1,0 +1,11 @@
+# GitLab namespace authentication qualification v2
+
+The v1 startup failed host readiness; diagnostic 43170995499 established HTTP 200 inside port 8023 with absent effective host publication. Authorize one corrected engineering run. Retain both prior attempts. Do not dispatch the unused authentication v1 workflow or change its prerequisite retroactively.
+
+Same pinned image, internal network, loopback publication request, four CPUs, 10 GB memory and 70 GB free-space gate. One free ubuntu-24.04 job with 30-minute overall cap, 15-minute image pull, ten-minute readiness observation and two-minute authentication cap. No automatic retry. The sole transport correction is invoking the runner's Python client through sudo nsenter into the disposable container's network namespace. It retains the host filesystem, operates at localhost:8023 and does not use privileged database access or alter application code/configuration.
+
+Before entering the isolated network, fetch the public benchmark login fixture from its pinned source and verify its hash. Write the extracted credentials to a mode-0600 temporary file outside the artifact directory; remove it on exit. Never print or upload its contents. Credentials are used solely for native-form login to the disposable benchmark. This is preparation, not scientific mutation.
+
+Require the original readiness criterion (HTTP 200, body GitLab OK), then require /api/v4/user to identify the benchmark actor. Query the same fixed project, branch and user candidates as authentication v1; record selected fields without cookies, tokens or credentials. Native form login may change session metadata, but no business-object writes or scientific cases run. Authentication v2 code differs by reading pre-fetched credentials from the temporary file rather than requiring external network access inside the isolated namespace.
+
+Archive readiness, selected fixture data, failure types, service status, version, namespace PID, image identity and job times. Container state output excludes healthcheck HTML. Report authentication and fixture discovery separately; passing does not qualify browser workflows, writes or resets. No input inventory changes, family replacements or positive-result stopping rule.

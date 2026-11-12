@@ -171,6 +171,8 @@ jobs:
           python -m venv "$RUNNER_TEMP/adapter-schema-validator"
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" scripts/extension/validate_adapter_inputs_v1.py --verify
+      - name: Reconstruct GitLab connectivity diagnosis
+        run: python scripts/extension/verify_benchmark_gitlab_connectivity_v1.py --archive results/benchmark-gitlab-connectivity-v1-ci-43170995499 --verify
       - name: Reconstruct failed GitLab startup qualification
         run: python scripts/extension/verify_benchmark_gitlab_startup_v1.py --archive results/benchmark-gitlab-startup-v1-ci-43168226517 --verify
       - name: Reconstruct benchmark representative contexts
