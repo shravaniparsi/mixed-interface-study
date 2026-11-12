@@ -1,0 +1,43 @@
+name: Frozen GitLab issue inputs v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  execute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        repetition: [1, 2]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Verify frozen registration
+        run: python3 scripts/extension/build_benchmark_gitlab_issue_execution_v1.py --verify
+      - name: Install browser tooling
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-issue-inputs"
+          export CI_ARTIFACT_DIR="$RUNNER_TEMP/gitlab-issue-inputs"
+          timeout 5m bash scripts/ci/install_browser.sh
+      - name: Execute fixed repetition with fresh containers
+        env:
+          REPETITION: ${{ matrix.repetition }}
+        run: timeout --signal=TERM --kill-after=60s 39m python3 scripts/extension/run_benchmark_gitlab_issue_batch_v1.py --repetition "$REPETITION" --out "$RUNNER_TEMP/gitlab-issue-inputs"
+      - name: Retain all partial evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gitlab-issue-inputs-r${{ matrix.repetition }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/gitlab-issue-inputs/
+          retention-days: 30

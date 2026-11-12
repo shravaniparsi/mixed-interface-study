@@ -1,0 +1,295 @@
+{
+  "kind": "benchmark_gitlab_issue_execution_v1",
+  "execution_authorized": true,
+  "scope": "Only the qualified issue family; other frozen families remain pending.",
+  "scientific_specifications": 6,
+  "fixed_repetitions": 2,
+  "scheduled_triples": 12,
+  "scientific_branches": 36,
+  "control_branches": 4,
+  "app_job_cap_minutes": 90,
+  "cases": [
+    {
+      "id": "gitlab.issue_assignment.ordinary",
+      "optional_field_patch": {},
+      "role": "scientific"
+    },
+    {
+      "id": "gitlab.issue_assignment.description_empty",
+      "optional_field_patch": {
+        "description": ""
+      },
+      "role": "scientific"
+    },
+    {
+      "id": "gitlab.issue_assignment.description_ascii",
+      "optional_field_patch": {
+        "description": "Continuation study"
+      },
+      "role": "scientific"
+    },
+    {
+      "id": "gitlab.issue_assignment.description_unicode",
+      "optional_field_patch": {
+        "description": "Café 東京"
+      },
+      "role": "scientific"
+    },
+    {
+      "id": "gitlab.issue_assignment.confidential_false",
+      "optional_field_patch": {
+        "confidential": false
+      },
+      "role": "scientific"
+    },
+    {
+      "id": "gitlab.issue_assignment.confidential_true",
+      "optional_field_patch": {
+        "confidential": true
+      },
+      "role": "scientific"
+    },
+    {
+      "id": "control_start",
+      "optional_field_patch": {
+        "description": "Continuation control",
+        "confidential": false
+      },
+      "role": "control"
+    },
+    {
+      "id": "control_end",
+      "optional_field_patch": {
+        "description": "Continuation control",
+        "confidential": false
+      },
+      "role": "control"
+    }
+  ],
+  "schedules": [
+    {
+      "repetition": 1,
+      "executions": [
+        {
+          "case_id": "control_start",
+          "branch": "native_native",
+          "role": "control"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_unicode",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_unicode",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_unicode",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.ordinary",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.ordinary",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.ordinary",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_false",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_false",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_false",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_ascii",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_ascii",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_ascii",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_empty",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_empty",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_empty",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_true",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_true",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_true",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "control_end",
+          "branch": "native_native",
+          "role": "control"
+        }
+      ]
+    },
+    {
+      "repetition": 2,
+      "executions": [
+        {
+          "case_id": "control_start",
+          "branch": "native_native",
+          "role": "control"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.ordinary",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.ordinary",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.ordinary",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_ascii",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_ascii",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_ascii",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_true",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_true",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_true",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_false",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_false",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.confidential_false",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_empty",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_empty",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_empty",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_unicode",
+          "branch": "api_api",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_unicode",
+          "branch": "api_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "gitlab.issue_assignment.description_unicode",
+          "branch": "native_native",
+          "role": "scientific"
+        },
+        {
+          "case_id": "control_end",
+          "branch": "native_native",
+          "role": "control"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "protocol/benchmark-gitlab-issue-execution-v1.md": "7864ddad397ee5e57bbe0407e5b0bd656cfa0c57c838adae69c96545dbad5533",
+    "manifests/benchmark-gitlab-input-inventory-v1.json": "ad33711c3af8c4ce44212f7120d56f5cf80cca5c67857e480cb7a4914c427add",
+    "manifests/benchmark-gitlab-issue-controls-v1.json": "2ca0e27f3c17626f8a534880f2e1f8fabff3f3484101aca31a9597532d6e2b3a",
+    "scripts/extension/run_benchmark_gitlab_issue_case_v1.mjs": "3705c6c300dd47974ece3db608c3b3a7a7621fc201c446e993bf53b5d8bcf23f",
+    "scripts/extension/run_benchmark_gitlab_issue_batch_v1.py": "6f8d69b5693bf1212c07b29735ff4d935fdff53d575401d4603af6ae1f41a0e8",
+    "scripts/extension/wait_benchmark_gitlab_ready_v1.py": "8ac7acbe4b8e4f2884c41d3a134b34c10fb9542f394811de47e6c413f636234c",
+    "scripts/extension/build_benchmark_gitlab_issue_execution_v1.py": "60c4914dc8cbad23a1a1fcba579de7ddd1f4911ac1fb425d883307867b77e7bb",
+    ".github/workflows/benchmark_gitlab_issue_execution_v1.yml": "f9ffc470117245c7f89c767c9b859ae9c9d55a4cca024b237cc2b86153ade447",
+    "scripts/ci/install_browser.sh": "3856dc73db818fc81f22fe9fe13faddb2517a728315f9ae60bbabb07f99b7ee8",
+    "scripts/ci/package.json": "d91cf5d60585764c842f48c03e41998aa500e9e62e4d3e09d92d1c887a6fc495",
+    "scripts/extension/qualify_benchmark_gitlab_auth_v1.py": "303c3ad9ee47a645375ffb74c05173ab01f922f61bc9b363881cf53a2d617432",
+    "evidence/benchmark-gitlab-runtime-source-v1.json": "508a25e407f72ef6d07cc7a49322e4c1cf2b0be810b98c505f45b5609f470339"
+  }
+}
