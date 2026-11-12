@@ -1,0 +1,95 @@
+name: NetBox configuration defaults calibration v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: study-manual-applications
+  cancel-in-progress: false
+jobs:
+  calibration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - version: buggy
+            commit: cac41cd093b7fdcf96e9525bd7c01b5dad4aaedb
+          - version: fixed
+            commit: c108c738aeac419bfeabcd1e49899872c69a0831
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: netbox
+          POSTGRES_USER: netbox
+          POSTGRES_PASSWORD: disposable-study-password
+        ports:
+          - 5432:5432
+        options: --health-cmd "pg_isready -U netbox" --health-interval 5s --health-timeout 5s --health-retries 12
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      UPSTREAM_COMMIT: ${{ matrix.commit }}
+    steps:
+      - name: Initialize evidence
+        run: mkdir -p "$RUNNER_TEMP/netbox-evidence"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: netbox-community/netbox
+          ref: ${{ matrix.commit }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Record provenance and install original requirements
+        run: |
+          set -o pipefail
+          git rev-parse HEAD > "$RUNNER_TEMP/netbox-evidence/study-head.txt"
+          git -C upstream rev-parse HEAD > "$RUNNER_TEMP/netbox-evidence/upstream-head.txt"
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_COMMIT"
+          cp upstream/LICENSE.txt "$RUNNER_TEMP/netbox-evidence/upstream-LICENSE.txt"
+          cp upstream/requirements.txt "$RUNNER_TEMP/netbox-evidence/requirements.txt"
+          sha256sum scripts/extension/netbox_config_defaults_probe_v1.py > "$RUNNER_TEMP/netbox-evidence/instrument-sha256.txt"
+          docker image inspect postgres:16 redis:7 > "$RUNNER_TEMP/netbox-evidence/service-images.json"
+          python - <<'PYCODE'
+          from pathlib import Path
+          import os
+          text = Path('upstream/requirements.txt').read_text()
+          assert text.count('psycopg[c,pool]==3.2.6') == 1
+          (Path(os.environ['RUNNER_TEMP']) / 'netbox-evidence/replay-requirements.txt').write_text(text.replace('psycopg[c,pool]==3.2.6', 'psycopg[binary,pool]==3.2.6'))
+          PYCODE
+          python -m pip install -r "$RUNNER_TEMP/netbox-evidence/replay-requirements.txt" 2>&1 | tee "$RUNNER_TEMP/netbox-evidence/install.log"
+          python -m pip freeze > "$RUNNER_TEMP/netbox-evidence/pip-freeze.txt"
+      - name: Configure fresh disposable application
+        run: |
+          cat > upstream/netbox/netbox/configuration.py <<'PY'
+          ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
+          DATABASE = {'ENGINE': 'django.db.backends.postgresql', 'NAME': 'netbox', 'USER': 'netbox', 'PASSWORD': 'disposable-study-password', 'HOST': 'localhost', 'PORT': 5432}
+          REDIS = {'tasks': {'HOST': 'localhost', 'PORT': 6379, 'DATABASE': 0, 'SSL': False}, 'caching': {'HOST': 'localhost', 'PORT': 6379, 'DATABASE': 1, 'SSL': False}}
+          SECRET_KEY = 'local-disposable-study-secret-key-never-for-production-0123456789'
+          PY
+          set -o pipefail
+          python upstream/netbox/manage.py migrate --noinput 2>&1 | tee "$RUNNER_TEMP/netbox-evidence/migrate.log"
+      - name: Run configuration and explicit-value controls
+        run: |
+          set -o pipefail
+          export PROBE_OUTPUT="$RUNNER_TEMP/netbox-evidence/observations.json"
+          python upstream/netbox/manage.py shell < scripts/extension/netbox_config_defaults_probe_v1.py 2>&1 | tee "$RUNNER_TEMP/netbox-evidence/probe.log"
+      - name: Preserve evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: netbox-config-defaults-${{ matrix.version }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/netbox-evidence/
+          retention-days: 7
+          if-no-files-found: error
