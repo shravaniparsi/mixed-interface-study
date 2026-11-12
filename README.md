@@ -8,6 +8,8 @@ The independent Vibe per-test pilot completed all 170 registered records: 150 ex
 
 Generic assertion-decay analysis, mutation/real-fault correlation, and configuration-dependent testing have prior art. The existing evidence is **not sufficient for submission claiming a new superior testing method**. The exposed NetBox historical calibration completed 24 cases: six configuration violations on the faulty version and none on its adjacent repaired version, although status checks passed all cases. These are variants of one known defect, not independent discoveries. The first attempt failed before scientific execution; the sole correction used the same-version prebuilt PostgreSQL driver. The oracle interpretation rule remains handwritten. [Complete result and limits](notes/netbox_config_defaults_results_20261112.md).
 
+The retrospective information-matched reference produces exactly the same alerts as the configuration checker. The current template therefore has no demonstrated additional detection over an ordinary equally informed assertion. [Decision against method expansion](notes/configuration_method_decision_20261112.md).
+
 [Calibration protocol](protocol/netbox-config-defaults-calibration-v1.md) · [Single infrastructure correction](protocol/netbox-config-defaults-calibration-v2.md) · [Prior-art constraints](notes/configuration_oracle_prior_art_20261112.md)
 
 
