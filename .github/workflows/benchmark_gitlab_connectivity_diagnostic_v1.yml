@@ -1,0 +1,28 @@
+name: Pinned GitLab connectivity diagnostic v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Diagnose host and container HTTP connectivity
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-connectivity"
+          git rev-parse HEAD > "$RUNNER_TEMP/gitlab-connectivity/head.txt"
+          bash scripts/extension/diagnose_benchmark_gitlab_connectivity_v1.sh "$RUNNER_TEMP/gitlab-connectivity"
+      - name: Retain connectivity evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gitlab-connectivity-${{ github.run_id }}
+          path: ${{ runner.temp }}/gitlab-connectivity/
+          retention-days: 30

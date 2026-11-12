@@ -1,0 +1,7 @@
+# GitLab connectivity diagnostic v1
+
+Authorize one infrastructure diagnostic after failed startup run 43168226517. The internal image healthcheck passed while the host probe failed without recording a useful reason. Competing explanations are HTTP health-endpoint rejection, wrong listener/port, host publication/internal-network behavior and proxy configuration. None is established yet.
+
+Use the same immutable image, internal network, port mapping, four CPUs, 10 GB memory and 70 GB free-space precondition. One free ubuntu-24.04 job, 25-minute overall cap, 15-minute pull cap, six diagnostic rounds separated by 45 seconds and no automatic retry. No business-object mutations, credentials, scientific cases or task evaluator reads.
+
+At each round probe host loopback /-/health and /users/sign_in on port 8023 with default urllib behavior and explicit proxy bypass. Separately probe the same paths inside the container on ports 8023 and 80 using curl. Save only HTTP status, final URL/path, transport error class/errno, curl exit code and selected Docker port/network/health state. Discard response bodies and curl error text. Record service status and version at cleanup. Do not publish raw healthcheck HTML or logs. Success of this diagnostic job means evidence collection completed, not startup qualification. Preserve failed v1 and do not dispatch the old authentication workflow based on this diagnostic.
