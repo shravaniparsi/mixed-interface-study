@@ -171,6 +171,10 @@ jobs:
           python -m venv "$RUNNER_TEMP/adapter-schema-validator"
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" -m pip install --disable-pip-version-check -r evidence/openapi-adapter-inputs-v1/validation-requirements.txt
           "$RUNNER_TEMP/adapter-schema-validator/bin/python" scripts/extension/validate_adapter_inputs_v1.py --verify
+      - name: Reconstruct fixed GitLab issue results and membership qualification failures
+        run: |
+          python scripts/extension/score_benchmark_gitlab_issue_v1.py --archive results/benchmark-gitlab-issue-inputs-v1-ci-43284543994 --verify
+          python scripts/extension/verify_benchmark_gitlab_members_controls_v1.py --archive results/benchmark-gitlab-members-controls-v1-ci-43290251888 --verify
       - name: Reject false incremental signals in synthetic scorer checks
         run: python scripts/extension/test_benchmark_gitlab_issue_scoring_v1.py
       - name: Verify fixed GitLab issue scientific schedule

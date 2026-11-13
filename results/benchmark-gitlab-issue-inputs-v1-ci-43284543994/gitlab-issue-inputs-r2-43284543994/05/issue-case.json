@@ -1,0 +1,129 @@
+{
+  "kind": "benchmark_gitlab_issue_case_v1",
+  "case_id": "gitlab.issue_assignment.description_ascii",
+  "case_role": "scientific",
+  "optional_field_patch": {
+    "description": "Continuation study"
+  },
+  "branch": "api_native",
+  "scientific_cases_executed": 1,
+  "case_passed": true,
+  "stage": "complete",
+  "api_requests": [
+    {
+      "method": "GET",
+      "path": "/api/v4/user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues?search=Integrating%20LLMs%20for%20better%20prompts&in=title&per_page=100",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v4/projects/183/members",
+      "body": {
+        "user_id": 2264,
+        "access_level": 30
+      },
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v4/projects/183/issues",
+      "body": {
+        "title": "Integrating LLMs for better prompts",
+        "description": "Continuation study"
+      },
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues/19",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues/19",
+      "status": 200
+    }
+  ],
+  "native_writes": [
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/byteblaze/empathy-prompts/-/issues/19",
+      "status": 302
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    }
+  ],
+  "blocked_external_requests": 10,
+  "actor": {
+    "id": 2330,
+    "username": "byteblaze"
+  },
+  "preflight": {
+    "returned_count": 0,
+    "exact_title_count": 0,
+    "may_be_truncated": false
+  },
+  "assignee_membership_initial_status": 404,
+  "assignee_membership_setup": "added_developer",
+  "issue_iid": 19,
+  "producer_state": {
+    "project_id": 183,
+    "title": "Integrating LLMs for better prompts",
+    "description": "Continuation study",
+    "confidential": false,
+    "issue_type": "issue",
+    "state": "opened",
+    "labels": [],
+    "milestone_id": null,
+    "assignee_ids": [],
+    "due_date": null
+  },
+  "final_state": {
+    "project_id": 183,
+    "title": "Integrating LLMs for better prompts",
+    "description": "Continuation study",
+    "confidential": false,
+    "issue_type": "issue",
+    "state": "opened",
+    "labels": [],
+    "milestone_id": null,
+    "assignee_ids": [
+      2264
+    ],
+    "due_date": "2033-04-01"
+  },
+  "browser_cleanup_confirmed": true
+}

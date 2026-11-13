@@ -1,0 +1,457 @@
+{
+  "kind": "benchmark_gitlab_issue_case_v1",
+  "case_id": "gitlab.issue_assignment.confidential_true",
+  "case_role": "scientific",
+  "optional_field_patch": {
+    "confidential": true
+  },
+  "branch": "api_native",
+  "scientific_cases_executed": 1,
+  "case_passed": false,
+  "stage": "continuation",
+  "api_requests": [
+    {
+      "method": "GET",
+      "path": "/api/v4/user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues?search=Integrating%20LLMs%20for%20better%20prompts&in=title&per_page=100",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v4/projects/183/members",
+      "body": {
+        "user_id": 2264,
+        "access_level": 30
+      },
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v4/projects/183/issues",
+      "body": {
+        "title": "Integrating LLMs for better prompts",
+        "confidential": true
+      },
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues/19",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues/19",
+      "status": 200
+    }
+  ],
+  "native_writes": [
+    {
+      "method": "POST",
+      "path": "/byteblaze/empathy-prompts/-/issues/19",
+      "status": 302
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    }
+  ],
+  "blocked_external_requests": 9,
+  "actor": {
+    "id": 2330,
+    "username": "byteblaze"
+  },
+  "preflight": {
+    "returned_count": 0,
+    "exact_title_count": 0,
+    "may_be_truncated": false
+  },
+  "assignee_membership_initial_status": 404,
+  "assignee_membership_setup": "added_developer",
+  "issue_iid": 19,
+  "producer_state": {
+    "project_id": 183,
+    "title": "Integrating LLMs for better prompts",
+    "description": null,
+    "confidential": true,
+    "issue_type": "issue",
+    "state": "opened",
+    "labels": [],
+    "milestone_id": null,
+    "assignee_ids": [],
+    "due_date": null
+  },
+  "final_state": {
+    "project_id": 183,
+    "title": "Integrating LLMs for better prompts",
+    "description": "",
+    "confidential": false,
+    "issue_type": "issue",
+    "state": "opened",
+    "labels": [],
+    "milestone_id": null,
+    "assignee_ids": [
+      2264
+    ],
+    "due_date": "2033-04-01"
+  },
+  "error_type": "AssertionError",
+  "error": "Expected values to be strictly deep-equal:\n+ actual - expected ... Lines skipped\n\n  {\n    assignee_ids: [\n      2264\n    ],\n+   confidential: false,\n+   description: '',\n-   confidential: true,\n-   description: null,\n    due_date: '2033-04-01',\n...\n    state: 'opened',\n    title: 'Integrating LLMs for better prompts'\n  }",
+  "failure_path": "/byteblaze/empathy-prompts/-/issues/19",
+  "failure_fields": [
+    {
+      "tag": "INPUT",
+      "name": "search",
+      "id": "search",
+      "type": "text",
+      "placeholder": "Search GitLab",
+      "text": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Close issue"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "__BVID__38__BV_toggle_",
+      "type": "button",
+      "placeholder": null,
+      "text": "Issue actions"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "👍\n0"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "👎\n0"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "__BVID__201__BV_toggle_",
+      "type": "button",
+      "placeholder": null,
+      "text": "Add reaction"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Create merge request"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Drag your designs here or click to upload."
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Add"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "discussion-preferences-dropdown__BV_toggle_",
+      "type": "button",
+      "placeholder": null,
+      "text": "Sort or filter"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "TEXTAREA",
+      "name": "note[note]",
+      "id": "note-body",
+      "type": "textarea",
+      "placeholder": "Write a comment or drag your files here…",
+      "text": null
+    },
+    {
+      "tag": "INPUT",
+      "name": "",
+      "id": "2",
+      "type": "checkbox",
+      "placeholder": null,
+      "text": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "__BVID__178__BV_button_",
+      "type": "button",
+      "placeholder": null,
+      "text": "Comment"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "__BVID__178__BV_toggle_",
+      "type": "button",
+      "placeholder": null,
+      "text": "Toggle dropdown"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Close issue"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Add a to do"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Edit"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "milestone-edit",
+      "type": "button",
+      "placeholder": null,
+      "text": "Edit"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Edit"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Edit"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Move issue"
+    },
+    {
+      "tag": "INPUT",
+      "name": "",
+      "id": "",
+      "type": "file",
+      "placeholder": null,
+      "text": null
+    }
+  ],
+  "browser_cleanup_confirmed": true
+}

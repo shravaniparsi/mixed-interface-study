@@ -1,0 +1,266 @@
+{
+  "kind": "benchmark_gitlab_issue_case_v1",
+  "case_id": "gitlab.issue_assignment.confidential_true",
+  "case_role": "scientific",
+  "optional_field_patch": {
+    "confidential": true
+  },
+  "branch": "native_native",
+  "scientific_cases_executed": 1,
+  "case_passed": false,
+  "stage": "producer",
+  "api_requests": [
+    {
+      "method": "GET",
+      "path": "/api/v4/user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v4/projects/183/issues?search=Integrating%20LLMs%20for%20better%20prompts&in=title&per_page=100",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v4/projects/183/members",
+      "body": {
+        "user_id": 2264,
+        "access_level": 30
+      },
+      "status": 201
+    }
+  ],
+  "native_writes": [
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200
+    }
+  ],
+  "blocked_external_requests": 2,
+  "actor": {
+    "id": 2330,
+    "username": "byteblaze"
+  },
+  "preflight": {
+    "returned_count": 0,
+    "exact_title_count": 0,
+    "may_be_truncated": false
+  },
+  "assignee_membership_initial_status": 404,
+  "assignee_membership_setup": "added_developer",
+  "error_type": "TimeoutError",
+  "error": "Instrument step failed; inspect retained stage and form inventory.",
+  "failure_path": "/byteblaze/empathy-prompts/-/issues/new",
+  "failure_fields": [
+    {
+      "tag": "INPUT",
+      "name": "search",
+      "id": "search",
+      "type": "text",
+      "placeholder": "Search GitLab",
+      "text": null
+    },
+    {
+      "tag": "INPUT",
+      "name": "issue[title]",
+      "id": "issue_title",
+      "type": "text",
+      "placeholder": null,
+      "text": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Issue"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "submit",
+      "placeholder": null,
+      "text": "Write"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "submit",
+      "placeholder": null,
+      "text": "Preview"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": ""
+    },
+    {
+      "tag": "TEXTAREA",
+      "name": "issue[description]",
+      "id": "issue_description",
+      "type": "textarea",
+      "placeholder": "Write a description or drag your files here…",
+      "text": null
+    },
+    {
+      "tag": "INPUT",
+      "name": "issue[confidential]",
+      "id": "issue_confidential",
+      "type": "checkbox",
+      "placeholder": null,
+      "text": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Unassigned"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "__BVID__23__BV_toggle_",
+      "type": "button",
+      "placeholder": null,
+      "text": "Select milestone"
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "button",
+      "placeholder": null,
+      "text": "Labels"
+    },
+    {
+      "tag": "INPUT",
+      "name": "issue[due_date]",
+      "id": "issuable-due-date",
+      "type": "text",
+      "placeholder": "Select due date",
+      "text": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "",
+      "id": "",
+      "type": "submit",
+      "placeholder": null,
+      "text": "Create issue"
+    },
+    {
+      "tag": "INPUT",
+      "name": "",
+      "id": "",
+      "type": "file",
+      "placeholder": null,
+      "text": null
+    }
+  ],
+  "browser_cleanup_confirmed": true
+}

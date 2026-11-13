@@ -1,0 +1,7 @@
+# Project-members qualification v1: native instrumentation failed
+
+Run 43290251888 completed all three planned branches. API/API successfully created the private empty project and added exactly the three requested existing users as Developers while preserving project fields and the owner membership. Native/native timed out during production at /projects/new without a recorded native write. API/native reached the Invite members modal but its assumed username-placeholder selector matched zero elements. These are unqualified native paths, not validation-gap or application-defect findings.
+
+The retained modal shows an input whose ID ends in _search and whose placeholder is empty, a native select whose ID ends in _dropdown with Guest/Reporter/Developer/Maintainer/Owner options, and an Invite button. The v1 assumptions about placeholder text and a Guest dropdown button were wrong. A bounded instrument correction can use these observed controls while preserving users, roles, input values, app image and comparison scope. The native producer timeout requires finer action-stage evidence; the archive does not prove its exact cause. Do not attribute it to project creation rejection because no request was recorded.
+
+All failures are retained. The six frozen scientific membership specifications remain unexecuted. No replacement family or outcome-selected input is authorized by this failed qualification. The already completed issue scientific cohort must not be reopened as a side effect of resolving native selectors here.
