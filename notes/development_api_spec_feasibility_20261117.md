@@ -1,0 +1,13 @@
+# Specification baseline setup remains incomplete
+
+Freeze 6f60b10 preceded the four requests. All four pinned build files passed Git blob and SHA-256 checks; 67,252 bytes were collected in 1.046 seconds. No retry, installation, build or application request occurred. The closed collection and derived report retain all four projects, including absent keyword matches. Reserved source, tests and issues were not opened.
+
+21-points declares org.springdoc:springdoc-openapi-webmvc-core at build.gradle:203 without an inline version. Its Gradle build also applies separate profile scripts; resolved dependencies and runtime configuration remain unknown. jhipster4-demo declares io.springfox:springfox-swagger2 and springfox-bean-validators at pom.xml:178–183 without inline versions, and includes Swagger-related profile properties. Its build declares Spring Boot 1.5.12.RELEASE and Java 1.8. Neither declaration establishes a runnable specification endpoint. The two projects share the predeclared conservative family group.
+
+The angular-spring-starter and employee CRUD build files contain none of the registered OpenAPI/Swagger/Springdoc/Springfox keywords. Their parent declarations are Spring Boot 2.2.6.RELEASE and 3.0.4, respectively. This is absence of those literal keywords in those files, not proof that no API documentation or transitive tooling exists.
+
+The twenty-project filename screen had one candidate checked-in spec, in reserved book-social-network. It remains unopened. Generated specifications, nonstandard names and external documentation were outside that screen. Do not report nineteen projects without specifications, or exclude applications based on that count.
+
+Next baseline setup evidence for the already exposed direct-path project is resolved Springdoc/build versions and the configuration needed to generate its specification. Any additional source reads or build attempt need a bounded schedule before execution. Nothing here qualifies RBCTest, licenses silently replacing it with a status-code oracle, or provides independently intended correctness labels. Backend-generated schemas may supply a specification comparator but their omissions cannot automatically label frontend-derived alerts as defects. The separate label-evidence policy governs that distinction.
+
+No new scientific cases or defects were measured. This step changes the next action from assuming the checked-in filename screen establishes baseline availability to qualifying the generated-specification path on development material. The remaining research gates include matched original-validator replay, independent label evidence and a prospective reserved evaluation; Q1 readiness remains unestablished.
