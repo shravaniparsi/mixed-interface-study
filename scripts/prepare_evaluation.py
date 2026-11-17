@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/agentcompany_owncloud_source_v1.yml',
+    'protocol/agentcompany-owncloud-source-v1.md',
+    'scripts/extension/inspect_agentcompany_owncloud_v1.py',
     'scripts/extension/verify_agentcompany_metadata_ci_v1.py',
     'results/agentcompany-service-metadata-ci-44047142832/run.json',
     'results/agentcompany-service-metadata-ci-44047142832/timing.json',
