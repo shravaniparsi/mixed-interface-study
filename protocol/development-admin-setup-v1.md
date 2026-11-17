@@ -1,0 +1,3 @@
+# Admin ordinary-control setup inspection
+
+Read exactly the four pinned files in development-admin-setup-schedule-v1.json. Their paths come from the existing development tree. Retrieve once each, maximum 200 KB per file, retaining failures. Inspect public Cypress admin defaults and original route definitions. No application request, credential guessing, issue/fix access, reserved source or test execution. The create/edit component and template are already exposed and need no new reads. This qualifies setup for an ordinary-valid native/API producer control, not outcome-driven defect search. Missing admin defaults or routes remain unresolved; do not substitute a hidden API shortcut for UI behavior.
