@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "manifests/development-book-repository-search-v1.json",
+    "protocol/development-book-public-text-v1.md",
     'protocol/development-book-repository-search-v1.md',
     'manifests/development-book-source-discovery-v1.json',
 
