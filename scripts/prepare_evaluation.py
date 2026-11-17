@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_development_confirmation_v1.py',
+    'manifests/development-confirmation-reconstruction-v1.json',
+    'notes/development_confirmation_reconstruction_20261117.md',
+    'results/development-confirmation-reconstruction-v1/measurement.json',
+
     'protocol/development-confirmation-reconstruction-v1.md',
     'scripts/extension/qualify_development_confirmation_v1.mjs',
     'manifests/development-confirmation-schedule-v1.json',
