@@ -135,3 +135,7 @@ Frozen8c8a207 single attempt:3/3initialization errors, missing DocumentToken in 
 ## Resource reconstruction v2, explicit empty TransferState
 
 Frozen03b7abb met reconstruction criterion3/3 using original service/resource/model slices and Angular HTTP testing backend. All models match source-derived projection; omitted address becomes empty, null preserved. Validation2measured/1custom-rule error; overall exit1 retained. Empty real TransferState before/after; no DOM/hydration/live server claim. Schedule closed. See notes/petclinic_resource_reconstruction_v2_20261117.md. No independent cases or Q1 benefit established.
+
+## Technology-defined metadata frame collected
+
+Frozen682fe2e query returned20of2869, incomplete=false;20commit pins from21readonly requests. No source/outcome reads.0matches against limited141repository-reference index, but24419tracked paths absent from sparse checkout; no independence claim.20repositories/17owner names are not independent projects.0applications admitted. See notes/project_frame_feasibility_20261117.md. Structural screening needs its own bounded policy; method, competent comparison and independent-label gates remain open.
