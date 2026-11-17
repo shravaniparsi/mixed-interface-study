@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/constraint-transfer-candidate-v1.md',
+    'notes/constraint_transfer_candidate_decision_20261117.md',
     'src/mixed_interface/oracle_acquisition.py',
     'scripts/extension/test_oracle_acquisition_scoring.py',
     'protocol/oracle-acquisition-measurement-v1.md',

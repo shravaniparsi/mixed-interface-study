@@ -64,3 +64,8 @@ Fresh-context claim-source check confirms four narrow prior-art pairings and rej
 ## 2026-11-17: oracle-acquisition measurement infrastructure
 
 Added fixed-frame scoring preserving unknown/code_error/not_run, unresolved labels, full paired denominators and project clusters; seven synthetic engineering checks pass. RBCTest helper vocabulary mapping is not a complete baseline adapter or artifact execution. No new scientific rows, cohort, model calls or paid compute. Method, independent frame/labels and qualified comparison remain required before research execution. See protocol/oracle-acquisition-measurement-v1.md and notes/oracle_acquisition_measurement_20261117.md.
+
+
+## 2026-11-17: candidate conditional transfer specified
+
+Defined inputs, transfer procedure, matched-information comparator, diagnostic ablation and falsification conditions in protocol/constraint-transfer-candidate-v1.md. Raw-source acquisition and complete adapter remain unimplemented. More abstention or uncounted manual mapping cannot count as benefit. Revisited existing Rails constraint study and public checker README only; no app pins/labels read or new dataset admitted. No scientific executions or spending. See notes/constraint_transfer_candidate_decision_20261117.md.
