@@ -103,3 +103,7 @@ One bounded setup at cec72e0 failed with opaque AssertionError during Node extra
 ## Actual framework qualification,2026-11-17
 
 Preparation v2 cc08484 succeeded. Frozen48-row actual Angular22.2.3 measurement6e20c38 completed:36measured rows agree;12missing/undefined rows fail at field-handle access. Full qualification=false. No mocked services, no rerun, no API/browser/server outcome or new scientific cases. Missing-field template predictions are not form-state semantics and require an explicit field-materialization applicability gate before transfer. Evidence and limits: notes/angular_runtime_measurement_20261117.md. Independent evaluation and Q1 contribution remain incomplete.
+
+## Materialization safeguard and source-aware baseline design
+
+Added a frontend-model-only adapter requiring snapshot/context-bound field-state evidence; missing/unqualified/stale states abstain, not pass. Ten exposed regression tests pass. Original48-row runtime results unchanged; no rerun. Native-source replay is specified as comparator D under matched evidence and charged acquisition costs; still not a qualified source-schema adapter. See notes/angular_materialization_gate_20261117.md and protocol/source-aware-replay-comparator-v1.md. No independent scientific cases added; Q1 evidence remains incomplete.

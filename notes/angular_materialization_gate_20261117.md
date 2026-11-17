@@ -1,0 +1,11 @@
+# Field materialization gate and competent comparator
+
+The previous goal turn was progress: commit4ab7e06 preserved real Angular execution and12missing/undefined field-handle failures. This turn does not repeat that closed experiment or recalculate its predictions.
+
+src/mixed_interface/angular_model_evaluation.py adds a model-only adapter around the existing conditional evaluator. It requires a complete frontend-model snapshot and caller-provided field-state evidence tied to the exact snapshot hash, field, framework version and revision/operation/actor/lifecycle context. Nonmaterialized or disabled fields yield unknown with applicable=false, not satisfied. Missing values with a claimed materialized field, unknown activity, stale evidence and non-string/non-null values abstain. Hidden/readonly modes remain unqualified. JSON null is not an alias for JavaScript undefined. The adapter does not promote these rules into API obligations and does not acquire or independently authenticate the evidence identifier.
+
+Ten regression tests cover these learned failure conditions, stale/context-mismatched evidence, disabled required violations, unsupported domains, null/empty and no mutation. These are exposed development tests, not independent scientific inputs or proof of improved accuracy. The historical lowerer and36/12 runtime result remain unchanged. A model-only safeguard is not a complete source-to-API method.
+
+protocol/source-aware-replay-comparator-v1.md specifies D as native-source replay under matched mapping/context evidence. It explicitly requires charging C for acquiring field-state information, including any needed replay. Replaying reconstructed predicates from C would be circular; a competent D must execute original schemas and supported custom validators. The current isolated grid does not qualify that adapter. If C needs the same replay for every input, a computational advantage has not been established.
+
+Next work remains substantive: original-source replay, a reproducible acquisition distinction, independent contract labels and sampling frame. No corpus was selected, model called, remote job launched or scientific case added in this turn. This is a correction to development applicability and comparator design, not Q1 readiness or an algorithmic novelty claim.

@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "src/mixed_interface/angular_model_evaluation.py",
+    "scripts/extension/test_angular_model_evaluation.py",
+    "protocol/source-aware-replay-comparator-v1.md",
+    "notes/angular_materialization_gate_20261117.md",
     'notes/angular_runtime_measurement_20261117.md',
     'results/angular-runtime-measurement-v1/comparison.json',
     'results/angular-runtime-measurement-v1/execution.json',
