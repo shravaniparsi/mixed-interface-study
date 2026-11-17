@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/benchmark-gitlab-readme-results-v1.json',
     'scripts/extension/build_benchmark_archived_compute_v1.py',
     'manifests/benchmark-archived-compute-v1.json',
     'scripts/extension/score_benchmark_gitlab_readme_v1.py',
