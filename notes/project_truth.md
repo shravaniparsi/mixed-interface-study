@@ -163,3 +163,7 @@ Added syntax-only HTML inventory on6already exposed templates:6forms/26control e
 ## Development lockfiles and Angular14package preparation
 
 452aaea collected3verified locks:14.2.0and10.0.11 Angular sets;5.2.0withtwoRxJS resolutions retained;9.xproject lacks sibling lock.2361314 prepared6exact Angular14packages, SHA512verified, no installs/imports/runtime.47,284,065expanded bytes; platform-browser/zone peers not included, no app-ready claim. See notes/development_lockfiles_and_reactive14_preparation_20261117.md. Future plain-class measurement requires its own freeze; reserved sources remain sealed.
+
+## Angular14 original-initializer qualification
+
+Frozen2ba3140 single run:6/6plain-form state probes match preexecution predictions;0errors,exit0. Exact14.2.0original initializer onNode22.22.3: missing-reset defaults vs null, disabled child exclusion from value vs retention in getRawValue, disabled-group aggregate/flags qualified only for fixed cases. No app/browser/API/action execution. See notes/reactive14_form_measurement_20261117.md.0independent cases; reserved material sealed and method benefit still unproven.

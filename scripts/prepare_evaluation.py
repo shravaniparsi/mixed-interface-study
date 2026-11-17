@@ -28,6 +28,14 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_reactive14_form_v1.py',
+    'notes/reactive14_form_measurement_20261117.md',
+    'results/reactive14-form-measurement-v1/comparison.json',
+    'results/reactive14-form-measurement-v1/execution.json',
+    'results/reactive14-form-measurement-v1/measurement.json',
+    'results/reactive14-form-measurement-v1/stderr.txt',
+    'results/reactive14-form-measurement-v1/stdout.txt',
+
     'protocol/reactive14-form-measurement-v1.md',
     'scripts/extension/qualify_reactive14_form_v1.mjs',
     'results/reactive14-form-measurement-v1/expected.json',
