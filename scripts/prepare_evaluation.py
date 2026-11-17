@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "scripts/extension/check_angular_runtime_v1.py",
+    "results/angular-runtime-measurement-v1/expected.json",
+    "protocol/angular-runtime-measurement-v1.md",
+    "scripts/extension/qualify_angular_runtime_v1.mjs",
+    "results/angular-runtime-semantics-setup-v2/setup.json",
     "protocol/angular-runtime-preparation-v2.md",
     "scripts/extension/prepare_angular_runtime_v2.py",
     'notes/angular_runtime_semantics_setup_20261117.md',
