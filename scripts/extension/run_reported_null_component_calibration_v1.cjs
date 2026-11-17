@@ -37,7 +37,7 @@ function schema(id) {
   delete mongoose.modelSchemas.Post;
   const code = source(id);
   const module = {exports: {}};
-  vm.runInNewContext(code, {module, require: name => { assert.equal(name, 'mongoose'); return mongoose; }}, {timeout: 1000});
+  vm.runInNewContext(code, {module, global: {Promise}, require: name => { assert.equal(name, 'mongoose'); return mongoose; }}, {timeout: 1000});
   return module.exports;
 }
 const fronts = {before: constructor(17), after: constructor(25)};
