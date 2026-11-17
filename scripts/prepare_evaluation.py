@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "protocol/petclinic-original-schema-replay-v1.md",
+    "scripts/extension/replay_original_petclinic_schemas_v1.mjs",
+    "results/petclinic-original-schema-replay-v1/helper-source.json",
     "src/mixed_interface/angular_model_evaluation.py",
     "scripts/extension/test_angular_model_evaluation.py",
     "protocol/source-aware-replay-comparator-v1.md",
