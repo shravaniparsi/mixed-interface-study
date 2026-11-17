@@ -1,0 +1,5 @@
+# Bounded public book source discovery
+
+Follow the public book blog http://www.jhipster-book.com linked by the previously read publisher page. One web open with normal transport redirects; no search. Then allow at most one directly identified link explicitly labelled book source/repository or online book, choosing book-text source over sample-application source and lexicographically first URL if ambiguous. Read only that landing/README page, not repository implementation/tests/issues, downloads or a full book in this stage. No registration, login or paywall bypass. Retain errors rather than alternate URLs. Maximum two page opens.
+
+The purpose is to identify accessible versioned text and a provenance path for a bounded content read, not promote publisher/navigation prose to requirements. Record exact observed URLs and scope/edition uncertainty. These external development documentation reads do not open reserved application sources or establish independent cases. Publish this policy before access.
