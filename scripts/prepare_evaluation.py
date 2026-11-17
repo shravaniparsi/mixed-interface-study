@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/shared_reconstruction.py',
+    'scripts/extension/test_shared_reconstruction_v1.py',
+    'scripts/extension/build_development_shared_evidence_v1.py',
+    'manifests/development-shared-evidence-v1.json',
+    'notes/shared_reconstruction_record_20261117.md',
+
     'scripts/extension/verify_development_confirmation_v1.py',
     'manifests/development-confirmation-reconstruction-v1.json',
     'notes/development_confirmation_reconstruction_20261117.md',
