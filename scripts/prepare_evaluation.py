@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-admin-workflow-control-v1.md',
+    'scripts/extension/qualify_development_admin_workflow_v1.mjs',
+    'scripts/extension/qualify_development_admin_workflow_runtime_v1.py',
+    '.github/workflows/development_admin_control_v1.yml',
+
     "protocol/development-admin-setup-v1.md",
     "manifests/development-admin-setup-schedule-v1.json",
     'scripts/extension/verify_development_native_login_v1.py',
