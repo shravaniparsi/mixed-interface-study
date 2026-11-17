@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_agentcompany_metadata_ci_v1.py',
+    'results/agentcompany-service-metadata-ci-44047142832/run.json',
+    'results/agentcompany-service-metadata-ci-44047142832/timing.json',
     '.github/workflows/agentcompany_service_metadata_v1.yml',
     'protocol/agentcompany-service-metadata-v1.md',
     'scripts/extension/resolve_agentcompany_services_v1.py',
