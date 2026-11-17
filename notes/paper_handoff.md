@@ -135,3 +135,7 @@ Precollection Git-object audit expands scanned paths2584→7429 without fetching
 ## Fixed package metadata screen
 
 Frozen28db71d:41/41scheduled manifests integrity-verified/parsed,17repositories with paths,16with core declarations,26core declaration entries.0exact22.2.3 declarations;2repositories have22.x lower-bound declarations, unresolved lockfiles and signal-form usage. No application admission, updates to fit adapter, or source/test/issue outcome reads. See notes/project_package_screen_20261117.md. Before source-informed method development, freeze conservative family-level development/evaluation separation; current adapter generality is unestablished.
+
+## Family reservation and development-source pilot
+
+Partition rule frozenfc250e6 before assignment:16metadata groups split8/8,11development and9reserved repositories. No alternate seed; same-owner/generator-risk links stay together, independence unresolved. Source schedule1527aaf read12verified files (6components/6HTML) only in4development repositories/3groups; reactive and template forms require broader adapter support. Reserved source/test/issue outcomes remain unread. See notes/project_partition_and_development_sources_20261117.md.0independent evaluation cases; methods/labels/cost gates remain.
