@@ -61,3 +61,8 @@ Recovered frontend introducing/repair revisions and independently linked backend
 ## 2026-11-17: null/omission component calibration closed
 
 One bounded measurement under frozen 825ae87, Node16.13.2/Mongoose4.7.1, twelve schema rows and twenty-four constructor combinations for one reported fault cluster. Original constructor throws on three serialized nullish states; revised constructor throws on none. All three are flagged by the identical nonnull API-state predicate, so zero incremental exception detection. Backend default resolves omission but retains explicit null in this in-memory environment. Zero HTTP/DB/browser runs or independent application admissions; $0 paid compute. No full runtime follow-up warranted solely to repeat this result. See notes/reported_null_component_calibration_20261117.md. Q1 evidence requirements remain unmet.
+
+
+## 2026-11-17: frozen report body review updated
+
+All twelve formerly partial rows received further body review: six full archived-body reads and six explicitly limited context screens. Version2 preserves fifty identifiers and the original first-pass artifact: 1 explicit,14 related,3 insufficient,26 other,6 context-only other; zero application admissions. No new collection/runtime. Do not treat context-only rows as verified negatives or source-mine adjacent reports until a favorable outcome. Contribution design (constraint acquisition under equal source access, or independent descriptive sampling) must precede any new cohort. See notes/reported_interface_fault_screen_update_20261117.md.
