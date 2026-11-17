@@ -1,0 +1,11 @@
+# Development assertion feasibility
+
+All 16 scheduled files were retrieved once (139,304 bytes; 8.65 seconds). Hashes and a lexical test-name inventory are recorded. Twelve small frontend/public-read files were read in full, the 21-Points registration setup and five contiguous registration assertions were reviewed, and the other three Java files received name/endpoint triage only. This is a partial semantic review, not a completed label audit.
+
+The five registration tests assert 201 plus persistence for a complete valid DTO, and 400 plus no persisted user for invalid login, malformed email, three-character password and null password. They are separate files from the frontend validators, but shared generated ancestry and independent intended-requirement provenance have not been established. MockMvc runs with a mock authenticated test user and transactional integration setup. The serialization helper and composed test annotations remain unread; DTO null is not yet a verified wire-level explicit null. These are candidate reference records, not five natural defects or five independent cases.
+
+Seven signup/employee tests only assert object/component/service construction. The public-user test file concerns GET operations outside selected writes. The component tests use service stubs and empty template overrides: they document method behavior, not browser or backend correctness. The Cypress mismatch test leaves username/email empty; its disabled-button assertion cannot isolate mismatch as the cause. Record this confounding instead of interpreting the title as a validated equality requirement.
+
+The generated API specification lacks email format despite the explicit registration malformed-email rejection assertion. That creates a concrete development qualification question about specification coverage, not evidence that the application accepts invalid email. Do not claim a defect or candidate-method benefit until the exact fixture, mapping, backend result and information-matched baselines are qualified. Do not extend this observation into an outcome-selected held-out sample.
+
+Next work is to complete the remaining Java assertion review and qualify exact setup/serialization for the fixed candidate assertions. Reserved project implementations remain unread. No test, backend, solver or model was executed in this step.

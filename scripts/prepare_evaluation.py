@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/development-assertion-source-v1.json',
+    'manifests/development-assertion-candidates-v1.json',
+    'notes/development_assertion_feasibility_20261117.md',
+
     'protocol/development-assertion-source-v1.md',
     'manifests/development-assertion-source-schedule-v1.json',
     'notes/request_dependency_baseline_fit_20261117.md',
