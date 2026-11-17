@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/reactive14-form-measurement-v1.md',
+    'scripts/extension/qualify_reactive14_form_v1.mjs',
+    'results/reactive14-form-measurement-v1/expected.json',
+
     "results/reactive14-runtime-preparation-v1/setup.json",
     "notes/development_lockfiles_and_reactive14_preparation_20261117.md",
     'manifests/development-lockfile-screen-v1.json',
