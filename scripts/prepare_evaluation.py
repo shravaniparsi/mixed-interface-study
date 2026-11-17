@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "protocol/development-assertion-setup-v1.md",
     'manifests/development-assertion-source-v1.json',
     'manifests/development-assertion-candidates-v1.json',
     'notes/development_assertion_feasibility_20261117.md',

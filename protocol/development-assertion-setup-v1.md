@@ -1,0 +1,3 @@
+# Registration assertion setup inspection
+
+Before retrieval, fix three 21-Points files at 29f5a77069bee0163e3cfebbb6fd5969f23160a1: src/test/java/org/jhipster/health/web/rest/TestUtil.java, src/test/java/org/jhipster/health/IntegrationTest.java, src/main/java/org/jhipster/health/config/Constants.java. These paths exist in the previously collected tree and are referenced by the reviewed registration tests. Retrieve each once with a 200 KB limit. Read serialization configuration, composed test environment and default language. Do not recursively follow helpers or execute code under this stage. Preserve missing dependencies as unresolved. These files are exposed development reference material, not new independent cases or evidence of test success.
