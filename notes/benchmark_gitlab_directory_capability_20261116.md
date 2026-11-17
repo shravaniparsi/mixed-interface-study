@@ -1,0 +1,13 @@
+# Selected directory/file family's documented-contract assessment
+
+The fixed selection protocol requires a documented write API and an independently persistable producer resource, and explicitly forbids inventing a placeholder-file producer for the directory/file family. No runtime task, scientific input or evaluator was inspected in this assessment.
+
+Eight official GitLab 15.7.5 source/documentation files are archived at full revision 358d690d91c78748a130cb46358c12eaa22275aa under results/gitlab-directory-capability-source-v1. Each was checked against its Git blob identity and SHA256. This matches the known image version/revision, but these specific implementation bytes have not been extracted from the packaged image; distinguish upstream source evidence from packaged runtime verification.
+
+The repository API documents listing trees using GET /projects/:id/repository/tree. The file and commit APIs document file creation; commit actions require file_path and offer create/delete/move/update/chmod. The reviewed contracts do not document a standalone directory-create API. Creating real_space/urls.json would combine the selected producer and continuation into one file operation. Introducing a .gitkeep or other placeholder would change the specified producer and is expressly disallowed by the selection protocol.
+
+The native IDE's new-directory modal dispatches createTempEntry with the directory name and type. In stores/actions.js:32–76, createTempEntry decorates a temporary entry and commits CREATE_TMP_ENTRY to client state; only type blob is staged and triggers file changes. The observed native directory action is therefore a client-side editing step in this upstream implementation, not itself a persisted repository write. This source establishes the action's local behavior; it does not prove that every Git implementation or undocumented endpoint is incapable of persisting empty trees.
+
+Decision: close this family's qualification under the preregistered documented-contract eligibility rule. Retain it in the selected-family denominator as excluded before runtime because no legitimate separate documented producer was established. Do not substitute a file producer, invent a placeholder, launch runtime cases, or count this as an API/frontend validation defect. Zero ordinary controls and zero scientific cases were executed for this family. It contributes selection/feasibility accounting, not an experimental null result or a confirmed defect.
+
+This assessment does not modify the 24 previously frozen specifications across the four other GitLab families, and does not close Reddit's distinct API-identity question. The active README ordinary run remains 44027377236.
