@@ -1,0 +1,7 @@
+# Pinned dependency BOM inspection
+
+Retrieve exactly two public Maven Central resources for the previously declared tech.jhipster:jhipster-dependencies:7.9.3: jhipster-dependencies-7.9.3.pom and its .pom.sha1 sidecar under https://repo.maven.apache.org/maven2/tech/jhipster/jhipster-dependencies/7.9.3/. Publish this schedule and collector before execution. This reads dependency metadata for exposed development setup, not application validation/test/issue content or reserved material.
+
+One request per resource, no retries, thirty seconds each, sixty seconds total, 1 MiB POM limit and 1 KiB checksum limit. Fresh private directory; record status, bytes, SHA-256 and elapsed time. Compare POM SHA-1 with the sidecar if both arrive. Same-origin checksums check transfer consistency, not independently authenticated provenance. Do not install or execute downloaded content. XML parsing only; no parent or transitive artifact fetches. Report direct properties, imported BOM coordinates and Springdoc declarations, retaining interpolation/inheritance unresolved. Maven coordinates or a matching checksum do not prove actual Gradle resolution.
+
+This setup step measures zero scientific cases and cannot qualify a model-backed or specification baseline. No dedicated application CI build is dispatched by this stage. Repository pushes may trigger the existing Unit checks workflow; distinguish those automatic checks from scientific experiments and account for their actual state.
