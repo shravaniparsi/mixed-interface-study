@@ -1,0 +1,104 @@
+{
+  "kind": "owncloud_readiness_source_diagnostic_v1",
+  "source_files": [
+    {
+      "path": "apps/files/js/file-upload.js",
+      "url": "https://raw.githubusercontent.com/owncloud/core/097d4d22e0cf3341c4923e26453efb32ddedfb24/apps/files/js/file-upload.js",
+      "bytes": 40455,
+      "sha256": "51527ee157bd41e4f44594c27fd6a9f3e78a48713eab1af41756f3fa8b1b3fed"
+    },
+    {
+      "path": "apps/files/js/files.js",
+      "url": "https://raw.githubusercontent.com/owncloud/core/097d4d22e0cf3341c4923e26453efb32ddedfb24/apps/files/js/files.js",
+      "bytes": 14550,
+      "sha256": "b75844b9d5d3f7b0a48081a9da7f665536afb582a81b01249636ebf720f633eb"
+    },
+    {
+      "path": "apps/files/templates/list.php",
+      "url": "https://raw.githubusercontent.com/owncloud/core/097d4d22e0cf3341c4923e26453efb32ddedfb24/apps/files/templates/list.php",
+      "bytes": 3710,
+      "sha256": "7662b372de45a714c3c29aad7a457b62ddf2f049fccfa8a1bd2cc49a674bab45"
+    },
+    {
+      "path": "apps/files/ajax/getstoragestats.php",
+      "url": "https://raw.githubusercontent.com/owncloud/core/097d4d22e0cf3341c4923e26453efb32ddedfb24/apps/files/ajax/getstoragestats.php",
+      "bytes": 1308,
+      "sha256": "e7bd604b65b3e94d3823959b95bf7c39cd2ecd7ec3bd7bba85c32750592d4f4b"
+    },
+    {
+      "path": "COPYING",
+      "url": "https://raw.githubusercontent.com/owncloud/core/097d4d22e0cf3341c4923e26453efb32ddedfb24/COPYING",
+      "bytes": 34520,
+      "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182"
+    }
+  ],
+  "source_anchors": {
+    "apps/files/js/file-upload.js": [
+      "freeSpace = $('#free_space').val();",
+      "freeSpace >= 0 && selection.totalBytes > freeSpace",
+      "return false; //don't upload anything"
+    ],
+    "apps/files/js/files.js": [
+      "getstoragestats.php",
+      "$('#free_space').val(response.data.freeSpace);"
+    ],
+    "apps/files/templates/list.php": [
+      "id=\"free_space\"",
+      "isset($_['freeSpace'])"
+    ]
+  },
+  "filelist_sha256": "d98e08dd47ac320f2aad9e594fd058845e40fb8630122874ded17d1e7d2df9f9",
+  "terminal_dom_observations": [
+    {
+      "branch": "native_native",
+      "html_sha256": "8b507ab2a92d13dcd9cc77f097e693cb36a904404fbf52fb63e74229a8511587",
+      "rendered_files": [
+        "Admin",
+        "Administrative Specialist",
+        "Data Analysis",
+        "Engineering",
+        "Financials",
+        "Human Resources Team",
+        "Marketing",
+        "Q1 Planning and Allocation",
+        "Research",
+        "bustub_tagline.txt",
+        "colly_tagline.txt",
+        "Employee_Manual.odt",
+        "Example.md",
+        "Example.odt"
+      ],
+      "terminal_free_space": "89809612800"
+    },
+    {
+      "branch": "api_native",
+      "html_sha256": "653e1466952598d9f685105d79b544562f96816280222f49345079ba0a82d286",
+      "rendered_files": [
+        "Admin",
+        "Administrative Specialist",
+        "Data Analysis",
+        "Engineering",
+        "Financials",
+        "Human Resources Team",
+        "Marketing",
+        "Q1 Planning and Allocation",
+        "Research",
+        "bustub_tagline.txt",
+        "colly_tagline.txt",
+        "Employee_Manual.odt",
+        "Example.md",
+        "Example.odt"
+      ],
+      "terminal_free_space": "89793417216"
+    }
+  ],
+  "inference": "Asynchronous storage update and viewport pagination are supported by upstream source. The earlier failure mechanism is not causally established.",
+  "missing_evidence": [
+    "Packaged equivalence for newly read source files",
+    "Free-space value at file selection time",
+    "Directory and storage response bodies and callback timing"
+  ],
+  "scientific_cases": 0,
+  "confirmed_defects": 0,
+  "application_reruns": 0
+}

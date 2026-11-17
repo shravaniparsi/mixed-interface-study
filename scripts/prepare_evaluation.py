@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/audit_agentcompany_owncloud_readiness_v1.py',
+    'manifests/agentcompany-owncloud-readiness-diagnostic-v1.json',
+    'notes/agentcompany_owncloud_interaction_contract_20261117.md',
     'scripts/extension/verify_agentcompany_owncloud_controls_ci_v1.py',
     'manifests/agentcompany-owncloud-ordinary-outcome-v1.json',
     'notes/agentcompany_owncloud_ordinary_20261117.md',
