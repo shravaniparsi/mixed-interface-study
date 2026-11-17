@@ -56,3 +56,8 @@ A separately frozen, one-query reported-fault feasibility frame retained the fir
 ## 2026-11-17: historical null-state source review closed
 
 Recovered frontend introducing/repair revisions and independently linked backend repair for frozen frame row 43. Twenty-six bounded read-only requests, twelve source files, zero application executions/admissions/confirmed defects. Explicit null bypasses the backend repair controller truthiness guard, but historical schema/runtime behavior is untested. Existing project API tests already assert omitted setup becomes an empty array, so browser incremental benefit is not established. Exact deployed version pairing and isolated reproduction remain unknown. See notes/reported_interface_fault_admission_20261117.md and manifests/reported-interface-fault-admission-v1.json. No runtime or further search launched; Q1 evidence gap remains.
+
+
+## 2026-11-17: null/omission component calibration closed
+
+One bounded measurement under frozen 825ae87, Node16.13.2/Mongoose4.7.1, twelve schema rows and twenty-four constructor combinations for one reported fault cluster. Original constructor throws on three serialized nullish states; revised constructor throws on none. All three are flagged by the identical nonnull API-state predicate, so zero incremental exception detection. Backend default resolves omission but retains explicit null in this in-memory environment. Zero HTTP/DB/browser runs or independent application admissions; $0 paid compute. No full runtime follow-up warranted solely to repeat this result. See notes/reported_null_component_calibration_20261117.md. Q1 evidence requirements remain unmet.
