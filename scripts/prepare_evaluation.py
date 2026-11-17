@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-api-spec-feasibility-v1.md',
+    'manifests/development-api-spec-feasibility-schedule-v1.json',
+    'scripts/extension/collect_development_api_spec_feasibility_v1.py',
+
     'scripts/extension/compose_development_lineage_v1.py',
     'scripts/extension/test_development_lineage_v1.py',
     'manifests/development-lineage-v1.json',
