@@ -13,3 +13,5 @@ For documentation changes, regenerate scripts/prepare_evaluation.py after modify
 Do not infer authorship, funding, conflicts, human adjudication, maintainers' confirmation, acceptance likelihood or current journal quartiles. Do not submit or message third parties without the required user authorization. The user authorized public GitHub and bounded free Actions; the $100 ceiling remains.
 
 The previous versions of these three current-state notes are retained at the commit and commands recorded in notes/current_state_supersession_20261116.md. Historical scientific notes remain in place; this handoff supersedes their unfinished-work instructions, not their evidence.
+
+The Agent Company feasibility inventory is source and design work only (notes/agentcompany_feasibility_20261116.md). Its 175 instructions and 17 Plane mentions must not enter scientific sample sizes. The next bounded design step is infrastructure/interface capability review, not full benchmark execution or manuscript claims of external validation.
