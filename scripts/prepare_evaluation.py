@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/compose_development_lineage_v1.py',
+    'scripts/extension/test_development_lineage_v1.py',
+    'manifests/development-lineage-v1.json',
+    'notes/development_lineage_20261117.md',
+
     'scripts/extension/verify_http_serialization_v2.py',
     'notes/development_http_serialization_v2_20261117.md',
     'results/development-http-serialization-v2/comparison.json',
