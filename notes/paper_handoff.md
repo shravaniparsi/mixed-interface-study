@@ -69,3 +69,8 @@ Added fixed-frame scoring preserving unknown/code_error/not_run, unresolved labe
 ## 2026-11-17: candidate conditional transfer specified
 
 Defined inputs, transfer procedure, matched-information comparator, diagnostic ablation and falsification conditions in protocol/constraint-transfer-candidate-v1.md. Raw-source acquisition and complete adapter remain unimplemented. More abstention or uncounted manual mapping cannot count as benefit. Revisited existing Rails constraint study and public checker README only; no app pins/labels read or new dataset admitted. No scientific executions or spending. See notes/constraint_transfer_candidate_decision_20261117.md.
+
+
+## 2026-11-17: conditional evaluator implemented
+
+Added pure in-memory evaluator for explicit source-linked rules/mappings, scoped conditions, observation points and missing/null/empty policies. Fifteen development tests plus seven scorer tests pass. No automatic extraction, application execution, independent data or Q1 benefit is established. Unknown transforms remain unknown; observed defaults are never invented. Next priority is an actual source-to-rule path, not more synthetic feature counts. See notes/constraint_transfer_implementation_20261117.md.
