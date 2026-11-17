@@ -1,0 +1,116 @@
+{
+  "commit": "6473f72db5dcefc97b5725b59e734504edc28a21",
+  "sources": [
+    {
+      "path": "packages/environment_control/environment_control/ops/sites/gitlab.py",
+      "git_blob": "fd87388848e6ee38c59afc3d46d89e40605d0b96",
+      "sha256": "69a436e3c3c88bfc0fd22d6bc6ab538e906923aac6a3118ee09a825b6f105840",
+      "selected_functions": [],
+      "function_inventory": [
+        {
+          "name": "_init",
+          "line": 91,
+          "parameters": [
+            "cls",
+            "exec_cmd",
+            "base_url",
+            "dry_run"
+          ],
+          "docstring": "Initialize GitLab with base URL.\n\nUpdates external_url in gitlab.rb and runs gitlab-ctl reconfigure.\nNote: reconfigure can take several minutes.\n\nIf WA_ENV_CTRL_SKIP_RECONFIGURE=true, skips reconfigure to avoid 502 errors.\nThis is useful when the image is pre-configured with the correct external_url.\n\nArgs:\n    exec_cmd: Executor function. Defaults to subprocess.\n    base_url: Base URL for GitLab (e.g., \"http://localhost:8023\")\n    dry_run: If True, preview changes without applying them."
+        },
+        {
+          "name": "_start",
+          "line": 147,
+          "parameters": [
+            "cls",
+            "exec_cmd"
+          ],
+          "docstring": "Start all GitLab services via gitlab-ctl.\n\nNote: The container entrypoint runs /assets/wrapper which handles runsvdir\nstartup and gitlab-ctl reconfigure. This method just ensures services are\nstarted if they're not already running."
+        },
+        {
+          "name": "_stop",
+          "line": 185,
+          "parameters": [
+            "cls",
+            "exec_cmd"
+          ],
+          "docstring": "Stop all GitLab services via gitlab-ctl."
+        },
+        {
+          "name": "_get_health",
+          "line": 195,
+          "parameters": [
+            "cls",
+            "exec_cmd",
+            "http_url"
+          ],
+          "docstring": "Check all GitLab services are healthy.\n\nArgs:\n    exec_cmd: Executor function. Defaults to subprocess.\n    http_url: Optional HTTP URL to check. Defaults to localhost:{DEFAULT_PORT}.\n\nReturns:\n    Result with Health containing all service states."
+        },
+        {
+          "name": "_check_gitlab_services",
+          "line": 247,
+          "parameters": [
+            "cls",
+            "exec_cmd"
+          ],
+          "docstring": "Check gitlab-ctl status and parse service states.\n\nReturns:\n    Result with dict mapping service names to ServiceState."
+        },
+        {
+          "name": "_check_postgresql",
+          "line": 291,
+          "parameters": [
+            "cls",
+            "exec_cmd"
+          ],
+          "docstring": "Check if PostgreSQL is responding."
+        },
+        {
+          "name": "_check_redis",
+          "line": 304,
+          "parameters": [
+            "cls",
+            "exec_cmd"
+          ],
+          "docstring": "Check if Redis is responding."
+        },
+        {
+          "name": "_check_env_ctrl",
+          "line": 316,
+          "parameters": [
+            "cls",
+            "exec_cmd"
+          ],
+          "docstring": "Check if env-ctrl process is running.\n\nenv-ctrl runs as an independent background process (not a runit service),\nso we check it via pgrep."
+        },
+        {
+          "name": "_check_http_redirects_to_login",
+          "line": 333,
+          "parameters": [
+            "cls",
+            "url",
+            "exec_cmd"
+          ],
+          "docstring": "Check that GitLab root URL redirects to the login page.\n\nGitLab returns 502 during startup while Puma workers initialize.\nOnce fully ready, the root URL redirects to /users/sign_in.\nThis check ensures GitLab is fully operational before marking healthy.\n\nArgs:\n    url: Base URL to check (e.g., http://localhost:8023).\n    exec_cmd: Optional executor function.\n\nReturns:\n    Result with bool indicating if redirect to login page was detected."
+        }
+      ]
+    },
+    {
+      "path": "src/webarena_verified/environments/site_handler.py",
+      "git_blob": "c6ea14b75a0e7c1cbcec04f6396ae6f10d3e7798",
+      "sha256": "192103b4f4f8df54f6460d62efd445a6871577dafd2a948038b4ee330157679d",
+      "selected_functions": [
+        {
+          "name": "reset",
+          "start_line": 94,
+          "text": "    def reset(self) -> None:\n        \"\"\"Reset the site environment to its initial state.\n\n        Stops and deletes the container, then starts and initializes it.\n        Equivalent to calling stop() followed by start().\n\n        Uses base_url from the environment configuration provided during initialization.\n\n        Raises:\n            RuntimeError: If reset fails\n        \"\"\"\n        ..."
+        }
+      ]
+    },
+    {
+      "path": "src/webarena_verified/environments/container/manager.py",
+      "git_blob": "4be74a236ddeb37f843eaeb9d3b60051cf2d2493",
+      "sha256": "7afc6c2a8e6e1064af6ff50a16873c5ca4d82c589059c0de8add028d7f4a942a",
+      "selected_functions": []
+    }
+  ]
+}
