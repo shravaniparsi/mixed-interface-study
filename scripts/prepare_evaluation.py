@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-elasticsearch-setup-v1.md',
+    'manifests/development-elasticsearch-setup-schedule-v1.json',
+    'scripts/extension/collect_development_elasticsearch_setup_v1.py',
+
     'scripts/extension/verify_development_spec_startup_v1.py',
     'manifests/development-spec-startup-v1.json',
     'notes/development_spec_startup_v1_failure_20261117.md',

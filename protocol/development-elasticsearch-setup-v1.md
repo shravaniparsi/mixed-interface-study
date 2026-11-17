@@ -1,0 +1,5 @@
+# Pinned Elasticsearch deployment metadata
+
+After the closed startup failure, read exactly src/main/docker/elasticsearch.yml and src/main/docker/app.yml from exposed 21-points revision 29f5a77069bee0163e3cfebbb6fd5969f23160a1. Schedule pins both Git blobs from the already collected tree. Two requests maximum, no retry/replacement, 256 KiB each, thirty seconds each and sixty seconds total. Publish protocol/schedule/collector before fetching. Verify Git blob SHA and record SHA-256, status, bytes and elapsed time. No other source, tests, issues or reserved implementation reads.
+
+Inspect declared image tags, service settings, application dependency endpoints and compose relationships. A tag is not an immutable image digest or proof of availability. Do not install, pull, start or modify services in this stage. If metadata supports provisioning, freeze a separate bounded correction that supplies the dependency and keeps the fixed JAR, request schedule and original application beans. Keep deployment changes explicit. This is setup evidence, not a correctness label or new independent case.
