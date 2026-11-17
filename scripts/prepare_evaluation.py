@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_fixture_field_comparison_v1.py',
+    'manifests/development-fixture-field-comparison-v1.json',
+    'notes/development_fixture_field_comparison_20261117.md',
+    'results/development-fixture-field-transfer-v1/measurement.json',
+    'results/development-fixture-field-replay-v1/measurement.json',
+
     'protocol/development-fixture-field-comparison-v1.md',
     'scripts/extension/compare_fixture_fields_transfer_v1.py',
     'scripts/extension/compare_fixture_fields_replay_v1.mjs',
