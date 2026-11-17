@@ -143,3 +143,7 @@ Partition rule frozenfc250e6 before assignment:16metadata groups split8/8,11deve
 ## Development reactive-form inventory
 
 Bounded AST adapter applied only to6already exposed development components:3reactive forms,16controls,29built-in validator declarations (7required/8minLength/10maxLength/2pattern/2email). Unsupported/custom/async/group options retained; reset/getRawValue/conditions observed without API inference.3template-bound components yield0reactive matches, not absence of validation. Regression checks pass,0runtime/independent evaluation cases. See notes/development_reactive_inventory_20261117.md. Reserved sources remain unopened.
+
+## Development template inventory
+
+Added syntax-only HTML inventory on6already exposed templates:6forms/26control elements/16literal constraint declarations;2overlap reactive required attributes, so no naive summed obligation count. Dynamic/activity/submission expressions and unsupported syntax retained.10engineering tests pass; message text and type=email are not promoted into validator declarations. See notes/development_template_inventory_20261117.md. Runtime versions/API mapping remain unqualified; reserved implementation remains unopened.

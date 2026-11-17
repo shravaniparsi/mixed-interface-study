@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/angular_template_inventory.py',
+    'scripts/extension/test_angular_template_inventory.py',
+    'scripts/extension/inventory_development_templates_v1.py',
+    'manifests/development-template-inventory-v1.json',
+    'notes/development_template_inventory_20261117.md',
+
     'scripts/extension/inventory_reactive_forms_v1.cjs',
     'scripts/extension/test_reactive_form_inventory_v1.cjs',
     'scripts/extension/inventory_development_reactive_forms_v1.cjs',
