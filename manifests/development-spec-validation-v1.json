@@ -1,0 +1,370 @@
+{
+  "kind": "development_api_only_input_validation",
+  "source_sha256": "2c8546ccc3d04eb7166aec4a10aea1434a89a25ea3f78188bd3df5d0b8231af1",
+  "python": "3.12.13",
+  "versions": {
+    "openapi-spec-validator": "0.7.2",
+    "openapi-schema-validator": "0.6.3",
+    "jsonschema": "4.26.0"
+  },
+  "validation": "valid",
+  "selected_operations": [
+    {
+      "path": "/api/register",
+      "method": "post",
+      "status": "present",
+      "operation": {
+        "tags": [
+          "account-resource"
+        ],
+        "operationId": "registerAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManagedUserVM"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      },
+      "references": {
+        "#/components/schemas/ManagedUserVM": {
+          "required": [
+            "login"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "login": {
+              "maxLength": 50,
+              "minLength": 1,
+              "pattern": "^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$",
+              "type": "string"
+            },
+            "firstName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "lastName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "email": {
+              "maxLength": 254,
+              "minLength": 5,
+              "type": "string"
+            },
+            "imageUrl": {
+              "maxLength": 256,
+              "minLength": 0,
+              "type": "string"
+            },
+            "activated": {
+              "type": "boolean"
+            },
+            "langKey": {
+              "maxLength": 10,
+              "minLength": 2,
+              "type": "string"
+            },
+            "createdBy": {
+              "type": "string"
+            },
+            "createdDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastModifiedBy": {
+              "type": "string"
+            },
+            "lastModifiedDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "authorities": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "password": {
+              "maxLength": 100,
+              "minLength": 4,
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/admin/users",
+      "method": "post",
+      "status": "present",
+      "operation": {
+        "tags": [
+          "user-resource"
+        ],
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "references": {
+        "#/components/schemas/User": {
+          "required": [
+            "activated",
+            "login"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "login": {
+              "maxLength": 50,
+              "minLength": 1,
+              "pattern": "^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$",
+              "type": "string"
+            },
+            "firstName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "lastName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "email": {
+              "maxLength": 254,
+              "minLength": 5,
+              "type": "string"
+            },
+            "activated": {
+              "type": "boolean"
+            },
+            "langKey": {
+              "maxLength": 10,
+              "minLength": 2,
+              "type": "string"
+            },
+            "imageUrl": {
+              "maxLength": 256,
+              "minLength": 0,
+              "type": "string"
+            },
+            "resetDate": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "#/components/schemas/AdminUserDTO": {
+          "required": [
+            "login"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "login": {
+              "maxLength": 50,
+              "minLength": 1,
+              "pattern": "^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$",
+              "type": "string"
+            },
+            "firstName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "lastName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "email": {
+              "maxLength": 254,
+              "minLength": 5,
+              "type": "string"
+            },
+            "imageUrl": {
+              "maxLength": 256,
+              "minLength": 0,
+              "type": "string"
+            },
+            "activated": {
+              "type": "boolean"
+            },
+            "langKey": {
+              "maxLength": 10,
+              "minLength": 2,
+              "type": "string"
+            },
+            "createdBy": {
+              "type": "string"
+            },
+            "createdDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastModifiedBy": {
+              "type": "string"
+            },
+            "lastModifiedDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "authorities": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/admin/users",
+      "method": "put",
+      "status": "present",
+      "operation": {
+        "tags": [
+          "user-resource"
+        ],
+        "operationId": "updateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "references": {
+        "#/components/schemas/AdminUserDTO": {
+          "required": [
+            "login"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "login": {
+              "maxLength": 50,
+              "minLength": 1,
+              "pattern": "^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$",
+              "type": "string"
+            },
+            "firstName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "lastName": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            },
+            "email": {
+              "maxLength": 254,
+              "minLength": 5,
+              "type": "string"
+            },
+            "imageUrl": {
+              "maxLength": 256,
+              "minLength": 0,
+              "type": "string"
+            },
+            "activated": {
+              "type": "boolean"
+            },
+            "langKey": {
+              "maxLength": 10,
+              "minLength": 2,
+              "type": "string"
+            },
+            "createdBy": {
+              "type": "string"
+            },
+            "createdDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastModifiedBy": {
+              "type": "string"
+            },
+            "lastModifiedDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "authorities": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "independent_evaluation_cases": 0,
+  "baseline_qualified": false
+}
