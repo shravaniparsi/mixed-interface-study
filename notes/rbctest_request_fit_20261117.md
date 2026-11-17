@@ -1,0 +1,11 @@
+# RBCTest suitability decision
+
+Do not spend the project budget launching the stock RBCTest artifact as an input-validity baseline for the current registration/admin comparison. This decision concerns target and integration fit, not the published method's effectiveness.
+
+The pinned artifact is a response-body oracle pipeline. Its registration input here has only a documented 201 response with no content. The two admin operations have response schemas, but that does not make response-body checking equivalent to request rejection or future frontend compatibility. The three request schema closures contain no description fields; response descriptions are only status text. Schema keywords remain present, and the artifact's response-schema inference can consume schema metadata. Therefore zero prose is not a claim that RBCTest can mine nothing.
+
+Static inspection also found that the entrypoint does not supply the required service_name mapper argument. Existing test generation filters on correctness annotations. The model helper overrides the supplied model name, does not put model/system information in its prompt-hash cache key, and has no explicit token bound in the default call. These are integration facts, not measured baseline failures. No import, model call, installation, ground-truth access or application execution occurred.
+
+A fair baseline must match the question: schema validation for specification conformance; a description/contract-derived logical oracle where such inputs actually exist; original-source replay for frontend behavior. The already qualified schema validator and replay comparator remain useful, but neither supplies independent intended-behavior labels. RBCTest must not be assigned artificial false negatives on unsupported targets. A modified implementation would require disclosed changes and a new qualification, not its published name alone.
+
+Next substantive step: select and qualify a request-side logical comparator with explicit applicability on the existing development inputs. No reserved implementation should be opened until that comparator and normative-label feasibility are settled. This inspection does not resolve Q1 readiness or add independent evidence of method benefit.

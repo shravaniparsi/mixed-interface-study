@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/inventory_selected_spec_descriptions_v1.py',
+    'manifests/selected-spec-description-inventory-v1.json',
+    'manifests/rbctest-request-fit-v1.json',
+    'notes/rbctest_request_fit_20261117.md',
+
     "protocol/rbctest-request-fit-v1.md",
     'results/development-guard-acquisition-v2/measurement.json',
     'manifests/development-guard-acquisition-v2.json',

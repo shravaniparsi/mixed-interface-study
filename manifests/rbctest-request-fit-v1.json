@@ -1,0 +1,56 @@
+{
+  "kind": "closed_static_baseline_suitability_inspection",
+  "freeze": "8652cc0",
+  "repository": "api-rbtest/RBCTest",
+  "revision": "60de49d135fd419ef8a2e93357c025eee154e4c6",
+  "files": [
+    {
+      "path": "src/response_body_verification/constraint_inference.py",
+      "exit_code": 0,
+      "sha256": "0e61b4e991c088ec389848ad5d9b8e56235ddf212f32e696554b0d4293cad298",
+      "bytes": 45638
+    },
+    {
+      "path": "src/response_body_verification/parameter_responsebody_mapping.py",
+      "exit_code": 0,
+      "sha256": "be2f9a2a7828a458d3b2c9f24ecbb0db394258ad7249a4ccd4616e9fb79be8ce",
+      "bytes": 13787
+    },
+    {
+      "path": "src/utils/gptcall.py",
+      "exit_code": 0,
+      "sha256": "81867615d17cb89de56cc794afad21fa120b408a14d6eba108210f626f02e3fb",
+      "bytes": 2901
+    }
+  ],
+  "observations": [
+    {
+      "claim": "Mapper constructor requires service_name; previously inspected entrypoint does not supply it. Static mismatch, not a recorded runtime failure.",
+      "source": "src/response_body_verification/parameter_responsebody_mapping.py",
+      "line": 210
+    },
+    {
+      "claim": "Input constraint inference skips simplified parameters without the description marker; simplifier helper was not inspected.",
+      "source": "src/response_body_verification/constraint_inference.py",
+      "line": 451
+    },
+    {
+      "claim": "Response schema inference also uses schema metadata, so absent request prose does not imply the entire tool has no usable inputs.",
+      "source": "src/response_body_verification/constraint_inference.py",
+      "line": 643
+    },
+    {
+      "claim": "Helper forces gpt-4o and cache keys use prompt hash, without incorporating model or system message. Default call omits explicit output-token bound.",
+      "source": "src/utils/gptcall.py",
+      "line": 53
+    }
+  ],
+  "selected_spec_inventory": "manifests/selected-spec-description-inventory-v1.json",
+  "decision": "Do not launch the stock end-to-end artifact for this request-rejection comparison. It is unqualified and its response-body target is not a substitute for input validity. Retain it as related work or separately qualify an explicitly adapted response-body comparison.",
+  "model_calls": 0,
+  "installed_packages": 0,
+  "code_imported_or_executed": false,
+  "ground_truth_read": false,
+  "baseline_failures_scored": 0,
+  "independent_evaluation_cases": 0
+}
