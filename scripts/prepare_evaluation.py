@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/constraint_acquisition_method_gate_20261117.md',
+    'manifests/rbctest-baseline-artifact-inspection-v1.json',
     'manifests/reported-interface-fault-screen-v2.json',
     'scripts/extension/verify_reported_interface_fault_screen_v2.py',
     'notes/reported_interface_fault_screen_update_20261117.md',

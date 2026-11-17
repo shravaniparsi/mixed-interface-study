@@ -66,3 +66,8 @@ One bounded measurement under frozen 825ae87, Node16.13.2/Mongoose4.7.1, twelve 
 ## 2026-11-17: frozen report body review updated
 
 All twelve formerly partial rows received further body review: six full archived-body reads and six explicitly limited context screens. Version2 preserves fifty identifiers and the original first-pass artifact: 1 explicit,14 related,3 insufficient,26 other,6 context-only other; zero application admissions. No new collection/runtime. Do not treat context-only rows as verified negatives or source-mine adjacent reports until a favorable outcome. Contribution design (constraint acquisition under equal source access, or independent descriptive sampling) must precede any new cohort. See notes/reported_interface_fault_screen_update_20261117.md.
+
+
+## 2026-11-17: constraint-acquisition method gate
+
+Fresh-context claim-source check confirms four narrow prior-art pairings and rejects categorical impossibility. ViewPoints/AutoBypass antecedents and RBCTest v1/v4 distinction preclude a generic extraction novelty claim. Four RBCTest setup/code files pinned at 60de49d135fd419ef8a2e93357c025eee154e4c6 inspected without labels, installs or model calls; mode-specific TP gating must be resolved before any end-to-end baseline. Candidate empirical question concerns added frontend evidence under legitimate interface differences, with information-access and algorithm comparisons separated. No new cohort or experiment launched. See notes/constraint_acquisition_method_gate_20261117.md. Q1 contribution still unestablished.
