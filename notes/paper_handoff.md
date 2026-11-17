@@ -119,3 +119,7 @@ Added a bounded TypeScript AST recognizer for the original owner-edit linkedSign
 ## Original resource integration failed before requests
 
 Frozen8c8a207 single attempt:3/3initialization errors, missing DocumentToken in TransferState factory;0requests recorded,0model reconstructions,0validation observations. Protocol closed, no retry. Error-handler source rethrows rather than returning its unused result argument. See notes/petclinic_resource_reconstruction_20261117.md. Existing projection and schema qualifications unchanged; independent scientific cases0 and Q1 evidence incomplete.
+
+## Resource reconstruction v2, explicit empty TransferState
+
+Frozen03b7abb met reconstruction criterion3/3 using original service/resource/model slices and Angular HTTP testing backend. All models match source-derived projection; omitted address becomes empty, null preserved. Validation2measured/1custom-rule error; overall exit1 retained. Empty real TransferState before/after; no DOM/hydration/live server claim. Schedule closed. See notes/petclinic_resource_reconstruction_v2_20261117.md. No independent cases or Q1 benefit established.
