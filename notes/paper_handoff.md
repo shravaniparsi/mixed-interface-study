@@ -147,3 +147,7 @@ Bounded AST adapter applied only to6already exposed development components:3reac
 ## Development template inventory
 
 Added syntax-only HTML inventory on6already exposed templates:6forms/26control elements/16literal constraint declarations;2overlap reactive required attributes, so no naive summed obligation count. Dynamic/activity/submission expressions and unsupported syntax retained.10engineering tests pass; message text and type=email are not promoted into validator declarations. See notes/development_template_inventory_20261117.md. Runtime versions/API mapping remain unqualified; reserved implementation remains unopened.
+
+## Development lockfiles and Angular14package preparation
+
+452aaea collected3verified locks:14.2.0and10.0.11 Angular sets;5.2.0withtwoRxJS resolutions retained;9.xproject lacks sibling lock.2361314 prepared6exact Angular14packages, SHA512verified, no installs/imports/runtime.47,284,065expanded bytes; platform-browser/zone peers not included, no app-ready claim. See notes/development_lockfiles_and_reactive14_preparation_20261117.md. Future plain-class measurement requires its own freeze; reserved sources remain sealed.
