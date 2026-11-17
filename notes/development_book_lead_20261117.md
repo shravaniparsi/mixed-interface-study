@@ -1,0 +1,9 @@
+# Publisher lead remains plausible, not a correctness contract
+
+The preceding turn closed pinned starter documentation without resolving selected-operation validation labels. Under047e220 this turn opened only the exact InfoQ URL linked from the pinned21-points README. The web tool followed a redirect to https://www.infoq.com/minibooks/jhipster-mini-book-7/. No search, linked page, download, form submission or account action occurred.
+
+The publisher identifies Mini-Book7.0 by Matt Raible, displays March7,2023 and describes coverage of JHipster7. It advertises free PDF/ePub downloads and links a public book blog. Those observations support a plausible major-version lead. They do not establish exact compatibility with the pinned application revision, operation-scoped registration obligations or the content of the unread book. Download access conditions were not tested; the page's general sign-in elements do not prove that the book is inaccessible.
+
+The returned web-tool text is retained privately with a hash. It is rendered/tool-supplied page evidence, not an independently archived raw HTML response or immutable book edition. Public records contain limited metadata and assessment, not copied book/page text. No independent labels, defects or cases were added. Reserved material remains sealed.
+
+This bounded page check is closed. A next bounded public-content acquisition may inspect the linked book blog for an accessible, version-identifiable edition/source, but must not assume its contents, follow an unlimited link chain or treat generic educational material as an API contract. The larger missing requirements remain automatic acquisition, competent logical-baseline scope and independently supported intended behavior. No new scientific contribution is claimed from a publisher-page match.
