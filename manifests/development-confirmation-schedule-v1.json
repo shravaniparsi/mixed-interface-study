@@ -1,0 +1,50 @@
+{
+  "kind": "authored_reconstruction_cases",
+  "rows": [
+    {
+      "id": "matching",
+      "form": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "confirmPassword": "abcd"
+      },
+      "language": "en",
+      "expected": {
+        "form_status": "VALID",
+        "save_calls": 1,
+        "doNotMatch": false
+      }
+    },
+    {
+      "id": "mismatching",
+      "form": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "confirmPassword": "wxyz"
+      },
+      "language": "en",
+      "expected": {
+        "form_status": "VALID",
+        "save_calls": 0,
+        "doNotMatch": true
+      }
+    },
+    {
+      "id": "empty",
+      "form": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "confirmPassword": ""
+      },
+      "language": "en",
+      "expected": {
+        "form_status": "INVALID",
+        "save_calls": 0,
+        "doNotMatch": true
+      }
+    }
+  ]
+}
