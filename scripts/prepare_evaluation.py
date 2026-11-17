@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/benchmark-gitlab-mr-form-registration-v1.json',
     'manifests/benchmark-gitlab-members-correction-v2.json',
     'manifests/benchmark-gitlab-issue-results-v1.json',
     'manifests/benchmark-gitlab-members-controls-v1.json',
