@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_agentcompany_gitlab_fixture_v1.py',
     'scripts/extension/inspect_agentcompany_gitlab_runtime_v1.py',
     '.github/workflows/agentcompany_gitlab_fixture_v1.yml',
     'protocol/agentcompany-gitlab-fixture-v1.md',
