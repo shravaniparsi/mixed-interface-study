@@ -1,0 +1,7 @@
+# Native workflow setup evidence, development only
+
+The current transfer evaluator has no demonstrated advantage over source replay. Retire its new-algorithm claim under the existing candidate rejection condition. The original research objective remains API-to-native-workflow compatibility; no Q1 success criterion is relaxed. A future empirical contribution must still demonstrate a nontrivial, independently sampled result beyond existing client/server comparison work.
+
+Before any browser or new workflow execution, inspect exactly two public 21-Points setup files at 29f5a77069bee0163e3cfebbb6fd5969f23160a1: src/test/javascript/cypress/support/commands.ts and src/test/javascript/cypress/e2e/account/login-page.cy.ts. Retrieve once each, max 200 KB, preserve failures. They establish navigation/login setup for a later ordinary-valid admin create/edit control, not defect selection. No reserved source, application API requests, issue access, credential search or test execution in this stage. Only public development defaults may be used later, and only against the isolated local application.
+
+The existing verified JAR contains its index and 98 static files, so the next feasibility question is whether its original browser UI works in the isolated runtime. That must be qualified before claiming any API-to-UI consequence. Do not substitute isolated field replay, schema rejection or a hand-built form for native workflow completion. No defect-producing payloads or independent study admission are authorized by this setup inspection.

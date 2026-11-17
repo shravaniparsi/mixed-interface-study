@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-native-workflow-setup-v1.md',
+    'notes/contribution_review_20261117.md',
+
     'scripts/extension/verify_fixture_field_comparison_v1.py',
     'manifests/development-fixture-field-comparison-v1.json',
     'notes/development_fixture_field_comparison_20261117.md',
