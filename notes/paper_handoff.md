@@ -130,4 +130,4 @@ Frozen682fe2e query returned20of2869, incomplete=false;20commit pins from21reado
 
 ## Local-object exposure audit and pinned structure screen
 
-Precollection Git-object audit expands scanned paths2584→7429 without fetching;0frame-name matches but11362eligible blobs unavailable. Frozen66a448f collected20complete directory trees, no file contents/outcomes.16manifest/JVM co-occurrences,3generator-marker repositories,42package paths; these are signals, not eligibility or independent clusters.0apps admitted. See notes/project_structure_screen_20261117.md. Next metadata file policy must be frozen before contents; labels remain unread.
+Precollection Git-object audit expands scanned paths2584→7429 without fetching;0frame-name matches but11362eligible blobs unavailable. Frozen66a448f collected20complete directory trees, no file contents/outcomes.16manifest/JVM co-occurrences,3generator-marker repositories,41package paths; these are signals, not eligibility or independent clusters.0apps admitted. See notes/project_structure_screen_20261117.md. Next metadata file policy must be frozen before contents; labels remain unread.
