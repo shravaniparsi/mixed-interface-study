@@ -1,0 +1,14 @@
+'use strict';
+const fs=require('fs'),crypto=require('crypto'),assert=require('assert');
+const {analyze}=require('./extract_angular_model_projection_v1.cjs');
+const [compiler,sourcePath]=process.argv.slice(2);
+const ts=require(compiler);assert.equal(ts.version,'6.0.3');
+const source=fs.readFileSync(sourcePath,'utf8');
+const sourceManifest=JSON.parse(fs.readFileSync('manifests/petclinic-source-rule-inventory-v1.json'));
+const entry=sourceManifest.sources.find(s=>s.path.endsWith('/owner-edit.component.ts'));
+assert.equal(crypto.createHash('sha256').update(source).digest('hex'),entry.sha256);
+const owner=sourceManifest.inventories.find(s=>s.schema==='ownerSchema');
+const fields=[...new Set(owner.candidates.map(c=>c.field))];
+const projection=analyze(ts,source,'ownerSchema',fields);
+assert.equal(projection.status,'source_model_projection');
+console.log(JSON.stringify({kind:'exposed_source_projection_inventory',revision:sourceManifest.revision,source:entry,parser_version:ts.version,projection,application_runs:0,independent_cases:0},null,2));

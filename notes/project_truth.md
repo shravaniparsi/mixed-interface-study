@@ -123,3 +123,7 @@ Added a frontend-model-only adapter requiring snapshot/context-bound field-state
 ## Original-source schema replay,2026-11-17
 
 Frozen a5d9871 executed16development rows from3original PetClinic schemas plus original notBlank helper.14measured,2null/custom-validator exceptions;3ordinary controls valid so basic adapter criterion met.3omitted-field models root-valid with missing field unmaterialized, not a browser/API outcome. Original regex/custom rules executed, no mocks. Schedule closed, no rerun or scientific-case credit. See notes/original_schema_replay_20261117.md. C still needs counted reproducible acquisition and a distinction from D; independent frame/labels and Q1 contribution remain open.
+
+## Source-derived edit-model projection
+
+Added a bounded TypeScript AST recognizer for the original owner-edit linkedSignal projection: five missing/undefined-to-empty defaults, null preserved. Upstream resource helper is source-inspected and hashed; raw API response linkage/lifecycle remain unqualified. C and D must share reconstruction. Development regression checks passed, no runtime-study rerun or independent cases. See notes/petclinic_model_projection_20261117.md and manifests/petclinic-model-projection-v1.json.
