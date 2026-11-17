@@ -127,3 +127,7 @@ Frozen a5d9871 executed16development rows from3original PetClinic schemas plus o
 ## Source-derived edit-model projection
 
 Added a bounded TypeScript AST recognizer for the original owner-edit linkedSignal projection: five missing/undefined-to-empty defaults, null preserved. Upstream resource helper is source-inspected and hashed; raw API response linkage/lifecycle remain unqualified. C and D must share reconstruction. Development regression checks passed, no runtime-study rerun or independent cases. See notes/petclinic_model_projection_20261117.md and manifests/petclinic-model-projection-v1.json.
+
+## Original resource integration failed before requests
+
+Frozen8c8a207 single attempt:3/3initialization errors, missing DocumentToken in TransferState factory;0requests recorded,0model reconstructions,0validation observations. Protocol closed, no retry. Error-handler source rethrows rather than returning its unused result argument. See notes/petclinic_resource_reconstruction_20261117.md. Existing projection and schema qualifications unchanged; independent scientific cases0 and Q1 evidence incomplete.
