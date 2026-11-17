@@ -1,0 +1,13 @@
+# Selected-operation assertion review and serialization
+
+The remaining relevant methods were reviewed in the three Java files previously triaged: 21-Points admin create/update, old JHipster registration, and old admin create/update as contextual material. Other account/password-reset/read/delete/equality methods are outside the selected operation review; no exhaustive semantic audit of those methods is claimed.
+
+21-Points admin tests assert creation with persistence, rejection of a supplied ID, rejection of existing login/email, update success with changed persisted fields, and rejection of a collision with another user's login/email. They run with mock admin authority and database setup. The older admin tests target /api/users, not the newer /api/admin/users, and use standalone MockMvc; their expectations cannot be transplanted to the newer operation.
+
+Registration duplicate handling is explicitly state dependent in 21-Points: repeated nonactivated registration can succeed, while a later activated conflict is rejected. The older registration tests have different sequences/setup. The older test named testRegisterAdminIsIgnored supplies ROLE_USER, so its name alone does not establish rejection/removal of a submitted admin role. The newer counterpart supplies ADMIN and asserts persisted USER. These version and setup differences preclude treating similar test names as equivalent independent labels.
+
+The TestUtil mapper uses NON_EMPTY. A single frozen local qualification at e6a0969 reused the original application JAR's compiled DTO/constants and bundled libraries, together with extracted original test setter statements and serializer methods. All five fixtures serialized without errors in 1.843 seconds. The null-password fixture's JSON omits password entirely. This is byte evidence, not an inferred effect of the test name. The other four include password. OpenJDK 19.0.1 differs from the prior Java 17 CI environment; this qualification does not execute Spring, a controller or an integration test.
+
+Original artifact bytes, wrapper, command outputs and hashes are retained. The initial Python bytecode syntax-check command could not write its cache outside the sandbox; a read-only AST parse succeeded. The Java compile/run succeeded on its first attempt. No scientific cases were added and no runtime backend outcomes are claimed.
+
+Next execution should compare all five fixed serialized fixtures, not just the apparent schema gaps, retaining expected assertion scope and identical inputs for applicable baselines. Do not add explicit JSON null as though it were covered by the original null-password assertion. Independent normative provenance and held-out evidence remain unresolved.

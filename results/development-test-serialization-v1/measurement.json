@@ -1,0 +1,151 @@
+{
+  "kind": "original_test_fixture_serialization",
+  "rows": [
+    {
+      "id": "testRegisterValid",
+      "status": "serialized",
+      "body": {
+        "login": "test-register-valid",
+        "firstName": "Alice",
+        "lastName": "Test",
+        "email": "test-register-valid@example.com",
+        "imageUrl": "http://placehold.it/50x50",
+        "activated": false,
+        "langKey": "en",
+        "authorities": [
+          "ROLE_USER"
+        ],
+        "password": "password"
+      },
+      "body_sha256": "b540e1cdd9acde1f1a7efde6a387183b6f859be6aca76dd7bec97e18b6de6d44",
+      "password_presence": "present"
+    },
+    {
+      "id": "testRegisterInvalidLogin",
+      "status": "serialized",
+      "body": {
+        "login": "funky-log(n",
+        "firstName": "Funky",
+        "lastName": "One",
+        "email": "funky@example.com",
+        "imageUrl": "http://placehold.it/50x50",
+        "activated": true,
+        "langKey": "en",
+        "authorities": [
+          "ROLE_USER"
+        ],
+        "password": "password"
+      },
+      "body_sha256": "521f12c7401d183220855c98e68f2365af9a512ec32a86e0ecc7db2785733058",
+      "password_presence": "present"
+    },
+    {
+      "id": "testRegisterInvalidEmail",
+      "status": "serialized",
+      "body": {
+        "login": "bob",
+        "firstName": "Bob",
+        "lastName": "Green",
+        "email": "invalid",
+        "imageUrl": "http://placehold.it/50x50",
+        "activated": true,
+        "langKey": "en",
+        "authorities": [
+          "ROLE_USER"
+        ],
+        "password": "password"
+      },
+      "body_sha256": "4be4095125749e8f80a39c94cd11db825fdb861b78db11d18ef3cef54deb434b",
+      "password_presence": "present"
+    },
+    {
+      "id": "testRegisterInvalidPassword",
+      "status": "serialized",
+      "body": {
+        "login": "bob",
+        "firstName": "Bob",
+        "lastName": "Green",
+        "email": "bob@example.com",
+        "imageUrl": "http://placehold.it/50x50",
+        "activated": true,
+        "langKey": "en",
+        "authorities": [
+          "ROLE_USER"
+        ],
+        "password": "123"
+      },
+      "body_sha256": "88c60d944415a26dbccd95b1af2baee4f16a4dbeac398de689116a2f790c435d",
+      "password_presence": "present"
+    },
+    {
+      "id": "testRegisterNullPassword",
+      "status": "serialized",
+      "body": {
+        "login": "bob",
+        "firstName": "Bob",
+        "lastName": "Green",
+        "email": "bob@example.com",
+        "imageUrl": "http://placehold.it/50x50",
+        "activated": true,
+        "langKey": "en",
+        "authorities": [
+          "ROLE_USER"
+        ]
+      },
+      "body_sha256": "dbc769e0ed80915f55fc48f37540997cca60e90b8d2b457a8a13ca75ca4c35d5",
+      "password_presence": "absent"
+    }
+  ],
+  "errors": [],
+  "commands": [
+    {
+      "args": [
+        "java",
+        "-version"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "openjdk version \"19.0.1\" 2022-10-18\nOpenJDK Runtime Environment (build 19.0.1+10-21)\nOpenJDK 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)\n"
+    },
+    {
+      "args": [
+        "javac",
+        "-version"
+      ],
+      "exit_code": 0,
+      "stdout": "javac 19.0.1\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "javac",
+        "-cp",
+        "/private/tmp/development-test-serialization-v1/BOOT-INF/classes:/private/tmp/development-test-serialization-v1/BOOT-INF/lib/*",
+        "SerializationProbe.java"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "java",
+        "-cp",
+        "/private/tmp/development-test-serialization-v1:/private/tmp/development-test-serialization-v1/BOOT-INF/classes:/private/tmp/development-test-serialization-v1/BOOT-INF/lib/*",
+        "SerializationProbe"
+      ],
+      "exit_code": 0,
+      "stdout": "testRegisterValid\teyJsb2dpbiI6InRlc3QtcmVnaXN0ZXItdmFsaWQiLCJmaXJzdE5hbWUiOiJBbGljZSIsImxhc3ROYW1lIjoiVGVzdCIsImVtYWlsIjoidGVzdC1yZWdpc3Rlci12YWxpZEBleGFtcGxlLmNvbSIsImltYWdlVXJsIjoiaHR0cDovL3BsYWNlaG9sZC5pdC81MHg1MCIsImFjdGl2YXRlZCI6ZmFsc2UsImxhbmdLZXkiOiJlbiIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJwYXNzd29yZCI6InBhc3N3b3JkIn0=\ntestRegisterInvalidLogin\teyJsb2dpbiI6ImZ1bmt5LWxvZyhuIiwiZmlyc3ROYW1lIjoiRnVua3kiLCJsYXN0TmFtZSI6Ik9uZSIsImVtYWlsIjoiZnVua3lAZXhhbXBsZS5jb20iLCJpbWFnZVVybCI6Imh0dHA6Ly9wbGFjZWhvbGQuaXQvNTB4NTAiLCJhY3RpdmF0ZWQiOnRydWUsImxhbmdLZXkiOiJlbiIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJwYXNzd29yZCI6InBhc3N3b3JkIn0=\ntestRegisterInvalidEmail\teyJsb2dpbiI6ImJvYiIsImZpcnN0TmFtZSI6IkJvYiIsImxhc3ROYW1lIjoiR3JlZW4iLCJlbWFpbCI6ImludmFsaWQiLCJpbWFnZVVybCI6Imh0dHA6Ly9wbGFjZWhvbGQuaXQvNTB4NTAiLCJhY3RpdmF0ZWQiOnRydWUsImxhbmdLZXkiOiJlbiIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJwYXNzd29yZCI6InBhc3N3b3JkIn0=\ntestRegisterInvalidPassword\teyJsb2dpbiI6ImJvYiIsImZpcnN0TmFtZSI6IkJvYiIsImxhc3ROYW1lIjoiR3JlZW4iLCJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImltYWdlVXJsIjoiaHR0cDovL3BsYWNlaG9sZC5pdC81MHg1MCIsImFjdGl2YXRlZCI6dHJ1ZSwibGFuZ0tleSI6ImVuIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sInBhc3N3b3JkIjoiMTIzIn0=\ntestRegisterNullPassword\teyJsb2dpbiI6ImJvYiIsImZpcnN0TmFtZSI6IkJvYiIsImxhc3ROYW1lIjoiR3JlZW4iLCJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImltYWdlVXJsIjoiaHR0cDovL3BsYWNlaG9sZC5pdC81MHg1MCIsImFjdGl2YXRlZCI6dHJ1ZSwibGFuZ0tleSI6ImVuIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl19\n",
+      "stderr": ""
+    }
+  ],
+  "independent_evaluation_cases": 0,
+  "application_requests": 0,
+  "jar_sha256": "1c7500685740eb01994aa13ea381f3eb9af2c65bfb92f2379e42bb909225c71b",
+  "source_sha256": "0bd5e7846740f38ae337547c1f73637e6964d6239cce05735cab18501563c48f",
+  "helper_sha256": "132ed1ac957f90b8e0b8dc1cfe458fa8e86bf9d30ee53b6e8330de9fe6eae5b1",
+  "java_version": "openjdk version \"19.0.1\" 2022-10-18\nOpenJDK Runtime Environment (build 19.0.1+10-21)\nOpenJDK 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)",
+  "compiler_version": "javac 19.0.1",
+  "wrapper_sha256": "64664d4b3517cd8cf0bb1b99cad809fed71ae1ccd13d8a36e5fe7b4c96dec516",
+  "elapsed_seconds": 1.842755
+}
