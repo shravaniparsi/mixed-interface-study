@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_development_spec_startup_v1.py',
+    'manifests/development-spec-startup-v1.json',
+    'notes/development_spec_startup_v1_failure_20261117.md',
+    'results/development-spec-startup-v1-ci-44088230544/application.log',
+    'results/development-spec-startup-v1-ci-44088230544/harness-exit.json',
+    'results/development-spec-startup-v1-ci-44088230544/interfaces.json',
+    'results/development-spec-startup-v1-ci-44088230544/java-version.txt',
+    'results/development-spec-startup-v1-ci-44088230544/measurement.json',
+    'results/development-spec-startup-v1-ci-44088230544/run.json',
+    'results/development-spec-startup-v1-ci-44088230544/timing.json',
+
     'protocol/development-spec-startup-v1.md',
     'scripts/extension/qualify_development_spec_startup_v1.py',
     '.github/workflows/development_spec_startup_v1.yml',
