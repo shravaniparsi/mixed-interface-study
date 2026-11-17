@@ -44,6 +44,8 @@ jobs:
         run: python -m unittest discover -s tests -v 2>&1 | tee "$CI_ARTIFACT_DIR/python-tests.log"
       - name: Bootstrap helper tests
         run: python -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"
+      - name: Reconstruct README ordinary controls v1
+        run: python scripts/extension/verify_benchmark_gitlab_readme_controls_v1.py --archive results/benchmark-gitlab-readme-controls-v1-ci-44027377236 --verify
       - name: Test README evidence verifier
         run: python -m unittest discover -s scripts/extension -p 'test_benchmark_gitlab_readme_verifier_v1.py'
       - name: Verify packaged Reddit source evidence
