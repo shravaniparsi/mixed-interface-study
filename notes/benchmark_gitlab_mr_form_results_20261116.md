@@ -1,0 +1,9 @@
+# Selected MR form: completed read-only inspection
+
+Run 44019120926 completed at registered source 068db7f5bfe5713fe7c630a98b0a73980f041571. One job used 686 seconds (11.4333 job-minutes), no paid model calls, zero scientific cases. This duration is not an invoice. Actor 2330 and pinned GitLab 15.7.5 image were verified. The guard allowed no browser business writes; only three external avatar GETs were blocked and no local request was blocked.
+
+The source feature/replace-gulp resolves to commit 2b3ec149575466e9994d7b7709fcac6b317d5954, target main to ed37a2f2f0070d24e9e30f06672ceb27d740fb30. The query for open MRs with these branches returned one existing MR, IID 1141, with no count truncation. We cannot assume the absent-target prerequisite for an ordinary creation control. No attempted creation or rejection was observed, so neither an application defect nor task impossibility has been demonstrated. Do not silently delete or close this MR, change the selected branch, or reuse it as if newly created. A benchmark-compatible reset or explicitly registered fixture adaptation must be justified separately before write qualification.
+
+The bound native creation form rendered. It suggested title `Feature/replace gulp`, an empty description, source-branch deletion checked and squash unchecked. These are observed defaults, not defects. A Reviewer label and two Unassigned buttons were present. The instrument's reviewer-labelled-button selector matched zero buttons; it did not inspect the reviewer dropdown. That failure of selector coverage must not be described as absence of native reviewer support. No reviewer update was attempted.
+
+The six previously frozen MR specifications remain unexecuted. This run does not qualify a scientific triple, validate the task evaluator, or provide incremental detection evidence. Reconstruct results using scripts/extension/verify_benchmark_gitlab_mr_form_v1.py and the archived raw artifacts.
