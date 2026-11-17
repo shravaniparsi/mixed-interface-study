@@ -111,3 +111,7 @@ One frozen six-row mocked-dependency execution at c33d912 confirms model-to-body
 ## 2026-11-17: direct Angular setup closed unsuccessfully
 
 One bounded setup at cec72e0 failed with opaque AssertionError during Node extraction, expanded counter71,923,405bytes; executable absent and no Angular runtime node_modules. Precise assertion not logged; oversized member is only a hypothesis. No alternate version/retry or framework measurements. Retained script/log/inventory in results/angular-runtime-semantics-setup-v1. Prior templates remain source-qualified only. Before another setup, improve phase/member/checksum provenance and justify bounds. See notes/angular_runtime_semantics_setup_20261117.md.
+
+## Actual framework qualification,2026-11-17
+
+Preparation v2 cc08484 succeeded. Frozen48-row actual Angular22.2.3 measurement6e20c38 completed:36measured rows agree;12missing/undefined rows fail at field-handle access. Full qualification=false. No mocked services, no rerun, no API/browser/server outcome or new scientific cases. Missing-field template predictions are not form-state semantics and require an explicit field-materialization applicability gate before transfer. Evidence and limits: notes/angular_runtime_measurement_20261117.md. Independent evaluation and Q1 contribution remain incomplete.
