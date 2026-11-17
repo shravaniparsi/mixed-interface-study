@@ -65,7 +65,8 @@ def build():
         assert all(m['Type'] == 'volume' for m in mounts)
         transport = dict(requested_ports=inspected['HostConfig']['PortBindings'], effective_ports=inspected['NetworkSettings']['Ports'],
                          container_running=inspected['State']['Running'], oom_killed=inspected['State']['OOMKilled'],
-                         internal_health=inspected['State'].get('Health', {}).get('Status'))
+                         internal_health=inspected['State'].get('Health', {}).get('Status'), exit_code=inspected['State']['ExitCode'],
+                         started_at=inspected['State']['StartedAt'], finished_at=inspected['State']['FinishedAt'])
     if 'network_namespace_pid' in runtime:
         initial = json.loads((artifact / 'startup-container.json').read_text())[0]
         assert initial['Id'] == runtime['container_id']
@@ -105,6 +106,13 @@ def build():
         assert version and version.startswith('17.5.1')
         assert any(r.get('status') == 200 and r.get('body', '').strip() == 'GitLab OK' for r in runtime['readiness'])
         assert IMAGE in runtime['image_identity']['RepoDigests']
+    redactions = None
+    if (artifact / 'publication-redactions.json').exists():
+        redactions = json.loads((artifact / 'publication-redactions.json').read_text())
+        log = (artifact / redactions['file']).read_bytes()
+        assert hashlib.sha256(log).hexdigest() == redactions['published_sha256']
+        assert redactions['field'] == 'secret_token' and redactions['replacements'] == 1
+        assert log.count(b'[REDACTED_EPHEMERAL_SERVICE_SECRET]') == 1
     timing = json.loads((base / 'timing.json').read_text())['billable']['UBUNTU']
     assert timing['jobs'] == len(timing['job_runs']) == 1 and timing['job_runs'][0]['job_id'] == JOB
     assert timing['total_ms'] == sum(j['duration_ms'] for j in timing['job_runs'])
@@ -112,6 +120,7 @@ def build():
     return dict(run_id=RUN, job_id=JOB, frozen_head=HEAD, conclusion=run['conclusion'], diagnostic_status=runtime['status'],
                 stage=runtime['stage'], error=runtime.get('error'), network_namespace=runtime.get('network_namespace'), packaged_version=version, cleanup_verified=cleanup_ok,
                 transport=transport, readiness_attempts=len(runtime['readiness']),
+                health_http_attempts=sum(r.get('method') == 'GET' for r in runtime['readiness']), publication_redactions=redactions,
                 readiness_errors=dict(Counter(r['error_type'] for r in runtime['readiness'] if 'error_type' in r)),
                 request_statuses=[dict(path=r['path'], status=r['status']) for r in requests], token_lifecycle=lifecycle,
                 fixture=runtime.get('fixture'), elapsed_job_seconds=(timestamp(job['completedAt'])-timestamp(job['startedAt'])).total_seconds(),
