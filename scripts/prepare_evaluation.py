@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/inventory_reactive_forms_v1.cjs',
+    'scripts/extension/test_reactive_form_inventory_v1.cjs',
+    'scripts/extension/inventory_development_reactive_forms_v1.cjs',
+    'manifests/development-reactive-form-inventory-v1.json',
+    'notes/development_reactive_inventory_20261117.md',
+
     'manifests/development-form-source-screen-v1.json',
     'manifests/development-form-syntax-notes-v1.json',
     'notes/project_partition_and_development_sources_20261117.md',

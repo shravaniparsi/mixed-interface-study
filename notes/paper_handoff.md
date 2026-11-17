@@ -139,3 +139,7 @@ Frozen28db71d:41/41scheduled manifests integrity-verified/parsed,17repositories 
 ## Family reservation and development-source pilot
 
 Partition rule frozenfc250e6 before assignment:16metadata groups split8/8,11development and9reserved repositories. No alternate seed; same-owner/generator-risk links stay together, independence unresolved. Source schedule1527aaf read12verified files (6components/6HTML) only in4development repositories/3groups; reactive and template forms require broader adapter support. Reserved source/test/issue outcomes remain unread. See notes/project_partition_and_development_sources_20261117.md.0independent evaluation cases; methods/labels/cost gates remain.
+
+## Development reactive-form inventory
+
+Bounded AST adapter applied only to6already exposed development components:3reactive forms,16controls,29built-in validator declarations (7required/8minLength/10maxLength/2pattern/2email). Unsupported/custom/async/group options retained; reset/getRawValue/conditions observed without API inference.3template-bound components yield0reactive matches, not absence of validation. Regression checks pass,0runtime/independent evaluation cases. See notes/development_reactive_inventory_20261117.md. Reserved sources remain unopened.

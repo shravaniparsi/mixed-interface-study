@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('assert');const {inventory}=require('./inventory_reactive_forms_v1.cjs');const ts=require(process.argv[2]);assert.equal(ts.version,'6.0.3');
+const wrap=body=>"import {FormGroup,FormControl,FormBuilder,Validators} from '@angular/forms';\nclass Example { "+body+' }';
+const parse=body=>inventory(ts,wrap(body));
+let x=parse("f=new FormGroup({name:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(2),customCheck]})});");
+assert.equal(x.forms.length,1);assert.deepEqual(x.forms[0].controls[0].validators.map(v=>v.status),['recognized_declaration','recognized_declaration','unsupported']);assert.equal(x.complete_api_rules,0);
+x=parse("constructor(private fb:FormBuilder){} init(){this.f=this.fb.group({name:['',Validators.compose([Validators.required,Validators.maxLength(4)])]});}");assert.equal(x.forms[0].controls[0].validators.length,2);assert.equal(x.forms[0].context,'assignment_execution_context_unqualified');
+x=parse("f=new FormGroup({name:new FormControl('',{validators:Validators.email,asyncValidators:remoteCheck})});");assert.equal(x.forms[0].controls[0].unresolved.length,1);
+x=parse("f=new FormGroup({name:new FormControl('',Validators.pattern(getPattern()))});");assert.equal(x.forms[0].controls[0].validators[0].status,'unsupported');
+x=parse("f=new FormGroup({...other,name:new FormControl('')},{validators:crossField});");assert.equal(x.forms[0].unresolved.length,2);
+x=parse("f=new FormGroup({name:new FormControl(''),name:new FormControl('x')});");assert(x.forms[0].unresolved.some(v=>v.reason==='duplicate_field'));
+x=parse("f=new FormGroup({name:new FormControl('')});init(){this.f.reset(value);this.f.disable();}");assert.deepEqual(x.observed_calls.map(c=>c.method),['reset','disable']);
+x=parse("text='Your email is required';");assert.equal(x.forms.length,0);
+x=inventory(ts,"import {FormGroup as G,FormControl,Validators} from '@angular/forms';class X{f=new G({name:new FormControl('',Validators.required)});}");assert.equal(x.forms.length,0);
+x=parse("constructor(fb:FormBuilder){} init(){this.f=this.fb.group({name:['',Validators.required]});}");assert.equal(x.forms.length,0);
+x=parse("submit(){if(password!==confirmation){return;} else {save();}}");assert.equal(x.observed_conditions.length,1);assert.equal(x.forms.length,0);
+console.log('Reactive inventory development checks passed; no runtime or API qualification.');
