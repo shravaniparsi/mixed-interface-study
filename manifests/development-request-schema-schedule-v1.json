@@ -1,0 +1,726 @@
+{
+  "kind": "authored_development_cases_not_independent_data",
+  "spec_sha256": "2c8546ccc3d04eb7166aec4a10aea1434a89a25ea3f78188bd3df5d0b8231af1",
+  "cases": [
+    {
+      "id": "register:ordinary",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:login-omit",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:login-null",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": null,
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:login-empty",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:login-bool",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": true,
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:email-omit",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:email-null",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": null,
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:email-short",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "a@b",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:email-unformatted",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "abcde",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:password-omit",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:password-null",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": null,
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:password-short",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abc",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:password-50",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:password-51",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:password-100",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:password-101",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:language-short",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "e"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:extra-field",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "unexpected": 1
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "register:id-bool",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "id": true
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "register:invalid-date",
+      "path": "/api/register",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "createdDate": "not-a-date"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:ordinary",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:login-omit",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:login-null",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": null,
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:login-empty",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:login-bool",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": true,
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:email-omit",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:email-null",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": null,
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:email-short",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "a@b",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:email-unformatted",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "abcde",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-omit",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-null",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": null,
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-short",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abc",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-50",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-51",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-100",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:password-101",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:language-short",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "e"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:extra-field",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "unexpected": 1
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-create:id-bool",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "id": true
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-create:invalid-date",
+      "path": "/api/admin/users",
+      "method": "post",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "createdDate": "not-a-date"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:ordinary",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:login-omit",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:login-null",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": null,
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:login-empty",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:login-bool",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": true,
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:email-omit",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:email-null",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": null,
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:email-short",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "a@b",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:email-unformatted",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "abcde",
+        "password": "abcd",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-omit",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-null",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": null,
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-short",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abc",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-50",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-51",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-100",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:password-101",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "langKey": "en"
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:language-short",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "e"
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:extra-field",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "unexpected": 1
+      },
+      "expected": "satisfied"
+    },
+    {
+      "id": "admin-update:id-bool",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "id": true
+      },
+      "expected": "violated"
+    },
+    {
+      "id": "admin-update:invalid-date",
+      "path": "/api/admin/users",
+      "method": "put",
+      "body": {
+        "login": "ana",
+        "email": "ana@example.com",
+        "password": "abcd",
+        "langKey": "en",
+        "createdDate": "not-a-date"
+      },
+      "expected": "violated"
+    }
+  ]
+}
