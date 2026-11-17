@@ -1,0 +1,11 @@
+# Final membership qualification: closed, unqualified
+
+Run 44021434885 completed at registered source 789d064f8971fa5e34b839ce2b8032f753e22bef. All three artifacts were recovered and independently reconstructed. Each branch had the pinned image and GitLab version, actor 2330, absence preflight, browser cleanup confirmation and a distinct container identity. Container removal was attempted but no post-removal readback was archived; each branch used its own disposable hosted runner.
+
+Native/native failed at wait_generated_path before any native write was recorded. The exact-name-and-slug predicate timed out. Failure metadata does not retain those input values, so the specific mismatch and underlying cause are unknown. Native producer state is missing, not a passing baseline. The registered stopping rule was triggered and now closes membership qualification: no further repairs, reruns or scientific execution for this family in this study.
+
+API/native and API/API both passed. They started from identical recorded project states and initial memberships, added exactly users 5, 43 and 2367 at Developer role 30 while retaining owner 2330 at 50, and ended in identical project and membership states. Native invitation POST /api/v4/projects/194/invitations returned 201. This resolves the earlier invitation selector failure for this ordinary fixture; it does not provide the missing native producer baseline or qualify the three-path comparison.
+
+Durations were 402, 542 and 352 seconds, totaling 1296 seconds (21.6 job-minutes). All three membership qualification attempts total 4209 seconds (70.15 job-minutes), nine ordinary branch attempts, zero scientific cases and zero paid model calls. These job durations are not billed charges. Failed attempts remain archived alongside successes.
+
+The six frozen membership specifications remain selected and unexecuted due to qualification failure. They cannot be counted as scientific negative results, independent defects, or evidence that API/native gaps are absent. The completed issue cohort remains closed. MR and README still require their separately documented qualification work; directory and Reddit remain retained unqualified families.
