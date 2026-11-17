@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "protocol/rbctest-request-fit-v1.md",
     'results/development-guard-acquisition-v2/measurement.json',
     'manifests/development-guard-acquisition-v2.json',
     'notes/development_guard_acquisition_20261117.md',
