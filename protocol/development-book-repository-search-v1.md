@@ -1,0 +1,3 @@
+# One fixed metadata search for the already identified book
+
+The prior direct book-blog open failed in the web tool and is closed without retries. Search once for the exact query: "JHipster Mini-Book" "7.0" GitHub source. No alternate query or broad defect/application search. Inspect returned titles/snippets/URLs only in this stage. Record candidates and edition uncertainty; do not open repository files, source implementations, tests, issues or book text. This locates possible public text of the already identified development documentation, not replacement applications or favorable outcomes. Search result snippets are discovery evidence, not verified correctness requirements. Publish this policy before searching.
