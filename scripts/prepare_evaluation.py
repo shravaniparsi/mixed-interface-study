@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/development_http_serialization_v1_failure_20261117.md',
+    'protocol/development-http-serialization-v2.md',
+    'scripts/extension/qualify_http_serialization_v2.mjs',
+    'results/development-http-serialization-v2/expected.json',
+    'results/development-http-serialization-v1/comparison.json',
+    'results/development-http-serialization-v1/execution.json',
+    'results/development-http-serialization-v1/measurement.json',
+    'results/development-http-serialization-v1/module-resolution-diagnosis.json',
+    'results/development-http-serialization-v1/stderr.txt',
+    'results/development-http-serialization-v1/stdout.txt',
+
     'manifests/development-http-setup-source-v1.json',
     'protocol/development-http-serialization-v1.md',
     'scripts/extension/qualify_http_serialization_v1.mjs',
