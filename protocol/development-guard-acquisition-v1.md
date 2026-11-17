@@ -1,0 +1,7 @@
+# Static guard acquisition qualification
+
+Freeze extractor and runner before one acquisition from the already exposed development registration component (source screen index 1). Reuse exactly the six shared-comparison-v1 records and archived D verdicts; do not rerun the application or change inputs. This is implementation qualification on known outcomes, not prospective scientific validation. The new operation is AST-based acquisition of the strict binary guard and aliases, replacing the previous manually encoded field comparison. Method, form and service/sink selection remain supplied manually. No automatic workflow discovery, normative labeling or general algorithmic novelty is claimed.
+
+The extractor supports a narrow terminal if/else skeleton, constant raw-snapshot destructuring, ordinary boolean flag assignments and a single selected service sink. Unsupported syntax yields unsupported; absent or non-string predicate inputs yield unknown. Branch selection is qualified only under the stated plain-instance, stable-snapshot and nonthrowing-payload assumptions. It does not prove actual HTTP emission, template validity or API correctness. The existing stronger replay result remains the reference, with shared evidence and provenance unchanged.
+
+Retain all six rows, extraction errors and unknowns. Report acquisition time separately, without runtime efficiency claims. Run once; no extra cases or mutations selected after the result. Authored unit tests exercise rejection behavior but contribute zero independent evaluation cases.
