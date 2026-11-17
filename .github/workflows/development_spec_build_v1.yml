@@ -1,0 +1,74 @@
+name: Development original application build v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Initialize evidence
+        run: mkdir -p "$RUNNER_TEMP/spec-build-evidence"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: mraible/21-points
+          ref: 29f5a77069bee0163e3cfebbb6fd5969f23160a1
+          path: application
+          persist-credentials: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78
+        with:
+          distribution: temurin
+          java-version: '17.0.2+8'
+      - name: Build original application
+        working-directory: application
+        run: |
+          evidence_dir="$RUNNER_TEMP/spec-build-evidence"
+          test "$(git rev-parse HEAD)" = 29f5a77069bee0163e3cfebbb6fd5969f23160a1
+          git rev-parse HEAD > "$evidence_dir/source-commit.txt"
+          java -version > "$evidence_dir/java-version.txt" 2>&1
+          sha256sum gradlew gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.properties > "$evidence_dir/wrapper-sha256.txt"
+          df -h . > "$evidence_dir/disk-before.txt"
+          start_time=$(date +%s)
+          set +e
+          timeout 1500 ./gradlew --no-daemon --console=plain bootJar > "$evidence_dir/build.log" 2>&1
+          command_exit=$?
+          set -e
+          end_time=$(date +%s)
+          printf '{"exit_code":%s,"elapsed_seconds":%s,"command_timeout_seconds":1500}\n' "$command_exit" "$((end_time-start_time))" > "$evidence_dir/execution.json"
+          df -h . > "$evidence_dir/disk-after.txt"
+          git status --short > "$evidence_dir/git-status-after.txt"
+          EVIDENCE_DIR="$evidence_dir" python3 - <<'PYJAR'
+          import hashlib, json, os, pathlib, shutil, zipfile
+          out=pathlib.Path(os.environ['EVIDENCE_DIR'])
+          jars=sorted(pathlib.Path('build/libs').glob('*.jar'))
+          rows=[]
+          for p in jars:
+              row={'name':p.name,'bytes':p.stat().st_size}
+              if row['bytes']<=268435456:
+                  row['sha256']=hashlib.sha256(p.read_bytes()).hexdigest()
+                  try:
+                      with zipfile.ZipFile(p) as z:
+                          names=z.namelist()
+                          row['executable_boot_jar']=('org/springframework/boot/loader/JarLauncher.class' in names and any(n.startswith('BOOT-INF/classes/') for n in names))
+                  except zipfile.BadZipFile:
+                      row['executable_boot_jar']=False
+                  if len(jars)==1:
+                      shutil.copyfile(p,out/'application.jar')
+              else:
+                  row['status']='over_archive_bound'
+              rows.append(row)
+          (out/'jars.json').write_text(json.dumps(rows,indent=2)+'\n')
+          PYJAR
+          exit "$command_exit"
+      - name: Retain qualification evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: development-spec-build-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/spec-build-evidence/
+          retention-days: 1
+          if-no-files-found: warn
