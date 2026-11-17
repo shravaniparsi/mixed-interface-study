@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-fixture-comparison-v1.md',
+    'scripts/extension/compare_development_fixture_schema_v1.py',
+    'scripts/extension/qualify_development_fixture_http_v1.py',
+    '.github/workflows/development_fixture_http_v1.yml',
+
     'scripts/extension/verify_development_test_serialization_v1.py',
     'results/development-test-serialization-v1/measurement.json',
     'results/development-test-serialization-v1/SerializationProbe.java',
