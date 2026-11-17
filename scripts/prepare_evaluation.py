@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/angular-runtime-semantics-qualification-v1.md',
     'scripts/extension/verify_petclinic_submission_boundary_v1.py',
     'notes/petclinic_submission_boundary_qualification_20261117.md',
     'results/petclinic-submission-boundary-qualification-v1/measurement.json',
