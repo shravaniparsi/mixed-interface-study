@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_development_shared_comparison_v1.py',
+    'manifests/development-shared-comparison-v1.json',
+    'notes/development_shared_comparison_20261117.md',
+    'results/development-shared-comparison-v1/measurement.json',
+
     'protocol/development-shared-comparison-v1.md',
     'scripts/extension/build_shared_comparison_schedule_v1.py',
     'scripts/extension/qualify_development_shared_comparison_v1.mjs',
