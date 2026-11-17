@@ -1,0 +1,935 @@
+{
+  "kind": "authored_development_request_schema_qualification",
+  "spec_sha256": "2c8546ccc3d04eb7166aec4a10aea1434a89a25ea3f78188bd3df5d0b8231af1",
+  "schedule_sha256": "d7a7fc08425bf6b647de9ed826d6cf4b524747fb1d4d08f4bc3164db4071adcc",
+  "versions": {
+    "openapi-schema-validator": "0.6.3",
+    "jsonschema": "4.26.0",
+    "referencing": "0.36.2"
+  },
+  "python": "3.12.13",
+  "elapsed_seconds": 0.0029802080243825912,
+  "rows": [
+    {
+      "id": "register:ordinary",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:login-omit",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "required",
+          "path": [],
+          "schema_path": [
+            "required"
+          ],
+          "message": "'login' is a required property"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:login-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:login-empty",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "minLength"
+          ],
+          "message": "'' should be non-empty"
+        },
+        {
+          "validator": "pattern",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "pattern"
+          ],
+          "message": "'' does not match '^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:login-bool",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "True is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:email-omit",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:email-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:email-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "minLength"
+          ],
+          "message": "'a@b' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:email-unformatted",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-omit",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "password"
+          ],
+          "schema_path": [
+            "properties",
+            "password",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "password"
+          ],
+          "schema_path": [
+            "properties",
+            "password",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "password"
+          ],
+          "schema_path": [
+            "properties",
+            "password",
+            "minLength"
+          ],
+          "message": "'abc' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-50",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-51",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-100",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:password-101",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "maxLength",
+          "path": [
+            "password"
+          ],
+          "schema_path": [
+            "properties",
+            "password",
+            "maxLength"
+          ],
+          "message": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' is too long"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:language-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "langKey"
+          ],
+          "schema_path": [
+            "properties",
+            "langKey",
+            "minLength"
+          ],
+          "message": "'e' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:extra-field",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "register:id-bool",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "id"
+          ],
+          "schema_path": [
+            "properties",
+            "id",
+            "type"
+          ],
+          "message": "True is not of type 'integer'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "register:invalid-date",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "format",
+          "path": [
+            "createdDate"
+          ],
+          "schema_path": [
+            "properties",
+            "createdDate",
+            "format"
+          ],
+          "message": "'not-a-date' is not a 'date-time'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:ordinary",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:login-omit",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "required",
+          "path": [],
+          "schema_path": [
+            "required"
+          ],
+          "message": "'login' is a required property"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:login-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:login-empty",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "minLength"
+          ],
+          "message": "'' should be non-empty"
+        },
+        {
+          "validator": "pattern",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "pattern"
+          ],
+          "message": "'' does not match '^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:login-bool",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "True is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:email-omit",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:email-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:email-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "minLength"
+          ],
+          "message": "'a@b' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:email-unformatted",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-omit",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-null",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-short",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-50",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-51",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-100",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:password-101",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:language-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "langKey"
+          ],
+          "schema_path": [
+            "properties",
+            "langKey",
+            "minLength"
+          ],
+          "message": "'e' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:extra-field",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:id-bool",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "id"
+          ],
+          "schema_path": [
+            "properties",
+            "id",
+            "type"
+          ],
+          "message": "True is not of type 'integer'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-create:invalid-date",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "format",
+          "path": [
+            "createdDate"
+          ],
+          "schema_path": [
+            "properties",
+            "createdDate",
+            "format"
+          ],
+          "message": "'not-a-date' is not a 'date-time'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:ordinary",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:login-omit",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "required",
+          "path": [],
+          "schema_path": [
+            "required"
+          ],
+          "message": "'login' is a required property"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:login-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:login-empty",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "minLength"
+          ],
+          "message": "'' should be non-empty"
+        },
+        {
+          "validator": "pattern",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "pattern"
+          ],
+          "message": "'' does not match '^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:login-bool",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "login"
+          ],
+          "schema_path": [
+            "properties",
+            "login",
+            "type"
+          ],
+          "message": "True is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:email-omit",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:email-null",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "type"
+          ],
+          "message": "None for not nullable"
+        },
+        {
+          "validator": "type",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "type"
+          ],
+          "message": "None is not of type 'string'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:email-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "email"
+          ],
+          "schema_path": [
+            "properties",
+            "email",
+            "minLength"
+          ],
+          "message": "'a@b' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:email-unformatted",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-omit",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-null",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-short",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-50",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-51",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-100",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:password-101",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:language-short",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "minLength",
+          "path": [
+            "langKey"
+          ],
+          "schema_path": [
+            "properties",
+            "langKey",
+            "minLength"
+          ],
+          "message": "'e' is too short"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:extra-field",
+      "expected": "satisfied",
+      "verdict": "satisfied",
+      "errors": [],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:id-bool",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "type",
+          "path": [
+            "id"
+          ],
+          "schema_path": [
+            "properties",
+            "id",
+            "type"
+          ],
+          "message": "True is not of type 'integer'"
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "admin-update:invalid-date",
+      "expected": "violated",
+      "verdict": "violated",
+      "errors": [
+        {
+          "validator": "format",
+          "path": [
+            "createdDate"
+          ],
+          "schema_path": [
+            "properties",
+            "createdDate",
+            "format"
+          ],
+          "message": "'not-a-date' is not a 'date-time'"
+        }
+      ],
+      "matches_expected": true
+    }
+  ],
+  "independent_evaluation_cases": 0,
+  "application_requests": 0,
+  "logical_mining_baseline_qualified": false
+}
