@@ -1,0 +1,5 @@
+# Pre-existing development assertion feasibility
+
+Read the 16 files fixed in development-assertion-source-schedule-v1.json, selected from previously collected pinned trees by the recorded filename/path rule. All four applications are exposed development inputs. Inspect every selected file, retaining irrelevant/boilerplate results; no substitutions or added files. Retrieve once, at most 200 KB per file, preserve failures. No test execution, backend implementation, issue fixes, reserved source, model calls or paid services.
+
+Purpose: determine whether pre-existing assertions specify the selected registration, signup or employee operations and their input validity or later workflow behavior. Record source lines, asserted observation, actor/setup and derivation uncertainty. A test may document an expected result without establishing independently intended correctness: duplication of generated validation and shared generator ancestry remain limitations. Do not manufacture labels or count tests as independent defects. These are reference-feasibility reads after method development, not a blinded scientific evaluation. Freeze before content access.
