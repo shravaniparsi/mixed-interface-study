@@ -167,3 +167,7 @@ Added syntax-only HTML inventory on6already exposed templates:6forms/26control e
 ## Angular14 original-initializer qualification
 
 Frozen2ba3140 single run:6/6plain-form state probes match preexecution predictions;0errors,exit0. Exact14.2.0original initializer onNode22.22.3: missing-reset defaults vs null, disabled child exclusion from value vs retention in getRawValue, disabled-group aggregate/flags qualified only for fixed cases. No app/browser/API/action execution. See notes/reactive14_form_measurement_20261117.md.0independent cases; reserved material sealed and method benefit still unproven.
+
+## Component payload/accessor inventory
+
+Added bounded AST mapping over6already exposed components:8candidate service calls,5referencing reactive values (1selected payload/4whole-form reads);3ordinary-object calls unresolved and legacyRegister type outside service heuristic. Registration confirmation absent from literal service argument but present in lexical condition. Accessor/read timing and guards retained; no HTTP/serialization qualification. Development rejection checks pass. See notes/development_reactive_payloads_20261117.md. Reserved material remains sealed;0independent evaluation cases.

@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('assert');const {analyze}=require('./inventory_reactive_payloads_v1.cjs');const ts=require(process.argv[2]);assert.equal(ts.version,'6.0.3');
+const wrap=body=>"import {FormGroup,FormControl} from '@angular/forms';class Example{f=new FormGroup({name:new FormControl(''),confirm:new FormControl('')});constructor(private api:ExampleService){} "+body+'}';
+const get=body=>analyze(ts,wrap(body)).calls;
+let x=get('save(){const {name,confirm}=this.f.getRawValue();if(name!==confirm){return;}else{this.api.save({name});}}')[0];assert.equal(x.arguments[0].fields[0].source.field,'name');assert.equal(x.arguments[0].fields.length,1);assert.equal(x.lexical_guards[0].branch,'else');
+x=get('save(){this.api.save(this.f.value);this.api.update(this.f.getRawValue());}');assert.equal(x[0].arguments[0].accessor,'value');assert.equal(x[1].arguments[0].accessor,'getRawValue');
+x=get('save(){const data=this.f.getRawValue();this.api.save(data);}')[0];assert.equal(x.arguments[0].kind,'form_snapshot');
+x=get('save(){const data=this.f.getRawValue();data.name="changed";this.api.save(data);}')[0];assert.equal(x.arguments[0].reason,'observed_alias_mutation');
+x=get('save(){const {name="default"}=this.f.getRawValue();this.api.save({name});}')[0];assert.equal(x.arguments[0].fields[0].source.kind,'unresolved');
+x=get('save(){const {name}=this.f.getRawValue();if(ok){const name="shadow";this.api.save({name});}}')[0];assert.equal(x.arguments[0].fields[0].source.kind,'unresolved');
+x=get('save(){const {name}=this.f.getRawValue();source.subscribe(name=>this.api.save({name}));}')[0];assert.equal(x.arguments[0].fields[0].source.reason,'parameter_shadow');
+x=get('save(){this.api.save({...this.f.getRawValue()});}')[0];assert.equal(x.arguments[0].kind,'unresolved');
+x=get('save(){const {name}=this.f.getRawValue();this.api.save({name:name.trim()});}')[0];assert.equal(x.arguments[0].fields[0].source.kind,'unresolved');
+x=get('save(){const {name}=this.f.getRawValue();if(ok){this.api.save({name});const name="later";}}')[0];assert.equal(x.arguments[0].fields[0].source.reason,'binding_before_initialization');
+console.log('Reactive payload development checks passed; no HTTP mapping certified.');

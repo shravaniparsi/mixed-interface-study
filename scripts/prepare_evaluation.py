@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/inventory_reactive_payloads_v1.cjs',
+    'scripts/extension/test_reactive_payloads_v1.cjs',
+    'scripts/extension/inventory_development_payloads_v1.cjs',
+    'manifests/development-reactive-payload-inventory-v1.json',
+    'notes/development_reactive_payloads_20261117.md',
+
     'scripts/extension/verify_reactive14_form_v1.py',
     'notes/reactive14_form_measurement_20261117.md',
     'results/reactive14-form-measurement-v1/comparison.json',
