@@ -1,0 +1,9 @@
+# Membership final qualification stopping rule triggered
+
+Final registered qualification run 44021434885, source 789d064f8971fa5e34b839ce2b8032f753e22bef, has a completed native/native failure. The downloaded observation reports stage producer, action wait_generated_path, TimeoutError at /projects/new, and no recorded native writes. Actor/preflight passed. The exact-name-and-slug predicate did not become true within its bound. Failure metadata does not contain the input values, so it does not identify which value differed or the underlying cause. Do not claim a native application defect or a proven auto-generation bug.
+
+The v3 protocol explicitly ends membership qualification if the final triple does not qualify. A required branch has failed; later success in API/native or API/API cannot make this triple qualified. Therefore do not dispatch v4, repeat this run, modify the instrument to seek a passing result, or execute the six frozen membership specifications in this study. Keep them selected and unexecuted in the denominator, with qualification failure as the reason. They are not negative scientific outcomes and do not establish absence of interface defects.
+
+The remaining two already scheduled branches were still running/queued when this note was written. Allow them to finish under the fixed schedule, download their artifacts, reconstruct all states and timings with verify_benchmark_gitlab_members_controls_v3.py, preserve partial evidence and source hashes, and archive the complete run. This note is an interim stopping decision, not a completed run summary. No job has been cancelled or retried.
+
+Other selected families retain their own documented qualification requirements; this decision does not authorize substituting workflows or relaxing shared-state comparisons. MR requires a justified fixture setup and native control qualification; README content retrieval is unresolved. The completed issue scientific schedule remains closed.
