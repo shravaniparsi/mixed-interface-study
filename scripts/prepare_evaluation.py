@@ -28,6 +28,19 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_development_spec_resolution_v1.py',
+    'manifests/development-spec-resolution-v1.json',
+    'notes/development_spec_resolution_20261117.md',
+    'results/development-spec-resolution-v1-ci-44086283562/dependency-insight.log',
+    'results/development-spec-resolution-v1-ci-44086283562/disk-after.txt',
+    'results/development-spec-resolution-v1-ci-44086283562/disk-before.txt',
+    'results/development-spec-resolution-v1-ci-44086283562/execution.json',
+    'results/development-spec-resolution-v1-ci-44086283562/java-version.txt',
+    'results/development-spec-resolution-v1-ci-44086283562/run.json',
+    'results/development-spec-resolution-v1-ci-44086283562/source-commit.txt',
+    'results/development-spec-resolution-v1-ci-44086283562/timing.json',
+    'results/development-spec-resolution-v1-ci-44086283562/wrapper-sha256.txt',
+
     'protocol/development-spec-resolution-v1.md',
     '.github/workflows/development_spec_resolution_v1.yml',
 
