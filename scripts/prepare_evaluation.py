@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "protocol/petclinic-resource-reconstruction-v2.md",
+    "scripts/extension/qualify_resource_reconstruction_v2.mjs",
+    "results/petclinic-resource-reconstruction-v2/preparation-source.json",
     'notes/petclinic_resource_reconstruction_20261117.md',
     'results/petclinic-resource-reconstruction-v1/diagnostic-source.json',
     'results/petclinic-resource-reconstruction-v1/execution.json',

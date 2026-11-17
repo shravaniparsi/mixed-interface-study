@@ -1,0 +1,9 @@
+# Resource reconstruction with explicit empty transfer state
+
+V1 remains closed with3initialization errors and0requests. Source trace now establishes ResourceImpl requests TransferState via injector.get even with no cache key, and the TransferState default factory attempts document-state recovery outside server mode. This isolated harness has no document, no SSR payload and no transfer-cache key in the original component resource declaration.
+
+One new corrected engineering attempt uses the real Angular TransferState class constructed with its actual empty store, via a provider factory. This replaces DOM hydration lookup only; it does not fake resource values, modify original source expressions, change server/client mode, or alter the original success responses. Assert its store is empty before harness construction and record whether it remains empty afterward. No cache-active provider or cache key is added. This does not qualify real browser/hydration behavior.
+
+Keep v1's3fixed response inputs, original source hashes/modules/property slices, Angular22.2.3/Node22.22.3/TypeScript6.0.3, real HttpClientTestingBackend and no-XSRF GET-only setup. Only the TransferState provider, empty-store observations, result kind and fresh work directory change in the runner. The v1 protocol's validation/error handling, exact URL/method check, finite event-loop stages and60/65second limits remain. No installation, extra dependency, live HTTP, paid model call, CI, control replacement or subsequent retry.
+
+Freeze and push this correction before execution. Require3 reconstructed resource/model observations matching the extracted projection and empty transfer state before/after for reconstruction qualification. Retain custom-validator errors separately. Do not compare speed, infer browser behavior or count this as independent scientific inputs. The purpose is a shared reconstruction prerequisite for C and D, not a more favorable test of either method.
