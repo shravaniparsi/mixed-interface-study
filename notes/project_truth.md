@@ -143,3 +143,7 @@ Frozen682fe2e query returned20of2869, incomplete=false;20commit pins from21reado
 ## Local-object exposure audit and pinned structure screen
 
 Precollection Git-object audit expands scanned paths2584→7429 without fetching;0frame-name matches but11362eligible blobs unavailable. Frozen66a448f collected20complete directory trees, no file contents/outcomes.16manifest/JVM co-occurrences,3generator-marker repositories,41package paths; these are signals, not eligibility or independent clusters.0apps admitted. See notes/project_structure_screen_20261117.md. Next metadata file policy must be frozen before contents; labels remain unread.
+
+## Fixed package metadata screen
+
+Frozen28db71d:41/41scheduled manifests integrity-verified/parsed,17repositories with paths,16with core declarations,26core declaration entries.0exact22.2.3 declarations;2repositories have22.x lower-bound declarations, unresolved lockfiles and signal-form usage. No application admission, updates to fit adapter, or source/test/issue outcome reads. See notes/project_package_screen_20261117.md. Before source-informed method development, freeze conservative family-level development/evaluation separation; current adapter generality is unestablished.
