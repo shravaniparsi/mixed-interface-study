@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/angular_rule_inventory.py',
+    'scripts/extension/test_angular_rule_inventory.py',
+    'scripts/extension/verify_petclinic_source_rule_inventory_v1.py',
+    'manifests/petclinic-source-rule-inventory-v1.json',
+    'notes/petclinic_source_rule_inventory_20261117.md',
     'src/mixed_interface/constraint_transfer.py',
     'scripts/extension/test_constraint_transfer.py',
     'notes/constraint_transfer_implementation_20261117.md',

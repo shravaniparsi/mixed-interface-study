@@ -74,3 +74,8 @@ Defined inputs, transfer procedure, matched-information comparator, diagnostic a
 ## 2026-11-17: conditional evaluator implemented
 
 Added pure in-memory evaluator for explicit source-linked rules/mappings, scoped conditions, observation points and missing/null/empty policies. Fifteen development tests plus seven scorer tests pass. No automatic extraction, application execution, independent data or Q1 benefit is established. Unknown transforms remain unknown; observed defaults are never invented. Next priority is an actual source-to-rule path, not more synthetic feature counts. See notes/constraint_transfer_implementation_20261117.md.
+
+
+## 2026-11-17: first real source inventory
+
+Pinned exposed PetClinic forms yield22 explicit required/length declarations and7 unsupported pattern/custom calls under a conservative flat-schema recognizer. Six source files hash-verified and six engineering tests pass. Owner add/edit/service bindings inspected manually; edit working-copy defaults must not be confused with persisted state. No semantic lowering, automatic API mapping, application execution, independent cases or paid calls. See notes/petclinic_source_rule_inventory_20261117.md.
