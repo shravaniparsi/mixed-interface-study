@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    "protocol/project-family-partition-v1.md",
+    "scripts/extension/partition_project_frame_v1.py",
     'scripts/extension/verify_project_packages_v1.py',
     'manifests/project-package-screen-v1.json',
     'manifests/project-package-summary-v1.json',
