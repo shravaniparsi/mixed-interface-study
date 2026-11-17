@@ -42,6 +42,12 @@ def path_checks(row,branch):
     writes=[q for q in native if q.get('method') not in ('GET','HEAD') and ('/repository/' in q.get('path','') or q.get('path')=='/projects')]
     native_project={'method':'POST','path':'/projects','status':302}
     native_commit={'method':'POST','path':f'/api/v4/projects/{pid}/repository/commits','status':201}
+    # GitLab's pinned commits contract accepts numeric ID or encoded namespace path.
+    # Accept only this exact recorded project's alternate identifier, never arbitrary paths.
+    bound_path=row.get('producer_state',{}).get('path_with_namespace')=='byteblaze/nolan_young_fans'
+    bound_read=any(q.get('method')=='GET' and q.get('path')==f'/api/v4/projects/{pid}' and q.get('status')==200 for q in row.get('api_requests',[]))
+    if bound_path and bound_read:
+        writes=[dict(q,path=native_commit['path']) if q.get('path')=='/api/v4/projects/byteblaze%2Fnolan_young_fans/repository/commits' else q for q in writes]
     expected_api={'native_native':[],'api_native':[create],'api_api':[create,file]}[branch]
     expected_native={'native_native':[native_project,native_commit],'api_native':[native_commit],'api_api':[]}[branch]
     return {'project_id_valid':type(pid) is int and pid>0,'assigned_api_writes':api==expected_api,'assigned_native_repository_writes':writes==expected_native}

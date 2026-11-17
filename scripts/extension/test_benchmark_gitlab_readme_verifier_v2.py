@@ -42,4 +42,14 @@ class Matching(unittest.TestCase):
   r={'project_id':194,'api_requests':[{'method':'POST','path':'/api/v4/projects','body':{'name':'nolan_young_fans','path':'nolan_young_fans','visibility':'private','initialize_with_readme':False},'status':201}],'native_writes':[{'method':'POST','path':'/api/v4/projects/194/repository/commits','status':201}]}
   self.assertTrue(all(path_checks(r,'api_native').values()))
   r['api_requests'][0]['body']['description']='';self.assertFalse(path_checks(r,'api_native')['assigned_api_writes'])
+class EncodedProject(unittest.TestCase):
+ def row(self):
+  return {'project_id':194,'producer_state':{'path_with_namespace':'byteblaze/nolan_young_fans'},'api_requests':[{'method':'GET','path':'/api/v4/projects/194','status':200}],'native_writes':[{'method':'POST','path':'/projects','status':302},{'method':'POST','path':'/api/v4/projects/byteblaze%2Fnolan_young_fans/repository/commits','status':201}]}
+ def test_bound_encoded_identifier(self):self.assertTrue(all(path_checks(self.row(),'native_native').values()))
+ def test_unbound_identifier(self):
+  r=self.row();r['producer_state']={};self.assertFalse(path_checks(r,'native_native')['assigned_native_repository_writes'])
+ def test_different_encoded_project(self):
+  r=self.row();r['native_writes'][1]['path']='/api/v4/projects/byteblaze%2Fother/repository/commits';self.assertFalse(path_checks(r,'native_native')['assigned_native_repository_writes'])
+ def test_missing_numeric_readback(self):
+  r=self.row();r['api_requests']=[];self.assertFalse(path_checks(r,'native_native')['assigned_native_repository_writes'])
 if __name__=='__main__':unittest.main()
