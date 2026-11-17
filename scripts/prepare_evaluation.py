@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/map_angular_submission_v1.cjs',
+    'scripts/extension/test_angular_submission_mapping_v1.cjs',
+    'manifests/petclinic-submission-mapping-v1.json',
+    'notes/petclinic_submission_mapping_20261117.md',
     'src/mixed_interface/angular_string_lowering.py',
     'scripts/extension/test_angular_string_lowering.py',
     'scripts/extension/verify_petclinic_angular_string_semantics_v1.py',

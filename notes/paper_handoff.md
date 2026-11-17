@@ -84,3 +84,8 @@ Pinned exposed PetClinic forms yield22 explicit required/length declarations and
 ## 2026-11-17: pinned Angular string semantics
 
 Lockfile selects Angular forms22.2.3; package SHA512 verified, source inspected without install/execution. Length checks skip empty values and use UTF16 units for strings; required is separate. Lowering yields20 string-domain templates with9 unresolved calls, from the prior29 declarations. All mappings/activity/workflow scopes remain unresolved; zero complete API rules or independent cases. Four lowering and fifteen evaluator tests pass; source/template reconstruction verified. See notes/petclinic_angular_string_semantics_20261117.md.
+
+
+## 2026-11-17: static submission mappings
+
+Using integrity-verified TypeScript6.0.3, bounded AST tracing recovers five owner fields into POST and PUT bodies from exposed source. Eight engineering checks pass. Ten correlated field-path entries are not independent cases or semantic contracts. Import resolution, indirect effects, activity/defaulting, interceptors and runtime remain unqualified; output stays mapping candidates. See notes/petclinic_submission_mapping_20261117.md. No application/model execution or paid compute.

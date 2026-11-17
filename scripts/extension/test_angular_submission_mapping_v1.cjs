@@ -1,0 +1,18 @@
+'use strict';
+const fs=require('fs'),assert=require('assert');
+const {analyze}=require('./map_angular_submission_v1.cjs');
+const ts=require(process.argv[2]),dir=process.argv[3];
+const add=fs.readFileSync(dir+'/owner-add.component.ts','utf8');
+const edit=fs.readFileSync(dir+'/owner-edit.component.ts','utf8');
+const service=fs.readFileSync(dir+'/owner.service.ts','utf8');
+const fields=['firstName','lastName','address','city','telephone'];
+const run=(component,svc=service)=>analyze(ts,component,svc,'ownerSchema',fields);
+assert.equal(run(add).http_method,'POST');assert.equal(run(edit).http_method,'PUT');
+assert.equal(run(add).mappings.length,5);assert.equal(run(edit).mappings.length,5);
+assert.equal(run(add.replace('...this.owner()}','...this.owner(), firstName: "override"}')).status,'unresolved');
+assert.equal(run(add,service.replace('.post<Owner>(this.entityUrl, owner)','.post<Owner>(this.entityUrl, transform(owner))')).status,'unresolved');
+assert.equal(run(edit.replace('const owner =','let owner =')).status,'unresolved');
+assert.equal(run(edit.replace('try {','owner.firstName = "override";\n        try {')).status,'unresolved');
+assert.equal(run(add.replace('form(this.owner, ownerSchema','form(this.otherModel, ownerSchema')).status,'unresolved');
+assert.equal(run(add.replace('addOwner({id: null, ...this.owner()} as Owner)','addOwner({id: null, ...normalize(this.owner())} as Owner)')).status,'unresolved');
+console.log('Eight development mapping checks passed; no application execution.');
