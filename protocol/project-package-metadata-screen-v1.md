@@ -1,0 +1,11 @@
+# Fixed package metadata screen
+
+Read exactly the41package.json paths retained by project-structure-screen-v1.json, at its20pinned revisions. The schedule is generated from the already collected private trees and records each blob SHA/mode before any contents are fetched. All20projects remain; projects without paths are not replaced. No lockfiles, implementation code, test contents, README, issues or labels.
+
+At most41HTTPS raw-content requests, rank then lexical path order,≤256KiB per response,30second timeout and180second aggregate deadline, no retries. Verify each response against its scheduled Git blob SHA (SHA1 of blob header plus bytes) and retain SHA256. Save raw files privately0600; publish only metadata, counts, request errors and hashes. Invalid JSON/template files remain parse_error; do not repair/render them. Do not follow links or execute package scripts.
+
+Extract name, private, license, engines, workspaces, script names only, and declarations for @angular/core, @angular/forms, @angular/compiler, @angular/cli, angular, react, vue, generator-jhipster, jhipster across dependencies/devDependencies/peerDependencies/optionalDependencies. Do not confuse a declared range with a resolved installed version. No dependency installation, version substitution or runtime execution. Node requirements are not verified runtime compatibility.
+
+Current source-lowering runtime qualification covers only Angular22.2.3, and its syntactic adapter specifically uses signal forms. Report declarations without claiming that equal version proves signal-form use, application eligibility or baseline qualification. Classify an exact22.2.3 declaration as an exact_declaration_only signal; all other declarations remain version_unqualified (ranges not resolved). A legacy Angular package is not a project exclusion by itself: it is a limitation of the current candidate adapter. Keep tooling, fixtures, templates and multiple manifests visible.
+
+After collection report all41planned paths with failures and framework declarations. No label/accuracy/defect inference, independent-case credit or scientific corpus admission. This screen informs whether methodological generality is feasible before committing to an independent-input evaluation. No favorable replacements or broadened search if unsupported.
