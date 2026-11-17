@@ -79,3 +79,8 @@ Added pure in-memory evaluator for explicit source-linked rules/mappings, scoped
 ## 2026-11-17: first real source inventory
 
 Pinned exposed PetClinic forms yield22 explicit required/length declarations and7 unsupported pattern/custom calls under a conservative flat-schema recognizer. Six source files hash-verified and six engineering tests pass. Owner add/edit/service bindings inspected manually; edit working-copy defaults must not be confused with persisted state. No semantic lowering, automatic API mapping, application execution, independent cases or paid calls. See notes/petclinic_source_rule_inventory_20261117.md.
+
+
+## 2026-11-17: pinned Angular string semantics
+
+Lockfile selects Angular forms22.2.3; package SHA512 verified, source inspected without install/execution. Length checks skip empty values and use UTF16 units for strings; required is separate. Lowering yields20 string-domain templates with9 unresolved calls, from the prior29 declarations. All mappings/activity/workflow scopes remain unresolved; zero complete API rules or independent cases. Four lowering and fifteen evaluator tests pass; source/template reconstruction verified. See notes/petclinic_angular_string_semantics_20261117.md.

@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/angular_string_lowering.py',
+    'scripts/extension/test_angular_string_lowering.py',
+    'scripts/extension/verify_petclinic_angular_string_semantics_v1.py',
+    'manifests/petclinic-angular-string-semantics-v1.json',
+    'notes/petclinic_angular_string_semantics_20261117.md',
     'src/mixed_interface/angular_rule_inventory.py',
     'scripts/extension/test_angular_rule_inventory.py',
     'scripts/extension/verify_petclinic_source_rule_inventory_v1.py',

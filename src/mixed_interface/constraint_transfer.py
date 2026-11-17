@@ -106,9 +106,10 @@ def _evaluate(rule, observation):
     elif kind == 'length':
         if not isinstance(value, str):
             return outcome('unknown', 'predicate_domain_mismatch', True)
-        if (type(predicate['minimum']) is not int or type(predicate['maximum']) is not int
-                or not 0 <= predicate['minimum'] <= predicate['maximum']):
-            raise ValueError('Length bounds must be ordered nonnegative integers')
+        lower, upper = predicate['minimum'], predicate['maximum']
+        if (any(x is not None and (type(x) is not int or x < 0) for x in (lower,upper))
+                or (lower is not None and upper is not None and lower > upper)):
+            raise ValueError('Length bounds must be ordered nonnegative integers or unbounded')
         units = predicate['units']
         if units == 'unicode_codepoints':
             length = len(value)
@@ -116,7 +117,7 @@ def _evaluate(rule, observation):
             length = len(value.encode('utf-16-le', errors='surrogatepass')) // 2
         else:
             return outcome('unknown', 'unsupported_length_units', True)
-        passed = predicate['minimum'] <= length <= predicate['maximum']
+        passed = (lower is None or lower <= length) and (upper is None or length <= upper)
     elif kind == 'numeric_range':
         if isinstance(value, bool) or not isinstance(value, (int,float)) or not math.isfinite(value):
             return outcome('unknown', 'predicate_domain_mismatch', True)
