@@ -1,0 +1,7 @@
+# Exact locked Angular14 preparation, not measurement
+
+Use only the exposed development21-points lockfile verified in development-lockfile-screen-v1. Prepare @angular/forms/core/common/compiler14.2.0, rxjs7.5.6 and tslib2.5.2 at their exact lockfile resolved URLs/integrity. Six archive downloads maximum, each16MiB; one attempt per archive, no alternate versions or package-manager resolution. Extract only regular safe archive paths, per-file≤16MiB,total≤128MiB,deadline120seconds,network timeout30seconds. Save checksums before extraction and phase/member/traceback on failure. Fresh directory /private/tmp/reactive14-runtime-v1; no overwrite.
+
+Save package.json dependency/peerDependency/engine metadata for inspection before selecting an execution runtime. Do not assume app-wide or Node compatibility from successful extraction. No lifecycle scripts, installs, framework imports, application startup, model call, CI or evaluation inputs. Keep zone.js out of this plain-form-class preparation; whether an execution needs it remains an explicit future qualification question. The other projects are not substituted or silently dropped: Angular9has no sibling lock; Angular5records multiple RxJS versions; Angular10remains unexecuted.
+
+This preparation supports later separately frozen checks of reactive-form semantics. It is not native browser or application execution, an independent cohort, or method benefit. Preparation failure remains recorded and does not trigger a retry. Existing $100ceiling unchanged; no paid compute.

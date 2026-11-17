@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/development-lockfile-screen-v1.json',
+    'protocol/reactive14-runtime-preparation-v1.md',
+    'scripts/extension/prepare_reactive14_runtime_v1.py',
+
     'protocol/development-lockfile-screen-v1.md',
     'manifests/development-lockfile-schedule-v1.json',
     'scripts/extension/collect_development_lockfiles_v1.py',
