@@ -1,0 +1,11 @@
+# Final README ordinary triple qualified
+
+Run 44030229250 completed successfully at frozen head 3c646b26eb9e0ad25832ea6d5f057707d278504a. Independent reconstruction from all raw artifacts qualifies native/native, API/native and API/API, with exact cross-path producer and final business-state matches and three distinct container identities. All branches retained the registered image/version/actor and absent-target preflight. The independent checker passed every branch requirement rather than relying on CI success flags.
+
+Native/native took 359 seconds, API/native 444 seconds and API/API 366 seconds, totaling 1,169 job-seconds (19.4833 minutes). Together with v1's 1,218 seconds, ordinary README qualification used 2,387 job-seconds (39.7833 minutes) across six branches. These are job durations, not billed costs. No paid model calls or scientific cases were executed.
+
+All producers created private empty nolan_young_fans with description null and default_branch main. Native continuations used the Web IDE; the API continuation used file creation. All final repositories contain only the exact snapshot-bound README.md, one root commit and sole default main branch. All other recorded project fields are preserved. Generated commit identities differ but each file readback is bound to its own branch's root commit. The documented numeric/encoded-project-identifier checker correction is recorded separately and changes neither executed source nor state-matching rules.
+
+The source/API contracts and original task content can now support a separately registered scientific schedule for the six inputs frozen before runtime inspection. All six remain unexecuted at this snapshot. The ordinary creation form has no description control; future scheduling must account honestly for native representability of the preselected description variants, rather than fabricate a setter or silently drop variants. The initialized-README case is a predeclared lifecycle control, not an invitation to replace file creation with update after seeing a failure.
+
+This is baseline qualification, not evidence of a new defect or Q1-level generality. Membership, MR, Reddit and directory exclusions remain unchanged; no closed family is reopened.
