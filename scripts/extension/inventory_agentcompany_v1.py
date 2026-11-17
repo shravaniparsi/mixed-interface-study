@@ -52,6 +52,12 @@ def build():
     screened = [r['task'] for r in screen['tasks']]
     assert len(screened) == len(set(screened))
     assert set(screened) == {r['task'] for r in rows if 'plane' in r['literal_service_mentions']}
+    capability_base = ROOT / 'results/agentcompany-plane-capability-v1'
+    capability = json.loads((capability_base / 'collection.json').read_text())
+    for item in capability['files']:
+        raw = (capability_base / item['local']).read_bytes()
+        assert len(raw) == item['bytes']
+        assert hashlib.sha256(raw).hexdigest() == item['sha256']
     return {
         'kind': 'agentcompany_instruction_inventory_v1',
         'revision': collection['revision'],

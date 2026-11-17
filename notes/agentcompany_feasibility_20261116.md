@@ -40,3 +40,5 @@ Next concrete step: inspect only infrastructure and documented interface capabil
 Reproduce the inventory with `python3 scripts/extension/inventory_agentcompany_v1.py --verify`. This checks archived bytes, task/catalog agreement and screen coverage; it does not validate the analyst's semantic labels or application behavior.
 
 Primary source: https://github.com/TheAgentCompany/TheAgentCompany/tree/98b68ef82a47690c316f42fddb05baafaab56851. The pinned docs/SETUP.md and docs/EVALUATION.md support the resource findings; archived task instructions support the descriptive coding. All previous scientific denominators and conclusions remain unchanged.
+
+Infrastructure follow-up completed: notes/agentcompany_plane_infrastructure_20261116.md records a moving dependency branch, tagged images, isolated-stack source structure and partial route evidence. Runtime qualification remains unperformed; no scientific enrollment or new application experiment follows from this review alone.
