@@ -28,6 +28,13 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/inventory_service_http_v1.cjs',
+    'scripts/extension/test_service_http_inventory_v1.cjs',
+    'scripts/extension/inventory_development_http_v1.cjs',
+    'manifests/development-service-source-screen-v1.json',
+    'manifests/development-service-http-inventory-v1.json',
+    'notes/development_service_boundaries_20261117.md',
+
     'protocol/development-service-boundary-screen-v1.md',
     'manifests/development-service-source-schedule-v1.json',
     'scripts/extension/collect_development_services_v1.py',

@@ -171,3 +171,7 @@ Frozen2ba3140 single run:6/6plain-form state probes match preexecution predictio
 ## Component payload/accessor inventory
 
 Added bounded AST mapping over6already exposed components:8candidate service calls,5referencing reactive values (1selected payload/4whole-form reads);3ordinary-object calls unresolved and legacyRegister type outside service heuristic. Registration confirmation absent from literal service argument but present in lexical condition. Accessor/read timing and guards retained; no HTTP/serialization qualification. Development rejection checks pass. See notes/development_reactive_payloads_20261117.md. Reserved material remains sealed;0independent evaluation cases.
+
+## Development service boundary inventory
+
+Frozen4e80a94 read4verified development service/barrel files.3selected21-points methods directly forward named body parameters toHttpClient;2angular-spring-starter methods use unresolvedApiService wrapper with JSON.stringify or form-encoded string. AST rejection tests pass; URL/config/interceptor/serialization/runtime unqualified. See notes/development_service_boundaries_20261117.md.0runtime HTTP mappings/independent evaluation cases; reserved material sealed.

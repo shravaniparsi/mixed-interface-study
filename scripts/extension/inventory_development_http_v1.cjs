@@ -1,0 +1,5 @@
+'use strict';
+const fs=require('fs'),crypto=require('crypto'),assert=require('assert'),{analyze}=require('./inventory_service_http_v1.cjs');const ts=require(process.argv[2]);assert.equal(ts.version,'6.0.3');
+const sources=JSON.parse(fs.readFileSync('manifests/development-service-source-screen-v1.json'));const allowed=new Set(JSON.parse(fs.readFileSync('manifests/project-family-partition-v1.json')).rows.filter(r=>r.partition==='development').map(r=>r.full_name));const rows=[];
+for(const [index,methods] of [[1,['save']],[2,['create','update']],[4,['signup','login']]]){const r=sources.rows.find(r=>r.index===index);assert(allowed.has(r.full_name));const text=fs.readFileSync('/private/tmp/development-service-boundary-v1/'+index+'.ts','utf8');assert.equal(crypto.createHash('sha256').update(text).digest('hex'),r.sha256);rows.push({full_name:r.full_name,path:r.path,commit:r.commit,source_index:index,...analyze(ts,text,methods)});}
+console.log(JSON.stringify({kind:'exposed_development_http_boundary_inventory',rows,independent_evaluation_cases:0},null,2));

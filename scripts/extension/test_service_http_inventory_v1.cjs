@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('assert'),{analyze}=require('./inventory_service_http_v1.cjs'),ts=require(process.argv[2]);assert.equal(ts.version,'6.0.3');
+const source=body=>"import {HttpClient} from '@angular/common/http';class S{constructor(private http:HttpClient){} "+body+'}';
+const get=s=>analyze(ts,s,['save']).methods[0];
+let x=get(source("save(value){return this.http.post('/x',value);}"));assert.equal(x.status,'direct_httpclient_parameter_syntax');assert.equal(x.body_parameter_index,0);
+x=get(source("save(value){return this.http.post('/x',JSON.stringify(value));}"));assert.equal(x.reason,'body_not_direct_parameter');
+x=get(source("save(value){value.x=1;return this.http.post('/x',value);}"));assert.equal(x.reason,'not_single_direct_return');
+x=get(source("save(value){return this.http.post('/x',value).pipe(map(f));}"));assert.equal(x.reason,'not_single_direct_return');
+x=get(source("save(value){this.http.post('/a',value);return this.http.post('/b',value);}"));assert.equal(x.reason,'write_call_not_unique');
+x=get("import {HttpClient as Client} from '@angular/common/http';class S{constructor(private http:Client){} save(value){return this.http.post('/x',value);}}");assert.equal(x.reason,'wrapper_not_httpclient');
+x=get("class S{constructor(private api:ApiService){} save(value){return this.api.post('/x',value);}}");assert.equal(x.reason,'wrapper_not_httpclient');
+console.log('Service boundary syntax checks passed; no runtime or API contract qualification.');
