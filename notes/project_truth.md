@@ -106,3 +106,8 @@ Using integrity-verified TypeScript6.0.3, bounded AST tracing recovers five owne
 ## 2026-11-17: source body qualification closed
 
 One frozen six-row mocked-dependency execution at c33d912 confirms model-to-body forwarding; edit omission becomes empty string while explicit null is retained. Loaded resource unchanged in recorded checks. Validator/form gating bypassed and HTTP mocked, so no native acceptance, backend persistence or independent case claim. Six records verified, no errors/paid calls/Actions. No repeat planned. See notes/petclinic_submission_boundary_qualification_20261117.md.
+
+
+## 2026-11-17: direct Angular setup closed unsuccessfully
+
+One bounded setup at cec72e0 failed with opaque AssertionError during Node extraction, expanded counter71,923,405bytes; executable absent and no Angular runtime node_modules. Precise assertion not logged; oversized member is only a hypothesis. No alternate version/retry or framework measurements. Retained script/log/inventory in results/angular-runtime-semantics-setup-v1. Prior templates remain source-qualified only. Before another setup, improve phase/member/checksum provenance and justify bounds. See notes/angular_runtime_semantics_setup_20261117.md.
