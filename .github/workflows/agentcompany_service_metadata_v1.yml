@@ -1,0 +1,54 @@
+name: Workplace service metadata v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: workplace-service-metadata-v1
+  cancel-in-progress: false
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Resolve exact service references once without pulling layers
+        env:
+          STUDY_HEAD: ${{ github.sha }}
+          STUDY_RUN: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts/extension')
+          import resolve_agentcompany_services_v1 as resolver
+          original = json.loads((resolver.BASE / 'collection.json').read_text())
+          resolver.BASE = Path(os.environ['RUNNER_TEMP']) / 'workplace-service-metadata'
+          resolver.BASE.mkdir()
+          (resolver.BASE / 'context.json').write_text(json.dumps({
+              'head': os.environ['STUDY_HEAD'], 'run_id': os.environ['STUDY_RUN'],
+              'mode': 'one metadata collection; no layer pulls, application starts or task outcomes',
+          }, indent=2) + '\n')
+          print(json.dumps(resolver.collect(), indent=2))
+          current = json.loads((resolver.BASE / 'collection.json').read_text())
+          old = {r['image']: r for r in original['images']}
+          comparisons = []
+          for row in current['images']:
+              previous = old[row['image']]
+              comparisons.append({
+                  'image': row['image'], 'prior_status': previous['status'], 'status': row['status'],
+                  'prior_digest': previous.get('platform_manifest', {}).get('digest'),
+                  'current_digest': row.get('platform_manifest', {}).get('digest'),
+              })
+          (resolver.BASE / 'comparison.json').write_text(json.dumps(comparisons, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workplace-service-metadata-${{ github.run_id }}
+          path: ${{ runner.temp }}/workplace-service-metadata
+          if-no-files-found: error
+          retention-days: 30

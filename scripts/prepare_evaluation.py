@@ -28,6 +28,13 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/agentcompany_service_metadata_v1.yml',
+    'protocol/agentcompany-service-metadata-v1.md',
+    'scripts/extension/resolve_agentcompany_services_v1.py',
+    'scripts/extension/verify_agentcompany_assets_v1.py',
+    'results/agentcompany-service-images-v1/collection.json',
+    'results/agentcompany-task-asset-inventory-v1/collection.json',
+    'results/agentcompany-task-asset-inventory-v1/tree.json',
     'scripts/extension/verify_agentcompany_capability_v1.py',
     'manifests/agentcompany-capability-matrix-v1.json',
     'protocol/agentcompany-instruction-eligibility-v1.md',
