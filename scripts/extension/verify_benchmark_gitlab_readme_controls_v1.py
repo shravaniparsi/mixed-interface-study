@@ -30,6 +30,22 @@ def state_checks(row):
         'complete_stage':row.get('stage')=='complete' and not row.get('error_type'),
         'zero_scientific_cases':row.get('scientific_cases_executed')==0,
     }
+def path_checks(row,branch):
+    """Verify the recorded writes implement the assigned interface path."""
+    api=[q for q in row.get('api_requests',[]) if q.get('method') not in ('GET','HEAD')]
+    native=row.get('native_writes',[])
+    pid=row.get('project_id')
+    project_body={'name':'nolan_young_fans','path':'nolan_young_fans','description':'','visibility':'private','initialize_with_readme':False}
+    file_body={'branch':'main','content':EXPECTED,'commit_message':'Add Nolan film README'}
+    create={'method':'POST','path':'/api/v4/projects','body':project_body,'status':201}
+    file={'method':'POST','path':f'/api/v4/projects/{pid}/repository/files/README.md','body':file_body,'status':201}
+    writes=[q for q in native if q.get('method') not in ('GET','HEAD') and ('/repository/' in q.get('path','') or q.get('path')=='/projects')]
+    native_project={'method':'POST','path':'/projects','status':302}
+    native_commit={'method':'POST','path':f'/api/v4/projects/{pid}/repository/commits','status':201}
+    expected_api={'native_native':[],'api_native':[create],'api_api':[create,file]}[branch]
+    expected_native={'native_native':[native_project,native_commit],'api_native':[native_commit],'api_api':[]}[branch]
+    return {'project_id_valid':type(pid) is int and pid>0,'assigned_api_writes':api==expected_api,'assigned_native_repository_writes':writes==expected_native}
+
 def reconstruct(root):
     run=json.loads((root/'run.json').read_text())
     assert run['status']=='completed' and run['headSha']==HEAD
@@ -48,7 +64,7 @@ def reconstruct(root):
         checks={'job_success':job['conclusion']=='success'}
         if path.exists():
             row=json.loads(path.read_text());assert row['kind']=='benchmark_gitlab_readme_control_v1' and row['branch']==branch
-            rows.append(row);checks.update(state_checks(row))
+            rows.append(row);checks.update(state_checks(row));checks.update(path_checks(row,branch))
             if branch=='native_native':
                 checks['exact_native_form_before_submit']=row.get('project_form_before_submit')=={'name':'nolan_young_fans','path':'nolan_young_fans','private':True,'readme':False,'sast':False}
             if branch in ('native_native','api_native'):

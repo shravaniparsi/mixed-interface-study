@@ -1,6 +1,6 @@
 """Adversarial checks of ordinary README evidence, not scientific observations."""
-import copy, unittest
-from verify_benchmark_gitlab_readme_controls_v1 import state_checks,FIELDS,EXPECTED
+import unittest
+from verify_benchmark_gitlab_readme_controls_v1 import state_checks,path_checks,FIELDS,EXPECTED
 
 def valid():
  before={k:False for k in FIELDS};before.update(name='nolan_young_fans',path='nolan_young_fans',path_with_namespace='byteblaze/nolan_young_fans',visibility='private',empty_repo=True,default_branch=None,description='',owner_id=2330)
@@ -22,4 +22,15 @@ class Checks(unittest.TestCase):
   r=valid();del r['producer_state']['lfs_enabled'];self.assertFalse(state_checks(r)['projection_complete'])
  def test_false_report_alone_insufficient(self):
   r=valid();del r['final_file'];self.assertFalse(all(state_checks(r).values()))
+class Paths(unittest.TestCase):
+ def native(self):
+  return {'project_id':194,'api_requests':[],'native_writes':[{'method':'POST','path':'/projects','status':302},{'method':'POST','path':'/api/v4/projects/194/repository/commits','status':201}]}
+ def test_native_path(self):self.assertTrue(all(path_checks(self.native(),'native_native').values()))
+ def test_wrong_target(self):
+  r=self.native();r['native_writes'][1]['path']='/api/v4/projects/195/repository/commits';self.assertFalse(path_checks(r,'native_native')['assigned_native_repository_writes'])
+ def test_duplicate_commit(self):
+  r=self.native();r['native_writes'].append(dict(r['native_writes'][1]));self.assertFalse(path_checks(r,'native_native')['assigned_native_repository_writes'])
+ def test_api_fallback_disallowed(self):
+  r=self.native();r['api_requests']=[{'method':'POST','path':'/api/v4/projects/194/repository/files/README.md','status':201}];self.assertFalse(path_checks(r,'native_native')['assigned_api_writes'])
+ def test_unrecorded_api_baseline(self):self.assertFalse(all(path_checks({'project_id':194},'api_api').values()))
 if __name__=='__main__':unittest.main()
