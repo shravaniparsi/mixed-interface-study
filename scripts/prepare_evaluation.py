@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_petclinic_submission_boundary_v1.py',
+    'notes/petclinic_submission_boundary_qualification_20261117.md',
+    'results/petclinic-submission-boundary-qualification-v1/measurement.json',
+    'results/petclinic-submission-boundary-qualification-v1/execution.json',
     'protocol/petclinic-submission-boundary-qualification-v1.md',
     'scripts/extension/qualify_petclinic_submission_boundary_v1.cjs',
     'scripts/extension/map_angular_submission_v1.cjs',

@@ -101,3 +101,8 @@ Lockfile selects Angular forms22.2.3; package SHA512 verified, source inspected 
 ## 2026-11-17: static submission mappings
 
 Using integrity-verified TypeScript6.0.3, bounded AST tracing recovers five owner fields into POST and PUT bodies from exposed source. Eight engineering checks pass. Ten correlated field-path entries are not independent cases or semantic contracts. Import resolution, indirect effects, activity/defaulting, interceptors and runtime remain unqualified; output stays mapping candidates. See notes/petclinic_submission_mapping_20261117.md. No application/model execution or paid compute.
+
+
+## 2026-11-17: source body qualification closed
+
+One frozen six-row mocked-dependency execution at c33d912 confirms model-to-body forwarding; edit omission becomes empty string while explicit null is retained. Loaded resource unchanged in recorded checks. Validator/form gating bypassed and HTTP mocked, so no native acceptance, backend persistence or independent case claim. Six records verified, no errors/paid calls/Actions. No repeat planned. See notes/petclinic_submission_boundary_qualification_20261117.md.
