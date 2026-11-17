@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/reported-interface-fault-admission-v1.md',
     'manifests/reported-interface-fault-frame-v1.json',
     'manifests/reported-interface-fault-screen-v1.json',
     'scripts/extension/verify_reported_interface_fault_frame_v1.py',
