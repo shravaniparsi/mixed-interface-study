@@ -163,3 +163,7 @@ Added bounded AST mapping over6already exposed components:8candidate service cal
 ## Development service boundary inventory
 
 Frozen4e80a94 read4verified development service/barrel files.3selected21-points methods directly forward named body parameters toHttpClient;2angular-spring-starter methods use unresolvedApiService wrapper with JSON.stringify or form-encoded string. AST rejection tests pass; URL/config/interceptor/serialization/runtime unqualified. See notes/development_service_boundaries_20261117.md.0runtime HTTP mappings/independent evaluation cases; reserved material sealed.
+
+## Service/serializer development qualification
+
+V1b18c766 failedsetup,9not_run, preserved. Package-entry correction40b061a reused identical predictions:9/9measured/matched,0errors,exit0. Original3service methods preserve body reference; HttpRequest.serializeBody omits own undefined email but retains null. RealAngular14client/testing backend, nointerceptors/server/fullapp;0independent cases. See notes/development_http_serialization_v2_20261117.md. Wrapper methods unresolved; reserved material sealed and Q1effectiveness incomplete.
