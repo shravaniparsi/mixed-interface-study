@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/reported-null-component-calibration-v1.md',
+    'scripts/extension/run_reported_null_component_calibration_v1.cjs',
     'manifests/reported-interface-fault-admission-v1.json',
     'notes/reported_interface_fault_admission_20261117.md',
     'protocol/reported-interface-fault-admission-v1.md',
