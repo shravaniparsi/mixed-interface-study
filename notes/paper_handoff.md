@@ -59,3 +59,8 @@ All twelve formerly partial rows received further body review: six full archived
 ## 2026-11-17: constraint-acquisition method gate
 
 Fresh-context claim-source check confirms four narrow prior-art pairings and rejects categorical impossibility. ViewPoints/AutoBypass antecedents and RBCTest v1/v4 distinction preclude a generic extraction novelty claim. Four RBCTest setup/code files pinned at 60de49d135fd419ef8a2e93357c025eee154e4c6 inspected without labels, installs or model calls; mode-specific TP gating must be resolved before any end-to-end baseline. Candidate empirical question concerns added frontend evidence under legitimate interface differences, with information-access and algorithm comparisons separated. No new cohort or experiment launched. See notes/constraint_acquisition_method_gate_20261117.md. Q1 contribution still unestablished.
+
+
+## 2026-11-17: oracle-acquisition measurement infrastructure
+
+Added fixed-frame scoring preserving unknown/code_error/not_run, unresolved labels, full paired denominators and project clusters; seven synthetic engineering checks pass. RBCTest helper vocabulary mapping is not a complete baseline adapter or artifact execution. No new scientific rows, cohort, model calls or paid compute. Method, independent frame/labels and qualified comparison remain required before research execution. See protocol/oracle-acquisition-measurement-v1.md and notes/oracle_acquisition_measurement_20261117.md.

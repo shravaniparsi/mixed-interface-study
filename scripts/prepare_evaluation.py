@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'src/mixed_interface/oracle_acquisition.py',
+    'scripts/extension/test_oracle_acquisition_scoring.py',
+    'protocol/oracle-acquisition-measurement-v1.md',
+    'notes/oracle_acquisition_measurement_20261117.md',
     'notes/constraint_acquisition_method_gate_20261117.md',
     'manifests/rbctest-baseline-artifact-inspection-v1.json',
     'manifests/reported-interface-fault-screen-v2.json',
