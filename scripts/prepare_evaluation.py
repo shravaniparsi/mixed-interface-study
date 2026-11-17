@@ -28,6 +28,16 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    '.github/workflows/agentcompany_owncloud_controls_v1.yml',
+    'protocol/agentcompany-owncloud-ordinary-v1.md',
+    'fixtures/agentcompany-owncloud-control-v1/job_description.md',
+    'manifests/agentcompany-owncloud-ordinary-v1.json',
+    'scripts/extension/prepare_agentcompany_owncloud_control_v1.py',
+    'scripts/extension/run_agentcompany_owncloud_control_v1.mjs',
+    'scripts/extension/run_agentcompany_owncloud_controls_v1.py',
+    'scripts/extension/score_agentcompany_owncloud_controls_v1.py',
+    'scripts/extension/test_agentcompany_owncloud_controls_v1.py',
+
     'scripts/extension/verify_agentcompany_owncloud_source_v1.py',
     'manifests/agentcompany-owncloud-packaged-source-v1.json',
     '.github/workflows/agentcompany_owncloud_source_v1.yml',
