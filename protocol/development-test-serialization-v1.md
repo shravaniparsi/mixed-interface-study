@@ -1,0 +1,7 @@
+# Test fixture serialization qualification
+
+Run once locally with existing OpenJDK/javac 19.0.1, no downloads or application startup. Use the original application JAR from build run 44087019996 (SHA256 1c7500685740eb01994aa13ea381f3eb9af2c65bfb92f2379e42bb909225c71b), its original compiled DTO/constants classes and bundled libraries. Java differs from the application's prior CI runtime; record this and make no full integration-test equivalence claim.
+
+Use all five previously inventoried contiguous 21-Points registration fixtures: valid, invalid login, invalid email, short password, null password. Extract the original DTO construction/setter statements and the two original TestUtil serializer methods. Wrap these unchanged statements/methods in a small CLI that prints Base64 JSON bytes. No frontend mapping, DTO edits, new variants, endpoint calls or application contexts. The null-password case is not assumed to be explicit null or omission until output is read. Preserve failure; 60-second compile and 30-second execution limits. No retries under this version.
+
+Retain input/source/wrapper hashes, Java versions, command exits, stdout/stderr and decoded fixture bodies. Fixture values are pre-existing synthetic test data. This is a local development serialization measurement, not test execution, expected-status verification, a natural defect or independent evaluation case. Subsequent schema/backend comparisons require separate freezes.
