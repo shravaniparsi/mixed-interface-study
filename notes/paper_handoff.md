@@ -127,3 +127,7 @@ Frozen03b7abb met reconstruction criterion3/3 using original service/resource/mo
 ## Technology-defined metadata frame collected
 
 Frozen682fe2e query returned20of2869, incomplete=false;20commit pins from21readonly requests. No source/outcome reads.0matches against limited141repository-reference index, but24419tracked paths absent from sparse checkout; no independence claim.20repositories/17owner names are not independent projects.0applications admitted. See notes/project_frame_feasibility_20261117.md. Structural screening needs its own bounded policy; method, competent comparison and independent-label gates remain open.
+
+## Local-object exposure audit and pinned structure screen
+
+Precollection Git-object audit expands scanned paths2584→7429 without fetching;0frame-name matches but11362eligible blobs unavailable. Frozen66a448f collected20complete directory trees, no file contents/outcomes.16manifest/JVM co-occurrences,3generator-marker repositories,42package paths; these are signals, not eligibility or independent clusters.0apps admitted. See notes/project_structure_screen_20261117.md. Next metadata file policy must be frozen before contents; labels remain unread.
