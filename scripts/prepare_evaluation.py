@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-requirements-feasibility-v1.md',
+    'manifests/development-requirements-feasibility-schedule-v1.json',
+    'scripts/extension/collect_development_requirements_feasibility_v1.py',
+
     'scripts/extension/verify_development_shared_comparison_v1.py',
     'manifests/development-shared-comparison-v1.json',
     'notes/development_shared_comparison_20261117.md',
