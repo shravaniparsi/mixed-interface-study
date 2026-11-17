@@ -1,0 +1,7 @@
+# README scientific schedule prepared, not dispatched
+
+The qualified ordinary triple is fully archived at 0222ace. The execution runner and prospective protocol now preserve all six source-frozen README specifications and two fixed repetitions, all three paths per specification, plus four bracketing ordinary controls. The exact patches were compared with the original input inventory; every case/path appears once per repetition, with no duplicates or missing combinations.
+
+There are 36 scheduled scientific branch entries, not necessarily 36 producer attempts. Six explicit-description native branches are prospectively retained as unsupported by the observed creation form, without inventing a setter. API arms still execute. The initialized-README stratum remains a file-creation lifecycle control, without overwriting or deleting the existing file. Two batch jobs are capped at 45 minutes each and every scheduled branch uses a fresh container. Before/after repository snapshots and bounded API error bodies support distinguishing state preservation, lifecycle rejection and incomplete instrumentation.
+
+Syntax and schedule reconstruction checks pass. The running ordinary harness is not modified, and closed families remain closed. No scientific workflow dispatch has occurred in this preparation step. Next action is to complete and adversarially test the independent outcome scorer against the registered categories, then freeze its source and dispatch the single planned execution. Do not begin experiments merely because the workflow file exists.
