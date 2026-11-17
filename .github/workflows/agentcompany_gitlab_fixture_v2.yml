@@ -1,0 +1,27 @@
+name: Workplace GitLab authentication and fixture diagnostic v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: workplace-gitlab-fixture-v2
+  cancel-in-progress: false
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Inspect immutable service without task mutations
+        run: |
+          mkdir -p "$RUNNER_TEMP/gitlab-fixture-v2"
+          timeout --kill-after=3m 30m python3 scripts/extension/inspect_agentcompany_gitlab_runtime_v2.py "$RUNNER_TEMP/gitlab-fixture-v2"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: gitlab-fixture-v2-${{ github.run_id }}
+          path: ${{ runner.temp }}/gitlab-fixture-v2
+          if-no-files-found: error
+          retention-days: 30
