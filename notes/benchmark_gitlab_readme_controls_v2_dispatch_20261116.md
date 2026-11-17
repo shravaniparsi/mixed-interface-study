@@ -1,0 +1,9 @@
+# Final README ordinary-control dispatch and current accounting
+
+The complete v1 archive was committed as 909137f before v2 registration. Final correction head 3c646b26eb9e0ad25832ea6d5f057707d278504a was pushed; GitHub reported the new workflow active and no existing runs. One dispatch created run 44030229250. A subsequent authoritative poll confirmed native/native running and both API branches queued at that exact head. Do not dispatch another run on an observation timeout.
+
+The v2 independent verifier preserves v1 unchanged and checks the registered omission of description in API producer payloads, the observed main default-branch representation, all repository readbacks and exact cross-path state equality. It does not normalize null to empty. Seventeen synthetic adversarial tests pass, including missing-branch and null/empty mismatch rejection. These are tooling tests, not scientific observations. Full v2 reconstruction awaits terminal raw artifacts.
+
+Progress snapshot v4 replaces v3 as the current accounting snapshot without rewriting history. It retains 24 frozen specifications: 6 issue specifications executed and 18 unexecuted. Twelve are unexecuted after membership/MR qualification closure; six README specifications await this final ordinary triple. Original Wikipedia content is now bound. Reddit and directory remain selected but contract-ineligible, with no ordinary controls or scientific cases; neither is an experimental null result. The completed issue cohort still has zero confirmed incremental natural defects. No Q1-readiness claim follows from the increased number of verifiers, source files or qualification jobs.
+
+Run: https://github.com/shravaniparsi/mixed-interface-study/actions/runs/44030229250 . Final correction stopping rule: if unqualified, close README qualification with its six specifications unexecuted; no v3 repair loop.
