@@ -119,3 +119,7 @@ Preparation v2 cc08484 succeeded. Frozen48-row actual Angular22.2.3 measurement6
 ## Materialization safeguard and source-aware baseline design
 
 Added a frontend-model-only adapter requiring snapshot/context-bound field-state evidence; missing/unqualified/stale states abstain, not pass. Ten exposed regression tests pass. Original48-row runtime results unchanged; no rerun. Native-source replay is specified as comparator D under matched evidence and charged acquisition costs; still not a qualified source-schema adapter. See notes/angular_materialization_gate_20261117.md and protocol/source-aware-replay-comparator-v1.md. No independent scientific cases added; Q1 evidence remains incomplete.
+
+## Original-source schema replay,2026-11-17
+
+Frozen a5d9871 executed16development rows from3original PetClinic schemas plus original notBlank helper.14measured,2null/custom-validator exceptions;3ordinary controls valid so basic adapter criterion met.3omitted-field models root-valid with missing field unmaterialized, not a browser/API outcome. Original regex/custom rules executed, no mocks. Schedule closed, no rerun or scientific-case credit. See notes/original_schema_replay_20261117.md. C still needs counted reproducible acquisition and a distinction from D; independent frame/labels and Q1 contribution remain open.

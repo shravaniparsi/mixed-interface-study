@@ -28,6 +28,14 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/original_schema_replay_20261117.md',
+    'scripts/extension/verify_original_schema_replay_v1.py',
+    'results/petclinic-original-schema-replay-v1/execution.json',
+    'results/petclinic-original-schema-replay-v1/measurement.json',
+    'results/petclinic-original-schema-replay-v1/stderr.txt',
+    'results/petclinic-original-schema-replay-v1/stdout.txt',
+    'results/petclinic-original-schema-replay-v1/summary.json',
+
     "protocol/petclinic-original-schema-replay-v1.md",
     "scripts/extension/replay_original_petclinic_schemas_v1.mjs",
     "results/petclinic-original-schema-replay-v1/helper-source.json",
