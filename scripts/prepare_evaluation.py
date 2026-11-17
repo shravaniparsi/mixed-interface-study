@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/development-http-setup-source-v1.json',
+    'protocol/development-http-serialization-v1.md',
+    'scripts/extension/qualify_http_serialization_v1.mjs',
+    'results/development-http-serialization-v1/expected.json',
+
     "protocol/development-http-setup-source-v1.md",
     "manifests/development-http-setup-source-schedule-v1.json",
     'scripts/extension/inventory_service_http_v1.cjs',
