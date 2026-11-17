@@ -1,0 +1,2927 @@
+{
+  "kind": "agentcompany_instruction_screen_v1",
+  "source_revision": "98b68ef82a47690c316f42fddb05baafaab56851",
+  "rule_freeze_commit": "aad95bb37de7aea441962dd667aea1b918b76c38",
+  "protocol_sha256": "9acdaa90152dd19a7dc281b807425bbf6ba40e130511dd234c1b1b842e0fc2f2",
+  "review_method": "One AI-assisted analyst pass over all instructions in lexical task order. No independent human adjudication. Codes describe instructions, not observed behavior.",
+  "tasks": [
+    {
+      "index": 0,
+      "task": "admin-arrange-meeting-rooms",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Computed room count is sent once; local answer file adds no web consumer.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "2f05e9aa7a91117d25783bb6610b5e9d13a0100114a464a7e8e0b9814cdef794",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 1,
+      "task": "admin-ask-for-meeting-feedback",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Participant-list reply determines recipients of subsequent feedback requests.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "85fa5c7f60d4b210a7a0032b7f976cc37a3de5974fb47b0f5a4f0dee3cfa44c8",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask participant names",
+        "consumer": "Ask named participants for feedback",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "A participant-list reply is obtained",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 2,
+      "task": "admin-ask-for-upgrade-reimbursement",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Reimbursement refusal triggers escalation to the CTO.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "a98ce7f5a792a5d4c35f2617cdb1fb20c673db648488fc84660eb301d31dc9a0",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Request reimbursement",
+        "consumer": "Ask CTO about escalation",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Reimbursement is refused for lateness",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 3,
+      "task": "admin-check-employees-budget-and-reply",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Equipment-request replies determine subsequent budget responses.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "6c69a348743702f9ba5635d29c555f58ac6fb132b6ec2ffc90876e68dbf92417",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Request equipment details",
+        "consumer": "Send cost/budget replies",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Equipment-request replies are obtained",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 4,
+      "task": "admin-check-employees-budget-and-reply-2",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Equipment and budget replies determine subsequent affordability responses.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "0417904b2bea67342fa6ea7d5ef35bc50c454f5fcb76720ff6223c2804c37367",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Request equipment and budgets",
+        "consumer": "Send affordability replies",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Equipment and budget replies are obtained",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 5,
+      "task": "admin-check-employees-budget-and-reply-and-record",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Request replies determine cost messages and possible reduction requests.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "425126f7cb37d321b36c7cb397cc285e68ad45b1b805bc1fb813972cc53eab0f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Request equipment details",
+        "consumer": "Send costs and ask for reductions",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Requests are received; reduction query requires budget shortfall",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 6,
+      "task": "admin-collect-requests-and-compute-total-price",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Requests collect replies for a local result file; no later web operation is specified.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "99f979756a092c2ca3a600c0a8f4c564c3535b3d1b910fbbe116dbe5026b2fb0",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 7,
+      "task": "admin-employee-info-reconciliation",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "optional",
+      "reason": "Optional DMs supply information for a local CSV update, without a later web consumer.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "2eb7bbf32b4f1cb875840439a77cc47d8273748a2e98fb89cce81c827b3b807f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 8,
+      "task": "admin-get-best-vendor-quote",
+      "code": "explicit_chain",
+      "coworker_response": "yes",
+      "reason": "Upload the completed CSV, then create its public share link.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "5f317f380e8c140a2345d7dcbb72cf492326c85ac0054c57690e983f914a41a5",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_share",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Upload completed CSV",
+        "consumer": "Create public share",
+        "dependency": "New cloud file identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 9,
+      "task": "admin-make-spreadsheet",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Survey reading produces a local CSV only.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "13e7bf7a25abd43cf6b7a180cca6990df160d386c7871ac7793c1b95de1d3f85",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 10,
+      "task": "admin-mass-forms-filling",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Save completed forms in a named cloud folder; creating that folder is not explicitly requested.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "d33c32b1ab8f386535c2add67587b3f533584ca7a64fc5e0d5b8d0dcab754db4",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 11,
+      "task": "admin-read-survey-and-summarise",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read survey and send one ranking message.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "22cd9136c9517bf422de99f6d27879db2fb8c6e26494cfc3cae017619249fd83",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 12,
+      "task": "admin-remove-pages-pdf",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "The shortened PDF is explicitly local, not uploaded.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "94d1fc0c212bc796ecaacc0d742eeda0430b0e7393822fef20c90dcd94fee337",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 13,
+      "task": "admin-translate-sales-chat",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read chat screenshot and write a local calculation.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "6406b9ccfc5e66d942594b5f0d72695ad8b9b465a45cbe0df230bc9c17f51eb1",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 14,
+      "task": "admin-watch-video",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read video and write a local count.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "31cd1ec4285bad2ed2fc82e1625133e02a19e7a0a8a8dff167173cbcb7b9b51f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 15,
+      "task": "bm-classify-nationality",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Cell edits precede reported totals, but remote persistence before calculating/sending is unspecified.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "9926ded9115a79a5bab54a742f3d456bc45829f752023017c584f951f47680c6",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "cloud_edit_then_chat",
+        "applications": [
+          "owncloud",
+          "rocketchat"
+        ],
+        "producer": "Edit spreadsheet classifications",
+        "consumer": "Send computed totals",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Remote persistence before computation/message is unspecified"
+      }
+    },
+    {
+      "index": 16,
+      "task": "ds-answer-numerical-data-question",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read spreadsheet and save local answers.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "1632c9ff97bf90632b6417554f7069b8d79a02050ef9e980930e2e076bc9ee08",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 17,
+      "task": "ds-answer-spreadsheet-questions",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read spreadsheet and send answers; no new source application state is consumed.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "ef038df721e97062e926a357edc58cefefc69feae73dc6e37cf9dda973550cf7",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 18,
+      "task": "ds-calculate-spreadsheet-stats",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create local analysis script and send statistics/path, without a prior web write.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "a1a960de9cd1ae248a3672f9621f0512b16acb0549f39d03bf6d1b7c8459b770",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 19,
+      "task": "ds-coffee-shop-database-management",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Downloaded CSVs produce local SQLite tables/views and local answers.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "98971d072fb4c8182946987ae587ec79db6b5654cc439fcc05778b29a88682ae",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 20,
+      "task": "ds-find-meeting-spreadsheet",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Retrieve an existing file and its link; no new share creation is requested.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "e6cd279e466be446ddcda3cbbb1443caf1f5c89e087c3d5aaaa89d00f016962b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 21,
+      "task": "ds-fix-table-values-and-missing-answers",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Corrections and answers are explicitly saved locally.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "0288604b27d12541fb45ef5d80961816d6781ed886b3f63f550bad5f941fde44",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 22,
+      "task": "ds-format-excel-sheets",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Sheet creation and formatting may occur locally before a single save to ownCloud; distinct persisted web steps are unspecified.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "761bd7450736860cd4a0badf2fb05d566380e2f24c2571d980799148e217a8b5",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "cloud_sheet_create_format",
+        "applications": [
+          "owncloud"
+        ],
+        "producer": "Create formatted sheet",
+        "consumer": "Format new sheet",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Edits may be local before one cloud save"
+      }
+    },
+    {
+      "index": 23,
+      "task": "ds-janusgraph-exercise",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Local JanusGraph vertices/edges are database writes, outside the persistent web-application/native-interface screen.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "889f086301e5619b19373af2bbf56fe6185da4fde411e94f529ed5349e972193",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 24,
+      "task": "ds-merge-multiple-sheets",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "A proposal message can elicit a request to upload the merged file.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "3e4c20952deab197c6a7547e79970f698c48e61448ad1b270544a3a5b1c0abe1",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_cloud_write",
+        "applications": [
+          "RocketChat",
+          "ownCloud"
+        ],
+        "producer": "Propose file merge",
+        "consumer": "Upload merged spreadsheet",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Wang Fang requests upload",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 25,
+      "task": "ds-organise-report-sus-data",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing filenames and send one report.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "3a81e2c3f83c04968503e0003b8757eaa2d2a85f866e65e46fe4d98575949127",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 26,
+      "task": "ds-predictive-modeling",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Save model predictions to cloud; no later consumer of the new file is specified.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "81c1e7c8fbcf0967218edada51e992d700ce0fccd44d8861475ea8c6f5cd6c5c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 27,
+      "task": "ds-sql-exercise",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Local database queries and answer files only.",
+      "literal_service_mentions": [],
+      "source_sha256": "d278c63acf80a41a3df3ea25a380229b9f04c55def5930cc1aa2ebf88adced95",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 28,
+      "task": "ds-stock-analysis-slides",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Save cleaned data and dependent visualizations, but consumption of a persisted cloud version rather than local data is unspecified.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "621281d20fa3e0b4dbf6903ff871e035c99bb194a80b4fe3e1188f7f7954281b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "cloud_clean_then_visualize",
+        "applications": [
+          "owncloud"
+        ],
+        "producer": "Save cleaned CSV",
+        "consumer": "Generate plots and slides",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Consuming a persisted cloud version is not explicit"
+      }
+    },
+    {
+      "index": 29,
+      "task": "ds-visualize-data-in-pie-and-bar-chart",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read cloud spreadsheet and save local charts.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "bc660d27ec4358e6f3ddd5f08dc8f18c109ad017ec20f71776374cd95985c1cc",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 30,
+      "task": "example",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Chat requests surround local setup; later contact question does not explicitly consume newly produced application state.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "fa9f805183790797783d24a4ad0c3d09ee9fba2d4447f7bde390a4a4a127538a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 31,
+      "task": "finance-apply-tax-credit",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "optional",
+      "reason": "Optional clarification messages support a local tax form; no later web consumer is specified.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "e0e59c9071970fae4ab16679c5240a4c3a3c8be2d1bb19b82b08a21be51067a7",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 32,
+      "task": "finance-budget-variance",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read financial data and save one cloud report.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "5248e3849a49c79e244a9ceba928e97c1c8c7001f55dc2f49666d17a2ad56ae5",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 33,
+      "task": "finance-check-attendance-payroll",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read cloud inputs and save a local payroll report.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "079240bbb083878b4d6efccb302c5e7f9e628ec2c0a90dbc62d2cf7fd7f91a8a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 34,
+      "task": "finance-create-10k-income-report",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Local table path and recommendation are sent once.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "54affe577ad5164612de0b1ec7af5ed8b126fcd795b88538f7751d5e81c65e92",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 35,
+      "task": "finance-expense-validation",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Corrected transactions and report remain local.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "3c16dc33e9aea3e685e9aec9c834faa0d311295b74b1430cf8cdca34390743fd",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 36,
+      "task": "finance-find-signatories",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Director reply supplies source location for a table subsequently sent to the sales director.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "0d61b70c0bc2a1e876841f426bda8b77089f00f9a649224313106b4ffc8924f4",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask finance director for source path",
+        "consumer": "Send table information to sales director",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Director supplies source location",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 37,
+      "task": "finance-invoice-matching",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read invoices/payments and save one cloud report.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "4f320542f7dd6dce9a529a6ff15df2c1f2943092e5e7f15650223cb349e3abd4",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 38,
+      "task": "finance-nonqualified-bill-ask-for-reimburse",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read receipt/policy and save a local reimbursement result.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "26f14825316db96811bc0b2a1f42c344d2134845f28b1ee68c2dfe4e780640e1",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 39,
+      "task": "finance-qualified-bill-ask-for-reimburse",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read receipt/policy and send one amount message.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "a885c6c1c0da5bfa7df851f8baf629bbeeee5d419da378a968576e00061ef194",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 40,
+      "task": "finance-r-d-activities",
+      "code": "explicit_chain",
+      "coworker_response": "yes",
+      "reason": "Create the research-time CSV on ownCloud, then add wage data to that named file.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "41cb7ad23bb2f6aeb855be2f57adb2d1020f6538b612d3b87a6e12c630540278",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_augment",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Create research-time CSV on cloud",
+        "consumer": "Add wage column and total",
+        "dependency": "New named cloud file and its recorded hours",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 41,
+      "task": "finance-revenue-reconciliation",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Existing contract discrepancies trigger employee messages; the report is local.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "c98db8886ede071a237b7dfd2355d8526efd91633b9d1be48e9e2733fa5d7e76",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 42,
+      "task": "finance-substantial-presence-test",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Compute from local history and send one result.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "ecd2dffa88be1746a8d06c2ac6f9f2a6462380a6d98b91eccfb6e5c4a324d250",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 43,
+      "task": "hr-analyze-outing-bills",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Requested links to locally saved artifacts and an unspecified word document leave upload/consumer steps unresolved.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "ab8017378e635948b88a272e620703101753951af70a3fb65845ea26e1422557",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "local_artifact_link_ambiguity",
+        "applications": [
+          "owncloud",
+          "rocketchat"
+        ],
+        "producer": "Create local report and plot",
+        "consumer": "Send requested links",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Upload step and referenced word document are missing"
+      }
+    },
+    {
+      "index": 44,
+      "task": "hr-check-attendance-multiple-days",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read attendance data and save a local report.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "d92160905f7b0ab328a5adb89009c03baa259be372962257a1212564c5400bc9",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 45,
+      "task": "hr-check-attendance-multiple-days-department",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read attendance/department data and save a local report.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "896bd57da14d645da0373dd963c604d09af71aadfbca606cdb6e1342454dab96",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 46,
+      "task": "hr-check-attendance-multiple-days-department-with-chat",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Department queries feed a local report; no later web consumer is specified.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "1505c27a34003d679f9ed0be2405b39abd12c21cf4c0a8be485c8590209b4436",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 47,
+      "task": "hr-check-attendance-one-day",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read attendance data and save a local report.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "0972614fa1088964a55472ca37952c3168ed03b944339f6597507c41df0e02db",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 48,
+      "task": "hr-check-for-invalid-passwords-and-ask-for-valid-passwords",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Password requests feed a local file; no account-password mutation or later web consumer is requested.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "ee2ba79ed8b541159d95c3b59ff187890aad682a9640056dd4a8d074092087b6",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 49,
+      "task": "hr-collect-feedbacks",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Performance-feedback replies determine the review message delivered to the subject.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "297bb3b06ca6a85f5e347a8ae65f8a760aeb5b17b5636a3f94ee5100e85cc078",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Request performance feedback",
+        "consumer": "Send performance review",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Feedback replies are collected",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 50,
+      "task": "hr-collect-multiple-valid-passwords",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Password requests feed a local file, without a specified later web operation.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "5d5d46f5624d3159c04ede35514191d72a2d8e3dbc30e52f3564c7ceeb6a73a9",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 51,
+      "task": "hr-create-career-ladder",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "optional",
+      "reason": "Save a cloud document and announce its existence; no link or new-state-consuming operation is specified.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "16d19bab8ae028eb8e396a0dec6cafd63e8e4f7190e87b592c1cda751f611234",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 52,
+      "task": "hr-create-employee-manual",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Save one new cloud manual, with no later consumer.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "1768a544c4a7db9051d542d3f3fc207d17c855da74f76bae351cd2b76bf05908",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 53,
+      "task": "hr-delete-and-insert-user",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Removing one user and adding a different user are separate writes, not an explicit produced-state dependency.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "973e5b0b7cae444fb761d390fbf1fb7f397620249557f4ed6f25033dc72ba72c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 54,
+      "task": "hr-get-valid-password",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Password request feeds a local file; no later web operation is specified.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "432f274765fc8667102ad5b6965d8832b4cc84c24c100566bbdd24363a4958b7",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 55,
+      "task": "hr-green-card-consultation",
+      "code": "conditional_chain",
+      "coworker_response": "optional",
+      "reason": "If additional information is needed, the reply determines the subsequent filing-date message.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "9bb2f93a14aa0f4e733b85397301e81805c039f7749a759a12db571ace52962b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask additional filing information",
+        "consumer": "Send filing-date answer",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Additional information is needed and supplied",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 56,
+      "task": "hr-internal-tooling-slides",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Save slides on ownCloud, then share the new slides link in RocketChat.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane",
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "b0ea9ab5b530a282d7cd0ca5f8ebc4046ec7fea37b0e6fc5b9e2c3541284373f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_link_publication",
+        "applications": [
+          "ownCloud",
+          "RocketChat"
+        ],
+        "producer": "Save slides on cloud",
+        "consumer": "Send slides link in chat",
+        "dependency": "New cloud file URL",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 57,
+      "task": "hr-make-slides-introduce-leadership",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Save local slides and send a completion notice.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "bcfd6d66d62abeac8cf166735d09c6d71e0797507f2be0980d319f72345dda2f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 58,
+      "task": "hr-mass-survey",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Survey replies supply data written into a new cloud spreadsheet.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "62aba9151ca561da59869ea72ed23a7848f8aeb4f645b5bd0de5e0567e20b132",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_cloud_write",
+        "applications": [
+          "RocketChat",
+          "ownCloud"
+        ],
+        "producer": "Request vacation information",
+        "consumer": "Write cloud survey spreadsheet",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Employees supply survey replies",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 59,
+      "task": "hr-massive-resume-screening",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing resumes and send a screening result.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "409e738b6ccb39fce0adb3407da59fb9a4b50588c2aad6d4764dd7fa204bb5f7",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 60,
+      "task": "hr-new-grad-job-description",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create cloud job description, then create a public share link.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "5538e0214cffddd8edf1d5b02ae67b33e03d2f535a84442c4084e614529a8ceb",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_share",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Create job-description file",
+        "consumer": "Create public share",
+        "dependency": "New cloud file identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 61,
+      "task": "hr-new-grad-job-description-2",
+      "code": "explicit_chain",
+      "coworker_response": "yes",
+      "reason": "Create cloud job description, then create a public share link; requirements come from a coworker.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "1d1e2043d50e1719c9dd7dafafaf0899df900d0132b3b2f3d3a45f182d94f4af",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_share",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Create job-description file",
+        "consumer": "Create public share",
+        "dependency": "New cloud file identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 62,
+      "task": "hr-new-grad-job-description-3",
+      "code": "explicit_chain",
+      "coworker_response": "yes",
+      "reason": "Create cloud job description, then create a public share link; content comes from coworkers.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "a1de9eecee97a47ed503f297ad32ef124d394e19f54af87d31a7a06e65a64ec2",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_share",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Create job-description file",
+        "consumer": "Create public share",
+        "dependency": "New cloud file identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 63,
+      "task": "hr-organize-talent-info",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read existing resumes and save a local summary.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "b60cbfe6d49bdc73b72be24fcc053dfe653de81842297d8687fe655a8947f1bc",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 64,
+      "task": "hr-pick-interviewer-1",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "HR reply determines which interviewer receives the invitation message.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "75cb080cf864c1d99cb65bb305931f901682933a73450636a1b970e1a3ed0d31",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask for interviewer skills",
+        "consumer": "Invite chosen interviewer",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "HR supplies skills for comparison",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 65,
+      "task": "hr-pick-interviewer-2",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Availability-list reply determines subsequent interviewer queries.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "fb999cb8c82428bc9a25703f337c278d5fa5b9787b2bed5509d7b792c535642b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask for available interviewers",
+        "consumer": "Query listed interviewers",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "HR supplies candidate list",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 66,
+      "task": "hr-pick-interviewer-3",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "A persuasion conversation is requested without a distinct later application operation.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "58445aeee22689d968f8b4eaeb56a825b5b8fc3b3ea158409b598e0d5308c328",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 67,
+      "task": "hr-populate-salary-increase-memo",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Save a cloud memo template, then use it to produce employee-specific cloud memos.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "2dc2650251c72bca070d7d9c70c7a0f89e2e1318ae14b27b6f2fa11e92e14551",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_template_derivation",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Save memo template on cloud",
+        "consumer": "Populate and save employee memos",
+        "dependency": "New saved template content",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 68,
+      "task": "hr-resume-categorization",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Download and categorize resumes locally.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "9c6aabe66759feaa4505668854d47365ab025998d783672b5cf6c7c4e5fefa91",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 69,
+      "task": "hr-resume-screening",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Requirements reply determines the later candidate-screening message.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "55996429db87c4103bad34e11f38dcad5cfe5dd2718da1eefff0437f0d3c423b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask for position requirements",
+        "consumer": "Send screening result",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Li Ming or fallback HR provides requirements",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 70,
+      "task": "hr-salary-analysis",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Save one cloud salary report, with no later consumer.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "4b7978b66998d58a79da40bd109e00b4afdca8efb24d080f7e702932747b1f36",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 71,
+      "task": "hr-transfer-group",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Change channel membership, then update the same user's bio to reflect that change.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "b1fd7ed975e88a1176841aeb4ab88c9fd393a9ba608d47d625df10d89abce1e9",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "rocketchat_membership_bio",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Change user channel membership",
+        "consumer": "Update user bio to reflect change",
+        "dependency": "New membership state",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 72,
+      "task": "ml-generate-gradcam",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Downloaded image produces local model outputs and explanations.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "0bd5ae08dcd6a576996a0477ff38c45e6204c67452848e5b16846cffcf107565",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 73,
+      "task": "ml-grade-exam",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Download, grade and rename local PDFs; no remote rename/upload is specified.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "9ecdfb6ac36876ff36727a0e8ef2da1352ceb9054d0a8d34b52616c7cc41038c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 74,
+      "task": "pm-add-new-moderator",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Add a user to a channel, then promote that new member to moderator.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "9062862e061ea2d032aa7e8e8e4cfa13a992e128690e08d0dd0cae262d82c241",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "rocketchat_membership_role",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Add member to existing channel",
+        "consumer": "Promote new member to moderator",
+        "dependency": "New channel membership",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 75,
+      "task": "pm-ask-for-issue-and-create-in-gitlab",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Coworker reply determines the GitLab issue to create and its fields.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "5860429d2a092149a815e59a50972bfd46341097d7fe7bfd30dfce9dc1495217",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_gitlab_write",
+        "applications": [
+          "RocketChat",
+          "GitLab"
+        ],
+        "producer": "Ask issue requirements",
+        "consumer": "Create issue",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Coworker supplies issue details",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 76,
+      "task": "pm-ask-issue-assignee-for-issue-status-and-update-in-plane",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "A completion reply determines whether to update the Plane issue.",
+      "literal_service_mentions": [
+        "plane",
+        "rocketchat"
+      ],
+      "source_sha256": "cced741f379907f9e209d825dd5d461a7b923cc8cb181427903655386ebf2c7b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_plane_write",
+        "applications": [
+          "RocketChat",
+          "Plane"
+        ],
+        "producer": "Ask issue status",
+        "consumer": "Set issue Done",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Assignee reports completion",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 77,
+      "task": "pm-assign-issues",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create a project, add members, then create assigned issues in that project.",
+      "literal_service_mentions": [
+        "plane"
+      ],
+      "source_sha256": "13557758d1206b3ffcb9b773f5dc9e5668a38cfe1022d0a557d445e124c9f9e3",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "plane_project_members_issues",
+        "applications": [
+          "Plane"
+        ],
+        "producer": "Create project then add members",
+        "consumer": "Create assigned issues in new project",
+        "dependency": "New project and memberships",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 78,
+      "task": "pm-change-channel-ownership",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Assign ownership of an existing channel once.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "810855c26f5406be2b06ce288dcc768d609aa5fdf75e437dbfcb3e0ad0005cda",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 79,
+      "task": "pm-check-backlog-update-issues",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Posted status requests and subsequent replies determine acknowledgments and Plane updates.",
+      "literal_service_mentions": [
+        "plane",
+        "rocketchat"
+      ],
+      "source_sha256": "820d35877d6861c5c7fa12309d217f854d3b51d33c9ba95cf9194d521c9a2db4",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_plane_write",
+        "applications": [
+          "RocketChat",
+          "Plane"
+        ],
+        "producer": "Post backlog status requests",
+        "consumer": "Acknowledge and update issue state",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Assignees confirm completion",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 80,
+      "task": "pm-copy-plane-issues-to-gitlab",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing Plane issues and create GitLab copies, without later consumers of the copies.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane"
+      ],
+      "source_sha256": "c778b0c121137e8b5d482472a119f5b1e450d026f23ee82ef918492600ab9ca5",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 81,
+      "task": "pm-create-channel-message",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create a channel, add a member and post a message to the new channel.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "714082766fb76d261be0c3317bf74a95f0588f76f3975d9eace0006b2a98ab80",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "rocketchat_channel_members_messages",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Create channel",
+        "consumer": "Add members and post introduction",
+        "dependency": "New channel identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 82,
+      "task": "pm-create-channel-message-medium",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create two channels, add their members and post messages; multiple instances remain one task.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "f892dc38a675af91ede0e54fe2b6bc0eac8ffdd6391d6a6d2ff95bcec069eb7c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "rocketchat_channel_members_messages",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Create channels",
+        "consumer": "Add members and post introductions",
+        "dependency": "New channel identities",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 83,
+      "task": "pm-create-channel-new-leader",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create a channel, add a member, then make that member its leader.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "dd483cada74cc504249979b887e13efc067cfea83c01f27aeb9caeedbc611570",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "rocketchat_channel_member_role",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Create channel and add member",
+        "consumer": "Assign member as leader",
+        "dependency": "New channel and membership",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 84,
+      "task": "pm-create-plane-issue",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create one issue in an existing project.",
+      "literal_service_mentions": [
+        "plane"
+      ],
+      "source_sha256": "713c57fdbbed14ba1fdfaafd487e8d2f4579fb77dadf5d48f26b4c55fb0a4689",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 85,
+      "task": "pm-create-teammate-channel-from-spreadsheet",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create a channel with selected members, then send task messages in it.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "79b9642749ec28233db8e86dd97162f85cc9be28572b13f97984730b4d66f950",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "rocketchat_channel_members_messages",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Create channel with selected members",
+        "consumer": "Post task messages in channel",
+        "dependency": "New channel identity and members",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 86,
+      "task": "pm-distribute-information",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Send an existing project link to existing members; no preceding state creation.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "8c39d2854af85ed4d01d585a291f790c69d62913394b662339e2549b2bdda39a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 87,
+      "task": "pm-monitor-new-bug-issues",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing issues and send a summary.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "eae2bff5e7714f90b39eb1067070df89466b9accd60fc55db35e93291b4a46e2",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 88,
+      "task": "pm-monthly-attendance-slides",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create local slides and send their local path.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "8776455b017c0ede2580a01f2de4589fa121954e23401d052ab5f355787c7681",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 89,
+      "task": "pm-plan-personnel-for-new-project",
+      "code": "conditional_chain",
+      "coworker_response": "optional",
+      "reason": "If personnel documents are requested, the replies determine the plan communicated to Sarah.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "47fc4125664c39a099c768d6f90d8a7a53ea6eb7f2453c5b7099ea76b4cefd7d",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_followup",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Ask for personnel documents",
+        "consumer": "Send plan timing/cost",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Optional document request is used and answered",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 90,
+      "task": "pm-prepare-meeting-with-customers",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create local slides and send their filename.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "eb8a006788c291de4c76a47e8f72a33670395d1f2999c99b45c7e0dd8c5bbdef",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 91,
+      "task": "pm-present-engineer-group-members",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create local slides and send a completion notice.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "636711453ef81a5e948e0f617b05d9a2e42dee141627a89d06486ae9af52c71f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 92,
+      "task": "pm-present-gitlab-info-as-ppt",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read existing repositories and save local slides.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "c8f04427aa726c69a25ab593c0ef65ea6a0a9503d79c9138d6b4afa296d57a37",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 93,
+      "task": "pm-projects-analytics",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Opening sentence says create a summary in Plane, but steps specify only analytics reading and chat publication.",
+      "literal_service_mentions": [
+        "plane",
+        "rocketchat"
+      ],
+      "source_sha256": "9d7c78fb21fd1309b6ce21f02780fa99a6e6c0156dc4ed6cb9522eaef07605c4",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "plane_summary_location_ambiguity",
+        "applications": [
+          "plane",
+          "rocketchat"
+        ],
+        "producer": "Create summary in Plane (opening only)",
+        "consumer": "Share summary on chat",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Detailed steps specify no Plane write"
+      }
+    },
+    {
+      "index": 94,
+      "task": "pm-schedule-meeting-1",
+      "code": "ambiguous_chain",
+      "coworker_response": "yes",
+      "reason": "Availability replies precede scheduling, but no persistent calendar or confirmation operation is specified beyond a local conclusion file.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "e60024b16e80b00a08e2286aba1c14970e31680218f28cc324355bfaa1355e12",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_scheduling_ambiguity",
+        "applications": [
+          "rocketchat"
+        ],
+        "producer": "Ask availability",
+        "consumer": "Schedule meeting",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "No persistent calendar or confirmation step specified"
+      }
+    },
+    {
+      "index": 95,
+      "task": "pm-schedule-meeting-2",
+      "code": "ambiguous_chain",
+      "coworker_response": "yes",
+      "reason": "Availability replies precede scheduling, but no persistent calendar or confirmation operation is specified beyond a local conclusion file.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "e60024b16e80b00a08e2286aba1c14970e31680218f28cc324355bfaa1355e12",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_scheduling_ambiguity",
+        "applications": [
+          "rocketchat"
+        ],
+        "producer": "Ask availability",
+        "consumer": "Schedule meeting",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "No persistent calendar or confirmation step specified"
+      }
+    },
+    {
+      "index": 96,
+      "task": "pm-send-hello-message",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Post one message in an existing channel.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "e06772808d95fcd46e570579fefc7b859bcaaaa91e43815e16180ad37b389f7d",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 97,
+      "task": "pm-send-notification-to-corresponding-user",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Ask for instructions; no subsequent operation is specified.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "0f68b4b5ed0ad91befe5c1505b881eea5645c3107465015e178901061cad1917",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 98,
+      "task": "pm-update-gitlab-issue-from-plane-status",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Existing Plane state determines one GitLab update per issue.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane"
+      ],
+      "source_sha256": "9d43b6e7682d26903bf823fb00cd9b3bae3f522f3a2f057ed250e886d6703b1b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 99,
+      "task": "pm-update-plane-issue-from-gitlab-status",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Keep an existing issue open and move it, or close it; no newly produced prerequisite is explicitly required.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane"
+      ],
+      "source_sha256": "a708b0d03cae89b1382cdd20bd8bb7df0932f23558d10cf0cfe6d7f1bf455c79",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 100,
+      "task": "pm-update-project-milestones",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create a new milestone, then assign existing issues to that milestone.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "d79cf279ce0319b0277b6646c85e8f99f3b15582c22649ffbbec19cd152966c9",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_milestone_assignment",
+        "applications": [
+          "GitLab"
+        ],
+        "producer": "Create milestone",
+        "consumer": "Assign existing issues to new milestone",
+        "dependency": "New milestone identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 101,
+      "task": "pm-update-sprint-cycles",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Move existing issues and announce completion using existing identifiers; no later consumer of new application state is requested.",
+      "literal_service_mentions": [
+        "plane",
+        "rocketchat"
+      ],
+      "source_sha256": "d2ad64814c172dccc9e999a26d9d61be15183b739eab0142d997d6e9092d1620",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 102,
+      "task": "qa-escalate-emergency",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Absence of a reply to an initial message after ten minutes triggers a second escalation message.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "d42cf57aca77fde8756a3e6085ffcd970f2e9917ac615747e6d1f8dffe996742",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_response_absence_escalation",
+        "applications": [
+          "RocketChat"
+        ],
+        "producer": "Send emergency message",
+        "consumer": "Send escalation to CTO",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "No initial response for ten minutes",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 103,
+      "task": "qa-update-issue-status-according-to-colleagues",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Coworker replies determine subsequent Plane issue updates.",
+      "literal_service_mentions": [
+        "plane",
+        "rocketchat"
+      ],
+      "source_sha256": "9e5b91d9db24e4499bac32099a4b8281a06b6d5a0fe94da130d293286a678236",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_plane_write",
+        "applications": [
+          "RocketChat",
+          "Plane"
+        ],
+        "producer": "Ask issue statuses",
+        "consumer": "Update issue statuses",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Named coworkers provide status replies",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 104,
+      "task": "research-answer-questions-on-paper",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read cloud paper and fill a local analysis sheet.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "e15b7e910982054939e370eed86ee8852ebeeb127d52dc9080f60cd5d706eb1c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 105,
+      "task": "research-reproduce-figures",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "optional",
+      "reason": "Create local figures and send paths/request feedback; no later response-consuming operation is specified.",
+      "literal_service_mentions": [
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "c3c71fbdcb496bbfe20ff1079c580b81ccc2fe04c06a9105b40cac711286d82d",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 106,
+      "task": "sde-add-all-repos-to-docs",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing repository information and update one README.",
+      "literal_service_mentions": [
+        "gitlab",
+        "owncloud"
+      ],
+      "source_sha256": "d8eb0910cfe3ca0ab84d3062e86847fb3ad4d52fc38b344a219d6ea31d2bd162",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 107,
+      "task": "sde-add-one-gitlab-pipeline",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Pipeline configuration followed by commit does not explicitly persist configuration before that commit.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "d5cf03b476d032ac977bfa524ad77ec87b1aef6ec892c92de27aa88ad1bbf80c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 108,
+      "task": "sde-add-wiki-page",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing repository and create one wiki page.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "58dbc616b602fbcb65d2ec8ab888c2a1af7034781bd1915e513ed133ab01028e",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 109,
+      "task": "sde-change-branch-policy",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Update one existing branch policy.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "1fadeb108f1df252c6d04921553d008ec0056e8e63a4cff992b3df379e20665b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 110,
+      "task": "sde-change-license-easy",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "License changes are explicitly local with no push.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "455d770701ddcb0295cc058db18362596092be2c9abeb00c464d32a6d820cb5c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 111,
+      "task": "sde-change-license-hard",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "License changes are explicitly local.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "42e994bed849dafb807f92a6637878de4ccace635c179ff81bbce67e0e5f5604",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 112,
+      "task": "sde-check-and-run-unit-test",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Run local tests; no remote mutation is requested.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "320c0107c3183f7a89962811e60aed0ac5f828e59365f99e7d78f6454a46f7f9",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 113,
+      "task": "sde-check-high-priority-issue",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "optional",
+      "reason": "Send existing issue references and ask for status; no later reply-consuming action is specified.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "9a6dab09d61236cb18a168b75abcda14397a662091ae8b88d454ec8cce7b67f3",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 114,
+      "task": "sde-close-all-gitlab-issues",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Delete existing issues; task title says close but the actual instruction says delete.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "6237cbac993546cfbad641c75b9cad64559bd09dcf9e25566c9a34054a298308",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 115,
+      "task": "sde-close-all-issue-on-all-project-under-tac-workspace",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Instruction names Plane but supplies the GitLab port; do not repair its target.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane"
+      ],
+      "source_sha256": "ceab175a15f42ed4637ee2db16c5df8ebad1fc1e010708c511ed103a90595dcc",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "application_target_conflict",
+        "applications": [
+          "gitlab",
+          "plane"
+        ],
+        "producer": null,
+        "consumer": null,
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Plane name and GitLab port conflict"
+      }
+    },
+    {
+      "index": 116,
+      "task": "sde-close-all-prs",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Close existing merge requests without a producer step.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "a01b0602b8b9a93ccfdc01ff17ef40e10e10350537adc01f1ef5161434a12e8c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 117,
+      "task": "sde-close-an-issue",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Comment then close an existing issue; order is explicit but whether closure consumes the new comment is not established.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "afee141707d4d39a4a2e3f092367e3e30982342e1e452d8b6a34e488cbe6e1a0",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_comment_close",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": "Post comment",
+        "consumer": "Close issue",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Same issue/order does not establish consumption of the comment"
+      }
+    },
+    {
+      "index": 118,
+      "task": "sde-collect-open-issues",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read existing issues and save a local CSV.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "306bee58b9d6ae166c8634dbfdfbcd5a8c1f059089a9dac841b29e9aaff7b6fc",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 119,
+      "task": "sde-copilot-arena-server-easy-add-suffix",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Modify code and run a local server, without persistent benchmark web-state mutation.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "888030768160f583906bfc8ae12759537e39baedcc1ef33b897887e3f111a037",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 120,
+      "task": "sde-copilot-arena-server-new-endpoint",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Modify code and run a local server, without persistent benchmark web-state mutation.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "0812e26f40187c498c8cb1a6d6a309a01cd87ce66055c42e5c9e896fab5101e0",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 121,
+      "task": "sde-copilot-arena-server-setup",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Clone and run a local server; no web-state producer/consumer sequence is requested.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "eba4a36ea82c3a0a236603039dc47045a973948081709468f8b1d6c003d9b0fe",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 122,
+      "task": "sde-copy-issues-to-plane",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing GitLab issues and create Plane copies with no later consumer.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane"
+      ],
+      "source_sha256": "f8d9472216dd1cb72544e6828301ef490a77a7dbcaaf6ef23a8275cb573eb897",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 123,
+      "task": "sde-copy-table-from-pdf-to-xlsx",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Upload the new spreadsheet, then create its share link.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "98e9f84b32db7014f593aeea2f1a263f80bdbc784ad8769b60c5e1f87322305d",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_share",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Upload spreadsheet",
+        "consumer": "Create public share",
+        "dependency": "New cloud file identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 124,
+      "task": "sde-create-commit-table-for-all-gitlab-users",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read existing commits and save a local report.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "55e4ac5dd7b5d5469e9f059d758eb9cf3c346429f51ab53a6dc1b4dda99cd919",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 125,
+      "task": "sde-create-new-characters",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Create a branch and code after cloning, but remote persistence is not specified.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "bc3d9c4f6c92dfe053fe3ba4da80a54d44b2caf86dcb5d2c94004d9c430d9bd5",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "remote_branch_unspecified",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": "Create branch and local code",
+        "consumer": null,
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "No remote publication or later remote consumer specified"
+      }
+    },
+    {
+      "index": 126,
+      "task": "sde-create-new-gitlab-project-logo",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Send a new picture in chat, then use approval to decide its repository-profile upload.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "ecabeacb11b24cd14a49e427abba480a55133688f0633bb873efafbd3f62a038",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_gitlab_write",
+        "applications": [
+          "RocketChat",
+          "GitLab"
+        ],
+        "producer": "Send proposed picture",
+        "consumer": "Set repository profile picture",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Jessica approves the picture",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 127,
+      "task": "sde-create-new-release",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create a release; a separately persisted new-tag operation is not explicitly required.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "ec4b71c8b116c0e11d96836e4e0e297548e6750e29c350d9a4236758c98d5ff3",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 128,
+      "task": "sde-create-new-repo",
+      "code": "explicit_chain",
+      "coworker_response": "yes",
+      "reason": "Create a public repository, then update its README; content is requested from a coworker.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "73a4881533a3acc389dd327b37b5a10488b326eb5fd38fc337b946ecabeb2b35",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_project_readme",
+        "applications": [
+          "GitLab"
+        ],
+        "producer": "Create repository",
+        "consumer": "Update repository README",
+        "dependency": "New repository identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 129,
+      "task": "sde-create-sqlite-database",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read a cloud report and create a SQLite database; no cloud upload is requested.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "ccb1f7afd8a336f858c63a2ec23598beeb9fa8f0314d46710b48f9b69dfc47d1",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 130,
+      "task": "sde-debug-crashed-server",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Request credentials and repair a local server; no later benchmark web-state consumer is specified.",
+      "literal_service_mentions": [
+        "rocketchat"
+      ],
+      "source_sha256": "b3758f2712752f999f7fd1180bd498e1ffa6b48d468a3a077112b7746d8a9360",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 131,
+      "task": "sde-delete-all-project-under-plane",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Delete existing Plane projects only.",
+      "literal_service_mentions": [
+        "plane"
+      ],
+      "source_sha256": "2c9e9314a248453adee243bc92530fbcb30e399bd7bdb8f637829464c8684e74",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 132,
+      "task": "sde-delete-all-repos",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Delete existing GitLab repositories only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "9187bb34a1444e7d6e1203fa203e3c2b1648320d2f24bc5e668f90104c204207",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 133,
+      "task": "sde-delete-stale-branch",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Delete an existing branch only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "0d34862c70f0f48183e2d86f606012e796de2c62dc8ffb536416b4755eee5165",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 134,
+      "task": "sde-dependency-change-1",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Change local dependencies and environment only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "2fbdd8364b5ae56f56cb152c06e917e51600811b822bc2dcfeebff7d79f1505e",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 135,
+      "task": "sde-find-answer-in-codebase-1",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing PRs and send a result.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "203c23c3b15f8d8adbfb791803472e14e538c447c0be98e40e07320eba724d5b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 136,
+      "task": "sde-find-answer-in-codebase-2",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing PRs and send a result.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "c0281619c9bb3f9c9b0b3f8b24a9c880cbf7b345e8819a7ae67cce908b0c7123",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 137,
+      "task": "sde-find-answer-in-codebase-3",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "yes",
+      "reason": "Coworker query feeds a local answer, without a later web operation.",
+      "literal_service_mentions": [
+        "gitlab",
+        "owncloud",
+        "rocketchat"
+      ],
+      "source_sha256": "933ecd4f41da7266bf8b44a842a0846901c1b8e6e4c8a2671ec00cecb4bd0bbc",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 138,
+      "task": "sde-find-api",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Identify a read endpoint and save its URL locally.",
+      "literal_service_mentions": [
+        "plane"
+      ],
+      "source_sha256": "0162d31e9f38165f1fe0c1ea3860d6a5f6d8f6512defa54e69a5a546db0bee2d",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 139,
+      "task": "sde-fix-factual-mistake",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Fix a local file only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "6135a77fcebf3aa38922abd86bf917d574d49949896c88276992d846b7539aa4",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 140,
+      "task": "sde-fix-rising-wave-datatype",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "A merge request is required for a local change, but the intermediate remote branch/commit operation is not specified.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "515b66e6fd62a487e54a753667b1fee8394d06a464a7b94ff05630dc8314435a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_push_merge_request",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": "Publish branch/commit (implicit)",
+        "consumer": "Create merge request",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Remote producer not explicitly requested"
+      }
+    },
+    {
+      "index": 141,
+      "task": "sde-implement-buffer-pool-manager-bustub",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Implement code in a local clone; no push is requested.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "15adacbdb82c7fc7ab0df370e6b3d64799309165ab1ed0dd65eb510f00dbfc56",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 142,
+      "task": "sde-implement-covering-index-in-janusgraph",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Implement and benchmark local code with Cassandra; no benchmark web-state writes are requested.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "84276b3c8ad1445c9fec2e894bb2525f358bae501bfd46e69717b354fb9b2c14",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 143,
+      "task": "sde-implement-hyperloglog",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Implement local code only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "5687e94f124fc82c2e327537c286b64c879e837ad7cf5ce9150e0026642dbc05",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 144,
+      "task": "sde-implement-raft-in-go",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Implement and test local code only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "23ed4ad7811dca5cb12302fef97090fe4f3669608aad27af6f9c1a90e8b041c5",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 145,
+      "task": "sde-install-go",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Install a local compiler only.",
+      "literal_service_mentions": [],
+      "source_sha256": "3a3008966a50a272d79879c48a0e83764edcdc340f3204d6825f9525fac47409",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 146,
+      "task": "sde-install-openjdk",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Install a local JDK only.",
+      "literal_service_mentions": [],
+      "source_sha256": "0022a8aaae574acd5d41a13cddf19970384086d3741df68378930fe7444e812b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 147,
+      "task": "sde-issue-label-management",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Instruction chooses issues using PR titles without explaining the mapping; no chain may be inferred from this conflict.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "5b2b0cfc29010d68c9019e0b2d033a84e2049636b112a7517e0b775523e03ff8",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "issue_pr_mapping_ambiguity",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": null,
+        "consumer": null,
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Issue selection relies on an unexplained PR-title mapping"
+      }
+    },
+    {
+      "index": 148,
+      "task": "sde-migrate-package-manager",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Package-manager changes explicitly remain local.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "64cbfe0a49886c995d1ae6737cea5ecbf8cef7a535b7920ceeccfcbef0248264",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 149,
+      "task": "sde-milestone-meeting",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "optional",
+      "reason": "Test/merge existing requests or discuss failures; agenda publication does not explicitly consume a newly produced application entity.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "89dfcd3026f0a8d4275635e85bb4bddfa95eb201c7f6e7387cc8c4b309661c12",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 150,
+      "task": "sde-move-bustub-wiki",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Create a wiki page and save its returned URL locally; no distinct subsequent web operation is requested.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "1ee61489aae0403b4d1fbc117206cbcdade442fa263715cbc8fbfae6e1e5680a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 151,
+      "task": "sde-move-page-to-cloud",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Create a cloud file, then create its share link.",
+      "literal_service_mentions": [
+        "gitlab",
+        "owncloud"
+      ],
+      "source_sha256": "501728c47e34b65578b10747164ef712bc44d7d78811c27ef0402d1ad141e34a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "owncloud_file_share",
+        "applications": [
+          "ownCloud"
+        ],
+        "producer": "Create cloud text file",
+        "consumer": "Create public share",
+        "dependency": "New cloud file identity",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 152,
+      "task": "sde-pitch-idea-to-manager",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Read existing code documentation and create local slides.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "76a7fa8216c1783695e422ec80baa05bccaea8a87e94c5face78500577db63d2",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 153,
+      "task": "sde-reply-community-issue-by-asking-npc",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Coworker reply determines a subsequent GitLab issue reply.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "a1c63c84203e8962bced6f95ec6ebc669745163fc016cbd756613cfbe81dcff9",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_gitlab_write",
+        "applications": [
+          "RocketChat",
+          "GitLab"
+        ],
+        "producer": "Ask about issue",
+        "consumer": "Post issue reply",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Mike supplies issue information",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 154,
+      "task": "sde-reply-community-issue-with-fixed-reply",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Post one fixed reply to an existing issue.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "f52cfb4235a41af5155685b8da98cbd26450da328dbfb13067650ce25bd45170",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 155,
+      "task": "sde-repo_profile_pic",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Update image and README in a local clone; no push is requested.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "5ad57bbe3aaf9b08a11d06bc18a4cb326ed6fb85acf93b579e946d945eb0b7cb",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 156,
+      "task": "sde-report-agent-repos",
+      "code": "conditional_chain",
+      "coworker_response": "yes",
+      "reason": "Notify Sarah of repositories and delete them if she does not object.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "c1bcace8a0753a78f080cf448d669a8c6d6b58c4ba84c7262ab8d3deaed78746",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "chat_reply_gitlab_write",
+        "applications": [
+          "RocketChat",
+          "GitLab"
+        ],
+        "producer": "Notify Sarah about repositories",
+        "consumer": "Delete listed repositories",
+        "dependency": "Coworker-authored reply content or response absence following a request; not controlled solely by the initiating API write.",
+        "condition": "Sarah does not object; absence-of-objection timing unspecified",
+        "uncertainty": "Conversation-dependent chain; do not treat a stochastic coworker response as deterministic API/native equivalence."
+      }
+    },
+    {
+      "index": 157,
+      "task": "sde-report-unit-test-coverage-to-plane",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Run local tests and create one Plane issue.",
+      "literal_service_mentions": [
+        "gitlab",
+        "plane"
+      ],
+      "source_sha256": "22a2698082dbc2a5031923aee7bf74678bbfbbea8dbf823467cf15ab8c17e49e",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 158,
+      "task": "sde-run-all-unit-test",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Run tests in a local clone.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "c264ef7936f152cefb9943b84bc4779310c909022841bcb0a5f73d3a21ff4ceb",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 159,
+      "task": "sde-run-janusgraph",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Build and launch a local database server.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "65134c0cc6c755e7ad7e86aa363ea22489ced466bb9bbeceeab28db60ed5cc3c",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 160,
+      "task": "sde-run-linter-on-openhands",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Run a formatter on local code only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "4671fd7b1d7441bf945d631241d705882bd54f8efb41c278db512cd1b9462f56",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 161,
+      "task": "sde-run-rising-wave-locally",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Create and query a local RisingWave database; no benchmark web/native-interface chain is requested.",
+      "literal_service_mentions": [
+        "owncloud"
+      ],
+      "source_sha256": "24d698ba104207910c1ec17a8010c7a15f70ae31837487b4dd4900788ec2a642",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 162,
+      "task": "sde-sotopia-create-agent",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Push a new branch/change to GitLab, then create a merge request for it.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "13578d7ce9760416feea2631e13a395cf807a88060192a6977c04f71de0e952f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_push_merge_request",
+        "applications": [
+          "GitLab"
+        ],
+        "producer": "Push new branch/change",
+        "consumer": "Create merge request",
+        "dependency": "Published branch and commit",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 163,
+      "task": "sde-sotopia-create-agent-wo-repo",
+      "code": "explicit_chain",
+      "coworker_response": "no",
+      "reason": "Push a new branch/change to GitLab, then create a merge request for it.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "4434f9ca52b3fc5119d63c20a11872c47ca232dfd846504c97d87771c8e2cd22",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_push_merge_request",
+        "applications": [
+          "GitLab"
+        ],
+        "producer": "Push new branch/change",
+        "consumer": "Create merge request",
+        "dependency": "Published branch and commit",
+        "condition": null,
+        "uncertainty": "Instruction structure only; exact native/API operations, persisted intermediate state and causal dependence are unverified."
+      }
+    },
+    {
+      "index": 164,
+      "task": "sde-sotopia-dev-container",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Local branch/Dockerfile creation precedes a required merge request, but the intermediate remote write is implicit.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "97df43d6117e039a0149545144123ef5038deb727f0fcd27f0648149e48bd645",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_push_merge_request",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": "Publish branch/commit (implicit)",
+        "consumer": "Create merge request",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Remote producer not explicitly requested"
+      }
+    },
+    {
+      "index": 165,
+      "task": "sde-sotopia-update-ci",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Branch and CI changes explicitly remain local without a push.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "1497aeba5aeb6c0bb03c3a2fdd64d72ef945227a1196ff29b466bd18891d9664",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 166,
+      "task": "sde-summarize-recent-issues",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Read existing issues and send a summary.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "5ea97db451260cc7f3369c2e514c85817dbc956ea8b33675adbed6f9d4f5a212",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 167,
+      "task": "sde-sync-from-origin-repo",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Push upstream changes to an existing branch, without a later consumer.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "2bc9aa5e089f10ed40bb3e7ca08ec6bff9ccf637a7f8c68cd0c474ad618ed941",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 168,
+      "task": "sde-troubleshoot-dev-setup",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Modify a local environment file and send the explanation.",
+      "literal_service_mentions": [
+        "gitlab",
+        "rocketchat"
+      ],
+      "source_sha256": "19bd23f0ee74337c2465243ff0ef4d63db5f69660385bac644d7d52b89b7d34b",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 169,
+      "task": "sde-update-dev-document",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Local documentation changes precede a required merge request, but intermediate remote publication is implicit.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "b581ce6c8727e67a6d633385a3ee4337a232b43d6e728887d55e542a4dbe7e2f",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "gitlab_push_merge_request",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": "Publish branch/commit (implicit)",
+        "consumer": "Create merge request",
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "Remote producer not explicitly requested"
+      }
+    },
+    {
+      "index": 170,
+      "task": "sde-update-issue-status-on-plane",
+      "code": "write_without_produced_state_consumer",
+      "coworker_response": "no",
+      "reason": "Update one existing issue and move another; no produced-state dependency between them.",
+      "literal_service_mentions": [
+        "plane"
+      ],
+      "source_sha256": "e2a93d65d0e3f380cc81f03285f9f918ab2daadc2c9ee426769bfb2c36e095a6",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 171,
+      "task": "sde-update-readme",
+      "code": "ambiguous_chain",
+      "coworker_response": "no",
+      "reason": "Instruction conflicts between api-server and OpenHands as the repository to update.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "9b6126aae2f37c93ae2fa2faa51a3e1ea354b09edc04fb9c8d117d6a40df95ca",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": {
+        "family": "repository_target_conflict",
+        "applications": [
+          "gitlab"
+        ],
+        "producer": null,
+        "consumer": null,
+        "dependency": null,
+        "condition": null,
+        "uncertainty": "api-server and OpenHands targets conflict"
+      }
+    },
+    {
+      "index": 172,
+      "task": "sde-write-a-unit-test-for-append_file-function",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Write a unit test in a local clone only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "d2b8598d180ee11ed423770fe1fbc935034523752dcf1ecda15cd981d2bbafe7",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 173,
+      "task": "sde-write-a-unit-test-for-scroll_down-function",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Write a unit test in a local clone only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "e15217c6dbafde9d838e6946ca82a9118c01660846954846989e5a6e0b62273e",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    },
+    {
+      "index": 174,
+      "task": "sde-write-a-unit-test-for-search_file-function",
+      "code": "no_web_state_write",
+      "coworker_response": "no",
+      "reason": "Write a unit test in a local clone only.",
+      "literal_service_mentions": [
+        "gitlab"
+      ],
+      "source_sha256": "4c034424725c163457bc8dd79ba2af7f8ddae8f60b44c134f59ae05559b9844a",
+      "runtime_eligibility": "not_assessed",
+      "candidate_chain": null
+    }
+  ],
+  "grouping_note": "Families are analyst-coded operation structures, not independent defects or statistically independent workflow samples. Conditional conversation chains include coworker-authored state; their executable comparability is unestablished."
+}

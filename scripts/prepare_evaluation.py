@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/agentcompany-instruction-eligibility-v1.md',
+    'manifests/agentcompany-instruction-screen-v1.json',
+    'manifests/agentcompany-instruction-screen-summary-v1.json',
+    'scripts/extension/summarize_agentcompany_screen_v1.py',
     'scripts/extension/resolve_plane_images_v1.py',
     'results/agentcompany-plane-images-v1/collection.json',
     'results/agentcompany-plane-images-v1/minio-diagnostic.json',

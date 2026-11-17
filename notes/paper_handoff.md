@@ -15,3 +15,5 @@ Do not infer authorship, funding, conflicts, human adjudication, maintainers' co
 The previous versions of these three current-state notes are retained at the commit and commands recorded in notes/current_state_supersession_20261116.md. Historical scientific notes remain in place; this handoff supersedes their unfinished-work instructions, not their evidence.
 
 The Agent Company feasibility inventory is source and design work only (notes/agentcompany_feasibility_20261116.md). Its 175 instructions and 17 Plane mentions must not enter scientific sample sizes. The next bounded design step is infrastructure/interface capability review, not full benchmark execution or manuscript claims of external validation.
+
+The full instruction screen now supersedes the Plane-only screening scope: notes/agentcompany_full_frame_screen_20261117.md. It retains all 175 tasks and identifies 15 explicit no-requested-reply tasks for capability assessment across 10 descriptive families. No application run or effectiveness finding resulted. Do not turn these counts into scientific sample sizes, human-adjudicated labels, or a claim that the new design gates have passed.
