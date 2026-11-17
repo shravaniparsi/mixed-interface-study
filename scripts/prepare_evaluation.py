@@ -28,6 +28,22 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/verify_development_spec_build_v1.py',
+    'manifests/development-spec-build-v1.json',
+    'notes/development_spec_build_20261117.md',
+    'results/development-spec-build-v1-ci-44087019996/artifact-verification.json',
+    'results/development-spec-build-v1-ci-44087019996/build.log',
+    'results/development-spec-build-v1-ci-44087019996/disk-after.txt',
+    'results/development-spec-build-v1-ci-44087019996/disk-before.txt',
+    'results/development-spec-build-v1-ci-44087019996/execution.json',
+    'results/development-spec-build-v1-ci-44087019996/git-status-after.txt',
+    'results/development-spec-build-v1-ci-44087019996/jars.json',
+    'results/development-spec-build-v1-ci-44087019996/java-version.txt',
+    'results/development-spec-build-v1-ci-44087019996/run.json',
+    'results/development-spec-build-v1-ci-44087019996/source-commit.txt',
+    'results/development-spec-build-v1-ci-44087019996/timing.json',
+    'results/development-spec-build-v1-ci-44087019996/wrapper-sha256.txt',
+
     'protocol/development-spec-build-v1.md',
     '.github/workflows/development_spec_build_v1.yml',
 
