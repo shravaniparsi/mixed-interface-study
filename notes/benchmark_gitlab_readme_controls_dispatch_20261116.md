@@ -1,0 +1,11 @@
+# README ordinary-control dispatch
+
+Prior turn was progress: commit 824601d recovered the original Wikipedia article and froze task content. This continuation registered three ordinary controls at immutable head 83521f2ac4e5fd3ed388785b97c36515f345417e. Source-grounded Web IDE interactions and exact repository state assertions are in protocol/benchmark-gitlab-readme-controls-v1.md. Ten official GitLab source files were archived at revision 358d690d91c78748a130cb46358c12eaa22275aa with Git blob and SHA256 checks. A guessed QA path qa/qa/page/component/web_ide/editor.rb returned HTTPError and was not used; the actual source is qa/qa/page/project/web_ide/edit.rb.
+
+The initial dispatch returned HTTP 404 because the just-pushed workflow had not yet been indexed. Subsequently its workflow API showed active ID 420969450 and its run list was empty. A single subsequent dispatch succeeded, creating run 44027377236: https://github.com/shravaniparsi/mixed-interface-study/actions/runs/44027377236 . There is no duplicate application run.
+
+The first authoritative job poll showed native/native job 133850852002 in_progress, installing pinned browser tooling. API/native 133850852188 and API/API 133850852260 were queued. The overall workflow status was still queued despite the first live job. This is a specific verified running handle, not a blocker. Re-poll this run; do not restart it on observation timeouts.
+
+An independent archive verifier was implemented while this ordinary run was active. It checks exact content, project preservation, repository tree, default branch, root commit and commit-to-file binding, source identity, native-write evidence, distinct containers and cross-path states, rather than trusting the harness pass flag. Eight synthetic adversarial tests passed. These tests are tooling validation, not eight application observations. Full result reconstruction awaits terminal run artifacts.
+
+The six frozen README scientific specifications remain unexecuted. No Q1-readiness claim or new defect follows from the dispatch. The membership and MR qualification stopping rules remain closed. The ordinary README protocol permits at most one separately registered instrument correction if necessary; it does not authorize a finding-driven scientific rerun.
