@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/audit_selector_pool_structure_v1.py',
+    'manifests/selector-pool-structure-v1.json',
     'scripts/extension/build_paper_claim_inventory_v1.py',
     'manifests/paper-claim-inventory-v1.json',
     'scripts/extension/verify_benchmark_billable_v1.py',
