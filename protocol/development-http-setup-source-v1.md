@@ -1,0 +1,3 @@
+# Development HTTP setup source boundary
+
+Read exactly21-points ApplicationConfigService source and root tsconfig.json at the existing pinned commit, paths/blob hashes in the schedule. Both are development-only. Purpose is endpoint construction and property-initialization compilation settings for a later original-method slice test. At most2reads,≤256KiB each,timeout30seconds,total90seconds,no retry. Verify Git blob SHA/SHA256. No imports/extends followed in this stage; unresolved compilation dependencies remain explicit. No implementation/test/issue contents from reserved repositories, no app execution or external app HTTP. This is source preparation, not a runtime measurement. Do not infer server correctness from helper source.
