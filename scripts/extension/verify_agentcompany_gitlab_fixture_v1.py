@@ -4,12 +4,33 @@ from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN = 44057447970
 JOB = 133950348352
 HEAD = 'f900bf70db5f44b5c659a26a9fb1874eddf628e6'
 IMAGE = 'ghcr.io/theagentcompany/servers-gitlab@sha256:6c61011c225953f3c081eb44e5ba80068489f31289aeb31ccf621c3df024142e'
+
+
+def reconstruct_fixture(requests, payloads):
+    assert len(requests) == 6 and all(r['method'] == 'GET' and r['status'] == 200 for r in requests)
+    assert requests[0]['path'] == '/api/v4/user' and requests[1]['path'] == '/api/v4/projects/root%2Frisingwave'
+    user, project = payloads[0], payloads[1]
+    assert user.get('username') == 'root' and user.get('is_admin') is True
+    assert project.get('path_with_namespace') == 'root/risingwave'
+    result = {}
+    for row, data, resource, title, label in zip(requests[2:], payloads[2:],
+            ['milestones', 'milestones', 'issues', 'issues'],
+            ['Alpha Release', 'Beta Release', 'Implement stream processing engine', 'Integrate with Kafka'],
+            ['alpha', 'beta', 'issue_engine', 'issue_kafka']):
+        url = urlsplit(row['path'])
+        assert url.path == '/api/v4/projects/' + str(project['id']) + '/' + resource
+        assert parse_qs(url.query) == {'per_page': ['100'], 'search': [title]}
+        assert not row['next_page'] and isinstance(data, list)
+        matches = [r for r in data if r.get('title') == title]
+        result[label] = [dict(id=r['id'], iid=r.get('iid'), title=r['title'], state=r.get('state'), project_id=r.get('project_id'), milestone=r.get('milestone')) for r in matches]
+    return result
 
 
 def build():
@@ -24,16 +45,22 @@ def build():
     assert runtime['scientific_cases'] == runtime['task_mutations'] == 0
     requests = runtime['requests']
     assert len(requests) <= 6 and all(r['method'] == 'GET' for r in requests)
+    payloads = []
     for row in requests:
         raw = (artifact / row['file']).read_bytes()
         assert len(raw) == row['bytes']
-        json.loads(raw)
+        payloads.append(json.loads(raw))
     cleanup_ok = runtime.get('cleanup') == {'container_and_volumes': 0, 'network': 0}
     if runtime.get('container_id'):
         inspected = json.loads((artifact / 'container-state.log').read_text())[0]
         assert inspected['Id'] == runtime['container_id']
         assert inspected['Config']['Image'] == IMAGE
         assert inspected['HostConfig']['Memory'] == 10 * 1024**3
+        assert inspected['HostConfig']['NetworkMode'] == 'tac-gitlab-diagnostic-' + str(RUN)
+        assert inspected['HostConfig']['PortBindings'] == {'8929/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '8929'}]}
+        mounts = inspected['Mounts']
+        assert {m['Destination'] for m in mounts} == {'/etc/gitlab', '/var/log/gitlab', '/var/opt/gitlab'}
+        assert all(m['Type'] == 'volume' for m in mounts)
     version = (artifact / 'version.txt').read_text().strip() if (artifact / 'version.txt').exists() else None
     lifecycle = None
     token_file = artifact / 'token-lifecycle.log'
@@ -52,8 +79,7 @@ def build():
         assert len(requests) == 1 and requests[0]['path'] == '/api/v4/user' and requests[0]['status'] in (401, 403)
         assert 'fixture' not in runtime
     elif runtime['status'] == 'diagnostic_completed':
-        assert len(requests) == 6 and all(r['status'] == 200 for r in requests)
-        assert set(runtime['fixture']) == {'alpha', 'beta', 'issue_engine', 'issue_kafka'}
+        assert reconstruct_fixture(requests, payloads) == runtime['fixture']
     else:
         assert runtime['status'] in ('diagnostic_failed', 'in_progress')
     if runtime['status'] in ('authentication_denied', 'diagnostic_completed'):
