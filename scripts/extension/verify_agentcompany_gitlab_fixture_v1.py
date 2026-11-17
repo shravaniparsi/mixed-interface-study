@@ -1,5 +1,6 @@
 """Reconstruct the frozen read-only GitLab diagnostic, including denial outcomes."""
 import argparse
+from collections import Counter
 from datetime import datetime
 import hashlib
 import json
@@ -51,6 +52,7 @@ def build():
         assert len(raw) == row['bytes']
         payloads.append(json.loads(raw))
     cleanup_ok = runtime.get('cleanup') == {'container_and_volumes': 0, 'network': 0}
+    transport = None
     if runtime.get('container_id'):
         inspected = json.loads((artifact / 'container-state.log').read_text())[0]
         assert inspected['Id'] == runtime['container_id']
@@ -61,6 +63,9 @@ def build():
         mounts = inspected['Mounts']
         assert {m['Destination'] for m in mounts} == {'/etc/gitlab', '/var/log/gitlab', '/var/opt/gitlab'}
         assert all(m['Type'] == 'volume' for m in mounts)
+        transport = dict(requested_ports=inspected['HostConfig']['PortBindings'], effective_ports=inspected['NetworkSettings']['Ports'],
+                         container_running=inspected['State']['Running'], oom_killed=inspected['State']['OOMKilled'],
+                         internal_health=inspected['State'].get('Health', {}).get('Status'))
     version = (artifact / 'version.txt').read_text().strip() if (artifact / 'version.txt').exists() else None
     lifecycle = None
     token_file = artifact / 'token-lifecycle.log'
@@ -92,6 +97,8 @@ def build():
     def timestamp(s): return datetime.fromisoformat(s.replace('Z', '+00:00'))
     return dict(run_id=RUN, job_id=JOB, frozen_head=HEAD, conclusion=run['conclusion'], diagnostic_status=runtime['status'],
                 stage=runtime['stage'], error=runtime.get('error'), packaged_version=version, cleanup_verified=cleanup_ok,
+                transport=transport, readiness_attempts=len(runtime['readiness']),
+                readiness_errors=dict(Counter(r['error_type'] for r in runtime['readiness'] if 'error_type' in r)),
                 request_statuses=[dict(path=r['path'], status=r['status']) for r in requests], token_lifecycle=lifecycle,
                 fixture=runtime.get('fixture'), elapsed_job_seconds=(timestamp(job['completedAt'])-timestamp(job['startedAt'])).total_seconds(),
                 reported_billable_execution_ms=timing['total_ms'], scientific_cases=0, confirmed_defects=0,

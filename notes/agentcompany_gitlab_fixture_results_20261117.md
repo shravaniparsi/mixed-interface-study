@@ -1,0 +1,19 @@
+# GitLab read-only diagnostic closeout
+
+Run 44057447970 at f900bf70db5f44b5c659a26a9fb1874eddf628e6 is terminal and closed. Job 133950348352 took 882 seconds (14.7 minutes) and its matching GitHub timing record reports zero billable execution milliseconds. No scientific cases, task mutations, authenticated API reads, token inspection or fixture queries occurred. Container, anonymous-volume and network cleanup returned success.
+
+The initial host had 94,256,078,848 free disk bytes, 16,464,302,080 total memory bytes and four CPUs. The immutable image pulled successfully and Docker reported Size=17,479,404,885 bytes. Disk free after cleanup was 76,392,280,064 bytes, with the image still present. These facts do not measure expanded-filesystem allocation or peak memory. Resource gates did not stop this run.
+
+Startup stopped at its 600-second readiness deadline. All 40 host-side HTTP attempts recorded URLError. The saved container was running, healthy according to its built-in health check, and not OOM-killed. gitlab-ctl status reported the services running. HostConfig requested 127.0.0.1:8929→8929, but NetworkSettings.Ports was empty. This is evidence of absent effective host port publication in this configuration; it does not establish a GitLab application defect or that the token expired.
+
+The exception logger retained only URLError class, not errno/reason/body, so no particular socket error is claimed. The packaged VERSION read, authentication request and token lifecycle query occurred after the readiness gate and were never reached. Do not infer an observed packaged version from the Dockerfile declaration. Do not report task fixture data as missing: they were unqueried.
+
+## Existing transport evidence that should have been reused
+
+notes/benchmark_gitlab_connectivity_results_20261112.md already documents the same internal-network/empty-effective-port pattern for the earlier WebArena GitLab image. Its separate diagnostic verified working in-container HTTP. notes/benchmark_gitlab_auth_results_20261112.md and scripts/extension/qualify_benchmark_gitlab_auth_runtime_v2.sh record successful client execution through sudo nsenter --target <container_pid> --net while retaining the host filesystem and internal network. The new diagnostic reused the earlier host-connection assumption instead of that verified transport. This is an avoidable harness design error, not a new research finding.
+
+The earlier evidence concerns another pinned image and port, so it does not retroactively qualify this run or prove current API authentication. It supports a prospective transport correction without a new speculative network-discovery run. Before another diagnostic, reuse the existing namespace pattern for all HTTP checks, retain the exact immutable image and business-state read scope, and capture status plus connection errors. Explicitly verify the target PID matches the current fresh container. Do not open external routing or alter application data, token expiry or actor permissions to resolve a transport problem.
+
+The v1 run remains closed. No automatic rerun is permitted; any corrected diagnostic must be separately frozen, with the same resource/time ceilings and a finite stopping rule. Its purpose would still be infrastructure/authentication/fixture qualification, not scientific input execution. The full fifteen-task selection frame and all previous cohort outcomes remain unchanged.
+
+Reconstruct this result with scripts/extension/verify_agentcompany_gitlab_fixture_v1.py --verify. The verifier now reconstructs successful fixture records from raw API responses when present and has adverse tests for pagination, wrong identities and non-read operations; those synthetic tests do not add application evidence. Raw archive: results/agentcompany-gitlab-fixture-ci-44057447970. Outcome: manifests/agentcompany-gitlab-fixture-outcome-v1.json.
