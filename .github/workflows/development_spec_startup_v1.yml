@@ -1,0 +1,56 @@
+name: Development isolated specification startup v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  startup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78
+        with:
+          distribution: temurin
+          java-version: '17.0.2+8'
+      - name: Retrieve fixed build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/spec-startup-evidence" "$RUNNER_TEMP/spec-binary"
+          gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14329468041/zip > "$RUNNER_TEMP/build.zip"
+          python3 - <<'PY'
+          import hashlib, os, pathlib, zipfile
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])
+          raw=(root/'build.zip').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='41c88020393302672e827018887395d8da3cd9a493f41f609d52e52cb09401cc'
+          with zipfile.ZipFile(root/'build.zip') as z:
+              item=z.getinfo('application.jar');assert item.file_size==108579734
+              jar=z.read(item)
+          assert hashlib.sha256(jar).hexdigest()=='1c7500685740eb01994aa13ea381f3eb9af2c65bfb92f2379e42bb909225c71b'
+          (root/'spec-binary/application.jar').write_bytes(jar)
+          PY
+      - name: Isolated startup and fixed specification requests
+        run: |
+          set +e
+          sudo unshare --net -- timeout 600 python3 scripts/extension/qualify_development_spec_startup_v1.py --java "$JAVA_HOME/bin/java" --jar "$RUNNER_TEMP/spec-binary/application.jar" --output "$RUNNER_TEMP/spec-startup-evidence"
+          harness_exit=$?
+          set -e
+          printf '{"harness_exit":%s}\n' "$harness_exit" > "$RUNNER_TEMP/spec-startup-evidence/harness-exit.json"
+          exit "$harness_exit"
+      - name: Retain startup evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: development-spec-startup-v1-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/spec-startup-evidence/*
+            !${{ runner.temp }}/spec-startup-evidence/runtime/**
+          retention-days: 1
+          if-no-files-found: warn
