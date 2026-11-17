@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/agentcompany_gitlab_initialization_gate_20261117.md',
+    'scripts/extension/verify_agentcompany_downstream_predicates_v1.py',
+    'manifests/agentcompany-downstream-predicates-v1.json',
+    'notes/agentcompany_independent_input_design_gate_20261117.md',
     'scripts/extension/verify_agentcompany_owncloud_controls_ci_v3.py',
     'manifests/agentcompany-owncloud-ordinary-outcome-v3.json',
     'notes/agentcompany_owncloud_ordinary_v3_20261117.md',
