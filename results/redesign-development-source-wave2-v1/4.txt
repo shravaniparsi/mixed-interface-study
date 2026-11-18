@@ -1,0 +1,1099 @@
+# Server Configuration
+# PORT=8080
+# Mount the whole gateway under a path prefix, e.g. https://example.com/g/
+# BASE_PATH=/g
+# Header used to read/write request user_path values (default: X-GoModel-User-Path)
+# USER_PATH_HEADER=X-GoModel-User-Path
+# How long one response write on a model route may wait for the client to read it,
+# in seconds (default: 60). Fires only when a client stops reading a response, never
+# while the provider is slow, and frees the goroutine and upstream connection that
+# client would otherwise hold. 0 disables it. Raise it for clients that legitimately
+# pause reading a stream for over a minute.
+# STREAM_STALL_TIMEOUT=60
+
+# Networks your own proxies sit on, comma-separated (default: empty, headers ignored).
+# Until this is set, every client address GoModel reports (request log entries, rate limit
+# keys, logs) is the socket peer, and forwarding headers are ignored. Entries are CIDR
+# networks, bare addresses (a single host), or the presets "loopback" and "private"
+# (RFC 1918 + ULA). Nothing is trusted implicitly: list the hops between your clients
+# and the gateway. Prefer the one subnet your proxy sits on over "private", which
+# trusts every private client to set its own forwarded address.
+# SERVER_TRUSTED_PROXIES=10.42.0.0/16,loopback
+
+# Header a trusted proxy passes the client address in (default: X-Forwarded-For).
+# X-Forwarded-For carries a chain and is resolved hop by hop; any other header
+# (X-Real-IP, CF-Connecting-IP, True-Client-IP) carries one address and is taken
+# verbatim, which is what you want behind Cloudflare or a cloud load balancer that
+# writes the client itself. Requires SERVER_TRUSTED_PROXIES. RFC 7239 Forwarded is
+# not supported.
+# SERVER_CLIENT_IP_HEADER=CF-Connecting-IP
+
+# How many proxies sit between the client and the gateway (default: 0). With 0, the
+# X-Forwarded-For chain is scanned for the nearest hop outside SERVER_TRUSTED_PROXIES.
+# Set it when your edge is at a fixed depth but rotates through addresses you cannot
+# enumerate: the entry at that depth is taken, the socket peer must still be trusted,
+# and a shorter chain falls back to the socket peer.
+# SERVER_TRUSTED_HOPS=1
+
+# Serve HTTPS on the listener (default: empty, plain HTTP behind a TLS-terminating
+# proxy). Set both when clients connect directly, e.g. pod to pod with cert-manager
+# certificates. The files are re-read when they change (checked every 5 seconds), so
+# rotation needs no restart; a rotation that fails to load keeps the previous
+# certificate. Responses then carry Strict-Transport-Security (max-age 180 days,
+# no includeSubDomains or preload); plain HTTP sends none. Inbound only: outbound
+# trust is HTTP_TLS_* below.
+# SERVER_TLS_CERT_FILE=/etc/gomodel/tls/tls.crt
+# SERVER_TLS_KEY_FILE=/etc/gomodel/tls/tls.key
+# Require client certificates signed by this CA bundle on every request except
+# /health and /health/ready (mTLS; default: empty):
+# SERVER_TLS_CLIENT_CA_FILE=/etc/gomodel/tls/ca.crt
+
+# Where the running gateway records its process id so `gomodel --reload` can find it
+# (default: data/gomodel.pid next to a ./data directory, otherwise the per-user data
+# directory). Set it per instance when several gateways share a host. Leaving this
+# empty means "unset" and keeps the default, as everywhere else here; to write no pid
+# file at all (which also disables --reload), set `server.pid_file: ""` in config.yaml.
+# Changing it takes effect on the next restart, not on `gomodel --reload`.
+# PID_FILE=data/gomodel.pid
+
+# Reject unknown keys in config.yaml and in the JSON env vars that declare the same
+# structures (VIRTUAL_MODELS, SET_RATE_LIMIT_*, SET_BUDGET_*). Default: true, so a
+# typo or a misindented section fails startup instead of silently dropping providers,
+# rate limits, budgets, or guardrails. Set false to downgrade unknown keys to
+# warnings — intended for rolling a binary back under a newer config file. Malformed
+# values stay fatal in either mode.
+# CONFIG_STRICT=true
+
+# Air-gapped installs: one switch that disables every outbound call the gateway
+# makes on its own -- the update check (GOMODEL_VERSION_CHECK_*) and the remote
+# model catalog download (MODEL_LIST_URL over HTTP) -- and the /models metadata
+# listing of providers in allowlist mode. Inference requests to configured providers and
+# endpoints you declare yourself (OTLP, MCP upstreams, vector stores) are not
+# affected, and a catalog given as a local file path keeps working.
+# GOMODEL_OFFLINE=false
+
+# Tagging based on headers: label every request from the listed headers (numbered
+# from 1). Labels are recorded in usage tracking and request logs. A header value can
+# carry several labels split by the delimiter (default: ","). The optional prefix is
+# trimmed from each extracted label only — the header itself is forwarded unchanged
+# unless DONOTPASS=true. An env entry replaces the whole config.yaml `tagging:` entry
+# with the same header name (leaving _PREFIX/_DONOTPASS/_DELIMITER unset resets those
+# fields to their defaults, it does not inherit the YAML values); other env entries
+# are appended. Both are read-only in the dashboard.
+# TAGGING_HEADER_1=X-My-Tags
+# TAGGING_HEADER_1_PREFIX=tag-
+# TAGGING_HEADER_1_DONOTPASS=false
+# TAGGING_HEADER_1_DELIMITER=,
+# TAGGING_HEADER_2=X-Internal-Routing
+# TAGGING_HEADER_2_DONOTPASS=true
+
+# LiteLLM tags (x-litellm-tags header, body "tags", list metadata.tags) become labels
+# and are stripped before the provider; at most 32 per request, tags over 128
+# characters are dropped. Clients choose them, so they can charge any label budget
+# they name: set false when label budgets must hold per team. When false, requests
+# pass through with their tags untouched.
+# LITELLM_TAGS_ENABLED=true
+
+# Session keeping: identify which requests belong to one client session, for sticky
+# virtual-model load balancing and request-log session grouping. On by default with a
+# built-in registry of session headers/body fields known coding tools send (Claude
+# Code, Codex CLI, OpenCode, Kilo Code, Goose, …) plus content-based auto-detection
+# for untagged chat requests. Extra headers are numbered from 1 and merged over the
+# built-ins; the optional TRANSFORM "session-uuid" extracts a session_<uuid> value.
+# SESSION_KEEPING_ENABLED=true
+# SESSION_AUTO_DETECT=true
+# SESSION_BUILTIN_RULES=true
+# SESSION_HEADER_1=X-My-Session
+# SESSION_HEADER_1_TRANSFORM=
+# Log output format: leave unset to auto-detect, or set to "json" / "text"
+# LOG_FORMAT=text
+# Log verbosity: "debug", "info" (default), "warn", or "error"
+# LOG_LEVEL=info
+
+# Maximum request body size (prevents DoS attacks)
+# Accepts values like "10M", "1G", "500K" (default: 10M)
+# BODY_SIZE_LIMIT=10M
+
+# Enable/disable Swagger UI at /swagger/index.html (default: false)
+# Requires a binary built with -tags=swagger; see docs/advanced/swagger-ui.mdx
+# SWAGGER_ENABLED=false
+
+# Enable/disable pprof profiling routes at /debug/pprof/* (default: false)
+# PPROF_ENABLED=false
+
+# Enable/disable provider-native passthrough routes under /p/{provider}/{endpoint} (default: true)
+# ENABLE_PASSTHROUGH_ROUTES=true
+
+# Allow optional /p/{provider}/v1/... passthrough aliases while keeping /p/{provider}/... canonical (default: true)
+# ALLOW_PASSTHROUGH_V1_ALIAS=true
+
+# Comma-separated list of provider types enabled for /p/{provider}/... passthrough (default: openai,anthropic,openrouter,kilo,zai,sglang,vllm,llamacpp,llmd,deepseek,hetzner,edenai,jev)
+# Other provider types, such as cohere, audiocpp or bailian, are opt-in; add one
+# when its native routes are needed. audio.cpp's native surface includes model
+# management and server-local file paths, so enable it only for trusted callers.
+# ENABLED_PASSTHROUGH_PROVIDERS=openai,anthropic,openrouter,kilo,zai,sglang,vllm,llamacpp,llmd,deepseek,hetzner,edenai,jev
+
+# Enable the realtime (speech-to-speech) endpoints (default: true): the /v1/realtime
+# websocket (and /p/{provider}/v1/realtime passthrough upgrade), the WebRTC SDP
+# exchange at POST /v1/realtime/calls, and ephemeral browser credentials at
+# POST /v1/realtime/client_secrets. Speech translation models (OpenAI
+# gpt-realtime-translate) use the same three endpoints under
+# /v1/realtime/translations, equivalent to /v1/realtime?intent=translation; those
+# sessions report no usage events, so the gateway prices them from the input audio
+# it relays. Credentials are injected by the gateway, so
+# clients connect without provider API keys; GET /v1/realtime?call_id=... attaches
+# to an existing WebRTC call as a sideband channel. WebRTC media flows directly
+# between client and provider; the gateway proxies the signaling and records usage
+# via a sideband observer on each call it creates. WebRTC providers: OpenAI, xAI
+# (calls are team-gated by xAI), and Azure OpenAI (GA v1 surface).
+# REALTIME_ENABLED=true
+
+# Expose GET /v1/auth/verify (default: false). It answers 200 {"valid":true,...} when
+# the API key the request carries authenticates against this gateway, and 401 when it
+# does not, so a service in front of GoModel can validate keys without holding a copy
+# of them. A gateway with no authentication configured accepts every request and has
+# no key to confirm: there the answer is 200 {"valid":false,"method":"none"}. The response also reports which mechanism accepted the key ("api_key" for a
+# managed key stored in the database, "master_key" for the bootstrap key) plus the
+# key's id and bound user path. The route sits outside /admin, so it keeps working
+# with ADMIN_ENDPOINTS_ENABLED=false.
+# AUTH_VERIFY_ENABLED=false
+
+# Version awareness: check https://gomodel.enterpilot.io/version once a day, and
+# again the first time each browser opens the dashboard on a new day, so operators
+# learn that a newer release exists. The dashboard shows the result in Settings;
+# GET /version returns it as JSON.
+#
+# The check sends the running version, the distribution name (GoModel or GoModel
+# Pro), and a random per-deployment install id.
+#
+# It never sends API keys, provider credentials, model names, prompts, responses,
+# usage or cost data, client addresses, or the hostname the dashboard is served on.
+#
+# Set to false to stop all outbound traffic from this subsystem: no timer, no
+# request, no install id written to disk. /version still reports the local build.
+# GOMODEL_VERSION_CHECK_ENABLED=true
+# Point at an internal mirror serving core.txt / pro.txt for air-gapped networks.
+# GOMODEL_VERSION_CHECK_URL=https://gomodel.enterpilot.io/version
+
+# MCP gateway: aggregate upstream MCP (Model Context Protocol) servers behind the
+# authenticated /mcp endpoint (default: true; a no-op until servers are declared here,
+# in config.yaml under `mcp.servers`, or in the dashboard). Tools are namespaced as
+# {server}_{tool}; /mcp/{server} exposes one upstream with original tool names.
+# MCP_ENABLED=true
+# MCP_SERVERS is a JSON object mapping server names to definitions; entries replace
+# config.yaml `mcp.servers` entries with the same name and are read-only in the
+# dashboard. Transports: "http" (streamable HTTP, default), "sse" (legacy), "stdio"
+# (spawns a local subprocess — declarable only here or in config.yaml, never via the
+# admin API, because runtime-registered subprocesses would be a code execution vector).
+# MCP_SERVERS={"github":{"url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer ${GITHUB_PAT}"}}}
+# MCP_ALLOWED_ORIGINS is a comma-separated list of browser origins ("scheme://host[:port]")
+# allowed to call /mcp. Default: none. MCP clients are not web pages, so refusing browsers
+# outright is what blocks DNS rebinding — a rebound page's Origin and Host agree with each
+# other, so comparing them proves nothing. Add an origin only if you serve an MCP web
+# client from it. "*" trusts every origin and disables the check.
+# MCP_ALLOWED_ORIGINS=https://console.example.com
+# MCP_TOOL_DISCOVERY: "off" (default) lists every tool; "search" lists only search_tools
+# and call_tool, so large catalogs stop costing model context on every turn. Use it for
+# clients without their own tool search. Clients override it with X-MCP-Tool-Discovery.
+# MCP_TOOL_DISCOVERY=off
+# MCP_PROVIDER_SERVERS is a comma-separated list of configured provider names whose
+# own hosted MCP servers to expose, authenticated with that provider's API key.
+# Default: none. Supported: zai (web search, web reader, zread; GLM Coding Plan keys),
+# served as zai-web-search, zai-web-reader, and zai-zread.
+# MCP_PROVIDER_SERVERS=zai
+# MCP_VIRTUAL_SERVERS is a JSON object mapping virtual server names to a subset of the
+# servers above, each served at /mcp/{name} with namespaced tool names. Names must not
+# match a server slug. Members keep their own user-path and tool rules; tool_discovery
+# ("off" or "search") overrides MCP_TOOL_DISCOVERY for that endpoint.
+# MCP_VIRTUAL_SERVERS={"coding":{"servers":["github","linear"],"tool_discovery":"search"}}
+
+# HTTP Client Configuration (for upstream API requests)
+# The standard HTTP_PROXY / HTTPS_PROXY / NO_PROXY variables route every upstream
+# request; use <PROVIDER>_PROXY_URL (see the providers section) for one provider.
+# Values in seconds (or Go duration format like "10m", "1h30m")
+# Overall request timeout (default: 600 = 10 minutes, matches OpenAI/Anthropic SDKs)
+# HTTP_TIMEOUT=600
+# Time to wait for response headers (default: 600)
+# HTTP_RESPONSE_HEADER_TIMEOUT=600
+# Longest silence a streaming response may keep once its first bytes arrived
+# (default: 300). A stalled stream is then closed with a 504 provider error instead
+# of hanging until HTTP_TIMEOUT. The wait for the first token is not counted.
+# Raise it only for providers that pause for minutes mid-stream; 0 disables it.
+# HTTP_STREAM_IDLE_TIMEOUT=300
+# Idle keep-alive connections each provider keeps open to its upstream (default: 512).
+# Raise it when one HTTP/1.1 backend (vLLM, Ollama, llm-d) regularly serves more
+# concurrent requests than this; past it, connections are reopened per request.
+# HTTP_MAX_IDLE_CONNS_PER_HOST=512
+# Client TLS trust for outbound HTTPS. Default: the operating system store.
+# Private CA bundle (PEM) for a TLS-intercepting proxy or internal model servers:
+# HTTP_TLS_CA_FILE=/etc/gomodel/ca.pem
+# Client certificate (mTLS); set both together:
+# HTTP_TLS_CLIENT_CERT_FILE=/etc/gomodel/tls.crt
+# HTTP_TLS_CLIENT_KEY_FILE=/etc/gomodel/tls.key
+# Disable certificate verification (lab use only; logged as a warning):
+# HTTP_TLS_INSECURE_SKIP_VERIFY=false
+
+# Security Configuration
+# CRITICAL: Set this to secure your gateway from unauthorized access
+# If not set, the server will run in UNSAFE MODE with a warning
+# GOMODEL_MASTER_KEY=your-secret-key-here
+# Turn off master key authentication and leave managed gateway API keys, plus
+# any configured authentication extension, as the only credentials (default:
+# false). The master key is forgotten at startup, and the gateway requires a
+# credential on every request: it never falls back to unauthenticated access,
+# and the admin API stays gated instead of opening for bootstrap. Issue a
+# credential with dashboard access first, or every request is rejected.
+# MASTER_KEY_DISABLED=false
+# Prefix of newly issued managed API keys (default: sk_gom_). Up to 32 ASCII
+# letters, digits, "_" and "-"; any other value stops startup. Change it to
+# white-label keys or to match your key-format or secret-scanner conventions.
+# Only new keys get it: keys issued under an earlier prefix keep working.
+# AUTH_KEY_PREFIX=sk_gom_
+
+# Metrics Configuration (Prometheus)
+# Enable/disable Prometheus metrics collection and /metrics endpoint
+# METRICS_ENABLED=false
+# Custom metrics endpoint path (default: /metrics)
+# METRICS_ENDPOINT=/metrics
+# Caller dimensions on the token and cost metrics, in Prometheus and
+# OpenTelemetry alike, and on the Prometheus per-caller request counter. All
+# are off by default: each one multiplies the exported series by its distinct
+# values.
+# Add the request's user path, cut to METRICS_CALLER_USER_PATH_DEPTH segments
+# (a depth below 1 uses the default, 2)
+# METRICS_CALLER_USER_PATH=false
+# METRICS_CALLER_USER_PATH_DEPTH=2
+# Add the name of the managed API key (never its secret or ID)
+# METRICS_CALLER_AUTH_KEY=false
+# Add the request labels as one sorted, comma-separated value (a comma inside
+# a label is written %2C, a percent sign %25)
+# METRICS_CALLER_REQUEST_LABELS=false
+# Distinct values kept per dimension (a value below 1 uses the default, 100).
+# Later values, values over 256 bytes or not valid UTF-8, and reserved names
+# ({other}, {unknown}) are reported as {other} (/{other} for user paths)
+# METRICS_CALLER_MAX_VALUES=100
+
+# OpenTelemetry Configuration
+# Export traces and metrics over OTLP. Exporter endpoint, protocol, headers,
+# resource attributes, sampling, and propagation use the standard OTEL_* variables.
+# OTEL_ENABLED=false
+# OTEL_SERVICE_NAME=gomodel
+# OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+# OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+# OTEL_TRACES_EXPORTER=otlp
+# OTEL_METRICS_EXPORTER=otlp
+# OTEL_PROPAGATORS=tracecontext,baggage
+# Record prompts and completions on provider call spans (default: false).
+# Content then leaves the gateway with every exported trace.
+# OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=false
+
+# Cache Configuration
+# Model cache uses the local filesystem by default.
+# Set REDIS_URL to use Redis-backed caching instead.
+
+# Add provider-native prompt-cache keys, breakpoints, and cached-content plans
+# after routing (default: true). Set false as an operational kill switch; empty
+# or invalid values keep the default. Client cache directives still pass through.
+# PROVIDER_PROMPT_CACHE_PLANNER_ENABLED=true
+
+# Redis Configuration
+# REDIS_URL=redis://localhost:6379
+# REDIS_KEY_MODELS=gomodel:models
+# REDIS_TTL_MODELS=86400
+# How often to refresh the model registry cache in seconds (default: 3600).
+# Also sets how often provider health ("Last checked" in the dashboard) is
+# re-checked; lower it to detect provider outages/recoveries faster.
+# CACHE_REFRESH_INTERVAL=3600
+# How often to re-probe only the providers whose last refresh failed, in
+# seconds (default: 60, 0 disables). Detects provider recovery without
+# waiting for the next full refresh.
+# PROVIDER_RECHECK_INTERVAL=60
+# REDIS_KEY_RESPONSES=gomodel:response:
+# REDIS_TTL_RESPONSES=3600
+# Opt-in when config.yaml has no cache.response.simple block (e.g. env-only deploys). Omit otherwise.
+# RESPONSE_CACHE_SIMPLE_ENABLED=true
+# Give each effective user path its own exact and semantic cache entries (default: false).
+# Only keys bound to a user path are isolated from each other: the master key and
+# unbound keys choose their path through the user path header. Changing this causes
+# cache misses for existing entries.
+# RESPONSE_CACHE_PARTITION_BY_USER_PATH=false
+
+# Opt-in when config.yaml has no cache.response.semantic block (e.g. env-only deploys). Omit otherwise.
+# SEMANTIC_CACHE_ENABLED=true
+# Similarity threshold between 0 and 1 (default: 0.92)
+# SEMANTIC_CACHE_THRESHOLD=0.92
+# Semantic cache entry TTL in seconds (default: 3600)
+# SEMANTIC_CACHE_TTL=3600
+# Number of recent conversation messages to embed (default: 3)
+# SEMANTIC_CACHE_MAX_CONV_MESSAGES=3
+# Exclude the system prompt from semantic cache keys (default: false)
+# SEMANTIC_CACHE_EXCLUDE_SYSTEM_PROMPT=false
+# Embedding provider name used for semantic cache
+# SEMANTIC_CACHE_EMBEDDER_PROVIDER=openai
+# Optional embedding model override
+# SEMANTIC_CACHE_EMBEDDER_MODEL=text-embedding-3-small
+# Vector store backend: qdrant, pgvector, pinecone, or weaviate
+# SEMANTIC_CACHE_VECTOR_STORE_TYPE=qdrant
+# Qdrant
+# SEMANTIC_CACHE_QDRANT_URL=http://localhost:6333
+# SEMANTIC_CACHE_QDRANT_COLLECTION=gomodel_semantic
+# SEMANTIC_CACHE_QDRANT_API_KEY=
+# pgvector
+# SEMANTIC_CACHE_PGVECTOR_URL=postgres://user:pass@localhost:5432/gomodel
+# SEMANTIC_CACHE_PGVECTOR_TABLE=gomodel_semantic_cache
+# SEMANTIC_CACHE_PGVECTOR_DIMENSION=1536
+# Pinecone
+# SEMANTIC_CACHE_PINECONE_HOST=https://your-index.svc.region.pinecone.io
+# SEMANTIC_CACHE_PINECONE_API_KEY=
+# SEMANTIC_CACHE_PINECONE_NAMESPACE=
+# SEMANTIC_CACHE_PINECONE_DIMENSION=1536
+# Weaviate
+# SEMANTIC_CACHE_WEAVIATE_URL=http://localhost:8080
+# SEMANTIC_CACHE_WEAVIATE_CLASS=GomodelSemanticCache
+# SEMANTIC_CACHE_WEAVIATE_API_KEY=
+
+# Optional: Custom cache directory for local file cache
+# Default: ./.cache when it already exists, otherwise the OS per-user cache
+# directory (~/.cache/gomodel, ~/Library/Caches/gomodel, %LocalAppData%\gomodel\cache)
+# GOMODEL_CACHE_DIR=.cache
+
+# External model metadata registry (provides pricing, capabilities, context window, etc.)
+# Default: ENTERPILOT/ai-model-list on GitHub. Point this at an internal mirror,
+# at a local file (/etc/gomodel/models.json or file:///etc/gomodel/models.json,
+# re-read on each cache refresh), or set MODEL_LIST_URL=off to disable the
+# catalog entirely -- models then keep provider-reported, configured,
+# heuristic-derived, and any previously cached catalog metadata, so declare
+# pricing in config.yaml if you need cost tracking and budgets. (Setting it
+# to an empty string does NOT disable the fetch: empty env values are
+# skipped, so the default survives.)
+# MODEL_LIST_URL=https://raw.githubusercontent.com/ENTERPILOT/ai-model-list/refs/heads/main/models.min.json
+
+# Model Access Configuration
+# Process-wide default for provider models when no persisted override exists (default: true)
+# Set to false to keep models unavailable until a model override allows one or more user paths.
+# MODELS_ENABLED_BY_DEFAULT=true
+# Hide provider models from GET /v1/models and expose only enabled aliases (default: false).
+# KEEP_ONLY_ALIASES_AT_MODELS_ENDPOINT=false
+# Advertise every model the way a vLLM runtime does: owned_by becomes "vllm" and each entry
+# carries max_model_len from the model's metadata.context_window, so a client whose model
+# discovery only understands vLLM picks the gateway up instead of needing a hand-written list
+# (default: false). It is a lie about the owner, so it stays opt-in and only for deployments
+# whose consumers need it. A model without a positive context_window is still listed as vllm
+# but without max_model_len, and such a client drops it.
+# MODELS_VLLM_DISCOVERY_COMPAT=false
+# Return bare model IDs from GET /v1/models (gpt-5) instead of provider-qualified ones (openai/gpt-5) (default: false).
+# Useful for clients that validate the requested model against the list and only know plain names.
+# Caveat: when two providers expose the same model ID, only the provider an unqualified request
+# routes to (the first registered one) is listed. Pin a name to a specific provider with a virtual model,
+# e.g. source gpt-5 -> target azure/gpt-5.
+# UNQUALIFIED_MODEL_IDS_AT_MODELS_ENDPOINT=false
+# How providers.<name>.models and <PROVIDER>[_SUFFIX]_MODELS affect provider inventory.
+# allowlist (default): expose only the configured models for providers that define a list; upstream /models is read only
+# for their metadata (best-effort; off with ALLOWLIST_UPSTREAM_METADATA=false or GOMODEL_OFFLINE=true).
+# fallback: use configured models only when upstream /models fails, is nil, or is empty (the default before allowlist).
+# merge: keep the upstream inventory and add configured models it does not list,
+# so models a provider serves without listing them (preview or unlisted IDs) stay routable.
+# CONFIGURED_PROVIDER_MODELS_MODE=allowlist
+# Examples: OPENROUTER_MODELS=..., OPENROUTER_EU_MODELS=..., AZURE_MODELS=..., VLLM_MODELS=...
+# Override the mode for one provider with <PROVIDER>[_SUFFIX]_MODELS_MODE; if neither YAML nor env sets it, the global mode applies:
+# OPENROUTER_MODELS_MODE=fallback
+# In allowlist mode, upstream /models is read only to fill in metadata for the configured models
+# (it never adds models). Set false to stop that call; GOMODEL_OFFLINE=true forces it off (default: true).
+# ALLOWLIST_UPSTREAM_METADATA=true
+
+# Narrow a provider's model inventory to what you actually want routable. Applied
+# to the final inventory, so it also narrows models added by <PROVIDER>_MODELS.
+# Patterns are comma-separated globs matched case-insensitively against the raw
+# model ID: `*` matches any run of characters (including `/`, so `*:free` matches
+# `deepseek/deepseek-r1:free`) and `?` matches exactly one.
+# INCLUDE keeps only matching models; EXCLUDE then drops matching models.
+# MAX_PRICE_PER_MTOK caps a model's highest per-million-token rate (the larger of
+# input and output). A model with no known price is dropped while the cap is set.
+# The cap must be a finite number of 0 or more; anything else (including a value
+# that is not a number at all) fails startup rather than leaving the cap unset.
+# Set per provider: <PROVIDER>[_SUFFIX]_MODEL_FILTER_INCLUDE, ..._EXCLUDE, ..._MAX_PRICE_PER_MTOK
+# OPENROUTER_MODEL_FILTER_INCLUDE=*:free
+# OPENROUTER_MODEL_FILTER_EXCLUDE=*-preview:free
+# OPENROUTER_MODEL_FILTER_MAX_PRICE_PER_MTOK=0
+
+# Virtual models as infrastructure-as-code (JSON array). Declares redirects, load
+# balancers, and access policies; overrides admin-store rows with the same source
+# and is read-only in the dashboard. The same entries can be declared under
+# `virtual_models:` in config.yaml. Each entry: source, target (single) or
+# targets[] (load balanced), strategy (round_robin | cost | failover), user_paths,
+# slowdown (0 disables inherited slowdown; active factors are 0.1-10),
+# reasoning_effort (forced upstream: none | minimal | low | medium | high |
+# xhigh | max; empty keeps the client's value), params (request parameters
+# forced on Chat Completions, Responses and Anthropic Messages requests; Chat
+# Completions names, null strips a key), default_params (filled in only when
+# the client omitted the key), description, enabled. A target has model and
+# optional provider, weight and reasoning_effort (replaces the entry's
+# reasoning_effort for that target; an override on the target model still wins).
+# VIRTUAL_MODELS=[{"source":"smart","strategy":"round_robin","targets":[{"model":"openai/gpt-4o","weight":2},{"model":"anthropic/claude-sonnet-4-6"}]}]
+
+# Users: per user-path model allowlists as a JSON array (same entries as
+# `users:` in config.yaml). Each entry: path, allowed_models (provider/*,
+# provider/model, or bare model id), description. A node with no list allows
+# every model; lists intersect down the tree so a child can only narrow its
+# group. Declared entries are read-only in the dashboard.
+# USERS=[{"path":"/acme","allowed_models":["openai/*","anthropic/*"]},{"path":"/acme/eng","allowed_models":["anthropic/*"]}]
+
+# Failover & Workflow Configuration
+# Failover is a virtual-model behaviour: when the chosen target fails, the
+# redirect's remaining targets are tried in order (use strategy "failover" for a
+# strict priority list). Enabled by default; false switches the sweep off globally.
+# FAILOVER_ENABLED=true
+# Cap on failover targets tried per request; 0 (default) sweeps every remaining target.
+# FAILOVER_MAX_ATTEMPTS=0
+# Upstream statuses that trigger failover (exact codes or a class like 5xx).
+# A non-empty value replaces the default 429,5xx.
+# FAILOVER_RETRY_ON_STATUSES=429,5xx
+# Error phrases that trigger failover regardless of status; every word of a phrase
+# must appear in the error (a numeric word like 404 matches the status instead).
+# A non-empty value replaces the default "model not found"-style, "upstream failed", and
+# retired-model 404 phrases. See docs/features/failover.mdx for the full default.
+# FAILOVER_RETRY_ON_ERRORS=model not found,upstream failed,404 deprecated
+# Deprecated: inline rules are translated into managed failover-strategy virtual
+# models shadowing the primary model. Declare them in VIRTUAL_MODELS instead.
+# FAILOVER_RULES_JSON={"gpt-4o":["azure/gpt-4o","gemini/gemini-2.5-pro"]}
+# How often to refresh persisted workflows from storage (default: 1m)
+# WORKFLOW_REFRESH_INTERVAL=1m
+
+# LLM Client Resilience Configuration
+# Retry attempts for upstream provider calls (default: 3)
+# RETRY_MAX_RETRIES=3
+# Initial retry backoff duration (default: 1s)
+# RETRY_INITIAL_BACKOFF=1s
+# Maximum retry backoff duration (default: 30s)
+# RETRY_MAX_BACKOFF=30s
+# Exponential backoff factor (default: 2.0)
+# RETRY_BACKOFF_FACTOR=2.0
+# Random jitter factor applied to retry delays (default: 0.1)
+# RETRY_JITTER_FACTOR=0.1
+# Enable the per-provider circuit breaker (default: true)
+# Set to false to never fail fast, e.g. when an upstream load balancer already does it.
+# CIRCUIT_BREAKER_ENABLED=true
+# Consecutive failures before opening the circuit breaker (default: 5)
+# CIRCUIT_BREAKER_FAILURE_THRESHOLD=5
+# Consecutive successes required to close the circuit breaker (default: 2)
+# CIRCUIT_BREAKER_SUCCESS_THRESHOLD=2
+# Circuit breaker open-state timeout duration (default: 30s)
+# CIRCUIT_BREAKER_TIMEOUT=30s
+# Count a call answered slower than this as a breaker failure, so sustained latency
+# opens the circuit and triggers failover (default: 0 = disabled; e.g. 60s)
+# CIRCUIT_BREAKER_SLOW_CALL_THRESHOLD=0
+
+# =============================================================================
+# Admin API & Dashboard Configuration
+# =============================================================================
+
+# Enable/disable admin REST API endpoints (default: true)
+# When enabled, provides /admin/* REST endpoints
+# ADMIN_ENDPOINTS_ENABLED=true
+
+# Enable/disable admin dashboard UI (default: true)
+# When enabled, provides /admin/dashboard UI
+# Requires ADMIN_ENDPOINTS_ENABLED=true — if endpoints are disabled
+# and UI is enabled, a warning is logged and UI is forced to disabled
+# ADMIN_UI_ENABLED=true
+
+# Enable/disable realtime dashboard log previews (default: true)
+# When enabled, the dashboard opens /admin/live/logs and streams compact
+# request-log/usage lifecycle updates before the async DB flush completes.
+# Requires ADMIN_ENDPOINTS_ENABLED=true and ADMIN_UI_ENABLED=true for the UI.
+# DASHBOARD_LIVE_LOGS_ENABLED=true
+
+# In-memory live log replay buffer in events (default: 10000)
+# The effective buffer is capped at DASHBOARD_LIVE_LOGS_REPLAY_LIMIT + 1, since
+# events older than the replay window can never be served; lower this below the
+# replay limit only to shrink memory further at the cost of more replay resets.
+# Buffered events hold compact previews only — request/response bodies are
+# never retained (connected dashboards receive them live and hydrate history
+# from the persisted request log entries).
+# DASHBOARD_LIVE_LOGS_BUFFER_SIZE=10000
+
+# Maximum live log events replayed to one reconnecting dashboard client (default: 1000)
+# Also bounds the replay buffer above. If a cursor is older than the replay
+# window, the dashboard resets from REST APIs.
+# DASHBOARD_LIVE_LOGS_REPLAY_LIMIT=1000
+
+# Heartbeat interval in seconds for idle live log streams (default: 15)
+# Keeps proxies and poor connections from closing an otherwise quiet stream.
+# DASHBOARD_LIVE_LOGS_HEARTBEAT_SECONDS=15
+
+# =============================================================================
+# Storage Configuration (used by request logging, usage tracking, future IAM, etc.)
+# =============================================================================
+
+# Storage type: "sqlite" (default), "postgresql", or "mongodb"
+# This determines where both request logs and usage data are stored
+# STORAGE_TYPE=sqlite
+
+# SQLite Configuration (default, good for single instance)
+# Default: ./data/gomodel.db when a ./data directory exists, otherwise the
+# OS per-user data directory (~/.local/share/gomodel, ~/Library/Application
+# Support/gomodel, %LocalAppData%\gomodel)
+# SQLITE_PATH=data/gomodel.db
+
+# PostgreSQL Configuration (for multi-instance deployments)
+# POSTGRES_URL=postgres://user:password@localhost:5432/gomodel
+# POSTGRES_MAX_CONNS=10
+
+# MongoDB Configuration (recommended for high-volume logging)
+# MONGODB_URL=mongodb://localhost:27017/gomodel
+# MONGODB_DATABASE overrides the database named in MONGODB_URL (default: gomodel)
+# MONGODB_DATABASE=gomodel
+
+# Encrypt dashboard-managed secrets (provider credentials, MCP headers,
+# guardrail secrets) at rest. Generate with: openssl rand -base64 32
+# Losing this key makes those secrets unrecoverable. Default: unset (plaintext).
+# GOMODEL_ENCRYPTION_KEY=
+# During a key rotation, the old key; remove once every instance uses the new one.
+# GOMODEL_ENCRYPTION_KEY_PREVIOUS=
+
+# =============================================================================
+# Media Storage Configuration
+# =============================================================================
+
+# Where media files go: audio and images captured for the request log
+# (LOGGING_LOG_AUDIO_BODIES / LOGGING_LOG_IMAGE_BODIES). Media metadata stays
+# in the storage backend above; only the bytes are written here, so files stay
+# out of the database and are not capped in size.
+# "filesystem" (default) writes under MEDIA_STORAGE_PATH; "memory" keeps them in
+# the process and loses them on restart.
+# MEDIA_STORAGE_TYPE=filesystem
+
+# Directory for the filesystem backend. Default: ./data/media when a ./data
+# directory exists, otherwise the OS per-user data directory. In containers mount
+# a volume there; with several replicas use a shared mount (EFS, S3 FUSE).
+# Files are retained as long as the request log entries that reference them
+# (LOGGING_RETENTION_DAYS).
+# MEDIA_STORAGE_PATH=data/media
+
+# =============================================================================
+# Request Logging Configuration
+# =============================================================================
+
+# Enable/disable request logging (default: true)
+# When enabled, all requests and responses are logged to the configured storage
+# LOGGING_ENABLED=true
+
+# Log full request/response bodies (default: true)
+# WARNING: May contain PII, API keys in prompts, or sensitive data
+# LOGGING_LOG_BODIES=true
+
+# Log audio endpoint inputs/outputs: /v1/audio/speech text input + binary audio
+# output (stored as base64 so the dashboard can play it back) and
+# /v1/audio/transcriptions upload metadata. Requires LOGGING_LOG_BODIES=true (the
+# master body-logging switch); when bodies are logged but this is off, audio
+# responses are recorded as a lightweight placeholder instead of the full bytes.
+# WARNING: stores full audio in the request log and grows storage quickly (default: false)
+# LOGGING_LOG_AUDIO_BODIES=false
+
+# Log image endpoint inputs/outputs: /v1/images/generations results and
+# /v1/images/edits uploads (source images, masks) and results, stored as base64
+# so the dashboard can display them. Requires LOGGING_LOG_BODIES=true; when bodies
+# are logged but this is off, image entries keep the prompt, parameters, usage,
+# sizes and hosted URLs but not the pixels.
+# WARNING: stores full images in the request log and grows storage quickly (default: false)
+# LOGGING_LOG_IMAGE_BODIES=false
+
+# Which image bytes to store when LOGGING_LOG_IMAGE_BODIES=true:
+# all (uploads and results), input (edit uploads only), output (results only)
+# (default: all)
+# LOGGING_LOG_IMAGE_BODIES_SCOPE=all
+
+# Log embeddings request/response bodies: /v1/embeddings and provider
+# passthrough embedding calls (/p/{provider}/.../embeddings, .../embed,
+# Gemini :embedContent / :batchEmbedContents). Requires LOGGING_LOG_BODIES=true;
+# when bodies are logged but this is off, embedding entries keep their metadata
+# (model, provider, status, timing, usage) but drop both bodies. Turn it off for
+# bulk indexing jobs, whose inputs and float-vector responses grow storage quickly.
+# (default: true)
+# LOGGING_LOG_EMBEDDING_BODIES=true
+
+# Log request/response headers (default: true)
+# Sensitive headers (Authorization, Cookie, etc.) are automatically redacted
+# LOGGING_LOG_HEADERS=true
+
+# Record every prompt guardrail that edited a request as its own request log revision,
+# carrying the request as that step left it (encoded off the request path). Set to
+# false to record a chain's edits as one revision with the request as forwarded.
+# (default: true)
+# LOGGING_LOG_GUARDRAIL_STEPS=true
+
+# Log only model interactions, skip /health, /metrics, /admin endpoints (default: true)
+# LOGGING_ONLY_MODEL_INTERACTIONS=true
+
+# In-memory request log queue capacity in entries/rows, not bytes (default: 1000)
+# If the queue is full, new request log entries are dropped with a warning
+# LOGGING_BUFFER_SIZE=1000
+
+# How often to flush buffered logs in seconds (default: 5)
+# Logs are written at least every 5 seconds by default, and earlier when batches fill up
+# LOGGING_FLUSH_INTERVAL=5
+
+# When LOGGING_LOG_BODIES=true, captured request/response bodies are capped at 1MB each
+# Streaming response content is also capped at 1MB of accumulated captured content
+
+# Auto-delete logs older than N days, 0 = keep forever (default: 30)
+# LOGGING_RETENTION_DAYS=30
+
+# =============================================================================
+# Token Usage Tracking Configuration
+# =============================================================================
+
+# Enable/disable token usage tracking (default: true)
+# When enabled, token usage is tracked separately from request logs
+# USAGE_ENABLED=true
+
+# Enable/disable the admin usage pricing recalculation action (default: true)
+# Requires USAGE_ENABLED=true and supported storage; false always hides/blocks it
+# USAGE_PRICING_RECALCULATION_ENABLED=true
+
+# Enable markups and billed cost (default: false). While false, no billed
+# cost is recorded and pricing.markups / PRICING_BILL_CACHE_HITS are ignored.
+# PRICING_MARKUPS_ENABLED=false
+
+# Bill responses served from the response cache at what the same call would
+# cost when the hit is served, plus markup (default: true); false bills them
+# at $0. Markups themselves are set in config.yaml under pricing.markups
+# (and pricing.user_path_markups with GoModel Pro).
+# PRICING_BILL_CACHE_HITS=true
+
+# Enforce returning usage data in streaming responses (default: true)
+# When true, stream_options: {"include_usage": true} is automatically added
+# to streaming requests for OpenAI-compatible providers.
+# Non-streaming requests are unaffected: their JSON response always carries usage.
+# ENFORCE_RETURNING_USAGE_DATA=true
+
+# Enable/disable guardrails globally (default: false)
+# When enabled, configured guardrails can run for workflows that reference them
+# GUARDRAILS_ENABLED=false
+
+# Guardrails for inline batch processing (default: false)
+# When true, guardrails are applied to inline /v1/batches request items
+# (e.g. /v1/chat/completions and /v1/responses items).
+# ENABLE_GUARDRAILS_FOR_BATCH_PROCESSING=false
+
+# Enable the plugin system (default: false): built-in and loaded plugin types,
+# guardrails built from them, routing-strategy plugins for virtual models, and
+# the /admin/plugins and /admin/guardrails endpoints. GUARDRAILS_ENABLED=true
+# enables it implicitly.
+# PLUGINS_ENABLED=false
+
+# Directories searched for relative plugin .so files (comma-separated). Default: empty (no .so loading).
+# Guardrail instances are built from plugins (built-in or loaded); see config.example.yaml.
+# PLUGINS_SEARCH_PATHS=/etc/gomodel/plugins
+
+# Plugin shared objects to load at startup (comma-separated; each file is
+# relative to a PLUGINS_SEARCH_PATHS directory, or absolute). A relative file
+# must resolve inside one of the PLUGINS_SEARCH_PATHS directories; the first
+# match wins. Absolute file paths are used as-is. Each entry is optionally
+# "file=sha256hex" to pin the digest. Only the final "=" followed by exactly 64
+# hex characters starts a digest pin; any other entry is a file name. Replaces
+# plugins.load from config.yaml when non-empty (env > config). A load entry
+# that cannot be resolved, verified, or opened is a startup error. Loads plugins
+# without needing a config.yaml.
+# PLUGINS_LOAD=example.so
+
+# In-memory buffer size before flushing to storage (default: 1000)
+# USAGE_BUFFER_SIZE=1000
+
+# How often to flush buffered usage entries in seconds (default: 5)
+# USAGE_FLUSH_INTERVAL=5
+
+# Auto-delete usage data older than N days, 0 = keep forever (default: 90)
+# USAGE_RETENTION_DAYS=90
+
+# =============================================================================
+# Rate Limits
+# =============================================================================
+# Cap requests, tokens, and in-flight concurrency per user_path subtree.
+# Breaches return 429 with Retry-After and x-ratelimit-* headers. Counters are
+# saved to the configured store every RATE_LIMITS_FLUSH_INTERVAL seconds
+# (default 1), so request and token windows survive restart and --reload, and
+# replicas sharing a database read each other's counts (in-flight concurrency
+# included) on every flush to enforce one limit together. 0 = no periodic
+# sharing (counts still load on start and save on shutdown).
+# Token limits (tpm/tph/tpd) additionally require USAGE_ENABLED=true. Enabled
+# by default; with no configured rules the check is a no-op.
+# RATE_LIMITS_ENABLED=true
+# RATE_LIMITS_FLUSH_INTERVAL=1
+
+# Declare rules per user path with SET_RATE_LIMIT_<PATH> (double underscores
+# separate path segments, like SET_BUDGET_*). Names: rpm/tpm (per minute),
+# rph/tph (per hour), rpd/tpd (per day), concurrent (max in-flight requests).
+# A JSON array of {period|period_seconds, max_requests, max_tokens} objects is
+# also accepted for custom windows.
+# SET_RATE_LIMIT_TEAM__ALPHA="rpm=100,tpm=50000,rpd=10000,concurrent=10"
+# SET_RATE_LIMIT_="rpm=1000"
+
+# Cap one provider across all consumers and models with
+# SET_PROVIDER_RATE_LIMIT_<NAME> (same rpm/tpm/... syntax; underscores in the
+# suffix become hyphens like provider-instance env vars). Load balancing and
+# failover skip a saturated provider while another target has capacity.
+# Per-model rules have no env form; declare them under rate_limits.models in
+# config.yaml or via the admin API/dashboard.
+# SET_PROVIDER_RATE_LIMIT_OPENAI="rpm=500,tpm=200000,concurrent=50"
+
+# Cap one provider's spend across all consumers with
+# SET_PROVIDER_BUDGET_<NAME> (hourly/daily/weekly/monthly amounts, like
+# SET_BUDGET_*; underscores in the suffix become hyphens). Failover skips a
+# provider whose budget is spent. Requires BUDGETS_ENABLED and USAGE_ENABLED.
+# SET_PROVIDER_BUDGET_OPENAI_PROD="daily=100"
+
+# GoModel Pro: whether a provider budget with cost_basis "billed" counts the
+# billed response-cache hits of that provider's models (default: true). Set
+# false to limit only what was billed for requests the provider served.
+# BUDGETS_PROVIDER_BILLED_CACHE_HITS=true
+
+# =============================================================================
+# Provider API Keys (uncomment and set the ones you need)
+# =============================================================================
+# None of this is required to start GoModel. You can leave every provider env
+# var below unset and instead add provider credentials from the admin
+# dashboard's Providers page (/admin/dashboard) after starting the gateway —
+# they take effect immediately, no restart. Env vars and config.yaml still
+# take precedence when both are set for the same provider name (the dashboard
+# marks that provider read-only).
+#
+# Bare <PROVIDER>_* vars apply to the config.yaml provider named after the type
+# ("openai"). A renamed config.yaml provider of that type (alpha: {type: openai})
+# only picks up fields it left empty; its explicit api_key/base_url are kept and
+# the ignored vars are logged as a warning at startup.
+#
+# Add more instances with <PROVIDER>_<SUFFIX>_*.
+# Example: OPENAI_EAST_API_KEY and OPENAI_EAST_BASE_URL register provider openai-east.
+# Underscores in the suffix become hyphens in the provider name.
+#
+# Give ONE provider several API keys with <PROVIDER>_API_KEY_<n>, numbered from 2.
+# Identified sessions stay on one key by default to preserve provider prompt-cache
+# affinity; sessionless traffic still rotates. Set
+# <PROVIDER>[_SUFFIX]_SESSION_STICKY_KEYS=false to rotate every request instead.
+# Works for any provider that authenticates with an API key.
+#
+# Mark ONE provider as not billable with <PROVIDER>[_SUFFIX]_BILLABLE=false when
+# its cost is not owed by the caller (a customer's own key registered as its
+# own provider). Usage is still tracked and priced. User-path and label budgets
+# neither gate it nor count it, and with PRICING_MARKUPS_ENABLED=true it is
+# billed at zero (with markups disabled, no billed cost is recorded for any
+# row). A value that is not a boolean (true/false, 1/0, t/f) fails startup.
+#
+# Send ONE provider's traffic through an HTTP(S) or SOCKS5 proxy with
+# <PROVIDER>[_SUFFIX]_PROXY_URL (e.g. socks5://user:pass@10.0.0.1:1080). Providers
+# without one keep the process-wide HTTP_PROXY / HTTPS_PROXY / NO_PROXY behaviour.
+
+# Any provider or config value can be a secret reference instead of the secret:
+# ${file:/run/secrets/openai} reads a mounted file, ${env:NAME} another variable.
+# An unresolvable reference stops startup.
+
+# OpenAI
+# OPENAI_API_KEY=sk-...
+# OPENAI_API_KEY=${file:/run/secrets/openai}
+# OPENAI_API_KEY_2=sk-...
+# OPENAI_SESSION_STICKY_KEYS=false
+# OPENAI_BILLABLE=false
+# OPENAI_BASE_URL=https://api.openai.com/v1
+# OPENAI_PROXY_URL=socks5://user:pass@10.0.0.1:1080
+# Workload identity federation instead of an API key (API key wins if both are
+# set). The token file is re-read on every exchange. See
+# docs/providers/workload-identity.
+# OPENAI_IDENTITY_PROVIDER_ID=idp_...
+# OPENAI_SERVICE_ACCOUNT_ID=sa_...
+# OPENAI_IDENTITY_TOKEN_FILE=/var/run/secrets/openai/token
+# OPENAI_TOKEN_ENDPOINT=https://auth.openai.com/oauth/token
+
+# ChatGPT subscription (Codex backend, /v1/responses only)
+# Billed against your ChatGPT plan instead of OpenAI Platform credit. The key is
+# the access token from `codex login`; it expires roughly every 10 days.
+#   CHATGPT_API_KEY=$(jq -r .tokens.access_token ~/.codex/auth.json)
+# CHATGPT_API_KEY=
+# CHATGPT_BASE_URL=https://chatgpt.com/backend-api/codex
+# Optional model override; defaults to the models a ChatGPT plan can call.
+# CHATGPT_MODELS=gpt-5.6-sol,gpt-5.6-terra,gpt-5.6-luna,gpt-5.5
+
+# GitHub Copilot subscription
+# Billed against your Copilot plan. The key is a GitHub OAuth token (gho_...)
+# for the account, e.g. `gh auth token`, or a Copilot client sign-in such as
+#   GITHUB_COPILOT_API_KEY=$(jq -r '."github-copilot".refresh' ~/.local/share/opencode/auth.json)
+# The models you can call depend on the Copilot plan.
+# GITHUB_COPILOT_API_KEY=
+# Business/Enterprise seats may need their own endpoint, e.g.
+# https://api.business.githubcopilot.com
+# GITHUB_COPILOT_BASE_URL=https://api.githubcopilot.com
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE
+# GITHUB_COPILOT_MODELS=claude-sonnet-5.5,gpt-5.6-luna,gpt-4.1
+
+# Anthropic
+# Accepts a Console API key (sk-ant-api...) or a Claude subscription OAuth
+# token from `claude setup-token` (sk-ant-oat...; Claude Code traffic only).
+# ANTHROPIC_API_KEY=sk-ant-...
+# ANTHROPIC_BASE_URL=https://api.anthropic.com/v1
+# Workload identity federation instead of an API key, using the same variables
+# as the Anthropic SDKs (API key wins if both are set). Use
+# ANTHROPIC_IDENTITY_TOKEN instead of the file when the JWT is injected as a
+# variable. ANTHROPIC_WORKSPACE_ID is needed when the rule spans several
+# workspaces.
+# ANTHROPIC_FEDERATION_RULE_ID=fdrl_...
+# ANTHROPIC_ORGANIZATION_ID=00000000-0000-0000-0000-000000000000
+# ANTHROPIC_SERVICE_ACCOUNT_ID=svac_...
+# ANTHROPIC_IDENTITY_TOKEN_FILE=/var/run/secrets/anthropic.com/token
+# ANTHROPIC_WORKSPACE_ID=wrkspc_...
+# Anthropic /v1/messages requires max_tokens. When the caller omits it, GoModel
+# injects this value. Default: 4096. Raise it for newer models that produce
+# longer outputs (e.g. Sonnet 4.6 / Opus 4.7).
+# ANTHROPIC_DEFAULT_MAX_TOKENS=4096
+
+# Cohere
+# COHERE_API_KEY=...
+# COHERE_BASE_URL=https://api.cohere.com
+
+# Google Gemini
+# GEMINI_API_KEY=...
+# Use Gemini's native APIs (default: true): generateContent for chat/responses
+# and image models, batchEmbedContents for embeddings, predict for Imagen
+# (Vertex backend; Google retired Imagen from the AI Studio API in Aug 2026).
+# Set to false to use Gemini's OpenAI-compatible API instead (image edits are
+# then unavailable; the OpenAI-compatible surface has no edits endpoint).
+# Native mode supports inline image data via data: URLs, but GoModel does not
+# fetch remote image URLs or upload them through Gemini Files API yet. Set this
+# to false when you need OpenAI-compatible image_url pass-through behavior.
+# USE_GOOGLE_GEMINI_NATIVE_API=true
+# Gemini base URL. The official defaults are:
+# - native chat/models: https://generativelanguage.googleapis.com/v1beta
+# - OpenAI-compatible API: https://generativelanguage.googleapis.com/v1beta/openai
+# If this ends in /openai, GoModel derives the native base by stripping /openai.
+# GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+
+# xAI (Grok)
+# XAI_API_KEY=...
+# XAI_BASE_URL=https://api.x.ai/v1
+
+# Groq
+# GROQ_API_KEY=gsk_...
+# GROQ_BASE_URL=https://api.groq.com/openai/v1
+
+# Fireworks AI (default base URL: https://api.fireworks.ai/inference/v1)
+# Model IDs are account-scoped paths, e.g. accounts/fireworks/models/gpt-oss-120b
+# FIREWORKS_API_KEY=fw_...
+# FIREWORKS_BASE_URL=https://api.fireworks.ai/inference/v1
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# FIREWORKS_MODELS=accounts/fireworks/models/gpt-oss-120b,accounts/fireworks/models/deepseek-v3p2
+
+# DeepInfra (default base URL: https://api.deepinfra.com/v1/openai)
+# Chat, Responses, embeddings, images, audio, files and batches; model IDs look like Qwen/Qwen3-32B
+# DEEPINFRA_API_KEY=...
+# DEEPINFRA_BASE_URL=https://api.deepinfra.com/v1/openai
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# DEEPINFRA_MODELS=Qwen/Qwen3-32B,Qwen/Qwen3-Embedding-0.6B
+
+# Together AI (default base URL: https://api.together.ai/v1)
+# Chat, Responses (via chat) and embeddings; model IDs look like meta-llama/Llama-3.3-70B-Instruct-Turbo
+# TOGETHER_API_KEY=...
+# TOGETHER_BASE_URL=https://api.together.ai/v1
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# TOGETHER_MODELS=meta-llama/Llama-3.3-70B-Instruct-Turbo,BAAI/bge-base-en-v1.5
+
+# Meta Model API (Muse Spark, default base URL: https://api.meta.ai/v1)
+# META_API_KEY=...
+# META_BASE_URL=https://api.meta.ai/v1
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# META_MODELS=muse-spark-1.1
+
+# OpenRouter (default base URL: https://openrouter.ai/api/v1)
+# OPENROUTER_API_KEY=sk-or-...
+# OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# OPENROUTER_MODELS=openai/gpt-oss-120b,anthropic/claude-sonnet-4
+# Free models only; see <PROVIDER>_MODEL_FILTER_* above
+# OPENROUTER_MODEL_FILTER_INCLUDE=*:free
+# OPENROUTER_SITE_URL=https://gomodel.enterpilot.io
+# OPENROUTER_APP_NAME=GoModel
+
+# Kilo AI Gateway (default base URL: https://api.kilo.ai/api/gateway)
+# Model IDs use provider/model and pass through unchanged.
+# KILO_API_KEY=...
+# KILO_BASE_URL=https://api.kilo.ai/api/gateway
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# KILO_MODELS=anthropic/claude-sonnet-4.5,openai/gpt-5.5
+
+# Eden AI (default base URL: https://api.edenai.run/v3)
+# Multi-provider gateway. Model IDs use provider/model and pass through unchanged.
+# EDENAI_BASE_URL is optional: the default above is used when it is unset.
+# EDENAI_API_KEY=
+# EDENAI_BASE_URL=https://api.edenai.run/v3
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE above
+# EDENAI_MODELS=openai/gpt-4,anthropic/claude-sonnet-latest
+
+# Z.ai (default base URL: https://api.z.ai/api/paas/v4)
+# For GLM Coding Plan, use: https://api.z.ai/api/coding/paas/v4
+# ZAI_API_KEY=...
+# ZAI_BASE_URL=https://api.z.ai/api/paas/v4
+
+# Mistral AI (La Plateforme; default base URL: https://api.mistral.ai/v1)
+# Reasoning output is normalized to reasoning_content, and replayed assistant
+# thinking travels upstream as Mistral thinking chunks.
+# MISTRAL_API_KEY=...
+# MISTRAL_BASE_URL=https://api.mistral.ai/v1
+# Optional configured model list; see CONFIGURED_PROVIDER_MODELS_MODE below
+# MISTRAL_MODELS=mistral-large-4-0,mistral-small-2603,mistral-embed
+
+# MiniMax (global: https://api.minimax.io/v1; China: https://api.minimaxi.com/v1)
+# MINIMAX_API_KEY=...
+# MINIMAX_BASE_URL=https://api.minimax.io/v1
+
+# ElevenLabs (voice: text-to-speech + speech-to-text; default base URL: https://api.elevenlabs.io)
+# The OpenAI "voice" field must be an ElevenLabs voice_id.
+# ELEVENLABS_API_KEY=...
+# ELEVENLABS_BASE_URL=https://api.elevenlabs.io
+
+# Jev (TypeSafe System One decision API; default base URL: https://api.typesafe.ai)
+# Jev models answer OpenAI Decisions requests at POST /v1/decisions (translated to
+# System One) and System One requests natively at POST /v1/systemone (point the
+# TypeSafe SDK at http://localhost:8080).
+# JEV_API_KEY=...
+# A self-hosted Kev server (github.com/jaredpalmer/kev) speaks the same API and
+# has no authentication of its own: set the base URL and leave the key unset.
+# JEV_BASE_URL=http://localhost:8009
+
+# Xiaomi MiMo (default base URL: https://api.xiaomimimo.com/v1)
+# XIAOMI_API_KEY=...
+# XIAOMI_BASE_URL=https://api.xiaomimimo.com/v1
+# Optional configured model list; [1m] variants enable 1M context
+# XIAOMI_MODELS=mimo-v2.5-pro,mimo-v2.5-pro[1m],mimo-v2.5-tts,mimo-v2.5-asr
+
+# OpenCode Go (OpenCode Zen, default base URL: https://opencode.ai/zen/go/v1)
+# OPENCODE_GO_API_KEY=sk-...
+# OPENCODE_GO_BASE_URL=https://opencode.ai/zen/go/v1
+# Optional configured model list
+# OPENCODE_GO_MODELS=glm-5.1,kimi-k2.7-code,deepseek-v4-pro
+# Models that must be routed to the Anthropic-native /messages endpoint instead
+# of /chat/completions (default: qwen3.7-max). Temporary manual split until
+# upstream exposes per-model endpoint metadata.
+# OPENCODE_GO_MESSAGES_MODELS=qwen3.7-max
+# Reasoning effort injected when a client sends no reasoning parameter
+# (default: low). Some models always think and reject requests that omit it.
+# Accepts low, high, max; set to "none" (or "off") to inject nothing.
+# OPENCODE_GO_DEFAULT_REASONING_EFFORT=low
+# Forward x-opencode-session (the client's own header, else the detected session
+# id) so OpenCode Zen can keep one conversation's prompt cache warm. Upstream
+# requires it; leave enabled unless asked otherwise (default: true).
+# OPENCODE_GO_SESSION_HEADER=true
+
+# DeepSeek models (deepseek and opencode_go providers) support response_format
+# json_object but not json_schema. "downgrade" sends json_object plus the schema
+# as a system message (output is JSON but not schema-enforced); "error" rejects
+# the request instead (default: downgrade).
+# DEEPSEEK_JSON_SCHEMA_MODE=downgrade
+
+# Azure OpenAI
+# AZURE_API_KEY=...
+# AZURE_BASE_URL=https://your-resource.openai.azure.com/openai/deployments/your-deployment
+# Azure AI Foundry / v1 API: the model in the request selects the deployment
+# AZURE_BASE_URL=https://your-resource.services.ai.azure.com/openai/v1
+# Defaults to 2024-10-21 on deployment URLs and to none on /openai/v1 URLs
+# AZURE_API_VERSION=2024-10-21
+
+# Oracle
+# ORACLE_API_KEY=...
+# ORACLE_BASE_URL=https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/v1
+# Optional configured model list; comma-separated, whitespace around entries is ignored
+# ORACLE_MODELS=openai.gpt-oss-120b,xai.grok-3
+
+# Ollama (local LLM server)
+# Note: Ollama doesn't require an API key, but one can be sent for secured deployments
+# OLLAMA_API_KEY=...
+# Set base URL to enable (default: http://localhost:11434/v1)
+# OLLAMA_BASE_URL=http://localhost:11434/v1
+
+# Alibaba Cloud Bailian (百炼)
+# BAILIAN_API_KEY=...
+# BAILIAN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+# BAILIAN_MODELS=text-embedding-v3,text-embedding-v4
+
+# vLLM (OpenAI-compatible server)
+# VLLM_API_KEY is optional; set it only if vllm serve was started with --api-key.
+# VLLM_API_KEY=token-abc123
+# Set base URL to enable (default: http://localhost:8000/v1)
+# VLLM_BASE_URL=http://localhost:8000/v1
+
+# llama.cpp llama-server (also fits LM Studio and other OpenAI-compatible local servers)
+# Base URL is required and enables the provider; include /v1.
+# LLAMACPP_BASE_URL=http://localhost:8081/v1
+# LLAMACPP_API_KEY is optional; set it only if llama-server was started with --api-key.
+# LLAMACPP_API_KEY=token-abc123
+
+# audio.cpp (audiocpp_server: local text-to-speech and speech-to-text)
+# Base URL is required and enables the provider; audiocpp_server's default port
+# (8080) collides with the gateway's own. A trailing /v1 is accepted.
+# AUDIOCPP_BASE_URL=http://localhost:8099
+# AUDIOCPP_API_KEY is optional; audio.cpp has no authentication of its own, so
+# set it only when a reverse proxy in front of the server expects a token.
+# AUDIOCPP_API_KEY=token-abc123
+
+# llm-d Router / Endpoint Picker (EPP)
+# The route is required and usually points to the EPP service. Include /v1.
+# LLMD_BASE_URL=http://quickstart-epp.llm-d.svc.cluster.local/v1
+# Optional bearer token if the Gateway in front of llm-d requires one.
+# LLMD_API_KEY=router-token
+# Optional configured model list when GET /v1/models is not routed.
+# LLMD_MODELS=Qwen/Qwen2.5-0.5B-Instruct
+# Optional trusted InferenceObjective name injected by GoModel.
+# LLMD_INFERENCE_OBJECTIVE=standard-traffic
+# Derive the fairness ID from the effective user path (default: true).
+# LLMD_FAIRNESS_FROM_USER_PATH=true
+
+# SGLang (OpenAI-compatible server)
+# SGLANG_API_KEY is optional; set it only if launch_server uses --api-key.
+# SGLANG_API_KEY=token-abc123
+# Set base URL to enable (default: http://localhost:30000/v1)
+# SGLANG_BASE_URL=http://localhost:30000/v1
+# Responses API path (default: auto). auto sends requests with function tools
+# through chat completions and the rest to /v1/responses; native always uses
+# /v1/responses; chat_compatible always uses chat completions.
+# SGLANG_API_MODE=auto
+
+# LM Studio (local, OpenAI-compatible server)
+# LM Studio speaks the OpenAI API (/v1/chat/completions, /v1/embeddings) and has
+# NO native Ollama API. Attach it to the openai type via a suffix so it gets a
+# descriptive name — here "openai-lmstudio". Do NOT use OLLAMA_BASE_URL for it:
+# that routes embeddings to Ollama's native /api/embed, which LM Studio doesn't
+# implement. The API key can be any non-empty value; LM Studio ignores it.
+# OPENAI_LMSTUDIO_BASE_URL=http://localhost:1234/v1
+# OPENAI_LMSTUDIO_API_KEY=lm-studio
+# Optional: pin the served models (LM Studio only exposes loaded ones).
+# OPENAI_LMSTUDIO_MODELS=text-embedding-nomic-embed-text-v1.5
+
+# Amazon Bedrock
+# Authenticate with an Amazon Bedrock API key (BEDROCK_API_KEY, or the AWS
+# SDK's own AWS_BEARER_TOKEN_BEDROCK), or leave it unset to use the standard
+# AWS credential chain — env vars (AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY/
+# AWS_SESSION_TOKEN), AWS_PROFILE, IAM Identity Center, or instance/container
+# roles. BEDROCK_API_KEY wins over AWS_BEARER_TOKEN_BEDROCK when both are set.
+# Set BEDROCK_BASE_URL to either an AWS region (e.g. "us-east-1") or a full
+# https endpoint to enable the provider; otherwise the provider falls back to
+# AWS_REGION / AWS_DEFAULT_REGION.
+# BEDROCK_API_KEY=ABSK...
+# BEDROCK_BASE_URL=us-east-1
+# Optional configured model allowlist (model IDs or inference profiles)
+# BEDROCK_MODELS=anthropic.claude-3-5-haiku-20241022-v1:0,amazon.nova-lite-v1:0
+
+# Amazon Bedrock Mantle (OpenAI-compatible)
+# Use this separate provider for Responses-only models such as GPT-5.6.
+# Authentication accepts a Bedrock API key or the AWS credential chain.
+# BEDROCK_MANTLE_API_KEY=ABSK...
+# BEDROCK_MANTLE_BASE_URL=us-east-1
+# AWS_BEARER_TOKEN_BEDROCK from the Bedrock section above also works as a
+# fallback bearer token. Set BASE_URL with it to enable provider discovery.
+# Optional: auto (default), openai, or standard upstream API path selection.
+# BEDROCK_MANTLE_API_MODE=auto
+# BEDROCK_MANTLE_MODELS=openai.gpt-5.6-sol,openai.gpt-5.6-terra,openai.gpt-5.6-luna
+
+# Kimi Code (OpenAI-compatible)
+# Set the API key to enable. The base URL defaults to the overseas endpoint;
+# use https://api.kimi.com/coding/v1 for the China endpoint.
+# KIMICODE_API_KEY=sk-kimi-...
+# KIMICODE_BASE_URL=https://api.kimi.ai/coding/v1
+# Optional configured model allowlist
+# KIMICODE_MODELS=kimi-for-coding,bge_m3_embed
