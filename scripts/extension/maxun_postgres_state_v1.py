@@ -68,3 +68,28 @@ def read_state(command, container):
                       '--username=study', '--dbname=study', '--file=-'],
                      input=SQL.read_bytes(), capture_output=True)
     return parse_state(result.stdout)
+
+
+def main():
+    import argparse
+    import os
+    import subprocess
+    import time
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--container', required=True)
+    args = parser.parse_args()
+    if os.environ.get('GITHUB_ACTIONS') != 'true':
+        raise SystemExit('Only registered CI control jobs may query containers')
+    deadline = float(os.environ['STUDY_JOB_DEADLINE'])
+
+    def command(argv, **kwargs):
+        remaining = deadline - time.time()
+        if remaining <= 0:
+            raise TimeoutError('Shared qualification deadline')
+        return subprocess.run(argv, check=True, timeout=min(30, remaining), **kwargs)
+
+    print(json.dumps(read_state(command, args.container), allow_nan=False))
+
+
+if __name__ == '__main__':
+    main()

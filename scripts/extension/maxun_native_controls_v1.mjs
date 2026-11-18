@@ -54,6 +54,7 @@ export async function nativeCreate(page, frontend, backend, record) {
   assert.equal(response.status(),201);
   assert.ok(sameState(submitted,ORDINARY), 'Native producer body differs from frozen ordinary API body');
   assert.equal(typeof body.robot?.recording_meta?.id,'string');
+  await page.waitForURL(frontend + '/robots');
   return body.robot.recording_meta.id;
 }
 
