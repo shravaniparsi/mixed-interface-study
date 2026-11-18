@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def require_quiescence(proof):
     required = ('browser_requests_settled', 'application_operations_settled',
                 'empty_certificate_fixture_verified', 'initial_certificate_timer_settled',
-                'token_unchanged', 'refresh_outside_checkpoint_interval')
+                'initial_logrotation_settled', 'token_unchanged', 'refresh_outside_checkpoint_interval')
     if not isinstance(proof, dict) or any(proof.get(k) is not True for k in required):
         raise ValueError('Live caller quiescence evidence incomplete')
     if not re.fullmatch(r'[0-9a-f]{64}', proof.get('observation_sha256', '')):

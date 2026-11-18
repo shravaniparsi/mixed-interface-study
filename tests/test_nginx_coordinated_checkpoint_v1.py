@@ -32,7 +32,7 @@ class CoordinatedCheckpointTests(unittest.TestCase):
         self.guard = {'container_id': 'original-container'}
         self.proof = {key: True for key in ('browser_requests_settled', 'application_operations_settled',
                       'empty_certificate_fixture_verified', 'initial_certificate_timer_settled',
-                      'token_unchanged', 'refresh_outside_checkpoint_interval')}
+                      'initial_logrotation_settled', 'token_unchanged', 'refresh_outside_checkpoint_interval')}
         self.proof['observation_sha256'] = 'b' * 64
         self.state = {'schema': [], 'tables': []}
         self.backup_bytes = b'synthetic test bytes, not a SQLite database'
