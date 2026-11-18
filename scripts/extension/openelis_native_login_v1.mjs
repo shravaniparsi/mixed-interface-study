@@ -39,6 +39,12 @@ export async function nativeOpenElisLogin(page, { frontendUrl, backendBaseUrl, l
   const session = await sessionResponse.json();
   assert.equal(session.authenticated, true);
   assert.equal(session.loginName, loginName);
+  assert.equal(typeof session.userId, 'string');
+  assert.ok(session.userId.length > 0);
+  assert.equal(typeof session.csrf, 'string');
+  assert.ok(session.csrf.length > 0);
+  // Observe App.jsx's original /session initialization; never inject a token.
+  await page.waitForFunction((csrf) => localStorage.getItem('CSRF') === csrf, session.csrf);
   return { request: { method: 'POST', url: loginUrl, headers, body: request.postData() },
     session, storage: await page.context().storageState() };
 }
