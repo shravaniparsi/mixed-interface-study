@@ -199,7 +199,7 @@ def main():
         _, log = run('application-startup-log', ['docker', 'logs', APP])
         assert 'Generating a temporary random private/public key pair' not in log.read_text()
         verify_runtime_layout(inspect('application-ready', APP), inspect('postgres-ready-final', PG), build['application_image_id'], private_key, public_key)
-        report.update(status='isolated_fixture_ready_browser_and_actor_unqualified', application_container_id=app['Id'],
+        report.update(status='isolated_fixture_ready_browser_and_actor_unqualified', application_container_id=app['Id'], database_container_id=postgres['Id'],
             private_key_sha256=digest(private_key), public_key_sha256=digest(public_key),
             node_tools=str(tools), native_login_config=str(private / 'native-login-config.json'))
         save()

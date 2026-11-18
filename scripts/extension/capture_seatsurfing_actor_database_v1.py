@@ -7,7 +7,8 @@ import os
 from pathlib import Path
 import re
 import subprocess
-from seatsurfing_postgres_checkpoint_v2 import PG, APP, PG_IMAGE_ID
+from types import SimpleNamespace
+from seatsurfing_postgres_checkpoint_v2 import PG, APP, PG_IMAGE_ID, bind_build
 
 
 def actor_query(user_id, session_id, refresh_id):
@@ -31,20 +32,16 @@ COMMIT;
 """
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    for name in ['user', 'session', 'refresh']:
-        parser.add_argument('--' + name, required=True)
-    parser.add_argument('--build-report', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
-    args = parser.parse_args()
+def capture_actor_database(*, user, session, refresh, build_report, output):
+    args = SimpleNamespace(user=user, session=session, refresh=refresh,
+                           build_report=Path(build_report), output=Path(output))
     assert os.environ.get('GITHUB_ACTIONS') == 'true'
     assert os.environ.get('GITHUB_REPOSITORY') == 'shravaniparsi/mixed-interface-study'
     assert not args.output.exists(), 'Refuse actor evidence overwrite'
     query = actor_query(args.user, args.session, args.refresh)
     build = json.loads(args.build_report.read_text())
-    assert build['status'] == 'source_build_verified_and_inventory_complete'
-    assert build['application_revision'] == '9953f452324bab6fb8f7106dd8965cc401aa456c'
+    bind_build(build)
+    assert build['study_commit'] == os.environ.get('GITHUB_SHA')
     before = subprocess.check_output(['docker', 'inspect', APP, PG], timeout=15)
     app, pg = json.loads(before)
     for item in [app, pg]:
@@ -56,7 +53,16 @@ def main():
     assert app['HostConfig']['NetworkMode'] in ('container:' + PG, 'container:' + pg['Id'])
     command = ['docker', 'exec', '-i', PG, 'psql', '--username', 'seatsurfing', '--dbname', 'seatsurfing',
                '--no-psqlrc', '--no-align', '--tuples-only', '--quiet', '--set', 'ON_ERROR_STOP=1']
-    result = subprocess.run(command, input=query.encode(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+    def retain_query_streams(stdout, stderr):
+        for suffix, raw in [('stdout', stdout), ('stderr', stderr)]:
+            fd = os.open(str(args.output) + '.query-' + suffix, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(fd, 'wb') as stream: stream.write(raw)
+    try:
+        result = subprocess.run(command, input=query.encode(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+    except subprocess.TimeoutExpired as error:
+        retain_query_streams(error.stdout or b'', error.stderr or b'')
+        raise
+    retain_query_streams(result.stdout, result.stderr)
     assert result.returncode == 0 and not result.stderr, 'Actor query failed; no retry authorized'
     assert len(result.stdout) <= 2 * 1024 * 1024
     data = json.loads(result.stdout)
@@ -66,11 +72,22 @@ def main():
     report = {'status': 'actor_database_observed_not_identity_verdict', 'data': data,
               'query_sha256': hashlib.sha256(query.encode()).hexdigest(),
               'raw_result_sha256': hashlib.sha256(result.stdout).hexdigest(),
+              'raw_result': result.stdout.decode(),
               'build_report_sha256': hashlib.sha256(args.build_report.read_bytes()).hexdigest(),
               'application_container_id': app['Id'], 'database_container_id': pg['Id']}
     fd = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, 'w') as output:
         json.dump(report, output, indent=2); output.write('\n')
+    return report
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    for name in ['user', 'session', 'refresh']:
+        parser.add_argument('--' + name, required=True)
+    parser.add_argument('--build-report', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    capture_actor_database(**vars(parser.parse_args()))
 
 
 if __name__ == '__main__': main()

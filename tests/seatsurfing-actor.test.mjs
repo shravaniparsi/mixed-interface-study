@@ -31,3 +31,25 @@ test('missing administrator assignment is rejected',()=>{const x=fixture();x.dat
 test('stale database evidence is rejected',()=>{const x=fixture();x.database.observedAtMs-=60000;assert.throws(()=>verifySeatsurfingActor(x),/Stale/);});
 test('changed resolved permissions across branches are rejected',()=>{const x=fixture();const before=verifySeatsurfingActor(x).continuity;changeSelf(x,v=>{v.permissions.locations=1;});assert.throws(()=>verifySeatsurfingActor({...x,expectedContinuity:before}),/across branches/);});
 test('missing response capture is rejected',()=>{const x=fixture();x.events=x.events.filter(e=>e.kind!=='response');assert.throws(()=>verifySeatsurfingActor(x),/Missing or duplicate/);});
+
+test('offline verifier binds exact input file and privately reports signature failure', async () => {
+  const { mkdtemp, writeFile, readFile, rm, stat } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { spawnSync } = await import('node:child_process');
+  const directory = await mkdtemp(join(tmpdir(), 'seatsurfing-actor-offline-'));
+  try {
+    for (const tampered of [false, true]) {
+      const x = fixture(); x.publicKey = key.toString();
+      if (tampered) x.database.session.user_id = ids[4];
+      const input = join(directory, tampered ? 'bad-input.json' : 'input.json');
+      const output = join(directory, tampered ? 'bad-output.json' : 'output.json');
+      const raw = JSON.stringify(x); await writeFile(input, raw, { mode: 0o600 });
+      const run = spawnSync(process.execPath, [new URL('../scripts/extension/verify_seatsurfing_actor_file_v1.mjs', import.meta.url).pathname, input, output], { timeout: 15000 });
+      assert.equal(run.status, tampered ? 1 : 0); assert.equal(run.stdout.length + run.stderr.length, 0);
+      const result = JSON.parse(await readFile(output, 'utf8'));
+      assert.equal(result.inputSha256, sha(raw)); assert.equal(result.status, tampered ? 'actor_verification_failed' : 'actor_identity_verified');
+      assert.equal((await stat(output)).mode & 0o777, 0o600);
+    }
+  } finally { await rm(directory, { recursive: true }); }
+});
