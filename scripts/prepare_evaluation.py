@@ -45,6 +45,8 @@ ARTIFACTS = [
     'protocol/continuation-feasibility-redesign-draft-v1.md',
     'manifests/continuation-redesign-access-decision-v1.json',
     'protocol/openapi-public-metadata-screen-v1.md',
+    'protocol/openapi-public-root-metadata-v1.md',
+    'scripts/extension/collect_openapi_root_metadata_v1.py',
     'manifests/openapi-public-metadata-screen-v1.json',
     'results/openapi-public-metadata-v1/response.json',
     'manifests/openapi-public-exposure-snapshot-v1.json',
