@@ -1,0 +1,9 @@
+# Targeted methods follow-up during infrastructure preflight
+
+This is a scoped reading note, not a systematic review or verified novelty claim. No application selection or inputs change as a result.
+
+APIDocX: the publisher full text is now accessible at https://www.techscience.com/cmc/v86n3/65438/html . Section5.2.3 defines faults to include both server errors and business-logic disruption, and discusses authentication, ordering and input-handling examples. It must not be characterized as a status-only method. Its reported GUI-assisted specification completion and API-sequence testing overlap with generic mixed-interface testing claims. The remaining comparison question is specifically whether equivalent API and native edit continuations diverge on the same persisted state; this reading does not prove that question is absent from all prior work. Exact methodology and implementation equivalence would still need separate assessment before claiming superiority.
+
+APICARV: https://arxiv.org/pdf/2305.14692 , sectionsI andIII, describes recording/filtering browser network calls, carving API sequences and inferring endpoints with directed probing. Its evaluation compares inferred specifications and coverage/cost of carved tests. UI-derived API seeds, API probing and reduced browser execution cost are established contributions here, not new contributions of our harness. The accessible PDF is arXiv version1; an attempted version2 HTML endpoint was unavailable. No claim about later versions follows.
+
+Decision: preserve H/S/A/U as explicit observational baselines, not implementations of these published systems. Before a journal contribution claim, measure incremental native-continuation evidence, account for UI normalization, verify equivalent updates and report acquisition/execution cost. Current infrastructure work alone meets none of those scientific evidence requirements. Full prior-art coverage, including AutoBypass and ViewPoints, remains open.
