@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/maxun_postgres_state_v1.sql',
+    'scripts/extension/maxun_postgres_state_v1.py',
+    'tests/test_maxun_postgres_state_v1.py',
     'scripts/extension/maxun_snapshot_v1.py',
     'tests/test_maxun_snapshot_v1.py',
     'scripts/extension/maxun_serializer_v1.mjs',

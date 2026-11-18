@@ -357,3 +357,11 @@ The new snapshot component requires both PostgreSQL and MinIO containers to be s
 This is only the persistence-volume component. Browser cookies/localStorage, application writable-layer changes, queue quiescence, complete logical readback and pre-edit equality remain separate harness requirements. A verified volume copy is explicitly not runtime qualification. No Docker operation or source application has run; Docker copy semantics and real PostgreSQL restart integrity still require the registered ordinary controls.
 
 Five synthetic archive tests passed, covering contents/metadata changes, ordering versus extra entries, unsafe paths, links/duplicate names and empty archives. These tests are not scientific observations. The prior serializer CI run was still in progress at the beginning of this step and was not restarted.
+
+## Prepared Maxun logical PostgreSQL state export
+
+A read-only PostgreSQL export now complements the stopped-volume snapshot component. It uses one repeatable-read transaction, UTC rendering and server-quoted relation identifiers to retain rows from all ordinary user tables, including empty session/worker tables. Relation row order is sorted for representation; JSON arrays inside rows remain ordered. Native/API readback alone is insufficient because the native readback transforms workflow actions and strips a secret field. The SQL export does not substitute for physical snapshots: schema definitions, sequence state and files are explicitly outside its logical row coverage.
+
+The parser rejects missing tables, malformed row records and duplicate relations. Four synthetic parser checks passed, preserving nulls, identity/timestamp strings and nested-array order. SQL execution, PostgreSQL permissions, live database coverage and restart comparability are not yet tested. No target/relationship comparison subset has been chosen after outcomes; the complete runtime comparison coverage must still be frozen before qualification.
+
+Serializer CI 44237198220 completed successfully. Snapshot CI 44237473744 completed successfully; it was observed to completion before the next push. No application or scientific input ran in this step.
