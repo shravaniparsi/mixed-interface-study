@@ -1,0 +1,321 @@
+{
+  "repository": "nginxproxymanager/nginx-proxy-manager",
+  "revision": "20016b9d91d49c9133f1b4d26ab5a289c72ec1db",
+  "status": "inputs_frozen_runtime_not_authorized",
+  "candidate": "frontend/src/modals/AccessListModal.tsx",
+  "workflow_runtime_qualified": false,
+  "supported_properties": [
+    "/clients/0/address",
+    "/items/0/password",
+    "/items/0/username",
+    "/name"
+  ],
+  "excluded_controls": {
+    "/clients/0/directive": "categorical select, not a text input",
+    "/satisfy_any": "boolean toggle",
+    "/pass_auth": "boolean toggle",
+    "clients[last]": "disabled display-only deny/all row"
+  },
+  "source_identities": [
+    {
+      "artifact": "results/catalog-source-wave2-v1/33.txt",
+      "sha256": "d040ca0b57b2e3a17c2ff5cddcf5a7e3c956b51dba4cf2ef25124d98648b8d5e"
+    },
+    {
+      "artifact": "results/catalog-source-wave3-v1/25.txt",
+      "sha256": "b760b3cc02e9bfd4a5733bb32b6f2f805c3c58732a9a0dc4368593443bec6d71"
+    },
+    {
+      "artifact": "results/catalog-source-wave3-v1/26.txt",
+      "sha256": "0bc87df96aa84aef5c26327c3ea29a16b18895f015743d50ed4b89efd7dc9c42"
+    },
+    {
+      "artifact": "results/catalog-source-wave3-v1/28.txt",
+      "sha256": "7e56e7bc69ccca806776d5f04e3e6458cbd9145a26405f7fcbabe504146e5375"
+    },
+    {
+      "artifact": "results/catalog-source-wave18-v1/6.txt",
+      "sha256": "8a298e9335ba73ac8d87123a2d126e88b8def480bf84536b86b3ed87ebb0848a"
+    }
+  ],
+  "producer": {
+    "method": "POST",
+    "path": "/api/nginx/access-lists"
+  },
+  "cases": [
+    {
+      "case": "ordinary",
+      "mutation": null,
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol",
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        },
+        {
+          "path": "/items/0/password",
+          "value": "Study-Only-Edited-2026"
+        }
+      ]
+    },
+    {
+      "case": "clients-0-address-omit",
+      "mutation": {
+        "pointer": "/clients/0/address",
+        "operation": "omit"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol",
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/items/0/password",
+          "value": "Study-Only-Edited-2026"
+        }
+      ]
+    },
+    {
+      "case": "clients-0-address-null",
+      "mutation": {
+        "pointer": "/clients/0/address",
+        "operation": "null"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol",
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": null
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/items/0/password",
+          "value": "Study-Only-Edited-2026"
+        }
+      ]
+    },
+    {
+      "case": "items-0-password-omit",
+      "mutation": {
+        "pointer": "/items/0/password",
+        "operation": "omit"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        }
+      ]
+    },
+    {
+      "case": "items-0-password-null",
+      "mutation": {
+        "pointer": "/items/0/password",
+        "operation": "null"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol",
+            "password": null
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        }
+      ]
+    },
+    {
+      "case": "items-0-username-omit",
+      "mutation": {
+        "pointer": "/items/0/username",
+        "operation": "omit"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        }
+      ]
+    },
+    {
+      "case": "items-0-username-null",
+      "mutation": {
+        "pointer": "/items/0/username",
+        "operation": "null"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": null,
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        }
+      ]
+    },
+    {
+      "case": "name-omit",
+      "mutation": {
+        "pointer": "/name",
+        "operation": "omit"
+      },
+      "producer_body": {
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol",
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        }
+      ]
+    },
+    {
+      "case": "name-null",
+      "mutation": {
+        "pointer": "/name",
+        "operation": "null"
+      },
+      "producer_body": {
+        "name": null,
+        "satisfy_any": false,
+        "pass_auth": false,
+        "items": [
+          {
+            "username": "studycontrol",
+            "password": "Study-Only-Control-2026"
+          }
+        ],
+        "clients": [
+          {
+            "directive": "allow",
+            "address": "192.0.2.10"
+          }
+        ]
+      },
+      "independent_continuations": [
+        {
+          "path": "/clients/0/address",
+          "value": "192.0.2.11"
+        }
+      ]
+    }
+  ],
+  "max_scientific_jobs": 9,
+  "max_minutes_per_scientific_job": 15,
+  "ordinary_policy": "Both edits independently from the same checkpoint; one producer input/job.",
+  "schema_policy": "Original schema/engine/settings; validate a clone, preserve coercions.",
+  "password_policy": "Masked readback retained unless password is the explicit unrelated edit.",
+  "counting": "Nine correlated inputs in one workflow; not independent defects.",
+  "outcome_based_replacement_or_retry": false
+}

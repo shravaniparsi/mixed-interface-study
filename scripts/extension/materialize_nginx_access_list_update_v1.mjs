@@ -1,7 +1,8 @@
 /** Source-derived AccessList update; unqualified until native ordinary equality.
  * Caller supplies an isolated tools directory with the integrity-verified original
- * humps dependency. Passwords come only from persisted API readback, never from
- * the producer request. No native action or application request is executed.
+ * humps dependency. Passwords initialize from persisted API readback, never from
+ * the producer request. A password changes only when it is the explicit edit.
+ * No native action or application request is executed.
  */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
@@ -24,10 +25,10 @@ export function materializeNginxAccessListUpdate({ readback, edit, toolsDirector
   if (edit.path === '/name') {
     values.name = edit.value;
   } else {
-    const match = /^\/(items|clients)\/(0|[1-9][0-9]*)\/(username|address)$/.exec(edit.path);
+    const match = /^\/(items|clients)\/(0|[1-9][0-9]*)\/(username|password|address)$/.exec(edit.path);
     assert.ok(match, 'Unsupported unrelated native text control');
     const [, collection, indexText, field] = match;
-    assert.equal(field, collection === 'items' ? 'username' : 'address');
+    assert.ok(collection === 'items' ? ['username', 'password'].includes(field) : field === 'address');
     const index = Number(indexText);
     assert.ok(Array.isArray(values[collection]) && index < values[collection].length);
     values[collection] = values[collection].map((item, i) => i === index ? { ...item, [field]: edit.value } : item);

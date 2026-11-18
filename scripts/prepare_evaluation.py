@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-nginx-input-freeze-v1.md',
+    'scripts/extension/build_nginx_input_schedule_v1.py',
+    'manifests/catalog-nginx-input-schedule-v1.json',
+    'tests/test_nginx_input_schedule_v1.py',
+    'manifests/catalog-qualification-progress-v33.json',
     'protocol/catalog-nginx-peer-state-comparison-v1.md',
     'scripts/extension/nginx_peer_state_v1.mjs',
     'scripts/extension/test_nginx_peer_state_v1.mjs',
