@@ -1,0 +1,7 @@
+# Maintained packaged source collection
+
+The metadata qualification rules were published at7f2ed745009424f8e5c2b610b81cb93fbb47e08a. All12non-quarantined default branches resolved to exact commits and root trees. The resulting27-file schedule was published at70c89370cdd4878d2db4e056061c5ed0abfe2c05 before contents were fetched. All27files were retrieved without retries and verified against Git blob SHA1 plus recorded SHA256. Plaintext copies are retained under/private/tmp/maintained-packaged-source-v1; immutable repository/commit/path/blob identities are in the published manifests.
+
+The files comprise README and bounded root compose/Dockerfile selections, not an implementation or workflow sample. Retrieval does not qualify package availability, native/API edit support, independence or correct operation. Vikunja remains prior-exposed and quarantined. Documentation assessment across all12rows is still pending; no repository has been admitted for scientific measurement, and no application or paid model was run. Do not infer no deployment exists from missing root selections.
+
+The earlier normalization/measurement-attribution proposal would duplicate existing audited infrastructure; no duplicate implementation was added. This screen instead asks whether maintained, package-oriented software offers a feasible population for the still-unproven incremental native-continuation question. Original studies, outcomes and stopping rules remain unchanged.
