@@ -53,6 +53,8 @@ class ProvisionGuards(unittest.TestCase):
         self.assertEqual(len(env['CRYPT_KEY']), 32)
         self.assertEqual(env['PUBLIC_LISTEN_ADDR'], '127.0.0.1:8080')
         self.assertEqual(env['MOCK_SENDMAIL'], '1')
+        self.assertEqual(env['RATE_LIMIT'], '250')
+        self.assertEqual(env['RATE_LIMIT_PERIOD'], '1-M')
         self.assertEqual(env['PLUGINS_CONFIG'], '')
         self.assertEqual(env['INIT_ORG_DOMAIN'], 'localhost')
         with self.assertRaises(AssertionError): app_environment('bad\nvalue', 'b' * 48, 'c' * 32)

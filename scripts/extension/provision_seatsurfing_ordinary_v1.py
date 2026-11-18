@@ -38,7 +38,7 @@ def app_environment(database_password, admin_password, crypt_key):
         'STATIC_UI_PATH': '/app/ui', 'CACHE_TYPE': 'default', 'DEV': '0',
         'MOCK_SENDMAIL': '1', 'PLUGINS_CONFIG': '', 'FEATURE_FLAGS': '',
         'DISABLE_VERSION_CHECK': '1', 'DISABLE_ANONYMOUS_USAGE_STATS': '1',
-        'DISABLE_PASSWORD_LOGIN': '0',
+        'DISABLE_PASSWORD_LOGIN': '0', 'RATE_LIMIT': '250', 'RATE_LIMIT_PERIOD': '1-M',
     }
 
 

@@ -342,4 +342,41 @@ class RetainedRequestIntegration(unittest.TestCase):
                 with self.assertRaises(RuntimeError):stage.compare_retained_requests()
 
 
+
+
+class FinalRateBudget(unittest.TestCase):
+    def test_complete_process_traffic_counts_and_over_budget_refusal(self):
+        from unittest.mock import Mock
+        from test_seatsurfing_request_budget_v1 import RequestBudget
+        for over in [False,True]:
+            with self.subTest(over=over):
+                helper=ProducerStage();self.addCleanup(helper.doCleanups)
+                stage,_=helper.run_stage();stage.phase='ordinary_comparisons_complete_transport_unqualified'
+                stage.bridge.close=Mock(return_value=None)
+                stopped={'container_ids':['app','pg','browser'],'state':'stopped'}
+                stage.lifecycle.stop=Mock(return_value={'after':stopped});stage.lifecycle._inspect=Mock(return_value=stopped)
+                stage.warm['actor']['continuity']['accessTokenSha256']=hashlib.sha256(b'token').hexdigest()
+                trace={'failure':None,'pendingIds':[],'pendingCaptures':0,'events':[]}
+                for folder in ['native','restored-native','restored-api']:
+                    path=stage.directory/folder/'worker/results/final-network.json';path.parent.mkdir(parents=True,exist_ok=True)
+                    path.write_text(json.dumps(RequestBudget().fixture(200)['native_trace'] if over and folder=='native' else trace))
+                get={'method':'GET','url':'http://127.0.0.1:8080/user/me','headers':{'authorization':'Bearer token'},'status':200,'dispatchedAt':1,'completedAt':2}
+                producer={'envelope':{'request':{'url':'http://127.0.0.1:8080/location/','headers':{'authorization':'Bearer token'}},'response':{'status':201},'dispatchedAt':1,'completedAt':2}}
+                loaded={'envelopes':[get]};continued={'loaded':loaded,'execution':{'envelopes':[get]}}
+                stage.restored_api={'loaded':loaded};stage.api_result={'api':continued}
+                for folder,operation,result in [('api-create','ordinary_create',producer),('api-startup-load','independent_load',loaded),('api-continuation','ordinary_continue',continued)]:
+                    path=stage.directory/folder/'worker/result.json';path.parent.mkdir(parents=True,exist_ok=True)
+                    path.write_text(json.dumps({'status':'api_operation_observed','operation':operation,'result':result}))
+                app={'Id':'app','Config':{'Env':['RATE_LIMIT=250','RATE_LIMIT_PERIOD=1-M']}}
+                with patch.object(module,'lifecycle_command',return_value=json.dumps([app]).encode()):
+                    if over:
+                        with self.assertRaisesRegex(ValueError,'ceiling'):stage.stop_and_check_request_budgets()
+                    else:
+                        result=stage.stop_and_check_request_budgets()
+                        self.assertEqual(result['budgets']['warm']['whole_process_authenticated_requests'],1)
+                        self.assertEqual(result['budgets']['api']['whole_process_authenticated_requests'],3)
+                self.assertEqual(stage.phase,'failed' if over else 'ordinary_fixture_stopped_rate_budget_verified')
+                with self.assertRaises(RuntimeError):stage.stop_and_check_request_budgets()
+
+
 if __name__=='__main__':unittest.main()

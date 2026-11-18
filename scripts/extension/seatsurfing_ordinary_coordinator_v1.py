@@ -19,6 +19,7 @@ from capture_seatsurfing_comparison_state_v1 import capture_state
 from compare_seatsurfing_ordinary_producers_v1 import compare_creation_step, compare_producer_rows
 from compare_seatsurfing_ordinary_state_v1 import compare_ordinary_state
 from verify_seatsurfing_actor_state_v1 import verify_actor_state
+from verify_seatsurfing_request_budget_v1 import verify_request_budget
 
 
 def write_private(path, value):
@@ -454,6 +455,48 @@ class OrdinaryCoordinator:
             self.phase='failed';report.update(status='request_comparison_unavailable',error_type=type(error).__name__)
             raise
         finally:write_private(self.directory/'request-comparison-stage.json',report)
+
+    def stop_and_check_request_budgets(self):
+        if self.phase!='ordinary_comparisons_complete_transport_unqualified':raise RuntimeError('Require completed ordinary comparisons')
+        self.phase='final_stop_in_progress'
+        report={'status':self.phase,'runtime_qualified':False}
+        try:
+            self.lifecycle.resume()
+            stopped=self.lifecycle.stop(self.bridge.close)
+            self.lifecycle._inspect('stopped')
+            app,=json.loads(lifecycle_command(['docker','inspect',APP]))
+            if app['Id']!=stopped['after']['container_ids'][0]:raise RuntimeError('Stopped application identity changed')
+            environment=dict(value.split('=',1) for value in app['Config']['Env'] if '=' in value)
+            files={}
+            def read(path,limit=33554432):
+                if path.is_symlink() or not path.is_file() or path.stat().st_size>limit:raise ValueError('Bounded retained traffic evidence required')
+                raw=path.read_bytes();files[str(path.relative_to(self.directory))]=hashlib.sha256(raw).hexdigest()
+                return json.loads(raw)
+            traces={branch:read(self.directory/folder/'worker/results/final-network.json')
+                for branch,folder in [('warm','native'),('native','restored-native'),('api','restored-api')]}
+            producer=read(self.directory/'api-create/worker/result.json',16777216)
+            startup=read(self.directory/'api-startup-load/worker/result.json',16777216)
+            continuation=read(self.directory/'api-continuation/worker/result.json',16777216)
+            for result,operation in [(producer,'ordinary_create'),(startup,'independent_load'),(continuation,'ordinary_continue')]:
+                if result.get('status')!='api_operation_observed' or result.get('operation')!=operation:raise ValueError('Unexpected API traffic artifact')
+            if continuation['result']!=self.api_result['api'] or startup['result']!=self.restored_api['loaded']:
+                raise ValueError('API traffic differs from observed branch')
+            api_rows={'warm':[producer['result']['envelope']],'native':[],
+                'api':startup['result']['envelopes']+continuation['result']['loaded']['envelopes']+continuation['result']['execution']['envelopes']}
+            budgets={branch:verify_request_budget(native_trace=traces[branch],api_envelopes=api_rows[branch],
+                token_hash=self.warm['actor']['continuity']['accessTokenSha256'],application_environment=environment)
+                for branch in ['warm','native','api']}
+            self.phase='ordinary_fixture_stopped_rate_budget_verified'
+            report.update(status=self.phase,budgets=budgets,input_sha256=files,stopped_identity=stopped['after'],
+                          broader_transport_qualification_pending=True)
+            self.request_budgets=report
+            return report
+        except Exception as error:
+            self.phase='failed';report.update(status='final_stop_or_request_budget_unavailable',error_type=type(error).__name__)
+            raise
+        finally:
+            write_private(self.directory/'final-stop-and-rate-budget.json',report)
+            write_private(self.directory/'final-stop-lifecycle.json',self.lifecycle.events)
 
 
 def verify_api_actor_response(loaded, continuity):
