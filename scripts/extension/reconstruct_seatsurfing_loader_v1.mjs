@@ -26,9 +26,6 @@ export function reconstructSeatsurfingLoader({ events, afterRequestId, id, acces
   const self = get('/user/me');
   assert.ok(self.permissions && typeof self.permissions === 'object');
   const settings = get(settingsPath); assert.ok(Array.isArray(settings));
-  // Mirrors RuntimeConfig.resetInfos plus its ordered settings assignments.
-  let featureGroups = false;
-  for (const setting of settings) if (setting.name === 'feature_groups') featureGroups = setting.value === '1';
   const readback = get('/location/' + id); assert.equal(readback.id, id);
   assert.notEqual(readback.mapType, 'designed', 'Designed map branch remains outside this component');
   const canReadGroups = (self.permissions.groups ?? 0) >= 10;
@@ -42,13 +39,23 @@ export function reconstructSeatsurfingLoader({ events, afterRequestId, id, acces
   const attributes = get('/space-attribute/'); assert.ok(Array.isArray(attributes));
   const rawValues = get('/location/' + id + '/attribute'); assert.ok(Array.isArray(rawValues));
   const timezones = get('/setting/timezones'); assert.ok(Array.isArray(timezones));
-  const attributeValues = rawValues.map(value => ({ attributeId: value.attributeId, value: value.value }));
-  // Space writes are absent for an unrelated scalar edit. Preserve all raw
-  // records, while matching the original default [] for missing attributes.
-  const spaces = rawSpaces.map(space => ({ ...space, attributes: space.attributes ? space.attributes.map(value => ({ attributeId:value.attributeId, value:value.value })) : [] }));
-  return { materialization: { readback, groups, attributeValues, spaces, featureGroups, browserTimezone: 'UTC' },
-    originalResponses: { self, settings, rawSpaces, map, attributes, rawValues, timezones }, consumed,
-    sourceScope: 'fresh_editor_scalar_edit_without_map_design_or_file_changes',
+  return { ...mapSeatsurfingLoaderResponses({ self, settings, readback, groups, rawSpaces, map, attributes, rawValues, timezones }), consumed,
     networkTraceSha256: sha(JSON.stringify(events)), afterRequestId,
     acquisitionProvenanceVerified: false, runtimeQualified: false };
+
+}
+
+/** Shared source mapping only; callers retain distinct native/API acquisition. */
+export function mapSeatsurfingLoaderResponses({ self, settings, readback, groups, rawSpaces, map, attributes, rawValues, timezones }) {
+  assert.ok(map && typeof map === 'object' && !Array.isArray(map));
+  assert.ok(self.permissions && typeof self.permissions === 'object');
+  for (const list of [settings, groups, rawSpaces, attributes, rawValues, timezones]) assert.ok(Array.isArray(list));
+  assert.notEqual(readback.mapType, 'designed', 'Designed map branch remains outside this component');
+  let featureGroups = false;
+  for (const setting of settings) if (setting.name === 'feature_groups') featureGroups = setting.value === '1';
+  const attributeValues = rawValues.map(value => ({ attributeId: value.attributeId, value: value.value }));
+  const spaces = rawSpaces.map(space => ({ ...space, attributes: space.attributes ? space.attributes.map(value => ({ attributeId:value.attributeId, value:value.value })) : [] }));
+  return { materialization: { readback, groups, attributeValues, spaces, featureGroups, browserTimezone: 'UTC' },
+    originalResponses: { self, settings, rawSpaces, map, attributes, rawValues, timezones },
+    sourceScope: 'fresh_editor_scalar_edit_without_map_design_or_file_changes' };
 }

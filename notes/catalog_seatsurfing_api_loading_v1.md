@@ -1,0 +1,7 @@
+# SeatSurfing independent API loading implementation
+
+Previous goal turn was progress: it acquired the registered loader imports and connected native request evidence directly to materialization. This turn adds fresh API acquisition of the same source-defined scalar-edit inputs and composes it with the existing complete update/attribute executor. The shared pure mapping retains distinct native/API provenance; the API branch accepts neither native materialization nor producer payloads.
+
+Nine API-side synthetic checks and seven native-loader checks passed. The initial local composition test caught a timezone mismatch; UTC is now checked before dispatch and the synthetic test uses the registered runtime timezone. This is an instrumentation preparation finding, not an application result. Timeout tests show that delayed completion cannot dispatch another request and returned partial evidence remains unchanged.
+
+Actual cookie/header transport qualification, actor acquisition binding, original schema compilation, checkpoint orchestration, complete warm/restored ordinary state comparison and encrypted evidence registration remain unfinished. The source-defined loader is not claimed to reproduce every unrelated UI resource/preference request; their relevant state effects must be included in ordinary qualification. No new application job ran. Cohort totals remain six prior application jobs and zero scientific cases; SeatSurfing has zero qualification attempts. Source exposure is unchanged at 56 files / 648,771 bytes.
