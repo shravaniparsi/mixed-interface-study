@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-continuation-dependency-collection-v5.json',
+    'notes/reserved_restaurant_binding_20261117.md',
     'manifests/reserved-continuation-dependency-schedule-v5.json',
     'scripts/extension/collect_reserved_continuation_dependencies_v5.py',
     'manifests/reserved-tutorials-prefix-disposition-v1.json',
