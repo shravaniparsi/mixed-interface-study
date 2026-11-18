@@ -1,0 +1,15 @@
+# Guardrail type and dependency mapping
+
+All 21 published files were acquired at freeze 7ec97c70f9d502bc0ca4c42c10c63ec716dca792. Offline hashes verify. No runtime, baseline prediction or altered input was executed.
+
+The original builtin.All registers eight factories. In manifest-name order, cheapest_healthy has only the route kind and the original TypeDefinitions excludes types without prompt/response/stream phases. The first phase-capable type is header_edit. Its manifest has six editable string configuration fields: request_set, request_remove, response_set, response_add, response_remove and upstream_set. Original Init performs local decode/compile and Close releases no resources; a missing dependency remains in config.go. No request must be sent to a provider to create an unused configuration instance. This last conclusion is provisional until complete initialization/refresh and ordinary runtime qualification are checked.
+
+The original catalog sorts by name, and the native form renders the returned schema. The field inventory must include these six config strings, description, user_path and any other eligible scalar text control before JSON-pointer ordering. No target set or literal inputs are frozen by this note. Header names/values must be inert synthetic values if the recipe qualifies, and the instance must not be attached to a live inference workflow.
+
+Source-aware replay dependencies are now more concrete: native hydration/default merging, SchemaFields value conversion, EditorDialog native submit, guardrails store checks, payload serialization and admin mutation wrapper. The API type descriptor is a form schema; it must not be mislabeled as a qualified JSON Schema/OpenAPI baseline. Original API schema availability remains to resolve. A visual required marker does not establish browser constraint validation; actual attributes and runtime behavior must be checked.
+
+Persistence uses a guardrail store and cached service snapshot, with a refresh loop. SQLite readback alone cannot prove complete restore equivalence. The recipe must account for process state, refresh behavior, other storage and browser actor/session before causal repair comparisons.
+
+Original Makefile builds the Svelte frontend with npm ci --ignore-scripts and embeds the generated bundle in the Go binary. The frontend-stub target is explicitly a placeholder and cannot qualify the native UI. Source go.mod requests Go 1.27.4. Build feasibility is still untested. Next schedule exact header config, startup/storage settings, frontend build dependencies and original schema/provenance files, then freeze the bounded build/qualification recipe. No whole repository clone, install or application job is yet authorized by this source protocol.
+
+Development exposure includes source comments discussing snapshot refresh failures, secret masking and malformed configuration. They are retained as encountered implementation context, not selected defect targets. MCP dependency files acquired in wave 5 remain unadjudicated because this earlier operation is pending. No project is fully source-qualified; no scientific case has been added.
