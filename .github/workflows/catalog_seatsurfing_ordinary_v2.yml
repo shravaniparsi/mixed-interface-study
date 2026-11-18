@@ -1,0 +1,47 @@
+name: Catalog SeatSurfing ordinary qualification v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: catalog-seatsurfing-qualification
+  cancel-in-progress: false
+jobs:
+  qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Verify frozen qualification inputs
+        run: |
+          python3 scripts/prepare_evaluation.py --verify
+          python3 scripts/extension/register_seatsurfing_qualification_v2.py --verify
+      - name: Authenticate original image pulls
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          test -n "$DOCKERHUB_USERNAME" && test -n "$DOCKERHUB_TOKEN"
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - name: Execute original registered qualification attempt
+        run: timeout --signal=TERM --kill-after=20s 1680s python3 scripts/extension/qualify_seatsurfing_ordinary_v2.py --registration manifests/catalog-seatsurfing-qualification-v2.json --workspace "$RUNNER_TEMP/seatsurfing-qualification-v2"
+      - name: End registry session
+        if: ${{ always() }}
+        run: docker logout || true
+      - name: Retain only public summary and encrypted evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: catalog-seatsurfing-ordinary-v2-${{ github.run_id }}
+          path: ${{ runner.temp }}/seatsurfing-qualification-v2/public/
+          retention-days: 7
+          if-no-files-found: warn
