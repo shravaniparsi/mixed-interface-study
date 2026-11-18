@@ -41,6 +41,7 @@ ARTIFACTS = [
     'manifests/maintained-packaged-dependencies-v39.json',
     'results/maintained-packaged-protocol-audit-v1/audit.json',
     'manifests/maintained-packaged-exposure-ancestry-audit-v1.json',
+    'manifests/maintained-packaged-contribution-assessment-v1.json',
     'manifests/repository-run-increment-20261118.json',
     'results/repository-run-increment-20261118/44220603702.json',
     'results/repository-run-increment-20261118/44220795499.json',
