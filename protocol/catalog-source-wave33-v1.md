@@ -1,0 +1,5 @@
+# Source wave 33: SeatSurfing eligibility and location contract
+
+Acquire exactly nine scheduled original files at SeatSurfing revision 9953f452324bab6fb8f7106dd8965cc401aa456c. Resolve booking-user selection and the earlier confirmation route, original entity identity and JSON transport, location persistence, local authentication/configuration and dependency declarations. Location is a candidate with multiple native text controls, not a selected or qualified workflow. Preserve earlier unresolved candidates and do not infer first-eligible status without checking their relevant controls.
+
+The fixed source caps, full immutable publication freeze, one request per scheduled file and no retries remain in force. No runtime, dependency install, schema execution or scientific input is authorized. Do not acquire the 348,868-byte frontend lockfile through splitting or another endpoint: it exceeds the source-wave per-file cap. Runtime packaging, if later registered, requires its own applicable rules. Do not search fixes/tests or choose a different workflow based on observed outcomes.
