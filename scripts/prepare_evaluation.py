@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-source-wave8-v1.md',
+    'manifests/catalog-source-wave8-schedule-v1.json',
+    'scripts/extension/collect_catalog_source_wave8_v1.py',
     'manifests/catalog-mathesar-qualification-outcome-v2.json',
     'manifests/catalog-mathesar-qualification-dispatch-v2.json',
     'manifests/catalog-ordinary-development-ci-accounting-v1.json',
