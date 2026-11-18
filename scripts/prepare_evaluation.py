@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-mathesar-runtime-image-metadata-v1.md',
+    'scripts/extension/collect_mathesar_runtime_image_metadata_v1.py',
     'manifests/catalog-qualification-progress-v5.json',
     'notes/catalog_mathesar_ordinary_recipe_v1.md',
     'results/catalog-source-wave5-v1/1.json',
