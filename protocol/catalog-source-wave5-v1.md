@@ -1,0 +1,5 @@
+# Catalog source wave 5: Mathesar actionability and state dependencies
+
+Retrieve exactly the thirteen pinned blobs in catalog-source-wave5-schedule-v1.json. The source-derived missing dependencies are the shared stores, native Save-button chain, page/language context, analytics/maintenance, installation form and startup helpers. The earlier administration settings route is included to resolve whether it creates new records before the candidate user route. This is continuation of mapping under the fixed cohort design, not a new sample or scientific input search.
+
+Apply unchanged cumulative limits across waves1–5: 256 scheduled blobs and 8 MiB decoded per project, 256 KiB/file, 512 KiB envelope, 30 seconds/request, no repeat paths, retries or alternate refs. Bind all four prior collection ledgers and reconstruct counters before requests. Do not execute source, install packages, pull images, fetch issues/tests/fixes, or run application inputs. Retain every failure and incidental source exposure. Existing closed projects remain closed; all other pending projects remain in scope.
