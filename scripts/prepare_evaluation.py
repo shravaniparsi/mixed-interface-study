@@ -39,6 +39,7 @@ ARTIFACTS = [
     'manifests/maintained-packaged-dependencies-v37.json',
     'manifests/maintained-packaged-dependencies-v38.json',
     'manifests/maintained-packaged-dependencies-v39.json',
+    'manifests/maintained-packaged-dependency-collection-v39.json',
     'manifests/maintained-packaged-dependency-collection-v38.json',
     'manifests/maintained-packaged-textbee-disposition-v1.json',
     'manifests/maintained-packaged-dependency-collection-v37.json',
