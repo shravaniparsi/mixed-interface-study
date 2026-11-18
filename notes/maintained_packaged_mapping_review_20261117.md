@@ -277,3 +277,7 @@ Meteroid Date/Input/Textarea fields, controlled checkbox/select, tag-array input
 Prest's two selected files were reread fully: bearer-token configuration and a Radix dialog primitive. Both receive scoped dispositions, without calling the whole project API-only. No new dependencies or runtimes were used for either repository.
 
 The new 13-row progress snapshot separates four bounded mappings without an established pair, three incomplete mappings, two source-selected but unqualified projects, one source-limit unavailability, one tree unavailability, one prior-exposure quarantine and Gotify's closed qualification failure. Only Gotify consumed ordinary jobs (two); the maintained frame has zero qualified workflows and zero scientific cases. The snapshot remains incomplete and does not merge historical study results or treat zero qualified cases as a negative compatibility result.
+
+## Maxun parent callback resolution schedule
+
+Existing RobotCreate crawl/scrape producer handlers and RobotEditPage complete save handler were reread. Crawl create forwards url/name plus nested crawlConfig and formats; update forwards name/targetUrl, workflow, limits and credentials. The post-save handleStart(robot) is a prop callback whose behavior is still unknown; its name is not evidence of a run. Wave 22 registers two fixed-tree native parent candidates and the explicitly imported backend Robot model. Maxun will use five dependency files after this wave. No workflow substitution, source execution or crawl was performed.
