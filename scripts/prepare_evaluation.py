@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/maintained-packaged-checkcle-workflow-v1.json',
     'protocol/maintained-gotify-infrastructure-correction-v1.md',
     'scripts/extension/summarize_gotify_attempt1_v1.py',
     'manifests/maintained-gotify-attempt1-v1.json',
