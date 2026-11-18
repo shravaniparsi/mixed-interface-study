@@ -103,6 +103,8 @@ ARTIFACTS = [
     'manifests/openapi-public-source-bichon-wave5-v1.json',
     'manifests/openapi-public-bichon-admission-v1.json',
     'notes/openapi_public_contribution_assessment_v1.md',
+    'manifests/acquisition-frontier-diagnostic-v1.json',
+    'protocol/workflow-first-engineering-redesign-draft-v1.md',
     'manifests/repository-run-increment2-20261118.json',
     'results/repository-run-increment2-20261118/44243275403.json',
     'results/repository-run-increment2-20261118/44245518550.json',
