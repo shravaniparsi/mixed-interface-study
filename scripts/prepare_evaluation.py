@@ -28,6 +28,16 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/prior-repository-reference-index-v2.json',
+    'notes/catalog_frame_metadata_v1.md',
+    'results/catalog-frame-metadata-v1/1.json',
+    'results/catalog-frame-metadata-v1/2.json',
+    'results/catalog-frame-metadata-v1/3.json',
+    'results/catalog-frame-metadata-v1/4.json',
+    'results/catalog-frame-metadata-v1/5.json',
+    'results/catalog-frame-metadata-v1/collection.json',
+    'results/catalog-frame-metadata-v1/license.txt',
+    'results/catalog-frame-metadata-v1/readme.txt',
     'protocol/catalog-frame-metadata-v1.md',
     'scripts/extension/index_prior_repository_references_v2.py',
     'scripts/extension/collect_catalog_frame_metadata_v1.py',
