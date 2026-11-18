@@ -55,6 +55,8 @@ ARTIFACTS = [
     'protocol/openapi-public-source-mapping-v1.md',
     'manifests/openapi-public-source-queues-initial-v1.json',
     'manifests/openapi-public-source-wave1-v1.json',
+    'manifests/openapi-public-source-collection-wave1-v1.json',
+    'manifests/openapi-public-source-queues-observed-v1.json',
     'results/openapi-public-eligible-trees-v1/3.json',
     'results/openapi-public-eligible-trees-v1/7.json',
     'scripts/extension/collect_openapi_root_content_v1.py',
