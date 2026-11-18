@@ -1,0 +1,443 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*" # Trigger on tags like v1.0.0, v2.1.3, etc.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  # Every job below descends from this one, so a failed check here stops the
+  # release before any image tag or artifact is published.
+  preflight:
+    name: Release preflight
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # The chart's image tag defaults to appVersion, so a stale one makes
+      # `helm install` deploy an older release. Bump it in the commit you tag;
+      # between releases it names the latest published one. Prerelease tags
+      # skip this.
+      - name: Check Helm appVersion matches the tag
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          [[ "$version" == *-* ]] && exit 0
+          app_version="$(sed -n 's/^appVersion: *"\{0,1\}\([^"]*\)"\{0,1\}$/\1/p' helm/Chart.yaml)"
+          if [[ "$app_version" != "$version" ]]; then
+            echo "::error file=helm/Chart.yaml::appVersion is \"$app_version\" but the tag is $GITHUB_REF_NAME; bump it before tagging"
+            exit 1
+          fi
+
+  # Builds the dashboard embedded in every release artifact below. No secrets
+  # and no git credentials here; see docs/adr/0010-dashboard-built-in-ci.md.
+  frontend:
+    name: Build dashboard
+    runs-on: ubuntu-latest
+    needs: preflight
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22.23.2'
+
+      - name: Build dashboard
+        run: make frontend
+
+      - name: Upload dashboard build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dashboard-dist
+          path: internal/admin/dashboard/static/dist
+          if-no-files-found: error
+          retention-days: 1
+
+  docker:
+    name: Build and push Docker image by digest
+    runs-on: ubuntu-latest
+    needs: frontend
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Download dashboard build
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dashboard-dist
+          path: internal/admin/dashboard/static/dist
+
+      - name: Set up QEMU (for multi-platform builds)
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set build metadata
+        id: build_meta
+        shell: bash
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKERHUB_PROJECT_NAME: ${{ secrets.DOCKERHUB_PROJECT_NAME }}
+        run: |
+          image="${DOCKER_USERNAME}/${DOCKERHUB_PROJECT_NAME}"
+          version="${GITHUB_REF_NAME#v}"
+          {
+            echo "image=${image}"
+            echo "version=${version}"
+            echo "commit=${GITHUB_SHA}"
+            echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Extract Docker labels
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
+        with:
+          images: ${{ steps.build_meta.outputs.image }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ steps.build_meta.outputs.image }},push-by-digest=true,name-canonical=true,push=true,compression=zstd,compression-level=3
+          build-args: |
+            VERSION=${{ steps.build_meta.outputs.version }}
+            COMMIT=${{ steps.build_meta.outputs.commit }}
+            DATE=${{ steps.build_meta.outputs.date }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  docker-promote:
+    name: Promote Docker image tags
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set Docker image
+        id: image_meta
+        shell: bash
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKERHUB_PROJECT_NAME: ${{ secrets.DOCKERHUB_PROJECT_NAME }}
+        run: echo "image=${DOCKER_USERNAME}/${DOCKERHUB_PROJECT_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Detect prerelease tag
+        id: release_meta
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ "$version" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract final Docker tags
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
+        with:
+          images: ${{ steps.image_meta.outputs.image }}
+          flavor: |
+            latest=false
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable=${{ steps.release_meta.outputs.prerelease == 'false' }}
+
+      - name: Promote Docker tags
+        shell: bash
+        env:
+          IMAGE: ${{ steps.image_meta.outputs.image }}
+          DIGEST: ${{ needs.docker.outputs.digest }}
+          FINAL_TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          if [[ -z "$DIGEST" ]]; then
+            echo "Docker build did not produce an image digest" >&2
+            exit 1
+          fi
+
+          tags=()
+          while IFS= read -r tag; do
+            [[ -n "$tag" ]] && tags+=("-t" "$tag")
+          done <<< "$FINAL_TAGS"
+
+          if [[ "${#tags[@]}" -eq 0 ]]; then
+            echo "No Docker tags were generated for promotion" >&2
+            exit 1
+          fi
+
+          docker buildx imagetools create "${tags[@]}" "${IMAGE}@${DIGEST}"
+
+  goreleaser:
+    name: Build draft GitHub release
+    runs-on: ubuntu-latest
+    needs: frontend
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0 # Required for git history/changelog
+          persist-credentials: false
+
+      - name: Download dashboard build
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dashboard-dist
+          path: internal/admin/dashboard/static/dist
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: 1.27.4
+          cache: true
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  github-release:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    needs:
+      - docker-promote
+      - goreleaser
+    permissions:
+      contents: write
+    steps:
+      - name: Publish drafted release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --verify-tag
+
+  discord-notify:
+    name: Announce release on Discord
+    runs-on: ubuntu-latest
+    needs: github-release
+    # Best-effort: a Discord outage must not fail the release.
+    continue-on-error: true
+    steps:
+      - name: Post release embed to Discord
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          # Webhook secret optional: forks without it simply skip the announce.
+          if [[ -z "$DISCORD_WEBHOOK_URL" ]]; then
+            echo "DISCORD_WEBHOOK_URL not set, skipping Discord announcement"
+            exit 0
+          fi
+
+          release_json="$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json tagName,name,body,url)"
+          release_url="$(jq -r '.url' <<< "$release_json")"
+
+          # GoReleaser changelog lines look like:
+          #   * 1e4ecfb8f194af0e843f64d7dc694e3a01bef1dc feat(scope): msg (#1191)
+          # In the embed the verbatim SHA is noise and bare (#NNNN) is not
+          # clickable. Strip the leading commit SHA entirely and link #NNNN
+          # references to the official repository.
+          body="$(jq -r '.body // ""' <<< "$release_json" \
+            | sed -E -e 's/^(\s*[*-]\s+)[0-9a-f]{7,40}\s+/\1/' \
+                     -e 's/\(#([0-9]+)\)/([#\1](https:\/\/github.com\/ENTERPILOT\/GoModel\/pull\/\1))/g')"
+
+          # Discord embed descriptions cap at 4096 characters — jq counts
+          # characters, not bytes, so multibyte release notes stay within the
+          # limit. Oversized bodies are cut at the last complete changelog
+          # line and get a link to the full release notes instead of a
+          # mid-line ellipsis that could slice a Markdown link in half.
+          body="$(jq -nr --arg body "$body" --arg url "$release_url" '
+            $body
+            | if length <= 4000 then .
+              else "([Truncated](\($url)))" as $suffix
+                | (4000 - 1 - ($suffix | length)) as $budget
+                | (split("\n")) as $lines
+                | (reduce $lines[] as $line ({out: "", done: false};
+                    if .done then .
+                    else (.out | if . == "" then 0 else length + 1 end) as $cur
+                      | if $cur + ($line | length) <= $budget
+                        then {out: (if $cur == 0 then $line else .out + "\n" + $line end), done: false}
+                        else {out: .out, done: true}
+                        end
+                    end)) as $r
+                | if $r.out == "" then $suffix else $r.out + "\n" + $suffix end
+              end')"
+
+          # Discord embed titles cap at 256 characters — a release with a
+          # long name must not lose the whole announce to an HTTP 400.
+          title="$(jq -r '(.name // .tagName) | if length > 256 then .[0:253] + "..." else . end' <<< "$release_json")"
+
+          jq -n \
+            --arg title "$title" \
+            --arg url "$release_url" \
+            --arg description "$body" \
+            '{
+              embeds: [{
+                title: $title,
+                url: $url,
+                description: $description,
+                color: 5814783,
+                footer: { text: "GitHub Release" }
+              }]
+            }' > discord-payload.json
+
+          # Retry only on DNS/connect failures (curl exit 6/7), where the
+          # POST never happened. A --max-time timeout (exit 28) is not
+          # retried: --connect-timeout bounds the connect phase, so 28 means
+          # the request was already sent and retrying would risk a duplicate
+          # announce. Any HTTP response is final for the same reason.
+          # wait=true: Discord answers 200 with the saved message instead of
+          # queueing blindly (204), so curl success confirms the announce.
+          # The webhook URL may already carry query params (e.g. thread_id),
+          # so append wait=true with the right separator.
+          separator='?'
+          if [[ "$DISCORD_WEBHOOK_URL" == *\?* ]]; then
+            separator='&'
+          fi
+
+          rc=0
+          for attempt in 1 2 3; do
+            if curl -fsS --connect-timeout 10 --max-time 20 \
+                -H "Content-Type: application/json" \
+                -d @discord-payload.json \
+                "${DISCORD_WEBHOOK_URL}${separator}wait=true"; then
+              rc=0
+              break
+            else
+              rc=$?
+            fi
+            case $rc in
+              6|7) sleep 5 ;;
+              *) break ;;
+            esac
+          done
+          exit "$rc"
+
+  deploy-demo:
+    name: Update demo.enterpilot.io
+    runs-on: ubuntu-latest
+    # Must run after tag promotion: the demo pulls :latest, which is what
+    # docker-promote pushes.
+    needs: docker-promote
+    # :latest is only promoted for stable releases (see "Detect prerelease
+    # tag"), so skip prereleases like v1.2.3-rc1 — the demo wouldn't change.
+    if: ${{ !contains(github.ref_name, '-') }}
+    # Best-effort: a demo host outage must not fail the release
+    continue-on-error: true
+    steps:
+      - name: Trigger demo deploy webhook
+        env:
+          DEMO_HOOK_TOKEN: ${{ secrets.DEMO_HOOK_TOKEN }}
+        run: |
+          curl -fsS --connect-timeout 10 --max-time 20 --retry-max-time 40 \
+            --retry 3 --retry-delay 5 -X PUT \
+            -H "X-Hook-Token: ${DEMO_HOOK_TOKEN}" \
+            -d "deploy ${GITHUB_REF_NAME}" \
+            https://demo.enterpilot.io/hooks/update-demo
+
+  publish-version-manifest:
+    name: Publish version manifest
+    runs-on: ubuntu-latest
+    # Gateways check this manifest daily, so it must only ever advertise a
+    # release operators can actually download.
+    needs: github-release
+    # Prereleases are not an upgrade the manifest should offer.
+    if: ${{ !contains(github.ref_name, '-') }}
+    # Best-effort: running gateways keep working on a stale manifest.
+    continue-on-error: true
+    steps:
+      - name: Checkout website repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: ENTERPILOT/gomodel.enterpilot.io
+          # A deploy key is scoped to that one repository and carries no user
+          # identity. Pushing the manifest is itself the website's deploy
+          # trigger, so the new version is served within minutes.
+          ssh-key: ${{ secrets.WEBSITE_PUSH_KEY }}
+
+      - name: Publish core.txt
+        run: ./scripts/publish-version.sh core "${GITHUB_REF_NAME#v}"
+
+  publish-mcp:
+    name: Publish to MCP Registry
+    runs-on: ubuntu-latest
+    # Registry verification pulls the versioned Docker Hub image, so the tag must exist first
+    needs: docker-promote
+    # Best-effort: a registry outage must not fail the release
+    continue-on-error: true
+    permissions:
+      id-token: write # GitHub OIDC grants the io.github.enterpilot/* namespace
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install mcp-publisher
+        env:
+          PUBLISHER_VERSION: v1.8.0
+          PUBLISHER_SHA256: 1370446bbe74d562608e8005a6ccce02d146a661fbd78674e11cc70b9618d6cf
+        run: |
+          curl -fsSL -o mcp-publisher.tar.gz "https://github.com/modelcontextprotocol/registry/releases/download/${PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          echo "${PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
+          tar xzf mcp-publisher.tar.gz mcp-publisher
+
+      - name: Set release version in server.json
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          jq --arg v "$version" \
+            '.version = $v | .packages[0].identifier = "docker.io/enterpilot/gomodel:" + $v' \
+            docs/server.json > server.json.tmp && mv server.json.tmp docs/server.json
+
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish docs/server.json
