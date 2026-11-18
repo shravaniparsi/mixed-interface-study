@@ -1,0 +1,5 @@
+# Mapping source collection
+
+All 240 scheduled entries were retrieved once, without retries, and verified against scheduled Git blob SHA1 and independently recorded SHA256. The exact source schedule was published at ae08bd5be403bb9e10ffe6f75d86bd7fce7d88dc before collection. Local plaintext is retained under /private/tmp/maintained-packaged-mapping-source-v1; commit/path/blob identities and hashes permit independent retrieval. Collection is complete, but uniform content assessment is not.
+
+Initial reading of Gotify entries 11 and 12 establishes native create and update dialogs exposing name and description text fields, plus numeric default priority. Submission occurs through parent callbacks; the selected files alone do not establish API routes, persisted identity, authentication, request serializer or package equivalence. This is a mapping lead, not an admitted workflow, defect finding or passed control. All candidate dispositions still require uniform assessment under the fixed rules. ByteChef remains tree-response-unavailable and Vikunja quarantined. No scientific variation cases or applications were executed.
