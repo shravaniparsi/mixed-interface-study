@@ -1,0 +1,2650 @@
+import React from "react";
+import {
+  Form,
+  Col,
+  Row,
+  Button,
+  Alert,
+  InputGroup,
+  Table,
+  Dropdown,
+  Modal,
+} from "react-bootstrap";
+import {
+  ChevronLeft as IconBack,
+  Save as IconSave,
+  Trash2 as IconDelete,
+  MapPin as IconMap,
+  Copy as IconCopy,
+  Edit as IconEdit,
+  Loader as IconLoad,
+  Download as IconDownload,
+  Tag as IconTag,
+  Square as IconSquare,
+  Circle as IconCircle,
+  Grid as IconGrid,
+  Eye as IconEye,
+  Type as IconFontSize,
+  Globe as IconGlobe,
+  Book as IconBook,
+  Image as IconImage,
+} from "react-feather";
+import Moveable from "react-moveable";
+import { NextRouter } from "next/router";
+import Link from "next/link";
+import withReadyRouter from "@/components/withReadyRouter";
+import withPermission from "@/components/withPermission";
+import { Permission, PermissionLevel } from "@/types/Permission";
+import GroupSearchTypeahead from "@/components/GroupSearchTypeahead";
+import SpaceApprovalIcon from "@/components/SpaceApprovalIcon";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
+import RuntimeConfig from "@/components/RuntimeConfig";
+import { TranslationFunc, withTranslation } from "@/components/withTranslation";
+import SpaceAttributeValue from "@/types/SpaceAttributeValue";
+import SpaceAttribute from "@/types/SpaceAttribute";
+import Group from "@/types/Group";
+import Location from "@/types/Location";
+import Ajax from "@/util/Ajax";
+import Space from "@/types/Space";
+import FullLayout from "@/components/FullLayout";
+import Loading from "@/components/Loading";
+import RendererUtils from "@/util/RendererUtils";
+import Navigation from "@/util/Navigation";
+import PremiumFeatureIcon from "@/components/PremiumFeatureIcon";
+import FloorPlanDesigner from "@/components/FloorPlanDesigner";
+import WeekdaySelection from "@/components/WeekdaySelection";
+import ConfirmModal from "@/components/ConfirmModal";
+import HintTooltip from "@/components/HintTooltip";
+import DateTimePicker from "@/components/DateTimePicker";
+import Formatting from "@/util/Formatting";
+import SpaceImageEditor from "@/components/SpaceImageEditor";
+import AjaxError from "@/util/AjaxError";
+import ErrorText from "@/types/ErrorText";
+
+const IconTrapezoid = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <polygon points="7,3 17,3 23,21 1,21" />
+  </svg>
+);
+
+interface SpaceState {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  width: string;
+  height: string;
+  orgWidth: number;
+  orgHeight: number;
+  orgX: number;
+  orgY: number;
+  rotation: number;
+  requireSubject: boolean;
+  enabled: boolean;
+  kioskEnabled: boolean;
+  publicBookingEnabled: boolean;
+  hasImage: boolean;
+  pendingImage: File | null;
+  removeImage: boolean;
+  shape: string;
+  fontSize: string;
+  changed: boolean;
+  attributes: Map<string, string>;
+  enabledAttributes: string[];
+  approvers: any[] | undefined;
+  allowBookers: any[] | undefined;
+}
+
+interface SpaceRectProps {
+  space: SpaceState;
+  index: number;
+  isSelected: boolean;
+  onSelect: (i: number) => void;
+  onDoubleClick: (i: number) => void;
+  onDragEnd: (i: number, x: number, y: number) => void;
+  onResizeEnd: (
+    i: number,
+    x: number,
+    y: number,
+    width: string,
+    height: string,
+  ) => void;
+  onRotateEnd: (i: number, rotation: number, x: number, y: number) => void;
+  onNameChange: (i: number, name: string) => void;
+  unnamedLabel: string;
+  imageLabel: string;
+  newSpaceName: (baseName: string) => string;
+  mapWidth: number;
+  mapHeight: number;
+  snapToGrid: boolean;
+  outline: boolean;
+  fontSize: number;
+}
+
+const GRID_SIZE = 50;
+const MIN_SPACE_SIZE = 25;
+
+const SpaceRect: React.FC<SpaceRectProps> = ({
+  space,
+  index,
+  isSelected,
+  onSelect,
+  onDoubleClick,
+  onDragEnd,
+  onResizeEnd,
+  onRotateEnd,
+  onNameChange,
+  unnamedLabel,
+  imageLabel,
+  newSpaceName,
+  mapWidth,
+  mapHeight,
+  snapToGrid,
+  outline,
+  fontSize,
+}) => {
+  const targetRef = React.useRef<HTMLDivElement>(null);
+  const moveableRef = React.useRef<Moveable>(null);
+  const width = parseInt(space.width.replace(/^\D+/g, ""));
+  const height = parseInt(space.height.replace(/^\D+/g, ""));
+  const [rotateThrottle, setRotateThrottle] = React.useState(0);
+
+  React.useEffect(() => {
+    if (isSelected) {
+      moveableRef.current?.updateRect();
+    }
+  }, [space.x, space.y, space.rotation, isSelected]);
+
+  React.useEffect(() => {
+    if (!isSelected) {
+      setRotateThrottle(0);
+      return;
+    }
+    const getThrottle = (e: KeyboardEvent) => {
+      if (e.ctrlKey) return 45;
+      if (e.shiftKey) return 15;
+      return 0;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const next = getThrottle(e);
+      setRotateThrottle((prev) => (prev !== next ? next : prev));
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("keyup", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keyup", onKey);
+    };
+  }, [isSelected]);
+
+  const clampPosition = (
+    left: number,
+    top: number,
+    rotationDeg: number = space.rotation,
+  ) => {
+    if (mapWidth <= 0 || mapHeight <= 0) {
+      return { left, top };
+    }
+    const rad = (rotationDeg * Math.PI) / 180;
+    const cosA = Math.abs(Math.cos(rad));
+    const sinA = Math.abs(Math.sin(rad));
+    const boundingWidth = width * cosA + height * sinA;
+    const boundingHeight = width * sinA + height * cosA;
+    const minLeft = (boundingWidth - width) / 2;
+    const maxLeft = mapWidth - (width + boundingWidth) / 2;
+    const minTop = (boundingHeight - height) / 2;
+    const maxTop = mapHeight - (height + boundingHeight) / 2;
+    if (maxLeft < minLeft || maxTop < minTop) {
+      return { left, top };
+    }
+    return {
+      left: Math.min(Math.max(minLeft, left), maxLeft),
+      top: Math.min(Math.max(minTop, top), maxTop),
+    };
+  };
+
+  let className = "space-dragger";
+  if (RendererUtils.isSpaceVertical(width, height, space.rotation))
+    className += " space-dragger-vertical";
+  if (space.shape === "circle") className += " space-dragger-circle";
+  if (space.shape === "trapezoid") className += " space-dragger-trapezoid";
+  if (isSelected) className += " space-dragger-selected";
+  const hasImage =
+    RuntimeConfig.INFOS.featureSpaceImages &&
+    (!!space.pendingImage || (space.hasImage && !space.removeImage));
+
+  return (
+    <>
+      <div
+        ref={targetRef}
+        style={{
+          position: "absolute",
+          left: space.x,
+          top: space.y,
+          width: space.width,
+          height: space.height,
+          transform: `rotate(${space.rotation}deg)`,
+          zIndex: isSelected ? 1 : undefined,
+          opacity: space.enabled ? 1 : 0.5,
+        }}
+        className={className}
+        onMouseDown={() => {
+          onSelect(index);
+          onDoubleClick(index);
+        }}
+      >
+        {outline && space.shape === "trapezoid" && (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              pointerEvents: "none",
+            }}
+          >
+            <polygon
+              points="20,0 80,0 100,100 0,100"
+              fill="none"
+              stroke={isSelected ? "hsl(215, 55%, 45%)" : "hsl(190, 45%, 60%)"}
+              strokeWidth="4"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+        )}
+        <div
+          style={{
+            transform: `rotate(${-space.rotation}deg)`,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {((space.approvers && space.approvers.length > 0) || hasImage) && (
+            <div style={{ display: "flex", gap: "4px" }}>
+              {space.approvers && space.approvers.length > 0 && (
+                <>
+                  <SpaceApprovalIcon />
+                  {space.publicBookingEnabled &&
+                    RuntimeConfig.INFOS.publicBookingEnabled && (
+                      <IconGlobe size={16} />
+                    )}
+                </>
+              )}
+              {hasImage && (
+                <span title={imageLabel} style={{ display: "flex" }}>
+                  <IconImage size={16} role="img" aria-label={imageLabel} />
+                </span>
+              )}
+            </div>
+          )}
+          <input
+            type="text"
+            id={`spaceName${index}`}
+            style={{ fontSize: `${fontSize}px` }}
+            value={space.name}
+            onChange={(e) => onNameChange(index, e.target.value)}
+            onBlur={(e) => {
+              if (!e.target.value.trim()) {
+                onNameChange(index, newSpaceName(unnamedLabel));
+              }
+            }}
+          />
+        </div>
+      </div>
+      {isSelected && (
+        <Moveable
+          ref={moveableRef}
+          target={targetRef}
+          draggable={true}
+          resizable={true}
+          rotatable={true}
+          throttleRotate={rotateThrottle}
+          origin={false}
+          snappable={snapToGrid}
+          snapGridWidth={snapToGrid ? GRID_SIZE : undefined}
+          snapGridHeight={snapToGrid ? GRID_SIZE : undefined}
+          onDrag={({ target, left, top }) => {
+            const clamped = clampPosition(left, top);
+            target.style.left = `${clamped.left}px`;
+            target.style.top = `${clamped.top}px`;
+            if (clamped.left !== left || clamped.top !== top) {
+              moveableRef.current?.updateRect();
+            }
+          }}
+          onDragEnd={({ lastEvent }) => {
+            if (lastEvent) {
+              const clamped = clampPosition(lastEvent.left, lastEvent.top);
+              onDragEnd(
+                index,
+                Math.round(clamped.left),
+                Math.round(clamped.top),
+              );
+            }
+            onSelect(index);
+          }}
+          onResizeStart={({ setMin }) => {
+            setMin([MIN_SPACE_SIZE, MIN_SPACE_SIZE]);
+          }}
+          onResize={({ target, width, height, drag }) => {
+            target.style.width = `${width}px`;
+            target.style.height = `${height}px`;
+            target.style.left = `${drag.left}px`;
+            target.style.top = `${drag.top}px`;
+          }}
+          onResizeEnd={({ lastEvent }) => {
+            if (lastEvent) {
+              const newWidth = Math.max(
+                MIN_SPACE_SIZE,
+                Math.round(lastEvent.width),
+              );
+              const newHeight = Math.max(
+                MIN_SPACE_SIZE,
+                Math.round(lastEvent.height),
+              );
+              const newLeft = Math.round(lastEvent.drag.left);
+              const newTop = Math.round(lastEvent.drag.top);
+              const rad = (space.rotation * Math.PI) / 180;
+              const cosA = Math.abs(Math.cos(rad));
+              const sinA = Math.abs(Math.sin(rad));
+              const bw = newWidth * cosA + newHeight * sinA;
+              const bh = newWidth * sinA + newHeight * cosA;
+              const minResizeLeft = (bw - newWidth) / 2;
+              const maxResizeLeft = mapWidth - (newWidth + bw) / 2;
+              const minResizeTop = (bh - newHeight) / 2;
+              const maxResizeTop = mapHeight - (newHeight + bh) / 2;
+              const isOutside =
+                mapWidth > 0 &&
+                mapHeight > 0 &&
+                maxResizeLeft >= minResizeLeft &&
+                maxResizeTop >= minResizeTop &&
+                (newLeft < minResizeLeft ||
+                  newLeft > maxResizeLeft ||
+                  newTop < minResizeTop ||
+                  newTop > maxResizeTop);
+              if (isOutside) {
+                const target = targetRef.current;
+                if (target) {
+                  target.style.width = space.width;
+                  target.style.height = space.height;
+                  target.style.left = `${space.x}px`;
+                  target.style.top = `${space.y}px`;
+                  moveableRef.current?.updateRect();
+                }
+                return;
+              }
+              onResizeEnd(
+                index,
+                newLeft,
+                newTop,
+                `${newWidth}px`,
+                `${newHeight}px`,
+              );
+            }
+          }}
+          onRotate={({ target, transform }) => {
+            target.style.transform = transform;
+          }}
+          onRotateEnd={({ lastEvent }) => {
+            if (lastEvent) {
+              const newRotation =
+                ((Math.round(lastEvent.rotation) % 360) + 360) % 360;
+              const rad = (newRotation * Math.PI) / 180;
+              const cosA = Math.abs(Math.cos(rad));
+              const sinA = Math.abs(Math.sin(rad));
+              const boundingWidth = width * cosA + height * sinA;
+              const boundingHeight = width * sinA + height * cosA;
+              const minLeft = (boundingWidth - width) / 2;
+              const maxLeft = mapWidth - (width + boundingWidth) / 2;
+              const minTop = (boundingHeight - height) / 2;
+              const maxTop = mapHeight - (height + boundingHeight) / 2;
+              const wouldBeOutside =
+                mapWidth > 0 &&
+                mapHeight > 0 &&
+                (maxLeft < minLeft ||
+                  maxTop < minTop ||
+                  space.x < minLeft ||
+                  space.x > maxLeft ||
+                  space.y < minTop ||
+                  space.y > maxTop);
+              if (wouldBeOutside) {
+                const target = targetRef.current;
+                if (target) {
+                  target.style.transform = `rotate(${space.rotation}deg)`;
+                  moveableRef.current?.updateRect();
+                }
+                return;
+              }
+              onRotateEnd(index, newRotation, space.x, space.y);
+            }
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+const MAX_MAP_FILE_SIZE = 5 * 1024 * 1024;
+
+interface State {
+  loading: boolean;
+  submitting: boolean;
+  saved: boolean;
+  errorSaving: boolean;
+  errorSavingText: string;
+  goBack: boolean;
+  name: string;
+  description: string;
+  announcement: string;
+  limitConcurrentBookings: boolean;
+  maxConcurrentBookings: number;
+  timezone: string;
+  enabled: boolean;
+  bookableDays: number[];
+  blockedFromEnabled: boolean;
+  blockedFrom: Date;
+  blockedUntilEnabled: boolean;
+  blockedUntil: Date;
+  mapScale: number;
+  mapScaleOnLoad: number;
+  fileLabel: string;
+  files: FileList | null;
+  fileTooLarge: boolean;
+  mapType: "upload" | "designed";
+  designData: string;
+  spaces: SpaceState[];
+  selectedSpace: number | null;
+  deleteIds: string[];
+  changed: boolean;
+  attributeValues: SpaceAttributeValue[];
+  availableAttributes: SpaceAttribute[];
+  changedAttributeIds: string[];
+  deletedAttributeIds: string[];
+  showEditSpaceDetailsModal: boolean;
+  selectedSpaceMouseDownTimestamp: number;
+  locationAllowBookers: any[] | undefined;
+  showDesignerModal: boolean;
+  gridEnabled: boolean;
+  outline: boolean;
+  showDeleteAreaConfirm: boolean;
+  showDiscardConfirm: boolean;
+}
+
+interface Props {
+  router: NextRouter;
+  t: TranslationFunc;
+}
+
+class EditLocation extends React.Component<Props, State> {
+  entity: Location = new Location();
+  groups: Group[] = [];
+  mapData: any = null;
+  timezones: string[];
+  ExcellentExport: any;
+  editSpaceFormRef = React.createRef<HTMLFormElement>();
+
+  constructor(props: any) {
+    super(props);
+    this.timezones = [];
+    this.state = {
+      loading: true,
+      submitting: false,
+      saved: false,
+      errorSaving: false,
+      errorSavingText: "",
+      goBack: false,
+      name: "",
+      description: "",
+      announcement: "",
+      limitConcurrentBookings: false,
+      maxConcurrentBookings: 0,
+      timezone: "",
+      enabled: true,
+      bookableDays: [0, 1, 2, 3, 4, 5, 6],
+      blockedFromEnabled: false,
+      blockedFrom: new Date(),
+      blockedUntilEnabled: false,
+      blockedUntil: new Date(),
+      mapScale: 1.0,
+      mapScaleOnLoad: 1.0,
+      fileLabel: this.props.t("mapFileTypes"),
+      files: null,
+      fileTooLarge: false,
+      mapType: "upload",
+      designData: "",
+      spaces: [],
+      selectedSpace: null,
+      deleteIds: [],
+      changed: false,
+      attributeValues: [],
+      availableAttributes: [],
+      changedAttributeIds: [],
+      deletedAttributeIds: [],
+      showEditSpaceDetailsModal: false,
+      selectedSpaceMouseDownTimestamp: 0,
+      locationAllowBookers: [],
+      showDesignerModal: false,
+      gridEnabled: false,
+      outline: false,
+      showDeleteAreaConfirm: false,
+      showDiscardConfirm: false,
+    };
+  }
+
+  componentDidMount = () => {
+    const promises = [this.loadData(), this.loadTimezones()];
+    Promise.all(promises).then(() => {
+      this.setState({
+        loading: false,
+      });
+    });
+    import("excellentexport").then(
+      (imp) => (this.ExcellentExport = imp.default),
+    );
+  };
+
+  loadTimezones = async (): Promise<void> => {
+    return Ajax.get("/setting/timezones").then((res) => {
+      this.timezones = res.json;
+    });
+  };
+
+  parseDate = (s: string): Date => {
+    if (!s) {
+      return new Date();
+    }
+    const [year, month, day] = s.split("-").map((p) => parseInt(p));
+    return new Date(year, month - 1, day);
+  };
+
+  isBeforeDay = (a: Date, b: Date): boolean => {
+    return Formatting.getISO8601(a) < Formatting.getISO8601(b);
+  };
+
+  loadData = async (locationId?: string): Promise<void> => {
+    if (!locationId) {
+      const { id } = this.props.router.query;
+      if (id && typeof id === "string" && id !== "add") {
+        locationId = id;
+      }
+    }
+    if (locationId) {
+      return Location.get(locationId).then((location) => {
+        this.entity = location;
+        const groups = RuntimeConfig.hasPermission(
+          Permission.Groups,
+          PermissionLevel.Read,
+        )
+          ? Group.list()
+          : Promise.resolve([]);
+        return groups.then((groups) => {
+          this.groups = groups;
+          return Space.list(this.entity.id).then((spaces) => {
+            this.setState({
+              spaces: spaces.map((s) => {
+                const spaceState = this.newSpaceState(s);
+                spaceState.changed = false;
+                return spaceState;
+              }),
+            });
+            return this.entity.getMap().then((mapData) => {
+              this.mapData = mapData;
+              const loadDesign =
+                location.mapType === "designed"
+                  ? this.entity.getFloorPlanDesign()
+                  : Promise.resolve("");
+              return loadDesign.then((designData) => {
+                return SpaceAttribute.list().then((attributes) => {
+                  return this.entity.getAttributes().then((attributeValues) => {
+                    this.setState({
+                      name: location.name,
+                      description: location.description,
+                      announcement: location.announcement,
+                      limitConcurrentBookings:
+                        location.maxConcurrentBookings > 0,
+                      maxConcurrentBookings: location.maxConcurrentBookings,
+                      timezone: location.timezone,
+                      enabled: location.enabled,
+                      bookableDays:
+                        location.bookableDays.length > 0
+                          ? location.bookableDays
+                          : [0, 1, 2, 3, 4, 5, 6],
+                      blockedFromEnabled: location.blockedFrom !== "",
+                      blockedFrom: this.parseDate(
+                        location.blockedFrom || location.blockedUntil,
+                      ),
+                      blockedUntilEnabled: location.blockedUntil !== "",
+                      blockedUntil: this.parseDate(
+                        location.blockedUntil || location.blockedFrom,
+                      ),
+                      mapScale: location.mapScale,
+                      mapScaleOnLoad: location.mapScale,
+                      mapType:
+                        location.mapType === "designed" ? "designed" : "upload",
+                      designData: designData || "",
+                      attributeValues: attributeValues,
+                      availableAttributes: attributes,
+                      locationAllowBookers:
+                        location.allowedBookerGroupIds &&
+                        location.allowedBookerGroupIds
+                          ? this.groups.filter((g) =>
+                              location.allowedBookerGroupIds.includes(g.id),
+                            )
+                          : [],
+                      loading: false,
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    }
+  };
+
+  saveAttributes = async (): Promise<void> => {
+    new Promise<void>((resolve) => {
+      let promises: Promise<any>[] = [];
+      this.state.attributeValues.forEach((av) => {
+        promises.push(this.entity.setAttribute(av.attributeId, av.value));
+      });
+      this.state.deletedAttributeIds.forEach((changedId) => {
+        promises.push(this.entity.deleteAttribute(changedId));
+      });
+      Promise.all(promises).then(() => {
+        this.setState(
+          {
+            changedAttributeIds: [],
+            deletedAttributeIds: [],
+          },
+          () => resolve(),
+        );
+      });
+    });
+  };
+
+  saveSpaces = async () => {
+    const creates: Space[] = [];
+    const updates: Space[] = [];
+
+    for (let item of this.state.spaces) {
+      if (item.changed) {
+        let space: Space = new Space();
+        if (item.id) {
+          space.id = item.id;
+        }
+        space.locationId = this.entity.id;
+        space.name = item.name;
+        space.x = Math.round(item.x);
+        space.y = Math.round(item.y);
+        space.width = parseInt(item.width.replace(/^\D+/g, ""));
+        space.height = parseInt(item.height.replace(/^\D+/g, ""));
+        space.rotation = Math.round(item.rotation);
+        space.requireSubject = item.requireSubject;
+        space.enabled = item.enabled;
+        space.kioskEnabled = item.kioskEnabled;
+        space.publicBookingEnabled =
+          (item.approvers?.length ?? 0) > 0 && item.publicBookingEnabled;
+        space.shape = item.shape;
+        space.fontSize = item.fontSize;
+        space.attributes = [];
+        item.enabledAttributes.forEach((attributeId) => {
+          let value = item.attributes.get(attributeId);
+          const attribute = this.state.availableAttributes.find(
+            (a) => a.id === attributeId,
+          );
+          if (attribute?.type === 2 && !value) {
+            value = "0";
+          }
+          if (value || attribute?.type === 2) {
+            let a = new SpaceAttributeValue();
+            a.attributeId = attributeId;
+            a.value = value!;
+            space.attributes.push(a);
+          }
+        });
+        space.approverGroupIds = RuntimeConfig.INFOS.featureGroups
+          ? item.approvers?.map((e: any) => e.id) || []
+          : [];
+        space.allowedBookerGroupIds = RuntimeConfig.INFOS.featureGroups
+          ? item.allowBookers?.map((e: any) => e.id) || []
+          : [];
+        if (space.id) {
+          updates.push(space);
+        } else {
+          creates.push(space);
+        }
+      }
+    }
+
+    if (
+      creates.length > 0 ||
+      updates.length > 0 ||
+      this.state.deleteIds.length > 0
+    ) {
+      const bulkUpdateResponse = await Space.bulkUpdate(
+        this.entity.id,
+        creates,
+        updates,
+        this.state.deleteIds,
+      );
+      let iUpdates = 0;
+      for (let item of this.state.spaces) {
+        if (item.changed) {
+          if (!item.id) {
+            if (iUpdates < bulkUpdateResponse.creates.length) {
+              item.id = bulkUpdateResponse.creates[iUpdates].id;
+            }
+            iUpdates++;
+          }
+          item.changed = false;
+        }
+      }
+      this.setState({ deleteIds: [] });
+    }
+    await this.saveSpaceImages();
+  };
+
+  saveSpaceImages = async () => {
+    for (let item of this.state.spaces) {
+      if (!item.id || (!item.pendingImage && !item.removeImage)) {
+        continue;
+      }
+      const space = new Space();
+      space.id = item.id;
+      space.locationId = this.entity.id;
+      if (item.pendingImage) {
+        await space.setImage(item.pendingImage);
+        item.hasImage = true;
+      } else if (item.hasImage) {
+        await space.deleteImage();
+        item.hasImage = false;
+      }
+      item.pendingImage = null;
+      item.removeImage = false;
+    }
+  };
+
+  onSubmit = (e: any) => {
+    const onError = (err?: unknown) => {
+      this.setState({
+        saved: false,
+        errorSaving: true,
+        errorSavingText:
+          err instanceof AjaxError && err.appErrorCode
+            ? ErrorText.getTextForAppCode(err.appErrorCode, this.props.t)
+            : "",
+        submitting: false,
+      });
+    };
+    e.preventDefault();
+
+    this.setState({ submitting: true, errorSaving: false });
+    this.entity.name = this.state.name;
+    this.entity.description = this.state.description;
+    this.entity.announcement = this.state.announcement;
+    this.entity.maxConcurrentBookings = this.state.limitConcurrentBookings
+      ? this.state.maxConcurrentBookings
+      : 0;
+    this.entity.timezone = this.state.timezone;
+    this.entity.enabled = this.state.enabled;
+    this.entity.bookableDays =
+      this.state.bookableDays.length === 7 ? [] : this.state.bookableDays;
+    this.entity.blockedFrom = this.state.blockedFromEnabled
+      ? Formatting.getISO8601(this.state.blockedFrom)
+      : "";
+    this.entity.blockedUntil = this.state.blockedUntilEnabled
+      ? Formatting.getISO8601(this.state.blockedUntil)
+      : "";
+    this.entity.mapScale = this.state.mapScale;
+    this.entity.mapType = this.state.mapType === "designed" ? "designed" : "";
+    this.entity.allowedBookerGroupIds = RuntimeConfig.INFOS.featureGroups
+      ? this.state.locationAllowBookers?.map((e: any) => e.id) || []
+      : [];
+    this.entity
+      .save()
+      .then(() => {
+        this.saveAttributes()
+          .then(() => {
+            this.saveSpaces()
+              .then(() => {
+                if (this.state.mapType === "designed") {
+                  this.entity
+                    .setFloorPlanDesign(this.state.designData)
+                    .then(() => {
+                      this.loadData(this.entity.id);
+                      this.props.router.push(
+                        "/admin/locations/" + this.entity.id,
+                      );
+                      this.setState({
+                        spaces: this.state.spaces.map((s) => {
+                          s.orgHeight = parseInt(s.height.replace(/^\D+/g, ""));
+                          s.orgWidth = parseInt(s.width.replace(/^\D+/g, ""));
+                          s.orgX = s.x;
+                          s.orgY = s.y;
+                          return s;
+                        }),
+                        saved: true,
+                        changed: false,
+                        submitting: false,
+                        mapScaleOnLoad: this.state.mapScale,
+                      });
+                    })
+                    .catch(() => onError());
+                } else if (this.state.files && this.state.files.length > 0) {
+                  this.entity
+                    .setMap(this.state.files.item(0) as File)
+                    .then(() => {
+                      this.loadData(this.entity.id);
+                      this.props.router.push(
+                        "/admin/locations/" + this.entity.id,
+                      );
+                      this.setState({
+                        spaces: this.state.spaces.map((s) => {
+                          s.orgHeight = parseInt(s.height.replace(/^\D+/g, ""));
+                          s.orgWidth = parseInt(s.width.replace(/^\D+/g, ""));
+                          s.orgX = s.x;
+                          s.orgY = s.y;
+                          return s;
+                        }),
+                        files: null,
+                        saved: true,
+                        changed: false,
+                        submitting: false,
+                        mapScaleOnLoad: this.state.mapScale,
+                      });
+                    });
+                } else {
+                  this.setState({
+                    spaces: this.state.spaces.map((s) => {
+                      s.orgHeight = parseInt(s.height.replace(/^\D+/g, ""));
+                      s.orgWidth = parseInt(s.width.replace(/^\D+/g, ""));
+                      s.orgX = s.x;
+                      s.orgY = s.y;
+                      return s;
+                    }),
+                    saved: true,
+                    changed: false,
+                    submitting: false,
+                    mapScaleOnLoad: this.state.mapScale,
+                  });
+                }
+              })
+              .catch((err) => onError(err));
+          })
+          .catch(() => onError());
+      })
+      .catch(() => onError());
+  };
+
+  setMapScale = (scale: number) => {
+    const spaces = this.state.spaces;
+    spaces.forEach((space) => {
+      space.x = Math.round((space.orgX / this.state.mapScaleOnLoad) * scale);
+      space.y = Math.round((space.orgY / this.state.mapScaleOnLoad) * scale);
+      space.width =
+        Math.round((space.orgWidth / this.state.mapScaleOnLoad) * scale) + "";
+      space.height =
+        Math.round((space.orgHeight / this.state.mapScaleOnLoad) * scale) + "";
+      space.changed = true;
+    });
+    this.setState({
+      spaces: spaces,
+      changed: true,
+      mapScale: scale,
+    });
+  };
+
+  deleteItem = () => {
+    this.setState({ showDeleteAreaConfirm: true });
+  };
+
+  confirmDeleteItem = () => {
+    this.setState({ showDeleteAreaConfirm: false });
+    this.entity.delete().then(() => {
+      this.setState({ goBack: true });
+    });
+  };
+
+  newSpaceName(baseName: string): string {
+    const existingNames = new Set(this.state.spaces.map((s) => s.name));
+    const match = baseName.match(/^(.+?) \(#\d+\)$/);
+    const extractedBase = match ? match[1].trim() : "";
+    const trimmedBaseName = baseName.trim();
+    const base = extractedBase || trimmedBaseName || this.props.t("unnamed");
+    if (!existingNames.has(base)) {
+      return base;
+    }
+    let i = 2;
+    while (existingNames.has(`${base} (#${i})`)) {
+      i++;
+    }
+    return `${base} (#${i})`;
+  }
+
+  newSpaceState = (e?: Space): SpaceState => {
+    const res: SpaceState = {
+      id: e ? e.id : "",
+      name: e ? e.name : this.newSpaceName(this.props.t("unnamed")),
+      x: e ? e.x : 10,
+      y: e ? e.y : 10,
+      width: e ? e.width + "px" : "100px",
+      height: e ? e.height + "px" : "100px",
+      orgWidth: e ? e.width : 100,
+      orgHeight: e ? e.height : 100,
+      orgX: e ? e.x : 10,
+      orgY: e ? e.y : 10,
+      rotation: e ? e.rotation : 0,
+      requireSubject: e
+        ? e.requireSubject
+        : RuntimeConfig.INFOS.subjectDefault === 3,
+      enabled: e ? e.enabled : true,
+      kioskEnabled: e ? e.kioskEnabled : false,
+      publicBookingEnabled: e ? e.publicBookingEnabled : false,
+      hasImage: e ? e.hasImage : false,
+      pendingImage: null,
+      removeImage: false,
+      shape: e ? e.shape || "rect" : "rect",
+      fontSize: e ? e.fontSize || "normal" : "normal",
+      changed: true,
+      attributes: new Map<string, string>(),
+      enabledAttributes: [],
+      approvers:
+        e && e.approverGroupIds
+          ? this.groups.filter((g) => e.approverGroupIds.includes(g.id))
+          : [],
+      allowBookers:
+        e && e.allowedBookerGroupIds
+          ? this.groups.filter((g) => e.allowedBookerGroupIds.includes(g.id))
+          : [],
+    };
+    if (e) {
+      e.attributes.forEach((a) => {
+        res.attributes.set(a.attributeId, a.value);
+        res.enabledAttributes.push(a.attributeId);
+      });
+    }
+    return res;
+  };
+
+  addRect = (e?: Space): number => {
+    const spaces = this.state.spaces;
+    const space = this.newSpaceState(e);
+    const i = spaces.push(space);
+    this.setState({
+      spaces: spaces,
+      changed: this.state.changed || (e ? false : true),
+    });
+    return i;
+  };
+
+  setSpacePosition = (i: number, x: number, y: number) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.x = x;
+    space.y = y;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceDimensions = (i: number, width: string, height: string) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.width = width;
+    space.height = height;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceShape = (i: number, shape: string) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.shape = shape;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceFontSize = (i: number, fontSize: string) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.fontSize = fontSize;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceRotation = (i: number, rotation: number, x: number, y: number) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.rotation = rotation;
+    space.x = x;
+    space.y = y;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpacePositionAndDimensions = (
+    i: number,
+    x: number,
+    y: number,
+    width: string,
+    height: string,
+  ) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.x = x;
+    space.y = y;
+    space.width = width;
+    space.height = height;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceName = (i: number, name: string) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.name = name;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceRequireSubject = (i: number, checked: boolean) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.requireSubject = checked;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  setSpaceEnabled = (i: number, checked: boolean) => {
+    const spaces = this.state.spaces;
+    const space = { ...spaces[i] };
+    space.enabled = checked;
+    space.changed = true;
+    spaces[i] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  onSpaceSelect = (i: number) => {
+    if (this.state.selectedSpace === i) {
+      return;
+    }
+    this.setState({
+      selectedSpace: i,
+      selectedSpaceMouseDownTimestamp: 0,
+    });
+  };
+
+  checkDoubleClickSpace = (i: number) => {
+    const now: number = new Date().getTime();
+    const diff: number = now - this.state.selectedSpaceMouseDownTimestamp;
+    if (diff <= 300) {
+      this.setState({
+        showEditSpaceDetailsModal: true,
+      });
+      return;
+    }
+    this.setState({
+      selectedSpaceMouseDownTimestamp: now,
+    });
+  };
+
+  getSelectedSpace = (): SpaceState | null => {
+    if (this.state.selectedSpace == null) {
+      return null;
+    }
+    return this.state.spaces[this.state.selectedSpace];
+  };
+
+  editSpaceDetails = () => {
+    if (this.state.selectedSpace != null) {
+      this.setState({
+        showEditSpaceDetailsModal: true,
+      });
+    }
+  };
+
+  setSpaceImage = (i: number, file: File | null) => {
+    const spaces = this.state.spaces;
+    spaces[i] = { ...spaces[i], pendingImage: file, removeImage: !file };
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  copySpace = () => {
+    if (this.state.selectedSpace != null) {
+      const spaces = this.state.spaces;
+      const space = { ...spaces[this.state.selectedSpace] };
+      const newSpace: SpaceState = Object.assign({}, space);
+      newSpace.name = this.newSpaceName(newSpace.name);
+      newSpace.id = "";
+      newSpace.hasImage = false;
+      newSpace.pendingImage = null;
+      newSpace.removeImage = false;
+      newSpace.x += 20;
+      newSpace.y += 20;
+      newSpace.changed = true;
+      spaces.push(newSpace);
+      this.setState({ spaces: spaces });
+      this.setState({ selectedSpace: null, changed: true });
+    }
+  };
+
+  deleteSpace = () => {
+    if (this.state.selectedSpace != null) {
+      const spaces = this.state.spaces;
+      const space = { ...spaces[this.state.selectedSpace] };
+      if (space.id) {
+        const deleteIds = [...this.state.deleteIds];
+        deleteIds.push(space.id);
+        this.setState({ deleteIds: deleteIds });
+      }
+      spaces.splice(this.state.selectedSpace, 1);
+      this.setState({ spaces: spaces });
+      this.setState({ selectedSpace: null, changed: true });
+    }
+  };
+
+  onBackButtonClick = (e: any) => {
+    if (this.state.changed) {
+      e.preventDefault();
+      this.setState({ showDiscardConfirm: true });
+    }
+  };
+
+  renderRect = (i: number) => {
+    return (
+      <SpaceRect
+        key={i}
+        space={this.state.spaces[i]}
+        index={i}
+        isSelected={i === this.state.selectedSpace}
+        onSelect={this.onSpaceSelect}
+        onDoubleClick={this.checkDoubleClickSpace}
+        onDragEnd={this.setSpacePosition}
+        onResizeEnd={this.setSpacePositionAndDimensions}
+        onRotateEnd={this.setSpaceRotation}
+        onNameChange={this.setSpaceName}
+        unnamedLabel={this.props.t("unnamed")}
+        imageLabel={this.props.t("image")}
+        newSpaceName={this.newSpaceName}
+        mapWidth={this.mapData ? this.mapData.width * this.state.mapScale : 0}
+        mapHeight={this.mapData ? this.mapData.height * this.state.mapScale : 0}
+        snapToGrid={this.state.gridEnabled}
+        outline={this.state.outline}
+        fontSize={RendererUtils.spaceFontSizePx(this.state.spaces[i].fontSize)}
+      />
+    );
+  };
+
+  getSaveButton = () => {
+    if (this.state.submitting) {
+      return (
+        <Button
+          className="btn-sm"
+          variant="outline-secondary"
+          type="submit"
+          form="form"
+          disabled={true}
+        >
+          <IconLoad className="feather loader" /> {this.props.t("save")}
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          className="btn-sm"
+          variant="outline-secondary"
+          type="submit"
+          form="form"
+        >
+          <IconSave className="feather" /> {this.props.t("save")}
+        </Button>
+      );
+    }
+  };
+
+  renderRow = (space: SpaceState, rowNumber: number) => {
+    let bookingLink;
+    if (space.id) {
+      const bookingLinkUrl = Navigation.spaceAbsolute(this.entity.id, space.id);
+      bookingLink = (
+        <span onClick={(e) => e.stopPropagation()}>
+          <a href={bookingLinkUrl} target="_blank" rel="noopener noreferrer">
+            {RendererUtils.shortenLink(bookingLinkUrl, 40)}
+          </a>
+          <CopyToClipboardButton text={bookingLinkUrl} small={true} />
+        </span>
+      );
+    } else {
+      bookingLink = this.props.t("saveAreaToGetLink");
+    }
+
+    return (
+      <tr
+        key={space.id}
+        onClick={() => {
+          this.setState({
+            selectedSpace: rowNumber,
+            showEditSpaceDetailsModal: true,
+          });
+        }}
+      >
+        <td>{space.name}</td>
+        <td>{RendererUtils.state(space.enabled)}</td>
+        <td>{RendererUtils.state(space.requireSubject)}</td>
+        {RuntimeConfig.INFOS.featureKioskMode &&
+          RuntimeConfig.INFOS.kioskModeEnabled && (
+            <td>{RendererUtils.state(space.kioskEnabled)}</td>
+          )}
+        <td>
+          {RendererUtils.state(space.approvers && space.approvers?.length > 0)}
+        </td>
+        <td>
+          {RendererUtils.state(
+            space.allowBookers && space.allowBookers?.length > 0,
+          )}
+        </td>
+        <td>{RendererUtils.state(space.publicBookingEnabled)}</td>
+        <td>{bookingLink}</td>
+      </tr>
+    );
+  };
+
+  getAvailableAttributeOptions = () => {
+    const res: any[] = [];
+    this.state.availableAttributes.forEach((a) => {
+      let ok = true;
+      if (!a.locationApplicable) {
+        return;
+      }
+      this.state.attributeValues.forEach((av) => {
+        if (av.attributeId === a.id) {
+          ok = false;
+        }
+      });
+      if (!ok) {
+        return;
+      }
+      const option = (
+        <Dropdown.Item key={a.id} onClick={(e) => this.setAttribute(a.id)}>
+          {a.label}
+        </Dropdown.Item>
+      );
+      res.push(option);
+    });
+    return res;
+  };
+
+  setSpaceAttributeValue = (attributeId: string, value: string) => {
+    if (this.state.selectedSpace == null) {
+      return;
+    }
+    const spaces = this.state.spaces;
+    const space = { ...spaces[this.state.selectedSpace] };
+    space.attributes.set(attributeId, value);
+    if (space.enabledAttributes.indexOf(attributeId) === -1) {
+      space.enabledAttributes.push(attributeId);
+    }
+    space.changed = true;
+    spaces[this.state.selectedSpace] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  isSpaceAttributeEnabled = (attributeId: string): boolean => {
+    if (this.state.selectedSpace == null) {
+      return false;
+    }
+    return (
+      this.state.spaces[this.state.selectedSpace].enabledAttributes.indexOf(
+        attributeId,
+      ) > -1
+    );
+  };
+
+  setSpaceAttributeEnabled = (attributeId: string, enabled: boolean) => {
+    if (this.state.selectedSpace == null) {
+      return;
+    }
+    const spaces = this.state.spaces;
+    const space = { ...spaces[this.state.selectedSpace] };
+    const index = space.enabledAttributes.indexOf(attributeId);
+    if (enabled && index === -1) {
+      space.enabledAttributes.push(attributeId);
+    }
+    if (!enabled && index > -1) {
+      space.enabledAttributes.splice(index, 1);
+    }
+    space.changed = true;
+    spaces[this.state.selectedSpace] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  getSpaceAttributeValue = (attributeId: string): string => {
+    if (this.state.selectedSpace == null) {
+      return "";
+    }
+    return (
+      this.state.spaces[this.state.selectedSpace].attributes.get(attributeId) ||
+      ""
+    );
+  };
+
+  onApproversSearchSelected = (selected: any) => {
+    if (this.state.selectedSpace == null) {
+      return;
+    }
+    const spaces = this.state.spaces;
+    const space = { ...spaces[this.state.selectedSpace] };
+    space.approvers = selected.map((e: any) => e as Group);
+    space.changed = true;
+    spaces[this.state.selectedSpace] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  onAllowBookersSearchSelected = (selected: any) => {
+    if (this.state.selectedSpace == null) {
+      return;
+    }
+    const spaces = this.state.spaces;
+    const space = { ...spaces[this.state.selectedSpace] };
+    space.allowBookers = selected.map((e: any) => e as Group);
+    space.changed = true;
+    spaces[this.state.selectedSpace] = space;
+    this.setState({ spaces: spaces, changed: true });
+  };
+
+  onLocationAllowBookersSearchSelected = (selected: any) => {
+    this.setState({
+      locationAllowBookers: selected.map((group: any) => group as Group),
+    });
+  };
+
+  getSpaceAttributeRows = () => {
+    const res: any = [];
+    this.state.availableAttributes.forEach((a) => {
+      if (!a.spaceApplicable) {
+        return;
+      }
+      let input = <></>;
+      if (a.type === 1) {
+        input = (
+          <Form.Control
+            type="number"
+            disabled={!this.isSpaceAttributeEnabled(a.id)}
+            min={0}
+            value={this.getSpaceAttributeValue(a.id)}
+            onChange={(e: any) =>
+              this.setSpaceAttributeValue(a.id, e.target.value)
+            }
+          />
+        );
+      } else if (a.type === 2) {
+        input = (
+          <Form.Check
+            type="checkbox"
+            id={`space-attr-value-${a.id}`}
+            disabled={!this.isSpaceAttributeEnabled(a.id)}
+            label={RendererUtils.capitalize(this.props.t("yes"))}
+            checked={this.getSpaceAttributeValue(a.id) === "1"}
+            onChange={(e: any) =>
+              this.setSpaceAttributeValue(a.id, e.target.checked ? "1" : "0")
+            }
+          />
+        );
+      } else {
+        input = (
+          <>
+            <Form.Control
+              id={`space-attr-value-${a.id}`}
+              type="text"
+              aria-label={a.label}
+              aria-describedby={`space-attr-value-${a.id}-help`}
+              disabled={!this.isSpaceAttributeEnabled(a.id)}
+              value={this.getSpaceAttributeValue(a.id)}
+              onChange={(e: any) =>
+                this.setSpaceAttributeValue(a.id, e.target.value)
+              }
+            />
+            <Form.Text id={`space-attr-value-${a.id}-help`} muted>
+              {this.props.t("markdownSupported")}
+            </Form.Text>
+          </>
+        );
+      }
+      const row = (
+        <Form.Group as={Row} key={a.id}>
+          <Col sm="4">
+            <Form.Check
+              type="checkbox"
+              id={`space-attr-${a.id}`}
+              label={a.label}
+              checked={this.isSpaceAttributeEnabled(a.id)}
+              onChange={(e: any) =>
+                this.setSpaceAttributeEnabled(a.id, e.target.checked)
+              }
+            />
+          </Col>
+          <Col sm="8">{input}</Col>
+        </Form.Group>
+      );
+      res.push(row);
+    });
+    return res;
+  };
+
+  getEditSpaceDetailsModal = () => {
+    return (
+      <Modal
+        show={this.state.showEditSpaceDetailsModal}
+        onHide={() => this.setState({ showEditSpaceDetailsModal: false })}
+      >
+        <Modal.Header closeButton={true}>
+          <Modal.Title>{this.props.t("editSpace")}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form
+            ref={this.editSpaceFormRef}
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <Form.Group as={Row}>
+              <Form.Label column sm="4" htmlFor="space-name">
+                {this.props.t("name")}
+              </Form.Label>
+              <Col sm="8">
+                <Form.Control
+                  id="space-name"
+                  type="text"
+                  value={this.getSelectedSpace()?.name}
+                  onChange={(e: any) =>
+                    this.setSpaceName(this.state.selectedSpace!, e.target.value)
+                  }
+                  required={true}
+                  pattern=".*\S.*"
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group
+              as={Row}
+              hidden={RuntimeConfig.INFOS.subjectDefault === 1}
+            >
+              <Form.Label column sm="4" htmlFor="check-requireSubject">
+                {this.props.t("requireSubject")}
+              </Form.Label>
+              <Col sm="8">
+                <Form.Check
+                  type="checkbox"
+                  id="check-requireSubject"
+                  label={RendererUtils.capitalize(this.props.t("yes"))}
+                  checked={this.getSelectedSpace()?.requireSubject}
+                  onChange={(e: any) =>
+                    this.setSpaceRequireSubject(
+                      this.state.selectedSpace!,
+                      e.target.checked,
+                    )
+                  }
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="4" htmlFor="space-enabled">
+                {this.props.t("enabled")}
+              </Form.Label>
+              <Col sm="8">
+                <Form.Check
+                  type="checkbox"
+                  id="space-enabled"
+                  label={RendererUtils.capitalize(this.props.t("yes"))}
+                  checked={this.getSelectedSpace()?.enabled}
+                  onChange={(e: any) =>
+                    this.setSpaceEnabled(
+                      this.state.selectedSpace!,
+                      e.target.checked,
+                    )
+                  }
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group
+              as={Row}
+              hidden={
+                !RuntimeConfig.INFOS.featureKioskMode ||
+                !RuntimeConfig.INFOS.kioskModeEnabled
+              }
+            >
+              <Form.Label column sm="4" htmlFor="space-kiosk-enabled">
+                {this.props.t("kioskMode")}
+              </Form.Label>
+              <Col sm="8">
+                <Form.Check
+                  type="checkbox"
+                  id="space-kiosk-enabled"
+                  label={RendererUtils.capitalize(this.props.t("yes"))}
+                  checked={this.getSelectedSpace()?.kioskEnabled}
+                  onChange={(e: any) => {
+                    const spaces = this.state.spaces;
+                    const idx = this.state.selectedSpace!;
+                    const space = { ...spaces[idx] };
+                    space.kioskEnabled = e.target.checked;
+                    space.changed = true;
+                    spaces[idx] = space;
+                    this.setState({ spaces: spaces, changed: true });
+                  }}
+                />
+                {this.getSelectedSpace()?.kioskEnabled &&
+                  this.getSelectedSpace()?.id && (
+                    <Form.Text as="div" className="text-muted">
+                      {(() => {
+                        const spaceId = this.getSelectedSpace()!.id;
+                        const colorUrl = Navigation.kioskUrl(spaceId, "color");
+                        const monoUrl = Navigation.kioskUrl(spaceId, "mono");
+                        return (
+                          <>
+                            <div className="mt-1">
+                              <a
+                                href={colorUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {this.props.t("kioskModeColorUrl")}
+                              </a>{" "}
+                              <CopyToClipboardButton
+                                text={colorUrl}
+                                small={true}
+                              />
+                              <a
+                                style={{ marginLeft: "20px" }}
+                                href={monoUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {this.props.t("kioskModeMonoUrl")}
+                              </a>{" "}
+                              <CopyToClipboardButton
+                                text={monoUrl}
+                                small={true}
+                              />
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </Form.Text>
+                  )}
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="4" htmlFor="search-approvers-input">
+                {this.props.t("approvers")}
+                {RuntimeConfig.INFOS.featureGroups && (
+                  <HintTooltip hint={this.props.t("setApproversHint")} />
+                )}
+              </Form.Label>
+              <Col sm="8">
+                <GroupSearchTypeahead
+                  t={this.props.t}
+                  disabled={!RuntimeConfig.INFOS.featureGroups}
+                  id="search-approvers"
+                  inputProps={{ id: "search-approvers-input" }}
+                  multiple={true}
+                  onChange={this.onApproversSearchSelected}
+                  defaultSelected={this.getSelectedSpace()?.approvers}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="4" htmlFor="search-allowbookers-input">
+                {this.props.t("allowBookers")}
+                {RuntimeConfig.INFOS.featureGroups && (
+                  <HintTooltip hint={this.props.t("setAllowBookersHint")} />
+                )}
+              </Form.Label>
+              <Col sm="8">
+                <GroupSearchTypeahead
+                  t={this.props.t}
+                  disabled={!RuntimeConfig.INFOS.featureGroups}
+                  id="search-allowbookers"
+                  inputProps={{ id: "search-allowbookers-input" }}
+                  multiple={true}
+                  onChange={this.onAllowBookersSearchSelected}
+                  defaultSelected={this.getSelectedSpace()?.allowBookers}
+                />
+              </Col>
+            </Form.Group>
+            {this.getSpaceAttributeRows()}
+            <Form.Group
+              as={Row}
+              hidden={!RuntimeConfig.INFOS.publicBookingEnabled}
+            >
+              <Form.Label column sm="4" htmlFor="space-public-booking-enabled">
+                {this.props.t("publicBooking")}
+                <HintTooltip
+                  hint={
+                    (this.getSelectedSpace()?.approvers?.length ?? 0) === 0
+                      ? this.props.t("publicBookingSpaceRequiresApproversHint")
+                      : this.props.t("publicBookingSpaceEnabledHint")
+                  }
+                />
+              </Form.Label>
+              <Col sm="8">
+                <Form.Check
+                  type="checkbox"
+                  id="space-public-booking-enabled"
+                  label={RendererUtils.capitalize(this.props.t("yes"))}
+                  checked={this.getSelectedSpace()?.publicBookingEnabled}
+                  disabled={
+                    (this.getSelectedSpace()?.approvers?.length ?? 0) === 0
+                  }
+                  onChange={(e: any) => {
+                    const spaces = this.state.spaces;
+                    const idx = this.state.selectedSpace!;
+                    const space = { ...spaces[idx] };
+                    space.publicBookingEnabled = e.target.checked;
+                    space.changed = true;
+                    spaces[idx] = space;
+                    this.setState({ spaces: spaces, changed: true });
+                  }}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group
+              as={Row}
+              hidden={!RuntimeConfig.INFOS.featureSpaceImages}
+            >
+              <Form.Label column sm="4" htmlFor="space-image">
+                {this.props.t("image")}
+              </Form.Label>
+              <Col sm="8">
+                {RuntimeConfig.INFOS.featureSpaceImages &&
+                  this.getSelectedSpace() && (
+                    <SpaceImageEditor
+                      key={this.state.selectedSpace}
+                      locationId={this.entity.id}
+                      spaceId={this.getSelectedSpace()!.id}
+                      hasImage={this.getSelectedSpace()!.hasImage}
+                      pendingImage={this.getSelectedSpace()!.pendingImage}
+                      removeImage={this.getSelectedSpace()!.removeImage}
+                      onSelect={(file: File) =>
+                        this.setSpaceImage(this.state.selectedSpace!, file)
+                      }
+                      onRemove={() =>
+                        this.setSpaceImage(this.state.selectedSpace!, null)
+                      }
+                    />
+                  )}
+              </Col>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              if (!this.editSpaceFormRef.current?.reportValidity()) return;
+              this.setState({ showEditSpaceDetailsModal: false });
+            }}
+          >
+            {this.props.t("ok")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
+
+  setAttribute = (id: string, value?: string) => {
+    const newAttributeValues: SpaceAttributeValue[] = [];
+    const av = new SpaceAttributeValue();
+    av.attributeId = id;
+    av.value = value ? value : "";
+    let found = false;
+    this.state.attributeValues.forEach((e) => {
+      if (e.attributeId !== id) {
+        newAttributeValues.push(e);
+      } else {
+        newAttributeValues.push(av);
+        found = true;
+      }
+    });
+    if (!found) {
+      newAttributeValues.push(av);
+    }
+    const changedAttributeIds: string[] = Object.assign(
+      [],
+      this.state.changedAttributeIds,
+    );
+    if (changedAttributeIds.indexOf(id) === -1) {
+      changedAttributeIds.push(id);
+    }
+    this.setState({
+      attributeValues: newAttributeValues,
+      changedAttributeIds: changedAttributeIds,
+    });
+  };
+
+  deleteAttribute = (id: string) => {
+    const newAttributeValues: SpaceAttributeValue[] = [];
+    this.state.attributeValues.forEach((e) => {
+      if (e.attributeId !== id) {
+        newAttributeValues.push(e);
+      }
+    });
+    const deletedAttributeIds: string[] = Object.assign(
+      [],
+      this.state.deletedAttributeIds,
+    );
+    if (deletedAttributeIds.indexOf(id) === -1) {
+      deletedAttributeIds.push(id);
+    }
+    this.setState({
+      attributeValues: newAttributeValues,
+      deletedAttributeIds: deletedAttributeIds,
+    });
+  };
+
+  getAttributeById = (id: string): SpaceAttribute | null => {
+    let a: SpaceAttribute | null = null;
+    this.state.availableAttributes.forEach((cur) => {
+      if (cur.id === id) {
+        a = cur;
+      }
+    });
+    return a;
+  };
+
+  getAttributeRows = () => {
+    const res: any = [];
+    this.state.attributeValues.forEach((av, idx) => {
+      const a = this.getAttributeById(av.attributeId);
+      if (a != null) {
+        let input = <></>;
+        if (a.type === 1) {
+          input = (
+            <Form.Control
+              type="number"
+              id={`loc-attr-${av.attributeId}`}
+              min={0}
+              value={this.state.attributeValues[idx].value}
+              onChange={(e: any) =>
+                this.setAttribute(av.attributeId, e.target.value)
+              }
+            />
+          );
+        } else if (a.type === 2) {
+          input = (
+            <Form.Check
+              type="checkbox"
+              id={`loc-attr-${av.attributeId}`}
+              label={RendererUtils.capitalize(this.props.t("yes"))}
+              checked={this.state.attributeValues[idx].value === "1"}
+              onChange={(e: any) =>
+                this.setAttribute(av.attributeId, e.target.checked ? "1" : "0")
+              }
+            />
+          );
+        } else {
+          input = (
+            <Form.Control
+              type="text"
+              id={`loc-attr-${av.attributeId}`}
+              value={this.state.attributeValues[idx].value}
+              onChange={(e: any) =>
+                this.setAttribute(av.attributeId, e.target.value)
+              }
+            />
+          );
+        }
+        let row = (
+          <Form.Group as={Row} key={av.attributeId}>
+            <Form.Label column sm="2" htmlFor={`loc-attr-${av.attributeId}`}>
+              {a.label}
+              {a.type !== 1 && a.type !== 2 && (
+                <HintTooltip hint={this.props.t("markdownSupported")} />
+              )}
+            </Form.Label>
+            <Col sm="4">{input}</Col>
+            <Col sm="1" style={{ marginTop: "3px" }}>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={(e) => this.deleteAttribute(av.attributeId)}
+              >
+                {this.props.t("X")}
+              </Button>
+            </Col>
+          </Form.Group>
+        );
+        res.push(row);
+      }
+    });
+    return res;
+  };
+
+  exportTable = (e: any) => {
+    const t = this.props.t;
+    const showKioskMode =
+      RuntimeConfig.INFOS.featureKioskMode &&
+      RuntimeConfig.INFOS.kioskModeEnabled;
+    const headers = [
+      t("name"),
+      t("enabled"),
+      t("requireSubject"),
+      ...(showKioskMode ? [t("kioskMode")] : []),
+      t("approvers"),
+      t("allowBookers"),
+      t("publicBooking"),
+      t("bookingLink"),
+    ];
+    const rows = this.state.spaces.map((space) => [
+      space.name,
+      RendererUtils.stateXls(space.enabled, t),
+      RendererUtils.stateXls(space.requireSubject, t),
+      ...(showKioskMode ? [RendererUtils.stateXls(space.kioskEnabled, t)] : []),
+      RendererUtils.stateXls(space.approvers && space.approvers?.length > 0, t),
+      RendererUtils.stateXls(
+        space.allowBookers && space.allowBookers?.length > 0,
+        t,
+      ),
+      RendererUtils.stateXls(space.publicBookingEnabled, t),
+      space.id ? Navigation.spaceAbsolute(this.entity.id, space.id) : "",
+    ]);
+    return this.ExcellentExport.convert(
+      { anchor: e.target, filename: "seatsurfing-spaces", format: "xlsx" },
+      [{ name: "Seatsurfing Spaces", from: { array: [headers, ...rows] } }],
+    );
+  };
+
+  render() {
+    if (this.state.goBack) {
+      this.props.router.push(`/admin/locations`);
+      return <></>;
+    }
+
+    const backButton = (
+      <Link
+        href="/admin/locations"
+        onClick={this.onBackButtonClick}
+        className="btn btn-sm btn-outline-secondary"
+      >
+        <IconBack className="feather" /> {this.props.t("back")}
+      </Link>
+    );
+    let buttons = backButton;
+
+    if (this.state.loading) {
+      return (
+        <FullLayout headline={this.props.t("editArea")} buttons={buttons}>
+          <Loading />
+        </FullLayout>
+      );
+    }
+
+    let hint = <></>;
+    if (this.state.saved) {
+      hint = <Alert variant="success">{this.props.t("entryUpdated")}</Alert>;
+    }
+    if (this.state.errorSaving) {
+      hint = (
+        <Alert variant="danger">
+          {this.state.errorSavingText || this.props.t("errorTryAgain")}
+        </Alert>
+      );
+    }
+
+    let buttonDelete = (
+      <Button
+        className="btn-sm"
+        variant="outline-secondary"
+        onClick={this.deleteItem}
+      >
+        <IconDelete className="feather" /> {this.props.t("delete")}
+      </Button>
+    );
+    let buttonSave = this.getSaveButton();
+    let floorPlan = <></>;
+    let attributeTable = <></>;
+    let spaceTable = <></>;
+    const rows = this.state.spaces.map((item, rowNumber) =>
+      this.renderRow(item, rowNumber),
+    );
+    if (this.entity.id) {
+      const buttonBookings = RuntimeConfig.hasPermission(
+        Permission.Bookings,
+        PermissionLevel.Read,
+      ) ? (
+        <Link
+          href={`/admin/bookings/?filter=current&location=${encodeURIComponent(this.entity.id)}`}
+          className="btn btn-sm btn-outline-secondary"
+        >
+          <IconBook className="feather" /> {this.props.t("bookings")}
+        </Link>
+      ) : (
+        <></>
+      );
+      buttons = (
+        <>
+          {backButton} {buttonBookings} {buttonDelete} {buttonSave}
+        </>
+      );
+      const floorPlanStyle = {
+        width:
+          (this.mapData ? this.mapData.width * this.state.mapScale : 0) + "px",
+        height:
+          (this.mapData ? this.mapData.height * this.state.mapScale : 0) + "px",
+        position: "relative" as "relative",
+      };
+      // Separate layer so the dark theme can invert the image without
+      // inverting the spaces drawn on top of it
+      const floorPlanImageStyle: React.CSSProperties = {
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
+        backgroundSize: "contain",
+        backgroundImage: this.mapData
+          ? "url(data:image/" +
+            this.mapData.mimeType +
+            ";base64," +
+            this.mapData.data +
+            ")"
+          : "",
+      };
+      const spaces = this.state.spaces.map((_item, i) => {
+        return this.renderRect(i);
+      });
+      let buttonEditSpaceDetails = <></>;
+      let buttonCopySpace = <></>;
+      let buttonDeleteSpace = <></>;
+      let buttonShapeSelector = <></>;
+      let buttonFontSizeSelector = <></>;
+      if (this.state.selectedSpace != null) {
+        buttonEditSpaceDetails = (
+          <Button
+            className="btn-sm"
+            variant="outline-secondary"
+            onClick={this.editSpaceDetails}
+          >
+            <IconEdit className="feather" /> {this.props.t("edit")}
+          </Button>
+        );
+        buttonCopySpace = (
+          <Button
+            className="btn-sm"
+            variant="outline-secondary"
+            onClick={this.copySpace}
+          >
+            <IconCopy className="feather" /> {this.props.t("duplicate")}
+          </Button>
+        );
+        buttonDeleteSpace = (
+          <Button
+            className="btn-sm"
+            variant="outline-secondary"
+            onClick={this.deleteSpace}
+          >
+            <IconDelete className="feather" /> {this.props.t("deleteSpace")}
+          </Button>
+        );
+        const selectedShape = this.getSelectedSpace()?.shape ?? "rect";
+        buttonShapeSelector = (
+          <Dropdown as="div" className="btn-group">
+            <Dropdown.Toggle
+              className="btn-sm"
+              variant="outline-secondary"
+              id="dropdown-shape"
+            >
+              {selectedShape === "circle" ? (
+                <>
+                  <IconCircle className="feather" />{" "}
+                  {this.props.t("shapeCircle")}
+                </>
+              ) : selectedShape === "trapezoid" ? (
+                <>
+                  <IconTrapezoid className="feather" />{" "}
+                  {this.props.t("shapeTrapezoid")}
+                </>
+              ) : (
+                <>
+                  <IconSquare className="feather" /> {this.props.t("shapeRect")}
+                </>
+              )}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                active={selectedShape === "rect"}
+                onClick={() =>
+                  this.setSpaceShape(this.state.selectedSpace!, "rect")
+                }
+              >
+                <IconSquare className="feather" /> {this.props.t("shapeRect")}
+              </Dropdown.Item>
+              <Dropdown.Item
+                active={selectedShape === "circle"}
+                onClick={() =>
+                  this.setSpaceShape(this.state.selectedSpace!, "circle")
+                }
+              >
+                <IconCircle className="feather" /> {this.props.t("shapeCircle")}
+              </Dropdown.Item>
+              <Dropdown.Item
+                active={selectedShape === "trapezoid"}
+                onClick={() =>
+                  this.setSpaceShape(this.state.selectedSpace!, "trapezoid")
+                }
+              >
+                <IconTrapezoid className="feather" />{" "}
+                {this.props.t("shapeTrapezoid")}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        );
+        const selectedFontSize = this.getSelectedSpace()?.fontSize ?? "normal";
+        buttonFontSizeSelector = (
+          <Dropdown as="div" className="btn-group">
+            <Dropdown.Toggle
+              className="btn-sm"
+              variant="outline-secondary"
+              id="dropdown-space-font-size"
+            >
+              <IconFontSize className="feather" />{" "}
+              {this.props.t(selectedFontSize)}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {RendererUtils.SPACE_FONT_SIZE_OPTIONS.map((size) => (
+                <Dropdown.Item
+                  key={size}
+                  active={selectedFontSize === size}
+                  onClick={() =>
+                    this.setSpaceFontSize(this.state.selectedSpace!, size)
+                  }
+                >
+                  {this.props.t(size)}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        );
+      }
+      floorPlan = (
+        <>
+          <div
+            className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+            style={{ marginTop: "50px" }}
+          >
+            <h4>{this.props.t("floorplan")}</h4>
+            <div className="btn-toolbar mb-2 mb-md-0">
+              <div className="btn-group me-2">
+                {buttonEditSpaceDetails} {buttonShapeSelector}{" "}
+                {buttonFontSizeSelector} {buttonCopySpace} {buttonDeleteSpace}
+                <Button
+                  className="btn-sm"
+                  variant="outline-secondary"
+                  disabled={this.state.mapScale != this.state.mapScaleOnLoad}
+                  onClick={() => this.addRect()}
+                >
+                  <IconMap className="feather" /> {this.props.t("addSpace")}
+                </Button>
+                <Button
+                  className="btn-sm"
+                  variant={
+                    this.state.gridEnabled
+                      ? "outline-primary"
+                      : "outline-secondary"
+                  }
+                  onClick={() =>
+                    this.setState((prev) => ({
+                      gridEnabled: !prev.gridEnabled,
+                    }))
+                  }
+                >
+                  <IconGrid className="feather" /> {this.props.t("showGrid")}
+                </Button>
+                <Button
+                  className="btn-sm"
+                  variant={
+                    this.state.outline ? "outline-primary" : "outline-secondary"
+                  }
+                  onClick={() =>
+                    this.setState((prev) => ({
+                      outline: !prev.outline,
+                    }))
+                  }
+                >
+                  <IconEye className="feather" /> {this.props.t("outline")}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="mapScrollContainer">
+            <div
+              style={floorPlanStyle}
+              className={this.state.outline ? "spaces-outline" : undefined}
+              onClick={(e) => {
+                if (e.target === e.currentTarget)
+                  this.setState({ selectedSpace: null });
+              }}
+            >
+              <div className="floor-plan-bg" style={floorPlanImageStyle}></div>
+              {this.state.gridEnabled && (
+                <div
+                  className="floorplan-grid-overlay"
+                  style={{
+                    width: this.mapData
+                      ? this.mapData.width * this.state.mapScale
+                      : 0,
+                    height: this.mapData
+                      ? this.mapData.height * this.state.mapScale
+                      : 0,
+                    backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px`,
+                  }}
+                />
+              )}
+              {spaces}
+            </div>
+          </div>
+        </>
+      );
+      const availableAttributeOptions = this.getAvailableAttributeOptions();
+      attributeTable = (
+        <>
+          <div
+            className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+            style={{ marginTop: "50px" }}
+          >
+            <h4>{this.props.t("attributes")}</h4>
+            <div className="btn-toolbar mb-2 mb-md-0">
+              <div className="btn-group me-2">
+                <Dropdown>
+                  <Dropdown.Toggle
+                    className="btn-sm"
+                    variant="outline-secondary"
+                    id="dropdown-attributes"
+                    disabled={availableAttributeOptions.length === 0}
+                  >
+                    <IconTag className="feather" /> {this.props.t("add")}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>{availableAttributeOptions}</Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+          <Form>{this.getAttributeRows()}</Form>
+        </>
+      );
+      const downloadButton = (
+        <a
+          download={`seatsurfing-${this.state.name}-spaces.xlsx`}
+          href="#"
+          className="btn btn-sm btn-outline-secondary"
+          onClick={this.exportTable}
+        >
+          <IconDownload className="feather" /> {this.props.t("download")}
+        </a>
+      );
+      spaceTable = (
+        <>
+          <div
+            className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+            style={{ marginTop: "50px" }}
+          >
+            <h4>{this.props.t("spaces")}</h4>
+            <div className="btn-toolbar mb-2 mb-md-0">
+              <div className="btn-group me-2">{downloadButton}</div>
+            </div>
+          </div>
+          <Table
+            striped={true}
+            hover={true}
+            id="datatable"
+            className="clickable-table"
+          >
+            <thead>
+              <tr>
+                <th>{this.props.t("name")}</th>
+                <th>{this.props.t("enabled")}</th>
+                <th>{this.props.t("requireSubject")}</th>
+                {RuntimeConfig.INFOS.featureKioskMode &&
+                  RuntimeConfig.INFOS.kioskModeEnabled && (
+                    <th>
+                      {this.props.t("kioskMode")} <PremiumFeatureIcon />
+                    </th>
+                  )}
+                <th>
+                  {this.props.t("approvers")} <PremiumFeatureIcon />
+                </th>
+                <th>
+                  {this.props.t("allowBookers")} <PremiumFeatureIcon />
+                </th>
+                <th>{this.props.t("publicBooking")}</th>
+                <th>{this.props.t("bookingLink")}</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </>
+      );
+    } else {
+      buttons = (
+        <>
+          {backButton} {buttonSave}
+        </>
+      );
+    }
+    return (
+      <FullLayout headline={this.props.t("editArea")} buttons={buttons}>
+        <Form onSubmit={this.onSubmit} id="form">
+          {hint}
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-name">
+              {this.props.t("name")}
+            </Form.Label>
+            <Col sm="4">
+              <Form.Control
+                id="location-name"
+                type="text"
+                placeholder={this.props.t("name")}
+                value={this.state.name}
+                onChange={(e: any) => this.setState({ name: e.target.value })}
+                required={true}
+                pattern=".*\S.*"
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-description">
+              {this.props.t("description")}
+              <HintTooltip hint={this.props.t("markdownSupported")} />
+            </Form.Label>
+            <Col sm="4">
+              <Form.Control
+                id="location-description"
+                as="textarea"
+                rows={3}
+                placeholder={this.props.t("description")}
+                value={this.state.description}
+                maxLength={512}
+                onChange={(e: any) =>
+                  this.setState({ description: e.target.value })
+                }
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-announcement">
+              {this.props.t("announcement")}
+              <HintTooltip hint={this.props.t("announcementHint")} />
+            </Form.Label>
+            <Col sm="4">
+              <Form.Control
+                id="location-announcement"
+                as="textarea"
+                rows={3}
+                placeholder={this.props.t("announcement")}
+                value={this.state.announcement}
+                maxLength={512}
+                onChange={(e: any) =>
+                  this.setState({ announcement: e.target.value })
+                }
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-timezone">
+              {this.props.t("timezone")}
+            </Form.Label>
+            <Col sm="4">
+              <Form.Select
+                id="location-timezone"
+                value={this.state.timezone}
+                onChange={(e: any) =>
+                  this.setState({ timezone: e.target.value })
+                }
+              >
+                <option value="">
+                  ({this.props.t("default")} -{" "}
+                  {RuntimeConfig.INFOS.defaultTimezone})
+                </option>
+                {this.timezones.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-enabled">
+              {this.props.t("enabled")}
+            </Form.Label>
+            <Col sm="4">
+              <Form.Check
+                type="checkbox"
+                id="location-enabled"
+                label={RendererUtils.capitalize(this.props.t("yes"))}
+                checked={this.state.enabled}
+                onChange={(e: any) =>
+                  this.setState({ enabled: e.target.checked })
+                }
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="input-limitConcurrentBookings">
+              {this.props.t("maxConcurrentBookings")}
+            </Form.Label>
+            <Col sm="4">
+              <InputGroup>
+                <InputGroup.Checkbox
+                  type="checkbox"
+                  id="check-limitConcurrentBookings"
+                  checked={this.state.limitConcurrentBookings}
+                  onChange={(e: any) =>
+                    this.setState({ limitConcurrentBookings: e.target.checked })
+                  }
+                />
+                <Form.Control
+                  type="number"
+                  id="input-limitConcurrentBookings"
+                  min="0"
+                  value={this.state.maxConcurrentBookings}
+                  onChange={(e: any) =>
+                    this.setState({
+                      maxConcurrentBookings: parseInt(e.target.value),
+                    })
+                  }
+                  disabled={!this.state.limitConcurrentBookings}
+                />
+              </InputGroup>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              {this.props.t("bookableDays")}
+            </Form.Label>
+            <Col sm="4">
+              <WeekdaySelection
+                id="location-bookable-days"
+                value={this.state.bookableDays}
+                onChange={(bookableDays: number[]) =>
+                  this.setState({
+                    bookableDays: [...bookableDays].sort((a, b) => a - b),
+                  })
+                }
+                preventEmpty={true}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-blocked-from">
+              {this.props.t("blockedPeriod")}
+              <HintTooltip hint={this.props.t("blockedPeriodHint")} />
+            </Form.Label>
+            <Col sm="4">
+              <InputGroup>
+                <InputGroup.Checkbox
+                  type="checkbox"
+                  id="check-location-blocked-from"
+                  aria-label={this.props.t("blockedFrom")}
+                  checked={this.state.blockedFromEnabled}
+                  onChange={(e: any) =>
+                    this.setState({ blockedFromEnabled: e.target.checked })
+                  }
+                />
+                <DateTimePicker
+                  id="location-blocked-from"
+                  value={
+                    this.state.blockedFromEnabled
+                      ? this.state.blockedFrom
+                      : null
+                  }
+                  onChange={(value: Date) =>
+                    this.setState({
+                      blockedFrom: value,
+                      blockedUntil: this.isBeforeDay(
+                        this.state.blockedUntil,
+                        value,
+                      )
+                        ? value
+                        : this.state.blockedUntil,
+                    })
+                  }
+                  enableTime={false}
+                  disabled={!this.state.blockedFromEnabled}
+                />
+                <InputGroup.Text>–</InputGroup.Text>
+                <InputGroup.Checkbox
+                  type="checkbox"
+                  id="check-location-blocked-until"
+                  aria-label={this.props.t("blockedUntil")}
+                  checked={this.state.blockedUntilEnabled}
+                  onChange={(e: any) =>
+                    this.setState({ blockedUntilEnabled: e.target.checked })
+                  }
+                />
+                <DateTimePicker
+                  id="location-blocked-until"
+                  value={
+                    this.state.blockedUntilEnabled
+                      ? this.state.blockedUntil
+                      : null
+                  }
+                  onChange={(value: Date) =>
+                    this.setState({
+                      blockedUntil: value,
+                      blockedFrom: this.isBeforeDay(
+                        value,
+                        this.state.blockedFrom,
+                      )
+                        ? value
+                        : this.state.blockedFrom,
+                    })
+                  }
+                  enableTime={false}
+                  disabled={!this.state.blockedUntilEnabled}
+                />
+              </InputGroup>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-floorplan">
+              {this.props.t("floorplan")}
+            </Form.Label>
+            <Col sm="4">
+              <Form.Check
+                type="radio"
+                id="map-type-upload"
+                name="mapType"
+                label={
+                  <>
+                    {this.props.t("uploadFile")}
+                    <HintTooltip hint={this.props.t("mapFileHint")} />
+                  </>
+                }
+                checked={this.state.mapType === "upload"}
+                onChange={() => this.setState({ mapType: "upload" })}
+              />
+              <Form.Check
+                type="radio"
+                id="map-type-designed"
+                name="mapType"
+                label={this.props.t("designFloorPlan")}
+                checked={this.state.mapType === "designed"}
+                style={{ marginBottom: "10px" }}
+                onChange={() =>
+                  this.setState({
+                    mapType: "designed",
+                    files: null,
+                    fileLabel: "",
+                  })
+                }
+              />
+              {this.state.mapType === "upload" && (
+                <Form.Control
+                  id="location-floorplan"
+                  type="file"
+                  accept="image/png, image/jpeg, image/gif, image/svg+xml"
+                  onChange={(e: any) => {
+                    const file = e.target.files?.item(0);
+                    if (!file) {
+                      return;
+                    }
+                    if (file.size > MAX_MAP_FILE_SIZE) {
+                      e.target.value = "";
+                      this.setState({
+                        files: null,
+                        fileLabel: "",
+                        fileTooLarge: true,
+                      });
+                      return;
+                    }
+                    this.setState({
+                      files: e.target.files,
+                      fileLabel: file.name,
+                      fileTooLarge: false,
+                      mapScale: 1.0,
+                    });
+                  }}
+                  isInvalid={this.state.fileTooLarge}
+                  required={!this.entity.id && this.state.mapType === "upload"}
+                />
+              )}
+              {this.state.mapType === "upload" && (
+                <Form.Control.Feedback type="invalid">
+                  {this.props.t("errorMapFileTooLarge")}
+                </Form.Control.Feedback>
+              )}
+              {this.state.mapType === "designed" && (
+                <>
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => this.setState({ showDesignerModal: true })}
+                  >
+                    <IconEdit className="feather" />{" "}
+                    {this.props.t("editFloorPlan")}
+                  </Button>
+                  <Modal
+                    show={this.state.showDesignerModal}
+                    onHide={() => this.setState({ showDesignerModal: false })}
+                    dialogClassName="fpd-modal-dialog"
+                    backdrop="static"
+                    keyboard={false}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>
+                        {this.props.t("designFloorPlan")}
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <FloorPlanDesigner
+                        designData={this.state.designData}
+                        onChange={(designData: string) =>
+                          this.setState({ designData, changed: true })
+                        }
+                      />
+                    </Modal.Body>
+                  </Modal>
+                </>
+              )}
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-scale">
+              {this.props.t("scale")}
+            </Form.Label>
+            <Col sm="4">
+              <InputGroup>
+                <Form.Control
+                  id="location-scale"
+                  type="number"
+                  disabled={
+                    !this.entity.id ||
+                    this.state.files !== null ||
+                    this.state.mapType === "designed"
+                  }
+                  placeholder={this.props.t("scale")}
+                  min={1}
+                  max={1000}
+                  value={Math.round(this.state.mapScale * 100)}
+                  onChange={(e: any) =>
+                    this.setMapScale(parseFloat(e.target.value) / 100.0)
+                  }
+                />
+                <InputGroup.Text>%</InputGroup.Text>
+              </InputGroup>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="location-allowed-bookers">
+              {this.props.t("allowBookers")}
+              {RuntimeConfig.INFOS.featureGroups && (
+                <HintTooltip hint={this.props.t("setAllowBookersHint")} />
+              )}
+            </Form.Label>
+            <Col sm="4">
+              <GroupSearchTypeahead
+                t={this.props.t}
+                disabled={!RuntimeConfig.INFOS.featureGroups}
+                id="search-allowbookers"
+                inputProps={{ id: "location-allowed-bookers" }}
+                multiple={true}
+                onChange={this.onLocationAllowBookersSearchSelected}
+                defaultSelected={this.state.locationAllowBookers}
+              />
+            </Col>
+          </Form.Group>
+        </Form>
+        {floorPlan}
+        {attributeTable}
+        {spaceTable}
+        {this.getEditSpaceDetailsModal()}
+        <ConfirmModal
+          show={this.state.showDeleteAreaConfirm}
+          message={this.props.t("confirmDeleteArea")}
+          onCancel={() => this.setState({ showDeleteAreaConfirm: false })}
+          onConfirm={this.confirmDeleteItem}
+        />
+        <ConfirmModal
+          show={this.state.showDiscardConfirm}
+          message={this.props.t("confirmDiscard")}
+          onCancel={() => this.setState({ showDiscardConfirm: false })}
+          onConfirm={() =>
+            this.setState({ showDiscardConfirm: false, goBack: true })
+          }
+        />
+      </FullLayout>
+    );
+  }
+}
+
+export default withTranslation(
+  withReadyRouter(
+    withPermission(
+      EditLocation as any,
+      Permission.Areas,
+      PermissionLevel.Admin,
+    ) as any,
+  ),
+);

@@ -1,0 +1,238 @@
+import ReducerRegistry from '../base/redux/ReducerRegistry';
+
+import {
+    CHANGE_VOTE,
+    CLEAR_POLLS,
+    EDIT_POLL,
+    RECEIVE_ANSWER,
+    RECEIVE_POLL,
+    RECEIVE_POLL_CLOSED,
+    REGISTER_VOTE,
+    REMOVE_POLL,
+    RESET_UNREAD_POLLS_COUNT,
+    SAVE_POLL
+} from './actionTypes';
+import logger from './logger';
+import { IAnswerData, IIncomingAnswerData, IPollData, IVoterData } from './types';
+
+const INITIAL_STATE = {
+    polls: {},
+
+    // Number of not read message
+    unreadPollsCount: 0
+};
+
+export interface IPollsState {
+    polls: {
+        [pollId: string]: IPollData;
+    };
+    unreadPollsCount: number;
+}
+
+const STORE_NAME = 'features/polls';
+
+/**
+ * Returns the server's answers with the names this client has for their voters. The server stores the nick a voter
+ * had when voting, which is stale after a rename or empty without a nick.
+ *
+ * @param {Array<IAnswerData>} answers - The answers from the server.
+ * @param {Array<IAnswerData>} localAnswers - The answers this client has.
+ * @returns {Array<IAnswerData>}
+ */
+function _withLocalVoterNames(answers: Array<IAnswerData>, localAnswers: Array<IAnswerData>) {
+    const names = new Map(localAnswers.flatMap(({ voters }) => voters ?? []).map(({ id, name }) => [ id, name ]));
+
+    return answers.map(answer => {
+        return {
+            ...answer,
+            voters: answer.voters?.map(voter => {
+                return {
+                    ...voter,
+                    name: names.get(voter.id) || voter.name
+                };
+            })
+        };
+    });
+}
+
+ReducerRegistry.register<IPollsState>(STORE_NAME, (state = INITIAL_STATE, action): IPollsState => {
+    switch (action.type) {
+
+    case CHANGE_VOTE: {
+        const { pollId, value } = action;
+
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [pollId]: {
+                    ...state.polls[pollId],
+                    changingVote: value,
+                    showResults: !value
+                }
+            }
+        };
+    }
+
+    case CLEAR_POLLS: {
+        return {
+            ...state,
+            ...INITIAL_STATE
+        };
+    }
+
+    // Reducer triggered when a poll is received or saved.
+    case RECEIVE_POLL: {
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [action.poll.pollId]: action.poll
+            },
+            unreadPollsCount: state.unreadPollsCount + 1
+        };
+    }
+
+    case SAVE_POLL: {
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [action.poll.pollId]: action.poll
+            }
+        };
+    }
+
+    // Reducer triggered when an answer is received
+    // The answer is added  to an existing poll
+    case RECEIVE_ANSWER: {
+
+        const { answer }: { answer: IIncomingAnswerData; } = action;
+        const pollId = answer.pollId;
+        const poll = state.polls[pollId];
+
+        // if the poll doesn't exist
+        if (!(pollId in state.polls)) {
+            logger.warn('Requested poll does not exist', { pollId });
+
+            return state;
+        }
+
+        // if the poll exists, we update it with the incoming answer
+        const answers = poll.answers.map((existingAnswer, i) => {
+            let voters = Array.isArray(existingAnswer.voters) ? [ ...existingAnswer.voters ] as IVoterData[] : [];
+
+            if (voters.find(user => user.id === answer.senderId)) {
+                if (!answer.answers[i]) {
+                    voters = voters.filter(user => user.id !== answer.senderId);
+                }
+            } else if (answer.answers[i]) {
+                voters.push({
+                    id: answer.senderId,
+                    name: answer.voterName
+                });
+            }
+
+            return {
+                ...existingAnswer,
+                voters: voters.length ? voters : undefined
+            };
+        });
+
+        // finally we update the state by returning the updated poll
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [pollId]: {
+                    ...poll,
+                    answers
+                }
+            }
+        };
+    }
+
+    case RECEIVE_POLL_CLOSED: {
+        const poll = state.polls[action.pollId];
+
+        if (!poll) {
+            return state;
+        }
+
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [action.pollId]: {
+                    ...poll,
+
+                    // Only a visitor node sends the answers: the main prosody's, without a vote that the visitor node
+                    // took but the main one refused because the poll was already closed.
+                    ...action.answers?.length ? { answers: _withLocalVoterNames(action.answers, poll.answers) } : {},
+                    changingVote: false,
+                    closed: true
+                }
+            }
+        };
+    }
+
+    case REGISTER_VOTE: {
+        const { answers, pollId }: { answers: Array<boolean> | null; pollId: string; } = action;
+
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [pollId]: {
+                    ...state.polls[pollId],
+                    changingVote: false,
+                    lastVote: answers,
+                    showResults: true
+                }
+            }
+        };
+    }
+
+    case RESET_UNREAD_POLLS_COUNT: {
+        return {
+            ...state,
+            unreadPollsCount: 0
+        };
+    }
+
+    case EDIT_POLL: {
+        return {
+            ...state,
+            polls: {
+                ...state.polls,
+                [action.pollId]: {
+                    ...state.polls[action.pollId],
+                    editing: action.editing
+                }
+            }
+        };
+    }
+
+    case REMOVE_POLL: {
+        if (Object.keys(state.polls ?? {})?.length === 1) {
+            return {
+                ...state,
+                ...INITIAL_STATE
+            };
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.poll.pollId]: _removedPoll, ...newState } = state.polls;
+
+        return {
+            ...state,
+            polls: {
+                ...newState
+            }
+        };
+    }
+
+    default:
+        return state;
+    }
+});
