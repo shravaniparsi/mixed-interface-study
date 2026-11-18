@@ -1,0 +1,56 @@
+FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx@sha256:9cac31bf7d2eb8c3ccabe7b67e7db617e63ae2952a86273b634db2e0e18178de AS xx
+
+FROM --platform=$BUILDPLATFORM docker.io/library/node@sha256:d8d97e479cdc64f052f81f129362168717c59783ade8dcc1abd22e1cca8dbd7c AS ui-builder
+RUN apk add --no-cache jq bash
+ARG CI_VERSION
+ENV NEXT_PUBLIC_PRODUCT_VERSION=$CI_VERSION
+ENV NODE_ENV=production
+COPY ui/package.json ui/package-lock.json /app/
+WORKDIR /app
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
+COPY ui/ /app/
+RUN ./add-missing-translations.sh
+RUN npm run build
+
+FROM --platform=$BUILDPLATFORM docker.io/library/golang@sha256:fb7cceb528b47141eccd9b60bf3cbd27d5ef5f8cf5b7d338bec866da495b50dc AS server-builder
+RUN apt-get update && apt-get install -y clang lld
+COPY --from=xx / /
+ARG TARGETPLATFORM
+# Multi-Arch packages must match the native version; security mirrors may lag behind per architecture
+RUN printf 'Package: libssl3:*\nPin: version %s\nPin-Priority: 1001\n' "$(dpkg-query -W -f='${Version}' libssl3)" > /etc/apt/preferences.d/libssl3 && \
+    xx-apt install -y libc6-dev binutils gcc
+WORKDIR /go/src/app
+COPY server/go.mod server/go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+COPY server/ .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=1 xx-go build -ldflags="-w -s" -o main && xx-verify main
+
+FROM --platform=$BUILDPLATFORM docker.io/library/golang@sha256:fb7cceb528b47141eccd9b60bf3cbd27d5ef5f8cf5b7d338bec866da495b50dc AS healthcheck-builder
+COPY --from=xx / /
+ARG TARGETPLATFORM
+# Multi-Arch packages must match the native version; security mirrors may lag behind per architecture
+RUN printf 'Package: libssl3:*\nPin: version %s\nPin-Priority: 1001\n' "$(dpkg-query -W -f='${Version}' libssl3)" > /etc/apt/preferences.d/libssl3 && \
+    xx-apt install -y libc6-dev binutils gcc
+WORKDIR /go/src/healthcheck
+COPY healthcheck/ .
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    xx-go build -ldflags="-w -s" -o healthcheck . && xx-verify healthcheck
+
+FROM gcr.io/distroless/base-debian13@sha256:0e48b9bcd868bce9fa872cee10b52961d9e32677823da4bf68eefb44f38e7b9d
+LABEL org.opencontainers.image.source="https://github.com/seatsurfing/seatsurfing" \
+      org.opencontainers.image.url="https://seatsurfing.io" \
+      org.opencontainers.image.documentation="https://seatsurfing.io/docs/"
+COPY --from=server-builder /go/src/app/main /app/
+COPY --from=healthcheck-builder /go/src/healthcheck/healthcheck /app/
+COPY --from=ui-builder /app/build/ /app/ui
+COPY server/res/ /app/res
+COPY version.txt /app/
+WORKDIR /app
+EXPOSE 8080
+USER 65532:65532
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["/app/healthcheck"]
+CMD ["./main"]

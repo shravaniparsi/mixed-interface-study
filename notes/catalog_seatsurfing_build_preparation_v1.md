@@ -1,0 +1,7 @@
+# SeatSurfing build dependencies and prepared Dockerfile
+
+All four preregistered original build/support images returned verified linux/amd64 manifests and configs at freeze 0a2bddf37956415bae984847dd4c7dc17c3afc68. Each used one permitted HTTPS CDN redirect, with cross-host authorization removed. No layers were pulled and no application or build ran. The previously closed GHCR application metadata limitation remains unchanged.
+
+The preparation generator verifies all forty acquired SeatSurfing source files and recorded image metadata, pins the original cross-build helper, Node and both Go FROM references, and preserves every other Dockerfile operation and the original distroless digest. The PostgreSQL reference is recorded for the prospective runtime. The emitted manifest records source blob/SHA256 identities and outstanding runtime requirements. A deterministic --verify pass reproduced both generated files exactly.
+
+This supplies concrete source-build inputs, not a proven executable or control comparison. Full-source acquisition, dependency availability, original schema execution, same-actor native actionability and warm/restored state equivalence remain open. Preserve the original npm lock and Go module files during any future build; do not use the metadata success to justify dependency substitutions. No runtime attempt or scientific case was consumed; cohort totals remain six application jobs and zero scientific cases.
