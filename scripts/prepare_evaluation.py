@@ -47,6 +47,7 @@ ARTIFACTS = [
     'protocol/openapi-public-metadata-screen-v1.md',
     'protocol/openapi-public-root-metadata-v1.md',
     'protocol/openapi-public-root-content-v1.md',
+    'manifests/openapi-public-root-content-collection-v1.json',
     'scripts/extension/collect_openapi_root_content_v1.py',
     'manifests/openapi-public-root-metadata-v1.json',
     'manifests/openapi-public-root-content-schedule-v1.json',
