@@ -99,3 +99,9 @@ Traduora new-label component/template were read fully. Both create and edit expo
 Maxun server handlers were reviewed in targeted create/read/update excerpts. Crawl and scrape creation persist metadata and workflow definitions; these handler bodies do not themselves execute a crawl. Helper behavior, telemetry, authentication and storage dependencies remain unresolved. The lexicographic resource tie-break applies: crawl precedes scrape if both satisfy eligibility. Do not substitute scrape for convenience.
 
 Verification run 44225433823 passed at f5effc1. All application controls and scientific variation cases in the maintained frame remain unexecuted.
+
+## Final Gotify dependency and build preparation
+
+Wave 7 was published at b981cca41032e4d3fc3cae531ed2f60bddddb2f8 and its single ui/package.json file was collected once and hash-verified. It was read fully: native build runs tsc then vite build, with no declared packageManager field. Gotify is now at its 24/24 dependency limit. The already-collected config/keys.go was read fully; it supplies explicit SQLite, local authentication, OIDC, plugin-directory and image-directory environment variable names. This adds no source fetch. Session/cookie and CurrentUser bindings were reread to prepare one cloned cookie-authenticated actor for both continuations; that fixture remains unqualified.
+
+The package metadata inspection remained unavailable at its registered five-request limit. A source-build helper is prepared but has not been executed. It will share the first ordinary-control job budget; it does not authorize a third job or a build-only dispatch. Its syntax check passed with a writable Python cache after the default macOS cache location denied writing. Preparation hashes verified. CI 44226668384 passed at b981cca. The maintained frame still has zero ordinary application controls and zero scientific variants.
