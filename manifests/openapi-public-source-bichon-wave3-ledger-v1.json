@@ -1,0 +1,783 @@
+{
+  "repository": "rustmailer/bichon",
+  "revision": "1632da3031abfd82becc6027af7c1353b4adacda",
+  "all_32_contents_reviewed": true,
+  "source_hashes": {
+    "crates/smtp/src/server.rs": "acd98968321f096cec969eb33707a300c71f5eadfc90c990a4dd31f0ab77b0fa",
+    "web/src/context/theme-context.tsx": "a732c0da39ed31560621b7bdb6bd776e7091c9702d1076189c098fc2b3e4f2a2",
+    "web/src/routes/(auth)/sign-in.tsx": "34529f6e222f1d4a1ed4960c88361147c48fcb28372f27f2f83033be6ca6c99f",
+    "web/src/routes/__root.tsx": "154c71353ef72c57f111b685233db5503824f9d117af9c717cc7b414b353762b",
+    "web/src/routes/_authenticated/accounts/$id.settings.lazy.tsx": "0f1db346f9a3318813476fc1f01c97f1710e00e9c0881d69c8e467efac3a57ad",
+    "web/src/routes/_authenticated/accounts/index.lazy.tsx": "a49c6d66439d556b3385c69f9fe7dae7a1bebffd70b7b60ffa34aaab8284ac27",
+    "web/src/routes/_authenticated/accounts/new.lazy.tsx": "8890444bbaf670d0bc751dc336e9c76e35e4b4a0491cd907238a42308682b482",
+    "web/src/routes/_authenticated/analytics.lazy.tsx": "00c4d9992a962c22589bc14a44353b768fe63949f55a9176ec06a9d430731234",
+    "web/src/routes/_authenticated/approvals.lazy.tsx": "8b9305ddfa0499aa5cdd82087b14a4bef150e130268a64c006f94c2fa501911c",
+    "web/src/routes/_authenticated/attachment/index.tsx": "3199f955c21f8866973cf472886403e9e92688a586f0929dc2673b2f13685bdd",
+    "web/src/routes/_authenticated/audit-log.lazy.tsx": "e2376361bc8a9decb7135739c9e8f5ce10f5711493ee9f6454b70518a82f8e04",
+    "web/src/routes/_authenticated/backup/index.tsx": "59374c1199578e51d34f0d29d5ce3ce3037061f79174b3ab81f0ba17a791bb2b",
+    "web/src/routes/_authenticated/compliance-dashboard.lazy.tsx": "abba50120d9fd55a3042f9f89ea8d991125db18a1c3026a79b1086b9dc9399ed",
+    "web/src/routes/_authenticated/compliance-export.lazy.tsx": "2bca99b3dfafd478f39eabcb8051485976b038287aa6aed3119428a00afec5ac",
+    "web/src/routes/_authenticated/configuration.lazy.tsx": "7b58727d99014d93a5158c40572c019004ab9fd076f17d912a45a7f26bb6483f",
+    "web/src/routes/_authenticated/exports/index.tsx": "86b863d840ca88a8a3cdd65fc289b24fff7e3109df3c2cd098809e11592b111a",
+    "web/src/routes/_authenticated/import/index.tsx": "36cf6cd6bc9c8a231198fdbada0f37ec346093035402472024ad5ceb98ad8b78",
+    "web/src/routes/_authenticated/index.tsx": "c3177f4fd61790a9ff9066487c0a55053515da1a7f72857bce4ec7ac0c8a7b43",
+    "web/src/routes/_authenticated/integrity.lazy.tsx": "36e45c6c5e24d6488c414e550431c8630a6141b37cc1fac6303ed64534d985d8",
+    "web/src/routes/_authenticated/legal-hold.lazy.tsx": "2ca91ecd5cb8b3f4b407723b5a768e786abbcf4047d3e950f3a8b652ad56b7a7",
+    "web/src/routes/_authenticated/mailbox/index.tsx": "5ab8d1da23aeadbc434950c1782ca754022b6a723ae3aaa0ebd10ba57d367569",
+    "web/src/routes/_authenticated/oauth2-result/index.lazy.tsx": "1b385c4ae0a36c59ea777136d1e3058c70f7372ec4b62ce566a29e6a9337e395",
+    "web/src/routes/_authenticated/oauth2/index.lazy.tsx": "00de954dfb339aaf541567ee100ba1cda0e80065b171ddcd1022e7605b620686",
+    "web/src/routes/_authenticated/route.tsx": "056404e61d6827d9a1fce2acd1b477d96a3c973a046109e1c1c7e2c211e90d41",
+    "web/src/routes/_authenticated/search/index.tsx": "873fd29fceed71b661c943cbbec5a75f42d973674dd5bda535923758f61f6a0d",
+    "web/src/routes/_authenticated/settings/access.lazy.tsx": "a9089cdba632eeb7062f7f1ac52f8e5d0be8396a5923a12e31038f9f4aaef027",
+    "web/src/routes/_authenticated/settings/api-docs.lazy.tsx": "ac3b7343564682c77e7ccfef26db86ad59f3e2b6a007974aa73de214fb2271bc",
+    "web/src/routes/_authenticated/settings/api-tokens.lazy.tsx": "cfa525d85e4a7e74b0a935022c234bd92be5a68fff7d8d50404ae0fc81906f06",
+    "web/src/routes/_authenticated/settings/appearance.lazy.tsx": "7e215fdd19ff84977cf5bfddc0d61d5f639b3b444906343787ae8c0ccb961cab",
+    "web/src/routes/_authenticated/settings/approvals.lazy.tsx": "2d1bb0673ce8310bddc36608230a9ba6dd60b56090e10abcdc8a46aabdc78430",
+    "web/src/routes/_authenticated/settings/branding.lazy.tsx": "e44918f97194b2cc224f5c3aafa5ecd739a8b4d9e8fbea435777d05f8c9ca870",
+    "web/src/routes/_authenticated/settings/configurations.lazy.tsx": "53e1427bf3ce310b21182c15c630fd1fc06e04a13e969055154e32103a0d23a8"
+  },
+  "rows": [
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "std::io",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "std::net::SocketAddr",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "std::time::Duration",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "base64::prelude::BASE64_STANDARD",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "base64::Engine",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::account::migration::AccountModel",
+      "target": "crates/core/src/account/migration.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::account::migration::AccountType",
+      "target": "crates/core/src/account/migration.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::archive::imap::mailbox::MailBox",
+      "target": "crates/core/src/archive/imap/mailbox.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::backup::gate::WRITE_GATE",
+      "target": "crates/core/src/backup/gate.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::common::auth::ClientContext",
+      "target": "crates/core/src/common/auth.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::common::signal::SIGNAL_MANAGER",
+      "target": "crates/core/src/common/signal.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::envelope::extractor::extract_envelope_from_smtp",
+      "target": "crates/core/src/envelope/extractor.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::error::BichonResult",
+      "target": "crates/core/src/error/mod.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::ext::journal",
+      "target": "crates/core/src/ext/journal.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::metrics",
+      "target": "crates/core/src/metrics/mod.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::settings::cli::EncryptionMode",
+      "target": "crates/core/src/settings/cli.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::settings::cli::SETTINGS",
+      "target": "crates/core/src/settings/cli.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::token::AccessTokenModel",
+      "target": "crates/core/src/token/mod.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::users::permissions::Permission",
+      "target": "crates/core/src/users/permissions.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::users::UserModel",
+      "target": "crates/core/src/users/mod.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::io::AsyncBufReadExt",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::io::AsyncRead",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::io::AsyncWrite",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::io::AsyncWriteExt",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::net::TcpListener",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::net::TcpStream",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::sync::broadcast",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio::time::timeout",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "tokio_rustls::TlsAcceptor",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "crate::stream::BufStream",
+      "target": "crates/smtp/src/stream.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "crate::tls::create_acceptor",
+      "target": "crates/smtp/src/tls.rs",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::error::code::ErrorCode",
+      "target": "crates/core/src/error/code.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "crates/smtp/src/server.rs",
+      "reference": "bichon_core::raise_error",
+      "target": "crates/core/src/lib.rs",
+      "classification": "already_collected",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/context/theme-context.tsx",
+      "reference": "react",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/context/theme-context.tsx",
+      "reference": "@/lib/theme",
+      "target": "web/src/lib/theme.ts",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/context/theme-context.tsx",
+      "reference": "@/lib/theme",
+      "target": "web/src/lib/theme.ts",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/(auth)/sign-in.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/(auth)/sign-in.tsx",
+      "reference": "@/features/auth",
+      "target": "web/src/features/auth/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/__root.tsx",
+      "reference": "@tanstack/react-query",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/__root.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/__root.tsx",
+      "reference": "@/components/ui/toaster",
+      "target": "web/src/components/ui/toaster.tsx",
+      "classification": "out_of_scope",
+      "reason": "Error/toast presentation or class-name styling utility; excluded by mapping scope."
+    },
+    {
+      "parent": "web/src/routes/__root.tsx",
+      "reference": "@/components/branding/branding-applier",
+      "target": "web/src/components/branding/branding-applier.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/__root.tsx",
+      "reference": "@/features/errors/general-error",
+      "target": "web/src/features/errors/general-error.tsx",
+      "classification": "out_of_scope",
+      "reason": "Error/toast presentation or class-name styling utility; excluded by mapping scope."
+    },
+    {
+      "parent": "web/src/routes/__root.tsx",
+      "reference": "@/features/errors/not-found-error",
+      "target": "web/src/features/errors/not-found-error.tsx",
+      "classification": "out_of_scope",
+      "reason": "Error/toast presentation or class-name styling utility; excluded by mapping scope."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/accounts/$id.settings.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/accounts/$id.settings.lazy.tsx",
+      "reference": "@/features/accounts/account-settings-page",
+      "target": "web/src/features/accounts/account-settings-page.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/accounts/index.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/accounts/index.lazy.tsx",
+      "reference": "@/features/accounts",
+      "target": "web/src/features/accounts/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/accounts/new.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/accounts/new.lazy.tsx",
+      "reference": "@/features/accounts/account-new",
+      "target": "web/src/features/accounts/account-new.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/analytics.lazy.tsx",
+      "reference": "@/features/analytics",
+      "target": "web/src/features/analytics/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/analytics.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/approvals.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/approvals.lazy.tsx",
+      "reference": "@/features/approvals",
+      "target": "web/src/features/approvals/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/attachment/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/attachment/index.tsx",
+      "reference": "zod",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/attachment/index.tsx",
+      "reference": "@/features/attachment",
+      "target": "web/src/features/attachment/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/audit-log.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/audit-log.lazy.tsx",
+      "reference": "@/features/audit-log",
+      "target": "web/src/features/audit-log/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/backup/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/backup/index.tsx",
+      "reference": "@/features/backup",
+      "target": "web/src/features/backup/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/compliance-dashboard.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/compliance-dashboard.lazy.tsx",
+      "reference": "@/features/compliance-dashboard",
+      "target": "web/src/features/compliance-dashboard/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/compliance-export.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/compliance-export.lazy.tsx",
+      "reference": "@/features/compliance-export",
+      "target": "web/src/features/compliance-export/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/configuration.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/configuration.lazy.tsx",
+      "reference": "@/features/compliance-config",
+      "target": "web/src/features/compliance-config/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/exports/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/exports/index.tsx",
+      "reference": "@/features/exports",
+      "target": "web/src/features/exports/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/import/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/import/index.tsx",
+      "reference": "@/features/import",
+      "target": "web/src/features/import/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/index.tsx",
+      "reference": "@/features/dashboard",
+      "target": "web/src/features/dashboard/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/integrity.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/integrity.lazy.tsx",
+      "reference": "@/features/integrity",
+      "target": "web/src/features/integrity/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/legal-hold.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/legal-hold.lazy.tsx",
+      "reference": "@/features/legal-hold",
+      "target": "web/src/features/legal-hold/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/mailbox/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/mailbox/index.tsx",
+      "reference": "@/features/mailbox",
+      "target": "web/src/features/mailbox/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/mailbox/index.tsx",
+      "reference": "zod",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/oauth2-result/index.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/oauth2-result/index.lazy.tsx",
+      "reference": "@/features/oauth2-result",
+      "target": "web/src/features/oauth2-result/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/oauth2/index.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/oauth2/index.lazy.tsx",
+      "reference": "@/features/oauth2",
+      "target": "web/src/features/oauth2/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/route.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/route.tsx",
+      "reference": "@/lib/utils",
+      "target": "web/src/lib/utils.ts",
+      "classification": "out_of_scope",
+      "reason": "Error/toast presentation or class-name styling utility; excluded by mapping scope."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/route.tsx",
+      "reference": "@/context/search-context",
+      "target": "web/src/context/search-context.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/route.tsx",
+      "reference": "@/components/ui/sidebar",
+      "target": "web/src/components/ui/sidebar.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/route.tsx",
+      "reference": "@/components/layout/app-sidebar",
+      "target": "web/src/components/layout/app-sidebar.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/search/index.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/search/index.tsx",
+      "reference": "@/features/search",
+      "target": "web/src/features/search/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/search/index.tsx",
+      "reference": "zod",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/access.lazy.tsx",
+      "reference": "@/features/settings/access",
+      "target": "web/src/features/settings/access/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/access.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/api-docs.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/api-docs.lazy.tsx",
+      "reference": "@/components/api-docs",
+      "target": "web/src/components/api-docs.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/api-tokens.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/api-tokens.lazy.tsx",
+      "reference": "@/features/settings/api-tokens",
+      "target": "web/src/features/settings/api-tokens/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/appearance.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/appearance.lazy.tsx",
+      "reference": "@/features/settings/appearance",
+      "target": "web/src/features/settings/appearance/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/approvals.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/approvals.lazy.tsx",
+      "reference": "@/features/settings/approvals",
+      "target": "web/src/features/settings/approvals/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/branding.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/branding.lazy.tsx",
+      "reference": "@/features/settings/branding",
+      "target": "web/src/features/settings/branding/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/configurations.lazy.tsx",
+      "reference": "@tanstack/react-router",
+      "target": null,
+      "classification": "external_package",
+      "reason": "External library; package source not traversed."
+    },
+    {
+      "parent": "web/src/routes/_authenticated/settings/configurations.lazy.tsx",
+      "reference": "@/features/settings/configurations",
+      "target": "web/src/features/settings/configurations/index.tsx",
+      "classification": "queued",
+      "reason": "Native navigation, browser state, authentication, producer/editor or server lifecycle dependency."
+    }
+  ]
+}
