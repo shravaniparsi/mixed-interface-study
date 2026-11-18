@@ -1,0 +1,18 @@
+# SeatSurfing ordinary coordinator v1: producer stage
+
+The coordinator connects the existing original native browser, isolated API worker, lifecycle, actor acquisition and complete database comparators. It has no CLI dispatcher and cannot start a registered application qualification by itself. It consumes an already built/provisioned fixture and leaves it available to the enclosing checkpoint/continuation/evidence-retention sequence. No scientific case or application attempt is executed by this preparation.
+
+For each of the two prescheduled ordinary edits, the enclosing job must provide a fresh original fixture. The producer stage executes this sequence exactly once:
+
+1. Launch the original native worker, await the same startup handle, log in through the native form and capture original session storage.
+2. Pause the same browser/application, verify the original actor against fresh database evidence and capture complete pre-creation state.
+3. Record a creation-window start before resume, create the ordinary native reference through its original form, pause, record the end, capture full state and require exactly the native insert plus bounded selected-session activity.
+4. Record a second window before resume, create the independent API target using original captured credentials, pause, record the end and require exactly its insert plus bounded selected-session activity. Compare both complete inserted rows, mapping only their distinct generated IDs.
+5. Record a third window before resume and open the API-created target in the original browser session. The browser independently binds the actual native/API producer HTTP evidence and complete payloads. Capture the loaded editor storage/network, pause, verify unchanged actor continuity, and capture full database state. Require that opening the original editor changed only the source-defined bounded session activity.
+6. Retain the same paused original browser/application and the untouched warm editor for joint checkpoint capture and the original warm scalar edit. The stage does not replace the browser or issue that edit itself.
+
+All complete snapshots, comparison results, actor evidence, worker artifacts, API evidence and lifecycle observations remain private retained files. The original sample location and all other data remain covered by complete-state equality. Five native worker commands are consumed by this stage; the sixth is reserved for the warm edit. Short observation timeouts re-observe the same pending browser command within its original deadline, never resend it or launch another browser. Any stage failure prevents replay and retains a failed-stage report. The parent owns bounded cleanup even when a stage fails with processes paused or an API container pending.
+
+Four tests exercise same-handle timeout observation, deadline exhaustion, the connected producer sequence with real full-state comparators, and an unrelated database mutation that stops execution before opening the target. Runtime boundaries are mocked; no application or database is started. These tests establish sequencing and rejection behavior only.
+
+Outstanding before dispatch: joint checkpoint capture with evidence-derived prerequisites, original warm edit, stopped restoration and restart qualification, restored native/API continuations, current API actor/transport checks, complete request/post-state comparisons, source/runtime inventory binding, encrypted evidence retention, parent cleanup/deadlines and immutable executable workflow registration. A successful producer stage alone is not application qualification or a research finding.
