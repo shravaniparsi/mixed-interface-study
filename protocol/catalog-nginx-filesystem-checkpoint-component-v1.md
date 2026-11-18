@@ -1,0 +1,7 @@
+# AccessList filesystem checkpoint component
+
+This unexecuted component preserves regular files, directory metadata and symlinks without following them. It includes modes, ownership, nanosecond modification times, file sizes/content hashes and literal link targets. Native extended-attribute inspection is mandatory; any extended attributes, hard links or special entries require separate qualification and cause failure. Limits are 20,000 entries and 1 GiB total regular-file bytes, with no truncation. No application or container is started by this module.
+
+Capture requires a new private checkpoint outside the source tree and caller-established authoritative quiescence. Compare source-before/source-after and the copied tree. Restore requires stopped writers. Before deleting any destination entry, validate the actual checkpoint tree against its manifest. Never trust manifest paths alone, follow destination symlinks, traverse an external symlink target, reuse a checkpoint directory or allow overlapping roots. Preserve raw snapshots privately, including keys/password hashes. Aggregate hashes are not sufficient substitutes for retained complete private state.
+
+Local macOS Python lacks os.listxattr: the component refuses operation there and its six native filesystem tests are skipped, not passed. Linux CI must run those tests with real filesystem APIs. Passing synthetic temporary-directory tests is only component validation; it does not establish checkpoint consistency for Nginx Proxy Manager, its SQLite files, generated configuration or running processes.
