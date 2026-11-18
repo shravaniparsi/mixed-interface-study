@@ -1,0 +1,5 @@
+# Source wave 13: OpenELIS FHIR and validation configuration
+
+Acquire exactly ten original files at the frozen OpenELIS revision: FHIR transform/persistence interfaces and implementations, public deployment property templates, OptionalNotBlank annotation/validator, form-field resolver and its default implementation. Resolve original destinations, persistence scope and configuration-dependent validation before proposing a synthetic organization experiment. Acquiring a public property template is not authorization to use any embedded external endpoint or credential. Inspect keys first and avoid displaying credential-like values; no private secret store is accessed.
+
+Apply all existing source limits: 256 unique blobs/8 MiB per project cumulatively over all thirteen waves, 256 KiB per file, 512 KiB envelope, 30 seconds/request, no retries or duplicate paths. Publish before acquisition. This authorizes source reading only, not service contact, package installation, image pull, application run or altered input. Closed projects stay closed, and earlier unresolved workflows remain in the denominator.
