@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-nginx-ordinary-checkpoint-amendment-v2.md',
+    'protocol/catalog-nginx-ordinary-browser-worker-v1.md',
+    'scripts/extension/nginx_ordinary_browser_worker_v1.mjs',
+    'manifests/catalog-qualification-progress-v39.json',
     'protocol/catalog-nginx-ordinary-database-comparison-v1.md',
     'scripts/extension/nginx_ordinary_database_comparison_v1.py',
     'tests/test_nginx_ordinary_database_comparison_v1.py',
