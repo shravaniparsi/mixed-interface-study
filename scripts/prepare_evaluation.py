@@ -37,6 +37,7 @@ ARTIFACTS = [
     'manifests/maintained-packaged-dependencies-v36.json',
     'manifests/maintained-packaged-dependency-collection-v36.json',
     'manifests/maintained-packaged-dependencies-v37.json',
+    'manifests/maintained-packaged-dependencies-v38.json',
     'manifests/maintained-packaged-dependency-collection-v37.json',
     'manifests/maintained-packaged-dependency-collection-v35.json',
     'manifests/maintained-packaged-tasktrove-disposition-v1.json',
