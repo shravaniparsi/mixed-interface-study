@@ -28,6 +28,16 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/reserved_booklore_controls_20261117.md',
+    'notes/reserved_frame_closure_20261117.md',
+    'manifests/reserved-booklore-controls-v1.json',
+    'manifests/reserved-frame-status-closed-v1.json',
+    'results/reserved-booklore-controls-v1-ci-44217681753/failed-job.log',
+    'results/reserved-booklore-controls-v1-ci-44217681753/github-artifacts.json',
+    'results/reserved-booklore-controls-v1-ci-44217681753/github-run.json',
+    'results/reserved-booklore-controls-v1-ci-44217681753/github-timing.json',
+    'results/reserved-booklore-controls-v1-ci-44217681753/node-tools-package-lock.json',
+    'scripts/extension/summarize_reserved_booklore_controls_v1.py',
     'protocol/reserved-booklore-controls-v1.md',
     '.github/workflows/reserved_booklore_controls_v1.yml',
     'scripts/extension/run_reserved_booklore_controls_v1.py',
