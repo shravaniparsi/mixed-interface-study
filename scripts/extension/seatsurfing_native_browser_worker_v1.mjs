@@ -12,6 +12,7 @@ import { nativeSeatsurfingLogin } from './seatsurfing_native_login_v1.mjs';
 import { nativeSeatsurfingOrdinaryCreate, openSeatsurfingLocationEditor, nativeSeatsurfingScalarEdit } from './seatsurfing_native_location_v1.mjs';
 import { observeSeatsurfingBrowser, captureSeatsurfingBrowserState } from './seatsurfing_browser_observation_v1.mjs';
 import { materializeSeatsurfingLocationUpdate } from './materialize_seatsurfing_location_update_v1.mjs';
+import { bindSeatsurfingOrdinaryProducers } from './create_seatsurfing_ordinary_api_v1.mjs';
 import { reconstructSeatsurfingLoader } from './reconstruct_seatsurfing_loader_v1.mjs';
 
 assert.equal(process.argv.slice(2).length, 3);
@@ -83,7 +84,7 @@ await context.routeWebSocket('**/*', socket => {
 });
 const page = await context.newPage();
 let phase = storageState ? 'authenticated' : 'initial';
-let opened, createdId, captured = false;
+let opened, createdId, nativeCreate, captured = false;
 const usedIds = new Set();
 async function quiet() {
   if (boundaryFailure) throw new Error(boundaryFailure);
@@ -115,18 +116,25 @@ async function execute(command) {
       assert.equal(result.response?.status, 201);
       assert.equal(result.createdIdValid, true);
       assert.equal(result.completePayloadMatches, true);
-      await quiet(); await tokenGuard(); createdId = result.createdId; phase = 'created';
+      await quiet(); await tokenGuard(); createdId = result.createdId; nativeCreate = result; phase = 'created';
       return result;
     }
     case 'open': {
       assert.ok(['authenticated', 'created'].includes(phase));
-      if (createdId) assert.equal(command.id, createdId);
+      let producerBinding = null;
+      if (createdId && command.id !== createdId) {
+        producerBinding = bindSeatsurfingOrdinaryProducers({ native: nativeCreate, api: command.apiProducer, accessToken: nativeCredentials.accessToken });
+        assert.equal(command.id, producerBinding.apiId);
+      } else {
+        assert.equal(Object.hasOwn(command, 'apiProducer'), false);
+      }
       await quiet();
       const afterRequestId = Math.max(0, ...observer.snapshot().events.filter(e => e.kind === 'request').map(e => e.id));
       opened = await openSeatsurfingLocationEditor(page, { baseUrl: origin, id: command.id });
       const loadingNetwork = await quiet(); await tokenGuard();
       opened.loader = reconstructSeatsurfingLoader({ events: loadingNetwork.events, afterRequestId, id: command.id, accessToken: nativeCredentials.accessToken, origin });
       assert.deepEqual(opened.loader.materialization.readback, opened.readback);
+      opened.producerBinding = producerBinding;
       phase = 'editor';
       return opened;
     }
