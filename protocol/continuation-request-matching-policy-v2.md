@@ -1,0 +1,29 @@
+# Request matching policy for a future independent-input study
+
+This freezes comparison requirements before any new evaluation implementation or altered-input outcome is inspected. It is not a new application frame, runtime authorization or claim that a generic serializer has been implemented. The nine historical reserved projects and their infrastructure extension are closed. Their source exposures and dispositions remain retained. The executed ordinary development comparison is evidence for one complete ordinary request, not universal support for blocked forms.
+
+## Complete materialization before outcomes
+
+For each prospectively selected workflow, publish an immutable update-materialization recipe before any altered-input execution. Bind the original revision, producer and update endpoints/methods, actor, full readback, native controls, complete native request construction and all participating helpers/defaults. The recipe maps the actual persisted record plus the prespecified unrelated edit into the complete JSON update. It must follow original serialization, including omitted properties, explicit null, disabled controls, reset defaults, coercion and nested structure. An empty rendered input does not prove that the form model contains an empty string. Do not substitute the original producer body for the persisted readback.
+
+Qualify the recipe against complete requests actually emitted by the original native UI on all prescheduled ordinary controls. Preserve every key/value difference. Record ordinary qualification and source-based reasoning separately: agreement on valid examples does not prove behavior for all altered states. If a helper or branch affecting serialization remains unresolved for an input class, mark that class unsupported before running outcomes. Do not approximate it by dropping fields, inventing defaults or repairing the target.
+
+The initial supported path is the source-established materialization approach already described in reserved-continuation-study-v1.md, now with the executed matched ordinary comparator available. No programmatic submit, force-enabled Save, injected validity or modified application is admitted as ordinary native behavior. A future serialization-only intervention would need its own development qualification and explicit separate role; it is not silently introduced by this policy.
+
+## Blocked native forms
+
+If the original native form blocks an unrelated edit, report that observation together with successful production, persisted readback, actionability and ordinary controls. It does not emit a request. Label the API comparator body as counterfactual materialization from the frozen original-source recipe, never as a captured request from the blocked attempt. Require the recipe's applicability to that exact persisted state and preserve the target condition. If this cannot be established, the API comparison is unavailable.
+
+Retain the native observation even when the API comparison is unavailable, but do not count it as incremental native detection over A. A successful API edit with an unequal body or starting state does not qualify as the comparator. A separate target-only repair, if prescheduled in the future study, follows the original outcome and cannot replace it. No new repair or serializer correction is chosen from observed results.
+
+## Baselines and evidence boundaries
+
+H records producer HTTP responses and side-effect observations. S uses only the original API schema and exact qualified validator/dialect behavior, with missing or unsupported obligations reported as unavailable. Frontend rules cannot be inserted into S. A uses the complete matched materialized update and readback. U uses original ordinary browser controls and observes actionability, blocking, request/response and persisted outcome. Shared information and source access must be disclosed; A's use of a native serializer makes it a matched-information comparator, not a claim that a black-box client acquired that serializer independently.
+
+Existing source/native-rule replay must not be weakened to manufacture an algorithmic advantage. Any future D/source baseline needs its own frozen implementation, coverage and input/materialization qualifications. Unsupported replay is unknown, not an incorrect prediction. The retired conditional-evaluator novelty claim stays retired. H/S/A/U-only descriptive findings cannot be relabelled as superiority over a source-aware method that was not actually run.
+
+For restored comparisons, check relevant persisted state, actors and complete payloads before interpreting outcomes. Preserve full observations of timestamp and other representation changes. Allow an outcome-field exception only when its operation-specific semantics and check are published before outcomes, as lastModifiedDate was in the ordinary control. Do not infer warm-state equivalence from matching restored branches. Preschedule the ordinary warm reference and any checks needed for scientific cases; retain unsupported cases and all setup failures.
+
+## Required in the next study registration
+
+Name a genuinely new outcome-independent sampling frame and immutable revisions, exposure/genealogy review, deterministic workflow eligibility/order, source and runtime budgets, complete baseline versions, prospective input classes and unrelated edits, matching/unsupported rules, independent-obligation policy, and full reporting denominators. No current artifact establishes that new frame. Initial metadata screening may assess whether one exists; it must not reopen a closed cohort or become a search for favorable defects. A new registration must state what scientific evidence would change the contribution assessment, including a properly qualified null result. No fixed number of positive findings is a success criterion.

@@ -1,0 +1,13 @@
+# Current sampling status after ordinary comparator qualification
+
+The ordinary comparison in run44258918439 is qualified for its one exposed workflow. It does not revive earlier cohorts or turn their failures into independent observations.
+
+A current-state audit found that project-family-partition-v1.json still correctly records the historical evaluation_reserved assignment, while later reserved-frame-status-closed-v1.json records closure of all nine rows/eight conservative families. Subsequent infrastructure-extension-closure-v1.json also records zero qualified native/API workflows and zero scientific cases. The reservation label therefore cannot be used as current evidence of untouched material. Some projects have only partial source-prefix/document exposure; that does not make the closed reservation an active untouched evaluation slot.
+
+The reconciliation script verifies all nine original dispositions and the two extension evidence-manifest hashes, joins them to the historical partition, and records initial source-collection counts without overstating complete source inspection. No original partition, failed outcome or exposure record was overwritten. New source reads, new runtime jobs and new independent cases added: zero.
+
+This corrects the next-action assumption implied by looking only at the old partition: there is no unused reserved frame available there. The maintained packaged and public-OpenAPI frames also have recorded closures and cannot be silently reopened. A future evaluation needs a separately justified sampling design, not reassignment of existing labels. This audit is not a universal claim that no other eligible open-source systems exist.
+
+The blocked-form comparison policy is now explicit in continuation-request-matching-policy-v2.md. A complete frozen original-source serialization recipe may supply the counterfactual API request when no native request is emitted. It must be qualified for the input's materialization semantics; otherwise the API comparison is unavailable. Neither an unavailable baseline nor an unequal request can support an incremental-detection claim. Source-aware baselines and warm-state limitations remain part of the next design.
+
+The next concrete decision is to define and screen a new outcome-independent metadata frame under fixed limits, while retaining this policy and all prior exposure. Do not consume more closed projects merely to obtain enough positive cases. The scientific contribution and Q1 readiness remain unestablished. No new paid service, application execution or timing-ledger entry was introduced by this reconciliation.

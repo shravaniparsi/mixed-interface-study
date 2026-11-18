@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/reconcile_reserved_frame_v2.py',
+    'manifests/reserved-frame-current-status-v2.json',
+    'protocol/continuation-request-matching-policy-v2.md',
+    'notes/current_sampling_and_matching_gate_v2.md',
     'manifests/development-continuation-v1.json',
     'notes/development_continuation_v1.md',
     'results/development-continuation-v1-ci-44258918439/api-browser-container.json',
