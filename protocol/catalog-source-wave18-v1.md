@@ -1,0 +1,7 @@
+# Source wave 18: Nginx Proxy Manager AccessList mapping
+
+Acquire exactly thirteen scheduled original files at frozen revision 20016b9d91d49c9133f1b4d26ab5a289c72ec1db, completing the already identified AccessList modal transport, persistence, original-schema validation and bootstrap paths. This is the earlier mapped modal, not a substitute selected from altered outcomes. No scientific input, workflow selection or runtime is authorized. Prior incidental source exposure stays disclosed; do not fetch tests, issues or fixes.
+
+OpenELIS remains pending with its unqualified image provenance, oversized seed and restoration prerequisites. Its source cap is not waived. Rechecking the already acquired next cohort entries found changedetection.io's watch templates declare HTML POST forms, so an actual complete native JSON request is not yet established under the current comparator policy. Jitsi's acquired polls middleware uses conference events; persistent JSON create/update/readback and same-actor administrative continuation remain unestablished. These are unresolved mappings, not project-wide ineligibility claims or qualified nulls. Retain their cohort positions and do not replace them. Source mapping across the fixed cohort does not authorize out-of-order scientific selection.
+
+Apply cumulative 256-blob/8-MiB per-project bounds, 256-KiB file/512-KiB envelope caps, 30-second requests, no retry or duplicate paths, publication before acquisition. No installation, image pull, local application or external account use.
