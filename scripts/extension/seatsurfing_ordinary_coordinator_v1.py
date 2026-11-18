@@ -229,8 +229,15 @@ class OrdinaryCoordinator:
             write_private(self.directory/'warm-stage.json',report)
 
     def restore_native_editor(self, *, private_key):
-        if self.phase != 'warm_edit_paused': raise RuntimeError('Restore requires the completed original warm branch')
-        self.phase='restore_native_in_progress'
+        return self._restore_branch(private_key=private_key, branch='native')
+
+    def restore_api_inputs(self, *, private_key):
+        return self._restore_branch(private_key=private_key, branch='api')
+
+    def _restore_branch(self, *, private_key, branch):
+        expected={'native':'warm_edit_paused','api':'restored_native_edit_paused'}
+        if branch not in expected or self.phase != expected[branch]: raise RuntimeError('Restore requires the preceding completed branch')
+        self.phase='restore_'+branch+'_in_progress'
         report={'status':self.phase,'runtime_qualified':False}
         try:
             self.lifecycle.resume()
@@ -245,8 +252,8 @@ class OrdinaryCoordinator:
             original=json.loads((self.directory/'checkpoint-observation.json').read_text())
             proof={**original,'browser_and_application_paused':False,'browser_and_application_stopped':True,
                    'stopped_identity':stopped['after'],'original_final_trace_sha256':hashlib.sha256(final_raw).hexdigest()}
-            observation=self.directory/'native-restore-observation.json';write_private(observation,proof)
-            output=self.directory/'native-restore-result.json'
+            observation=self.directory/(branch+'-restore-observation.json');write_private(observation,proof)
+            output=self.directory/(branch+'-restore-result.json')
             command=[sys.executable,str(Path(__file__).with_name('seatsurfing_joint_checkpoint_v2.py')),
                 'restore','--checkpoint',str(self.checkpoint),'--build-report',str(self.build_report),
                 '--private-key',str(Path(private_key).absolute()),'--public-key',str(self.public_key),
@@ -254,11 +261,11 @@ class OrdinaryCoordinator:
                 '--observation',str(observation),'--output',str(output)]
             try:result=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=330)
             except subprocess.TimeoutExpired as error:
-                (self.directory/'native-restore.stdout').write_bytes(error.stdout or b'')
-                (self.directory/'native-restore.stderr').write_bytes(error.stderr or b'')
+                (self.directory/(branch+'-restore.stdout')).write_bytes(error.stdout or b'')
+                (self.directory/(branch+'-restore.stderr')).write_bytes(error.stderr or b'')
                 raise
-            (self.directory/'native-restore.stdout').write_bytes(result.stdout)
-            (self.directory/'native-restore.stderr').write_bytes(result.stderr)
+            (self.directory/(branch+'-restore.stdout')).write_bytes(result.stdout)
+            (self.directory/(branch+'-restore.stderr')).write_bytes(result.stderr)
             if result.returncode or result.stdout or result.stderr:raise RuntimeError('Stopped joint restore unavailable')
             restored=json.loads(output.read_text())
             if restored['status']!='database_restored_browser_context_not_started':raise RuntimeError('Restore was not verified')
@@ -281,13 +288,13 @@ class OrdinaryCoordinator:
             else:raise TimeoutError('Original application readiness observation expired')
             captured=json.loads(Path(restored['storage_path']).read_text())
             values={row['name']:row['value'] for row in captured['origins'][0]['localStorage']}
-            configuration=self.directory/'restored-native-config.json'
+            configuration=self.directory/('restored-'+branch+'-config.json')
             write_private(configuration,{'mode':'verified_restoration','origin':'http://127.0.0.1:8080',
                 'storagePath':str(Path(restored['storage_path']).absolute()),'storageSha256':restored['storage_sha256'],
                 'nativeCredentials':{'accessToken':values['accessToken'],'refreshToken':values['refreshToken']}})
             self.original_bridge,self.original_lifecycle=self.bridge,self.lifecycle
             self.bridge=launch_native_browser(tools=self.provision['node_tools'],configuration=configuration,
-                private_directory=self.directory/'restored-native',build_report=self.build_report)
+                private_directory=self.directory/('restored-'+branch),build_report=self.build_report)
             while not self.bridge.ready and not self.bridge.failed:
                 try:self.bridge.await_ready(seconds=30)
                 except TimeoutError:continue
@@ -295,6 +302,30 @@ class OrdinaryCoordinator:
             self.lifecycle=FixtureLifecycle(self.build)
             if self.lifecycle.ids[:2]!=tuple(identity['container_ids'][:2]):raise RuntimeError('Restored application/database identities changed')
             if self.lifecycle.processes[1]!=self.original_lifecycle.processes[1]:raise RuntimeError('Database process changed during restore')
+            if branch=='api':
+                # This context stays on about:blank. All editor inputs below
+                # come from the independent API worker, without native opens.
+                loaded_report=run_api_operation(operation='independent_load',storage=restored['storage_path'],
+                    storage_sha256=restored['storage_sha256'],build_report=self.build_report,
+                    private_directory=self.directory/'api-startup-load',location_id=self.warm['api_id'])
+                if loaded_report['status']!='api_worker_result_retained':raise RuntimeError('Independent API loading worker unavailable')
+                loaded=loaded_report['result']['result']
+                if loaded.get('outcome')!='source_inputs_loaded':raise RuntimeError('Independent API inputs unavailable')
+                self.lifecycle.pause()
+                startup_end=time.time_ns()//1000
+                state=self.snapshot('restored-api-loaded-state')
+                comparison=compare_ordinary_state(self.warm['state'],state,session_id=self.report['session_id'],
+                    location_id=self.warm['api_id'],window_start_us=startup_start,window_end_us=startup_end)
+                write_private(self.directory/'restored-api-startup-comparison.json',comparison)
+                if loaded['materialization']!=self.warm['opened']['loader']['materialization']:
+                    raise RuntimeError('Independent API inputs differ from original warm inputs')
+                identity_check=verify_api_actor_response(loaded,self.warm['actor']['continuity'])
+                write_private(self.directory/'restored-api-self-comparison.json',identity_check)
+                actor=self.actor('actor-restored-api-inputs',self.warm['capture'],Path(restored['storage_path']),self.warm['actor']['continuity'])
+                self.restored_api={'loaded':loaded,'state':state,'actor':actor,'storage':Path(restored['storage_path']),
+                    'storage_sha256':restored['storage_sha256'],'api_self':identity_check,'native_trace_source':'original_warm_capture'}
+                self.phase='restored_api_inputs_paused';report.update(status=self.phase)
+                return self.restored_api
             opened=observe_command(self.bridge,{'requestId':'open','operation':'open','id':self.warm['api_id']})
             capture=observe_command(self.bridge,{'requestId':'capture','operation':'capture'})
             self.lifecycle.pause()
@@ -312,11 +343,11 @@ class OrdinaryCoordinator:
             self.phase='restored_native_editor_paused';report.update(status=self.phase)
             return self.restored_native
         except Exception as error:
-            self.phase='failed';report.update(status='native_restore_unavailable',error_type=type(error).__name__)
+            self.phase='failed';report.update(status=branch+'_restore_unavailable',error_type=type(error).__name__)
             raise
         finally:
-            write_private(self.directory/'native-restore-stage.json',report)
-            write_private(self.directory/'native-restore-lifecycle.json',self.lifecycle.events)
+            write_private(self.directory/(branch+'-restore-stage.json'),report)
+            write_private(self.directory/(branch+'-restore-lifecycle.json'),self.lifecycle.events)
 
     def restored_native_edit(self):
         if self.phase!='restored_native_editor_paused':raise RuntimeError('Require verified restored native editor')
@@ -343,6 +374,71 @@ class OrdinaryCoordinator:
         finally:
             write_private(self.directory/'restored-native-edit-stage.json',report)
             write_private(self.directory/'restored-native-edit-lifecycle.json',self.lifecycle.events)
+
+    def restored_api_edit(self):
+        if self.phase!='restored_api_inputs_paused':raise RuntimeError('Require verified independently loaded API inputs')
+        self.phase='restored_api_edit_in_progress'
+        report={'status':self.phase,'runtime_qualified':False}
+        try:
+            start=time.time_ns()//1000
+            self.lifecycle.resume()
+            observed=run_api_operation(operation='ordinary_continue',storage=self.restored_api['storage'],
+                storage_sha256=self.restored_api['storage_sha256'],build_report=self.build_report,
+                private_directory=self.directory/'api-continuation',location_id=self.warm['api_id'],edit=self.edit)
+            if observed['status']!='api_worker_result_retained':raise RuntimeError('Independent API continuation worker unavailable')
+            result=observed['result']['result']
+            if result.get('outcome')!='continuation_observed' or result['execution'].get('outcome')!='all_http_accepted':
+                raise RuntimeError('Ordinary API continuation not accepted')
+            self.lifecycle.pause()
+            end=time.time_ns()//1000
+            after=self.snapshot('after-restored-api-edit')
+            comparison=compare_ordinary_state(self.warm['state'],after,session_id=self.report['session_id'],
+                location_id=self.warm['api_id'],window_start_us=start,window_end_us=end,edit=self.edit)
+            write_private(self.directory/'restored-api-edit-state-comparison.json',comparison)
+            if result['loaded']['materialization']!=self.warm['opened']['loader']['materialization']:
+                raise RuntimeError('API continuation did not load original matched inputs')
+            identity_check=verify_api_actor_response(result['loaded'],self.warm['actor']['continuity'])
+            write_private(self.directory/'restored-api-edit-self-comparison.json',identity_check)
+            actor=self.actor('actor-after-restored-api-edit',self.warm['capture'],self.restored_api['storage'],self.warm['actor']['continuity'])
+            self.api_result={'api':result,'state':after,'actor':actor,'api_self':identity_check,'state_comparison':comparison,
+                'native_trace_source':'original_warm_capture'}
+            self.phase='restored_api_edit_paused';report.update(status=self.phase,request_comparison_pending=True)
+            return self.api_result
+        except Exception as error:
+            self.phase='failed';report.update(status='restored_api_edit_unavailable',error_type=type(error).__name__)
+            raise
+        finally:
+            write_private(self.directory/'restored-api-edit-stage.json',report)
+            write_private(self.directory/'restored-api-edit-lifecycle.json',self.lifecycle.events)
+
+
+def verify_api_actor_response(loaded, continuity):
+    if loaded.get('acquisition')!='independent_api_gets' or loaded.get('outcome')!='source_inputs_loaded':
+        raise ValueError('Require independent API actor acquisition')
+    rows=[row for row in loaded['envelopes'] if row['url']=='http://127.0.0.1:8080/user/me']
+    if len(rows)!=1:raise ValueError('Missing or repeated independent self response')
+    row=rows[0]
+    if row['method']!='GET' or row.get('outcome')!='json_observed' or row.get('status')!=200:
+        raise ValueError('Independent self response unavailable')
+    if not isinstance(row.get('completedAt'),(int,float)) or row['completedAt']<row['dispatchedAt']:
+        raise ValueError('Incomplete independent self request')
+    authorization=row['headers'].get('authorization','')
+    if not authorization.startswith('Bearer ') or hashlib.sha256(authorization[7:].encode()).hexdigest()!=continuity['accessTokenSha256']:
+        raise ValueError('API actor uses a different bearer token')
+    if row['headers'].get('cookie') is not None:raise ValueError('Unqualified API cookie')
+    if hashlib.sha256(row['responseBody'].encode()).hexdigest()!=row['bodySha256']:
+        raise ValueError('Independent self response hash mismatch')
+    value=json.loads(row['responseBody'])
+    if value!=loaded['originalResponses']['self']:raise ValueError('API materialization self does not bind observed response')
+    for field in ['email','organizationId','accountType','permissions','requirePassword','passwordPending','totpEnabled','hasPasskeys','authProviderId']:
+        if value.get(field)!=continuity.get(field):raise ValueError('API actor continuity differs: '+field)
+    if value['id']!=continuity['userId'] or value['organization']['id']!=continuity['organizationId']:
+        raise ValueError('API user/organization identity differs')
+    roles=value['roleIds']
+    if len(set(roles))!=len(roles) or sorted(roles)!=continuity['roleIds']:raise ValueError('API actor roles differ')
+    return {'status':'independent_api_self_matches_original_actor','response_sha256':row['bodySha256'],
+            'access_token_sha256':continuity['accessTokenSha256'],'native_trace_fabricated':False,
+            'database_identity_verification_required':True,'runtime_qualified':False}
 
 
 def build_checkpoint_observation(warm, storage_raw, network_raw, current_state, paused):

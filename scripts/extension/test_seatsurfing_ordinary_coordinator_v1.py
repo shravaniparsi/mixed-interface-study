@@ -206,11 +206,12 @@ class RestoredNativeSequence(unittest.TestCase):
     def test_verified_restore_precedes_replacement_and_failed_restore_prevents_start(self):
         import subprocess
         from unittest.mock import Mock
-        for failure in [False,True]:
-            with self.subTest(failure=failure):
+        for branch,failure in [('native',False),('native',True),('api',False),('api',True)]:
+            with self.subTest(branch=branch,failure=failure):
                 helper=ProducerStage();self.addCleanup(helper.doCleanups)
                 stage,_=helper.run_stage()
-                stage.phase='warm_edit_paused'
+                stage.phase='warm_edit_paused' if branch=='native' else 'restored_native_edit_paused'
+                restore_method=stage.restore_native_editor if branch=='native' else stage.restore_api_inputs
                 stage.checkpoint=stage.directory/'checkpoint';stage.checkpoint.mkdir()
                 storage=stage.checkpoint/'storage.json';storage.write_text(json.dumps({'origins':[{'localStorage':[{'name':'accessToken','value':'token'},{'name':'refreshToken','value':'refresh'}]}]}))
                 digest=hashlib.sha256(storage.read_bytes()).hexdigest();stage.warm['capture']['storageSha256']=digest
@@ -248,17 +249,68 @@ class RestoredNativeSequence(unittest.TestCase):
                 tables={table['relation_name']:[json.loads(raw) for raw in table['rows']] for table in stage.warm['state']['row_data']}
                 tables['sessions'][0]['last_activity']='2026-11-18T00:00:10'
                 state=snapshot(tables);base=epoch_microseconds('2026-11-18T00:00:00Z')
-                with patch.object(module.subprocess,'run',side_effect=restore),patch.object(module,'lifecycle_command',side_effect=command),patch.object(module,'launch_native_browser',return_value=Browser()) as launch,patch.object(module,'FixtureLifecycle',Lifecycle),patch.object(stage,'snapshot',return_value=state),patch.object(stage,'actor',return_value=stage.warm['actor']),patch.object(module.time,'time_ns',side_effect=[(base+9000000)*1000,(base+11000000)*1000]):
+                with patch.object(module,'run_api_operation',return_value={'status':'api_worker_result_retained','result':{'result':{'outcome':'source_inputs_loaded','materialization':{'fixture':True}}}}),patch.object(module,'verify_api_actor_response',return_value={'status':'synthetic_match'}),patch.object(module.subprocess,'run',side_effect=restore),patch.object(module,'lifecycle_command',side_effect=command),patch.object(module,'launch_native_browser',return_value=Browser()) as launch,patch.object(module,'FixtureLifecycle',Lifecycle),patch.object(stage,'snapshot',return_value=state),patch.object(stage,'actor',return_value=stage.warm['actor']),patch.object(module.time,'time_ns',side_effect=[(base+9000000)*1000,(base+11000000)*1000]):
                     if failure:
-                        with self.assertRaisesRegex(RuntimeError,'restore unavailable'):stage.restore_native_editor(private_key=stage.directory/'key')
-                    else:stage.restore_native_editor(private_key=stage.directory/'key')
+                        with self.assertRaisesRegex(RuntimeError,'restore unavailable'):restore_method(private_key=stage.directory/'key')
+                    else:restore_method(private_key=stage.directory/'key')
                 self.assertEqual(calls[0],['joint','restore'])
                 if failure:
                     self.assertEqual(calls,[['joint','restore']]);self.assertEqual(launch.call_count,0);self.assertEqual(stage.phase,'failed')
                 else:
                     self.assertEqual(calls[1:3],[['docker','rm',module.BROWSER],['docker','start',module.APP]])
-                    self.assertEqual(operations,['open','capture']);self.assertEqual(stage.phase,'restored_native_editor_paused')
-                with self.assertRaises(RuntimeError):stage.restore_native_editor(private_key=stage.directory/'key')
+                    self.assertEqual(operations,['open','capture'] if branch=='native' else []);self.assertEqual(stage.phase,'restored_native_editor_paused' if branch=='native' else 'restored_api_inputs_paused')
+                with self.assertRaises(RuntimeError):restore_method(private_key=stage.directory/'key')
+
+
+
+
+class IndependentApiActor(unittest.TestCase):
+    def fixture(self):
+        continuity={'userId':'user','email':'example','organizationId':'org','accountType':0,
+            'permissions':{'locations':30},'requirePassword':True,'passwordPending':False,
+            'roleIds':['role'],'accessTokenSha256':hashlib.sha256(b'token').hexdigest()}
+        value={key:val for key,val in continuity.items() if key not in ['userId','accessTokenSha256']}
+        value.update(id='user',organization={'id':'org'})
+        raw=json.dumps(value)
+        row={'url':'http://127.0.0.1:8080/user/me','method':'GET','outcome':'json_observed','status':200,
+            'dispatchedAt':1,'completedAt':2,'headers':{'authorization':'Bearer token'},
+            'responseBody':raw,'bodySha256':hashlib.sha256(raw.encode()).hexdigest()}
+        return {'outcome':'source_inputs_loaded','acquisition':'independent_api_gets','envelopes':[row],'originalResponses':{'self':value}},continuity
+    def test_independent_self_keeps_api_provenance(self):
+        result=module.verify_api_actor_response(*self.fixture())
+        self.assertFalse(result['native_trace_fabricated']);self.assertFalse(result['runtime_qualified'])
+    def test_changed_token_missing_response_and_hash_fail(self):
+        for change in ['token','missing','hash']:
+            loaded,continuity=self.fixture()
+            if change=='token':loaded['envelopes'][0]['headers']['authorization']='Bearer other'
+            if change=='missing':loaded['envelopes']=[]
+            if change=='hash':loaded['envelopes'][0]['bodySha256']='wrong'
+            with self.assertRaises(ValueError):module.verify_api_actor_response(loaded,continuity)
+    def test_current_permission_changes_fail_even_with_valid_body_hash(self):
+        loaded,continuity=self.fixture();value=loaded['originalResponses']['self'];value['permissions']={'locations':10}
+        raw=json.dumps(value);loaded['envelopes'][0].update(responseBody=raw,bodySha256=hashlib.sha256(raw.encode()).hexdigest())
+        with self.assertRaisesRegex(ValueError,'permissions'):module.verify_api_actor_response(loaded,continuity)
+
+
+class RestoredApiEdit(unittest.TestCase):
+    def test_api_continuation_uses_fresh_loading_and_original_warm_state(self):
+        helper=ProducerStage();self.addCleanup(helper.doCleanups)
+        stage,_=helper.run_stage();stage.phase='restored_api_inputs_paused'
+        stage.warm['opened']={'loader':{'materialization':{'fixture':True}}}
+        stage.restored_api={'storage':stage.warm['storage'],'storage_sha256':'hash'}
+        loaded={'materialization':{'fixture':True}}
+        observed={'status':'api_worker_result_retained','result':{'result':{'outcome':'continuation_observed','loaded':loaded,'execution':{'outcome':'all_http_accepted'}}}}
+        tables={table['relation_name']:[json.loads(raw) for raw in table['rows']] for table in stage.warm['state']['row_data']}
+        next(row for row in tables['locations'] if row['id']=='api')['description']='Edit description'
+        tables['sessions'][0]['last_activity']='2026-11-18T00:00:11'
+        base=epoch_microseconds('2026-11-18T00:00:00Z')
+        with patch.object(module,'run_api_operation',return_value=observed) as run,patch.object(module,'capture_state',return_value=snapshot(tables)),patch.object(module,'verify_api_actor_response',return_value={'status':'synthetic_match'}),patch.object(stage,'actor',return_value=stage.warm['actor']),patch.object(module.time,'time_ns',side_effect=[(base+10000000)*1000,(base+12000000)*1000]):
+            result=stage.restored_api_edit()
+        self.assertEqual(run.call_count,1);self.assertEqual(run.call_args.kwargs['operation'],'ordinary_continue')
+        self.assertEqual(result['native_trace_source'],'original_warm_capture')
+        self.assertEqual(stage.phase,'restored_api_edit_paused')
+        self.assertEqual(result['state_comparison']['target_change']['before'],'Study description')
+        with self.assertRaises(RuntimeError):stage.restored_api_edit()
 
 
 if __name__=='__main__':unittest.main()
