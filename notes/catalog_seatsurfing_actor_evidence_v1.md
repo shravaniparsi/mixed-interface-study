@@ -1,0 +1,9 @@
+# SeatSurfing actor evidence implementation
+
+Previous goal turn was progress: it acquired the seven preregistered healthcheck/user/role files and extended source-build verification to 53 files with an unchanged Dockerfile. This turn implements a read-only actor DB collector and independent consistency verifier against the signed native token and captured /user/me response. It preserves original resolved permissions rather than approximating the administrator's live permission catalogue.
+
+Ten synthetic cryptographic/network/database tests and two query-construction tests passed locally. No PostgreSQL connection, browser, application job or scientific input ran. The current components leave provenance/full-state/runtime qualification explicit for the coordinator to establish; an identity-consistency result cannot be substituted for ordinary warm/restored equality.
+
+Rechecking the retained routes.go middleware confirms asynchronous session activity writes after authenticated requests. Network quiet alone cannot establish database quiet. This is mapped source behavior, not a newly observed defect. The prospective ordinary state comparison still needs to retain and account for these writes without erasing unrelated differences. Current cohort totals remain six prior application jobs and zero scientific cases; SeatSurfing has zero qualification attempts. Source exposure remains 53 files / 642,686 bytes.
+
+Next remaining integration: capture original loader readbacks, bind actor acquisition to the native worker and fixed keys, source-compile the original schema, perform the complete API continuation, coordinate paused warm capture/stopped restore, define and verify ordinary state differences, and register the complete bounded recipe plus private evidence retention before dispatch.
