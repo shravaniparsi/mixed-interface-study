@@ -1,0 +1,79 @@
+name: Frontend Build
+
+on:
+  # Allows you to reuse workflows by referencing their YAML files
+  workflow_call:
+    outputs:
+      build-status:
+        description: "Build status"
+        value: ${{ jobs.frontend-build.outputs.build-status }}
+      test-status:
+        description: "Test status"
+        value: ${{ jobs.frontend-build.outputs.test-status }}
+    inputs:
+      clean-cache:
+        required: false
+        type: boolean
+
+jobs:
+  frontend-build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    outputs:
+      build-status: ${{ steps.build.outcome }}
+      test-status: ${{ steps.test.outcome }}
+
+    defaults:
+      run:
+        working-directory: ./cloudbeaver/webapp
+
+    steps:
+      - name: Checkout cloudbeaver
+        uses: actions/checkout@v4
+        with:
+          path: cloudbeaver
+
+      - name: Clone Deps Repositories
+        uses: dbeaver/github-actions/clone-repositories@devel
+        with:
+          project_deps_path: "./cloudbeaver/project.deps"
+          token: ${{ secrets.DEVOPS_ISSUE_RO_TOKEN }}
+
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.22.1"
+          cache: "yarn"
+          cache-dependency-path: |
+            cloudbeaver/webapp/yarn.lock
+
+      - name: restore typescript cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            "cloudbeaver/webapp/common-*/**/*/lib"
+            "cloudbeaver/webapp/**/packages/*/dist"
+          key: ${{ runner.os }}-dist-${{ hashFiles('cloudbeaver/webapp/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dist-
+
+      - if: inputs.clean-cache
+        run: yarn clear
+
+      - run: yarn install --immutable
+
+      - run: yarn bundle
+        working-directory: ./cloudbeaver/webapp/packages/product-default
+
+      - run: yarn test
+
+      # - name: Archive build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: frontend-build-artifacts
+      #     path: webapp/packages/product-default/lib
+      #     if-no-files-found: error
