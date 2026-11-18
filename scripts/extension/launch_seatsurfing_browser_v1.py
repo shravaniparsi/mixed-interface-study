@@ -14,7 +14,7 @@ LABEL = 'org.mixed-interface.study=seatsurfing-qualification-v1'
 
 def browser_command(tools, configuration, evidence, storage=None):
     command = ['docker', 'run', '-i', '--init', '--name', BROWSER, '--label', LABEL,
-               '--network', 'container:' + PG, '--restart', 'no', '--read-only',
+               '--network', 'container:' + PG, '--restart', 'no', '--user', f'{os.getuid()}:{os.getgid()}', '--read-only',
                '--memory', '2g', '--cpus', '2', '--shm-size', '512m', '--tmpfs', '/tmp:rw,size=512m',
                '-e', 'TZ=UTC', '-v', f'{ROOT}:/study:ro', '-v', f'{tools}:/tools:ro',
                '-v', f'{configuration}:/input/config.json:ro', '-v', f'{evidence}:/evidence:rw']

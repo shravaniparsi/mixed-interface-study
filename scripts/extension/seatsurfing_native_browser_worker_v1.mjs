@@ -84,7 +84,7 @@ await context.routeWebSocket('**/*', socket => {
 });
 const page = await context.newPage();
 let phase = storageState ? 'authenticated' : 'initial';
-let opened, createdId, nativeCreate, captured = false;
+let opened, createdId, nativeCreate, captured = false, sessionCaptured = false;
 const usedIds = new Set();
 async function quiet() {
   if (boundaryFailure) throw new Error(boundaryFailure);
@@ -106,6 +106,15 @@ async function execute(command) {
       const result = await nativeSeatsurfingLogin(page, { baseUrl: origin, ...config.login });
       nativeCredentials = { accessToken: result.response.accessToken, refreshToken: result.response.refreshToken };
       await quiet(); await tokenGuard(); phase = 'authenticated';
+      return result;
+    }
+    case 'session_storage': {
+      assert.equal(config.mode, 'native_login');
+      assert.equal(phase, 'authenticated'); assert.equal(sessionCaptured, false);
+      const result = await captureSeatsurfingBrowserState({ context, page, observer, origin, nativeCredentials, minimumLifetimeMs: 210000 });
+      await retain('session-storage.json', result.storage);
+      await retain('session-network.json', result.network.events);
+      sessionCaptured = true;
       return result;
     }
     case 'create': {
