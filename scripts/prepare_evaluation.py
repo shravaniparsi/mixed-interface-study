@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-nginx-peer-state-comparison-v1.md',
+    'scripts/extension/nginx_peer_state_v1.mjs',
+    'scripts/extension/test_nginx_peer_state_v1.mjs',
+    'results/catalog-nginx-restore-unit-ci-44292799615/collection.json',
+    'notes/catalog_nginx_restore_peer_progress_v1.md',
+    'manifests/catalog-qualification-progress-v32.json',
     'protocol/catalog-nginx-sqlite-restore-component-v1.md',
     'scripts/extension/nginx_sqlite_restore_v1.py',
     'tests/test_nginx_sqlite_restore_v1.py',
