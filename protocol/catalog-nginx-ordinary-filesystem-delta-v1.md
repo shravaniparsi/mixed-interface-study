@@ -1,0 +1,15 @@
+# Ordinary operation filesystem delta
+
+This prospective predicate applies to one of the two frozen ordinary edits within a single running branch. It is not the cross-restart comparison or a dispatch authorization. No application outcome informed it.
+
+Use complete before/after inventories from the registered runtime observer, with all nine roots and absence of extended attributes. Reject missing roots, duplicate paths, noncanonical relative paths, unsupported kinds, and missing ordinary database/access fixtures. All files, symlinks and directory metadata must remain exact except the following operation-specific transitions.
+
+* The existing /data/database.sqlite and /data/access/{subject ID} may change bytes, digest and modification time. Kind, ownership, mode and all other recorded properties stay exact. Changed modification times must lie within the observed UTC operation interval, at most 120 seconds, using nanosecond resolution with endpoint rounding only.
+* The /data and /data/access directories may change modification time within the same interval, retaining all other metadata. This accommodates original file replacement and SQLite sidecar directory entries.
+* Only the exact database.sqlite-wal, database.sqlite-shm and database.sqlite-journal paths may appear, disappear or change physical representation. When present they must be regular files with the original database's mode and ownership. Raw inventories remain retained. Logical database equality is not inferred from these files: the predicate itself runs the complete original-driver typed database transition checker. This admission is limited to physical SQLite representation; it does not authorize restoring stale sidecars alongside a standalone backup.
+
+No log, cache, configuration, certificate, key, peer-secret or PID-file exception applies during an ordinary edit. An unexpected change is an unavailable ordinary comparison, not a detected application defect. This predicate does not establish that no intervening writes occurred; checkpoint quiescence and process continuity remain separate mandatory evidence.
+
+The public entry point also verifies before/after access-file bytes against each snapshot's actual persisted credential using the verified application's OpenSSL, and binds their length and SHA256 to the corresponding runtime inventory. Password-edit and address-edit states use their own actual credentials. No caller-provided success flag substitutes for these database and credential checks. The returned full private diff retains physical database representation, operation times and access-file hashes.
+
+Eight local synthetic tests cover allowed edits, unrelated secret changes, log/cache/rotation mutations, path additions, time/mode mismatches, sidecar ownership, incomplete or ambiguous inventories, and integration with complete synthetic database states and local OpenSSL for both frozen edits. Local OpenSSL is test infrastructure only. No application, container, browser, original driver or live checkpoint executed. Cross-restart starting-state equivalence and full bounded orchestration remain incomplete.
