@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/summarize_reserved_kanban_controls_v1.py',
     'protocol/reserved-kanban-controls-v1.md',
     '.github/workflows/reserved_kanban_controls_v1.yml',
     'scripts/extension/qualify_reserved_kanban_control_v1.mjs',
