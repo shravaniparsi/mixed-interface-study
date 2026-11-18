@@ -28,6 +28,12 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-viseron-qualification-v1.md',
+    '.github/workflows/catalog_viseron_ordinary_v1.yml',
+    'scripts/extension/run_viseron_browser_phase_v1.mjs',
+    'scripts/extension/qualify_viseron_ordinary_v1.py',
+    'scripts/extension/verify_viseron_ordinary_v1.py',
+    'scripts/extension/test_viseron_state_comparison_v1.py',
     'manifests/catalog-viseron-preparation-ci-accounting-v1.json',
     'protocol/catalog-viseron-ordinary-recipe-v1.md',
     'manifests/catalog-viseron-workflow-selection-v1.json',
