@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/maintained-packaged-dependencies-v2.json',
+    'manifests/maintained-packaged-dependency-collection-v1.json',
     'manifests/maintained-packaged-dependencies-v1.json',
     'notes/maintained_packaged_mapping_review_20261117.md',
     'scripts/extension/collect_packaged_mapping_sources_v1.py',
