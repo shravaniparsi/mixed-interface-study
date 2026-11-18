@@ -1,0 +1,54 @@
+{
+  "kind": "maintained_packaged_source_workflow_selection",
+  "repository": "seanmorley15/AdventureLog",
+  "commit": "f92621f07b978765fc1284dc29af0b5e744ae930",
+  "status": "source_selected_runtime_unqualified",
+  "workflow": "category",
+  "earliest_view": "frontend/src/lib/components/CategoryModal.svelte",
+  "earlier_dispositions": [
+    {
+      "path": "backend/server/templates/invitations/forms/_invite.html",
+      "reason": "Invitation template redirects to admin; excluded invitation/external-email workflow, no two-field native create/edit pair established."
+    },
+    {
+      "path": "frontend/src/lib/components/AboutModal.svelte",
+      "reason": "About/integration information and links; no resource create/edit."
+    }
+  ],
+  "create_operation": "POST /api/categories (native same-origin proxy to backend /api/categories/)",
+  "update_operation": "PUT /api/categories/{id} (proxy adds backend trailing slash)",
+  "readback_operation": "GET /api/categories",
+  "text_properties": [
+    "display_name",
+    "icon"
+  ],
+  "excluded_properties": {
+    "id": "Generated UUID identity",
+    "name": "Derived creation slug/identity; no independent native edit control",
+    "user": "Actor relationship assigned by original serializer",
+    "num_locations": "Computed read-only related count"
+  },
+  "scientific_inputs": "Unchanged control plus omission and null singly for display_name and icon; five logical cases and at most ten continuation branches. No inputs executed.",
+  "unrelated_edit": {
+    "display_name": "icon",
+    "icon": "display_name"
+  },
+  "native_serializer": "Create trims display_name, derives name, and trims/defaults icon. Update spreads full readback and overwrites trimmed display_name; icon is forwarded from text control.",
+  "native_text_controls": [
+    "new-category-name",
+    "new-category-icon",
+    "edit-category-name",
+    "edit-category-icon"
+  ],
+  "same_actor_source": "CategoryViewSet requires authenticated user and filters by request.user; serializer create assigns request.user. Runtime auth not qualified.",
+  "family_status": "No exact prior reference found in recorded index; ancestry independence unresolved.",
+  "pending": [
+    "Package/source identity or bounded original-source build",
+    "Original request schema qualification",
+    "Native parent navigation and login fixture",
+    "Complete shared-state checkpoint and restoration",
+    "Three ordinary controls and source-faithful API/native wire equivalence"
+  ],
+  "execution_authorized": false,
+  "no_workflow_substitution": true
+}
