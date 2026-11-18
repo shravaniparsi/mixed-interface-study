@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { observeSeatsurfingApiTransport, bindApiTransport } from './seatsurfing_api_transport_v1.mjs';
 import { createSeatsurfingOrdinaryApi } from './create_seatsurfing_ordinary_api_v1.mjs';
 import { loadSeatsurfingApiState } from './load_seatsurfing_api_state_v1.mjs';
 import { runSeatsurfingApiContinuation } from './run_seatsurfing_api_continuation_v1.mjs';
@@ -53,6 +54,7 @@ async function main() {
   // Parent also enforces a longer process deadline. This does not retry on a
   // hanging process and must not convert a partial mutation into a rejection.
   const deadline = setTimeout(() => process.exit(124), 85000);
+  const transport = observeSeatsurfingApiTransport();
   try {
     const credentials = bindApiStorage(rawStorage, config.storageSha256);
     report.result = await performApiOperation(config, credentials);
@@ -63,6 +65,16 @@ async function main() {
     process.exitCode = 1;
   } finally {
     clearTimeout(deadline);
+    report.transport = transport.finish();
+    if (report.status === 'api_operation_observed') {
+      try {
+        const result = report.result;
+        const envelopes = config.operation === 'ordinary_create' ? [result.envelope] : config.operation === 'independent_load' ? result.envelopes : [...result.loaded.envelopes, ...result.execution.envelopes];
+        report.transmittedRequests = bindApiTransport(report.transport, envelopes);
+      } catch (error) {
+        report.status = 'api_transport_observation_unavailable'; report.error = { name: error.name, message: error.message }; process.exitCode = 1;
+      }
+    }
     const bytes = JSON.stringify(report);
     assert.ok(Buffer.byteLength(bytes) <= 16 * 1024 * 1024);
     await writeFile('/evidence/result.json', bytes, { flag: 'wx', mode: 0o600 });
