@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/collect_catalog_application_metadata_v1.py',
+    'protocol/catalog-application-qualification-v1.md',
     'notes/catalog_population_selection_v1.md',
     'manifests/catalog-cohort-v1.json',
     'results/catalog-population-offline-v1/AUTHORS',
