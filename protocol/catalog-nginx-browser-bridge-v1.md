@@ -1,0 +1,11 @@
+# Private browser-to-coordinator transport
+
+BrowserBridge connects the future Python container/checkpoint coordinator to the private JSON-lines ordinary browser worker. It does not provision Docker, select an executable, dispatch a job, start an application or classify scientific outcomes. The parent runtime recipe must supply the pinned worker container command and full experiment deadline.
+
+Require the exact worker startup message with Chromium 151.0.7922.34 within a single 45-second startup deadline. The worker independently verifies its actual executable hash, Playwright and Node identities. One command may be pending at a time; require a unique bounded request ID and matched response ID/status. Limit commands to 50, input lines to 64 KiB, response lines to 2 MiB and total worker stdout to 16 MiB. Each command has an original deadline no longer than 90 seconds. These limits do not extend the enclosing 30-minute qualification job.
+
+A shorter observation timeout preserves the same process and pending command. A subsequent observation may read that same pending response within its original deadline. It cannot resend, restart the worker, issue another command or extend the original deadline. An expired deadline, EOF, malformed JSON, mismatched ID or worker-reported failure prevents further commands. Preserve raw output and private request/response/status evidence. No timeout or transport failure is classified as native rejection or an application defect.
+
+Explicit final cleanup closes stdin and waits for the worker; if necessary it terminates/kills that client process within bounded waits. This is terminal cleanup, not a retry. The parent runtime workflow must separately remove its registered Docker container: terminating a Docker client is not proof that its container stopped. All retained files are inside a newly created mode-0700 directory and must remain excluded from public artifact selection.
+
+Seven local tests use a real local pipe and a synthetic Python child. They cover successful private retention, pending-process continuity after an observation timeout, duplicate request IDs, mismatched responses, reported failure, EOF and malformed output. They do not launch Docker, a browser or the application. Runtime worker integration and the complete qualification orchestration remain untested.
