@@ -29,6 +29,8 @@ SOURCES = {
 }
 ARTIFACTS = [
     'manifests/development-state-scope-schedule-v1.json',
+    'manifests/development-state-scope-v1.json',
+    'notes/development_state_scope_v1.md',
     'protocol/development-state-scope-v1.md',
     'scripts/extension/collect_development_state_scope_v1.py',
     'manifests/maintained-packaged-dependency-collection-v31.json',
