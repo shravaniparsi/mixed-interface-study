@@ -1,0 +1,84 @@
+name: Reserved Kanban fixed source build v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: wkrzywiec/kanban-board
+          ref: d5cbe1b7204916f48c4e66d2da11ccd21ba7aee8
+          path: subject
+          persist-credentials: false
+      - name: Pull fixed images then remove authentication
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/evidence" "$RUNNER_TEMP/binaries"
+          export DOCKER_CONFIG="$RUNNER_TEMP/study-docker-auth"
+          mkdir -m 700 "$DOCKER_CONFIG"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+          unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
+          for image in maven@sha256:f7ffbcfeae6e5d56019afeb8c4b288afe73d25b4a0b0b2954fe5866143c1dda0 node@sha256:300e3d2c19067c1aec9d9b2bd3acbd43d53797a5836d70a23e437a5634bcd33a nginx@sha256:17bd1698318e9c0f9ba2c5ed49f53d690684dab7fe3e8019b855c352528d57be postgres@sha256:8342bcb43446694428ec6594e72e4299692854f0fc3aca090b0ab46f4c7f32a1; do
+            timeout 180 docker pull "$image" >> "$RUNNER_TEMP/evidence/image-pulls.log" 2>&1
+          done
+      - name: Compile fixed backend and original production frontend
+        run: |
+          git -C subject rev-parse HEAD > "$RUNNER_TEMP/evidence/source-commit.txt"
+          test "$(cat "$RUNNER_TEMP/evidence/source-commit.txt")" = d5cbe1b7204916f48c4e66d2da11ccd21ba7aee8
+          set +e
+          timeout 600 docker run --rm -v "$PWD/subject/kanban-app:/workspace" -w /workspace maven@sha256:f7ffbcfeae6e5d56019afeb8c4b288afe73d25b4a0b0b2954fe5866143c1dda0 mvn -B -Dmaven.test.skip=true package > "$RUNNER_TEMP/evidence/backend-build.log" 2>&1
+          backend_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$backend_exit" > "$RUNNER_TEMP/evidence/backend-exit.json"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          s=Path('subject/kanban-ui/Dockerfile').read_text()
+          assert s.count('node:12.7-alpine')==1 and s.count('nginx:1.17.1-alpine')==1
+          s=s.replace('node:12.7-alpine','node@sha256:300e3d2c19067c1aec9d9b2bd3acbd43d53797a5836d70a23e437a5634bcd33a').replace('nginx:1.17.1-alpine','nginx@sha256:17bd1698318e9c0f9ba2c5ed49f53d690684dab7fe3e8019b855c352528d57be')
+          Path(os.environ['RUNNER_TEMP']+'/evidence/frontend.Dockerfile').write_text(s)
+          PY
+          set +e
+          DOCKER_BUILDKIT=0 timeout 900 docker build -f "$RUNNER_TEMP/evidence/frontend.Dockerfile" -t study-kanban-ui:v1 subject/kanban-ui > "$RUNNER_TEMP/evidence/frontend-build.log" 2>&1
+          frontend_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$frontend_exit" > "$RUNNER_TEMP/evidence/frontend-exit.json"
+          if [ "$backend_exit" -eq 0 ]; then
+            cp subject/kanban-app/target/kanban-app-0.0.1-SNAPSHOT.jar "$RUNNER_TEMP/binaries/application.jar"
+          fi
+          if [ "$frontend_exit" -eq 0 ]; then
+            docker image inspect study-kanban-ui:v1 > "$RUNNER_TEMP/evidence/frontend-image.json"
+            docker create --name study-ui-export study-kanban-ui:v1
+            docker cp study-ui-export:/usr/share/nginx/html - > "$RUNNER_TEMP/binaries/frontend.tar"
+            docker rm study-ui-export
+          fi
+          python3 - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP']);d={p.name:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in (root/'binaries').iterdir()}
+          (root/'evidence/binaries.json').write_text(json.dumps(d,indent=2)+'\n')
+          PY
+          test "$backend_exit" -eq 0 && test "$frontend_exit" -eq 0
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: reserved-kanban-build-evidence-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence/*
+          retention-days: 7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: reserved-kanban-build-binaries-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/binaries/*
+          retention-days: 7
+          if-no-files-found: warn

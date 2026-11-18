@@ -28,6 +28,19 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-kanban-images-v1.json',
+    'protocol/reserved-kanban-build-v1.md',
+    '.github/workflows/reserved_kanban_build_v1.yml',
+    'results/reserved-kanban-images-v1-ci-44211404513/github-artifact.json',
+    'results/reserved-kanban-images-v1-ci-44211404513/github-run.json',
+    'results/reserved-kanban-images-v1-ci-44211404513/github-timing.json',
+    'results/reserved-kanban-images-v1-ci-44211404513/measurement.json',
+    'results/reserved-kanban-images-v1-ci-44211404513/pull-1.log',
+    'results/reserved-kanban-images-v1-ci-44211404513/pull-2.log',
+    'results/reserved-kanban-images-v1-ci-44211404513/pull-3.log',
+    'results/reserved-kanban-images-v1-ci-44211404513/pull-4.log',
+    'results/reserved-kanban-images-v1-ci-44211404513/pull-5.log',
+
     'manifests/reserved-continuation-dependency-collection-v3.json',
     'protocol/reserved-kanban-image-preflight-v1.md',
     '.github/workflows/reserved_kanban_images_v1.yml',
