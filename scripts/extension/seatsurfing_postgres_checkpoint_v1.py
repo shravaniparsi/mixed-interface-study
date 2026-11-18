@@ -60,6 +60,9 @@ def guard():
     if service['HostConfig']['NetworkMode'] != 'none':
         raise RuntimeError('Database must have no external network')
     browser = json.loads(run(['docker', 'inspect', BROWSER]))[0]
+    for item in (app, service, browser):
+        if item.get('Config', {}).get('Labels', {}).get('org.mixed-interface.study') != 'seatsurfing-qualification-v1':
+            raise RuntimeError('Container is not the disposable SeatSurfing fixture')
     if browser['State']['Running'] or browser['State'].get('Restarting'):
         raise RuntimeError('Browser must be stopped before checkpoint/restore')
     if app['State'].get('Restarting') or app['State'].get('Paused'):

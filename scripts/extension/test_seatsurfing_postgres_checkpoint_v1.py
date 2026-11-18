@@ -17,6 +17,8 @@ class Guards(unittest.TestCase):
             m.PG: {'Id': 'pg-id', 'State': {'Running': True}, 'Image': m.PG_IMAGE_ID, 'HostConfig': {'NetworkMode': 'none'}},
             m.BROWSER: {'State': {'Running': False}, 'Image': m.BROWSER_IMAGE_ID, 'HostConfig': {'NetworkMode': 'container:' + m.PG}},
         }
+        for item in self.items.values():
+            item['Config'] = {'Labels': {'org.mixed-interface.study': 'seatsurfing-qualification-v1'}}
         self.version = '180007'
         self.connections = '0'
     def invoke(self):
@@ -32,6 +34,9 @@ class Guards(unittest.TestCase):
         with patch.object(m, 'APP_IMAGE_ID', self.app_image), patch.object(m, 'run', run), patch.object(m, 'sql', sql):
             m.guard()
     def test_stopped_exact_fixture_reaches_guard(self): self.invoke()
+    def test_missing_fixture_label_rejected(self):
+        self.items[m.PG]['Config']['Labels'] = {}
+        with self.assertRaisesRegex(RuntimeError, 'disposable SeatSurfing'): self.invoke()
     def test_running_application_rejected(self):
         self.items[m.APP]['State']['Running'] = True
         with self.assertRaisesRegex(RuntimeError, 'stopped application'): self.invoke()

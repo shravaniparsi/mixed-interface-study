@@ -1,0 +1,9 @@
+# SeatSurfing joint checkpoint preparation
+
+Prepared the stopped-runtime coordinator linking native storage, immutable signing keys, build identity and database baseline in one private manifest. Restore rejects changed keys or corrupted storage before invoking PostgreSQL restoration, then returns the verified original storage path for a browser context that has not yet been started. The application guard requires read-only root, only the two read-only signing-key mounts and no restart policy. Added disposable-fixture label checks to the database guard for all three containers.
+
+Seven synthetic bundle tests passed, and the expanded eight database-guard tests passed. Tests mocked Docker/database interactions and used temporary synthetic strings, not actual credentials. No application, browser, database or network operation ran. Earlier seven-test database results remain historical; the eighth test covers the added fixture-label rejection.
+
+The current components still do not establish full-state equivalence. Pending work includes actual build/report generation, isolated provisioning, browser worker storage/network evidence, coordinated stop/start, startup effects and audit-field checks, same-actor confirmation, full ordinary warm/native/API controls, original schema compilation and prospective input/runtime freeze. No SeatSurfing qualification attempt was consumed; cohort totals remain six application jobs and zero scientific cases.
+
+Prior component CI 44323880785 failed at provenance verification because unit.yml changed after the evaluation snapshot was generated in commit ed7140b. This is an instrumentation bookkeeping failure, not a SeatSurfing runtime failure. A concise failure summary and run URL are retained without the raw log. Regenerated the preparation snapshot after current workflow edits and verified it locally; the next CI run must confirm the corrected state.
