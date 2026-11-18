@@ -1,0 +1,13 @@
+# Viseron qualification closed after the final permitted attempt
+
+Final run 44281722308 at freeze f1f218d8699a88316a007b70a0cbea7feef1d844 failed at the unchanged 90-second application-readiness gate. Its original runtime lasted 91.946 seconds. No browser controls, target production, warm continuation, checkpoint roundtrip or scientific input executed. Both Viseron qualification slots are exhausted. No third application run, alternative workflow or timeout extension is permitted.
+
+The corrected observer retained 85 readiness observations: 28 connection-refused results (errno 111), two HTTP 502 responses and 55 failed docker-exec calls after the application exited. At the final diagnostic snapshot the app was exited, exit code 0, OOMKilled false. Its timestamps put the exit approximately 33.3 seconds after container startup. The PostgreSQL support service remained running. The wrapper exit code 0 did not mean the application became healthy.
+
+The application log contained nine occurrences of the fixed ValidationError marker and seven traceback markers. These are log-string occurrences, not nine validation failures, distinct causes or software defects. They support an initialization failure involving validation messages; they do not identify the exact component or field, prove causality, establish a general application defect or show that a camera-free configuration is impossible. Raw logs and detailed values were not uploaded. No further execution is authorized to refine this diagnosis.
+
+The pinned image/source checks and ordinary original-schema validation passed again. This is a retained runtime-qualification failure, not a qualified negative scientific result. The five prospective scientific inputs remain unexecuted. A passing schema helper provides no evidence about native continuation under altered input.
+
+The fixed twelve-project cohort now contains two scope exclusions, two exhausted runtime qualifications (Mathesar and Viseron), and eight pending mappings. Four application qualification jobs and zero scientific cases have executed in this cohort. The overall evidence remains insufficient for the proposed Q1 contribution; implementation work, green unit checks and setup failures cannot substitute for matched continuation observations. Continue the remaining fixed cohort without replacing failed projects or opening a new search for positives.
+
+The outcome manifest retains terminal timing and artifact hashes. Reported Actions billable time is not an invoice or full-project cost. The v1 retained-evidence verifier rejects the final failure as intended; the original failure also remains published.

@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/catalog-viseron-qualification-outcome-v2.json',
+    'manifests/catalog-qualification-progress-v17.json',
+    'notes/catalog_viseron_closed_qualification_v2.md',
     'manifests/catalog-viseron-qualification-dispatch-v2.json',
     'manifests/catalog-qualification-progress-v16.json',
     'protocol/catalog-viseron-qualification-v2.md',
