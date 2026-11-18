@@ -43,6 +43,7 @@ ARTIFACTS = [
     'manifests/maintained-packaged-exposure-ancestry-audit-v1.json',
     'manifests/maintained-packaged-contribution-assessment-v1.json',
     'protocol/continuation-feasibility-redesign-draft-v1.md',
+    'manifests/continuation-redesign-access-decision-v1.json',
     'scripts/extension/dependency_queue_v1.py',
     'tests/test_dependency_queue_v1.py',
     'manifests/repository-run-increment-20261118.json',
