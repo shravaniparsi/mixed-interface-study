@@ -51,6 +51,22 @@ def verify_checkout(checkout, revision, tree_entries, rows):
     return verified
 
 
+def schema_dockerfile(final_base):
+    assert re.fullmatch(r'gcr.io/distroless/base-debian13@sha256:[0-9a-f]{64}', final_base)
+    return ("FROM study-seatsurfing-server-builder:qualification-v1 AS schema-builder\n"
+            "WORKDIR /go/src/app\n"
+            "COPY main.go /study-schema/main.go\n"
+            "COPY original-go.mod original-go.sum /study-schema/\n"
+            "RUN --network=none --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build "
+            "CGO_ENABLED=1 go build -mod=readonly -o /study-schema/probe /study-schema/main.go "
+            "&& cmp go.mod /study-schema/original-go.mod && cmp go.sum /study-schema/original-go.sum\n"
+            f"FROM {final_base}\n"
+            "COPY --from=schema-builder /study-schema/probe /study-schema/probe\n"
+            "USER 65532:65532\n"
+            'ENTRYPOINT ["/study-schema/probe"]\n'
+            "CMD []\n")
+
+
 def inventory(directory):
     rows = []
     total = 0
@@ -81,7 +97,7 @@ def main():
     assert registration['status'] == 'qualification_registered'
     assert registration['application_revision'] == REVISION
     assert registration['max_job_minutes'] == 30
-    for path in [Path(__file__), ROOT / 'scripts/extension/inventory_seatsurfing_ui_build_v1.mjs']:
+    for path in [Path(__file__), ROOT / 'scripts/extension/inventory_seatsurfing_ui_build_v1.mjs', ROOT / 'scripts/extension/seatsurfing_original_schema_v1.go']:
         assert registration['script_sha256'][str(path.relative_to(ROOT))] == digest(path)
     study_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     assert study_commit == os.environ.get('GITHUB_SHA')
@@ -212,6 +228,38 @@ def main():
         artifact_rows = inventory(evidence / 'application')
         (evidence / 'application-inventory.json').write_text(json.dumps(artifact_rows, indent=2) + '\n')
         report['application_inventory_sha256'] = digest(evidence / 'application-inventory.json')
+        # Verify module metadata inside the actual stage, not just the host
+        # checkout: original Docker build commands could otherwise alter copies.
+        for stage, paths in [('server-builder', ['server/go.mod', 'server/go.sum']), ('healthcheck-builder', ['healthcheck/go.mod'])]:
+            internal_root = '/go/src/app/' if stage == 'server-builder' else '/go/src/healthcheck/'
+            module_hashes = offline_run(stage + '-module-hashes', stage_images[stage], 'sha256sum',
+                [internal_root + Path(path).name for path in paths], 15).read_text().splitlines()
+            assert len(module_hashes) == len(paths)
+            for line, path in zip(module_hashes, paths):
+                assert line.split()[0] == report['original_lock_hashes'][path], 'Build-stage original module metadata changed'
+        # Compile S in a separate image. Never change the application image,
+        # request type, validator or dependency declarations to make S pass.
+        schema_context = workspace / 'schema-build'
+        schema_context.mkdir(mode=0o700)
+        probe = ROOT / 'scripts/extension/seatsurfing_original_schema_v1.go'
+        (schema_context / 'main.go').write_bytes(probe.read_bytes())
+        for name in ['go.mod', 'go.sum']:
+            (schema_context / ('original-' + name)).write_bytes((checkout / 'server' / name).read_bytes())
+        (schema_context / 'Dockerfile').write_text(schema_dockerfile(final_base))
+        inspect('schema-parent-identity', 'study-seatsurfing-server-builder:qualification-v1', stage_images['server-builder'])
+        schema_tag = 'study-seatsurfing-schema:qualification-v1'
+        run('original-schema-build', ['docker', 'build', '--platform', 'linux/amd64', '--network', 'none',
+            '--tag', schema_tag, str(schema_context)], 180)
+        schema_image = inspect('original-schema-image', schema_tag)
+        assert schema_image['Config']['User'] == '65532:65532'
+        assert schema_image['Config']['Entrypoint'] == ['/study-schema/probe']
+        stopped_copy('study-seatsurfing-schema-inspect', schema_image['Id'], '/study-schema/probe', evidence / 'schema-probe')
+        schema_info = offline_run('schema-go-build-info', stage_images['server-builder'], 'go',
+            ['version', '-m', '/inventory/schema-probe'], 30, [f'{evidence}:/inventory:ro'])
+        assert '\tpath\tcommand-line-arguments' in schema_info.read_text()
+        report['original_schema'] = {'status': 'compiled_not_executed', 'image_id': schema_image['Id'],
+            'probe_source_sha256': digest(probe), 'binary_sha256': digest(evidence / 'schema-probe'),
+            'dockerfile_sha256': digest(schema_context / 'Dockerfile'), 'runtime_qualified': False}
         verify_checkout(checkout, REVISION, tree_response['tree'], rows)
         assert not subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all']).strip(), 'Build altered original checkout'
         assert all(digest(checkout / p) == expected for p, expected in report['original_lock_hashes'].items())

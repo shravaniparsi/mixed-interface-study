@@ -19,3 +19,5 @@ Validation at preparation: Python compilation, Node syntax, and seven synthetic 
 Before any runtime dispatch, source preparation v3 extends identity verification to the seven healthcheck/actor files acquired under wave 37. The derived Dockerfile is unchanged. The current build, provisioner and PostgreSQL checkpoint bind the v3 preparation manifest; historical preparation v1/v2 remain retained.
 
 Current source preparation v4 additionally binds the Settings, Permission and Navigation loader dependencies acquired under waves 38/39. It verifies 56 reviewed files. The derived Dockerfile is unchanged from v3. Current build/provisioner/active PostgreSQL helper bind v4; historical manifests remain retained.
+
+The build component now also verifies original Go module hashes inside build stages and compiles the unchanged schema probe into a separate image under the same shared build deadline. See catalog-seatsurfing-original-schema-execution-v1.md. Successful build status additionally requires this compilation/inventory; it still does not claim schema input execution or runtime qualification.
