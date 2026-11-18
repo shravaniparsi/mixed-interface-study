@@ -28,6 +28,21 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/reserved_booklore_build_20261117.md',
+    'manifests/reserved-booklore-build-v1.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/binaries.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/build.Dockerfile',
+    'results/reserved-booklore-build-v1-ci-44216495263/build.log',
+    'results/reserved-booklore-build-v1-ci-44216495263/built-image.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/github-artifacts.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/github-run.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/github-timing.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/gradle-image.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/image-pulls.log',
+    'results/reserved-booklore-build-v1-ci-44216495263/measurement.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/node-image.json',
+    'results/reserved-booklore-build-v1-ci-44216495263/source-commit.txt',
+
     'manifests/reserved-frame-status-interim-v1.json',
     'notes/reserved_frame_interim_audit_20261117.md',
     'manifests/reserved-booklore-prefix-disposition-v1.json',
