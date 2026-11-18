@@ -157,6 +157,21 @@ class WarmEdit(unittest.TestCase):
 
 
 
+class RestoredNativeEdit(unittest.TestCase):
+    def test_restored_edit_compares_against_original_warm_baseline(self):
+        helper=ProducerStage();self.addCleanup(helper.doCleanups)
+        stage,_=helper.run_stage();stage.restored_native=stage.warm;stage.phase='restored_native_editor_paused'
+        tables={table['relation_name']:[json.loads(raw) for raw in table['rows']] for table in stage.warm['state']['row_data']}
+        next(row for row in tables['locations'] if row['id']=='api')['description']='Edit description'
+        tables['sessions'][0]['last_activity']='2026-11-18T00:00:11'
+        after=snapshot(tables);base=epoch_microseconds('2026-11-18T00:00:00Z')
+        with patch.object(module,'observe_command',return_value={'network':{'events':[]}}) as command,patch.object(module,'capture_state',return_value=after),patch.object(stage,'actor',return_value=stage.warm['actor']),patch.object(module.time,'time_ns',side_effect=[(base+10000000)*1000,(base+12000000)*1000]):
+            result=stage.restored_native_edit()
+        self.assertEqual(command.call_count,1);self.assertEqual(stage.phase,'restored_native_edit_paused')
+        self.assertEqual(result['state_comparison']['target_change']['before'],'Study description')
+        with self.assertRaises(RuntimeError):stage.restored_native_edit()
+
+
 class JointCheckpointIntegration(unittest.TestCase):
     def test_dump_baseline_must_equal_full_warm_state(self):
         import subprocess
@@ -183,6 +198,67 @@ class JointCheckpointIntegration(unittest.TestCase):
                 self.assertEqual(run.call_count,1)
                 self.assertEqual(stage.phase,'failed' if mismatch else 'checkpoint_captured')
                 with self.assertRaises(RuntimeError):stage.capture_checkpoint(private_key=private_key)
+
+
+
+
+class RestoredNativeSequence(unittest.TestCase):
+    def test_verified_restore_precedes_replacement_and_failed_restore_prevents_start(self):
+        import subprocess
+        from unittest.mock import Mock
+        for failure in [False,True]:
+            with self.subTest(failure=failure):
+                helper=ProducerStage();self.addCleanup(helper.doCleanups)
+                stage,_=helper.run_stage()
+                stage.phase='warm_edit_paused'
+                stage.checkpoint=stage.directory/'checkpoint';stage.checkpoint.mkdir()
+                storage=stage.checkpoint/'storage.json';storage.write_text(json.dumps({'origins':[{'localStorage':[{'name':'accessToken','value':'token'},{'name':'refreshToken','value':'refresh'}]}]}))
+                digest=hashlib.sha256(storage.read_bytes()).hexdigest();stage.warm['capture']['storageSha256']=digest
+                stage.checkpoint_result={'manifest_sha256':'manifest'}
+                write=module.write_private
+                write(stage.directory/'checkpoint-observation.json',{'storage_sha256':digest})
+                stage.bridge.artifact_directory.mkdir(parents=True,exist_ok=True)
+                write(stage.bridge.artifact_directory/'final-network.json',{'failure':None,'pendingIds':[],'pendingCaptures':0,'events':[]})
+                stage.bridge.close=Mock(return_value=None)
+                identity={'container_ids':['app','pg','old'],'state':'stopped'}
+                stage.lifecycle.stop=Mock(side_effect=lambda close:(close() or {'after':identity}))
+                stage.lifecycle._inspect=Mock(return_value=identity)
+                stage.lifecycle.processes=(('old-app',),('same-pg',),('old-browser',))
+                stage.warm['opened']={'readback':{'id':'api'},'loader':{'materialization':{'fixture':True}}}
+                calls=[];operations=[]
+                def command(argv):
+                    calls.append(argv)
+                    if argv[1]=='inspect':return json.dumps([{'Id':'app','State':{'Running':True,'Restarting':False,'Health':{'Status':'healthy'}}}]).encode()
+                    return b''
+                def restore(argv,**kwargs):
+                    calls.append(['joint','restore'])
+                    if not failure:Path(argv[argv.index('--output')+1]).write_text(json.dumps({'status':'database_restored_browser_context_not_started','storage_path':str(storage),'storage_sha256':digest}))
+                    return subprocess.CompletedProcess(argv,1 if failure else 0,b'',b'')
+                class Browser:
+                    ready=False;failed=False;artifact_directory=stage.directory/'new-worker'
+                    def await_ready(self,**kwargs):self.ready=True
+                    def send(self,command,**kwargs):
+                        operations.append(command['operation'])
+                        if command['operation']=='open':return stage.warm['opened']
+                        return {'storageSha256':digest,'network':{'events':[]}}
+                class Lifecycle:
+                    ids=('app','pg','new');processes=(('new-app',),('same-pg',),('new-browser',));events=[]
+                    def __init__(self,*args):pass
+                    def pause(self):pass
+                tables={table['relation_name']:[json.loads(raw) for raw in table['rows']] for table in stage.warm['state']['row_data']}
+                tables['sessions'][0]['last_activity']='2026-11-18T00:00:10'
+                state=snapshot(tables);base=epoch_microseconds('2026-11-18T00:00:00Z')
+                with patch.object(module.subprocess,'run',side_effect=restore),patch.object(module,'lifecycle_command',side_effect=command),patch.object(module,'launch_native_browser',return_value=Browser()) as launch,patch.object(module,'FixtureLifecycle',Lifecycle),patch.object(stage,'snapshot',return_value=state),patch.object(stage,'actor',return_value=stage.warm['actor']),patch.object(module.time,'time_ns',side_effect=[(base+9000000)*1000,(base+11000000)*1000]):
+                    if failure:
+                        with self.assertRaisesRegex(RuntimeError,'restore unavailable'):stage.restore_native_editor(private_key=stage.directory/'key')
+                    else:stage.restore_native_editor(private_key=stage.directory/'key')
+                self.assertEqual(calls[0],['joint','restore'])
+                if failure:
+                    self.assertEqual(calls,[['joint','restore']]);self.assertEqual(launch.call_count,0);self.assertEqual(stage.phase,'failed')
+                else:
+                    self.assertEqual(calls[1:3],[['docker','rm',module.BROWSER],['docker','start',module.APP]])
+                    self.assertEqual(operations,['open','capture']);self.assertEqual(stage.phase,'restored_native_editor_paused')
+                with self.assertRaises(RuntimeError):stage.restore_native_editor(private_key=stage.directory/'key')
 
 
 if __name__=='__main__':unittest.main()

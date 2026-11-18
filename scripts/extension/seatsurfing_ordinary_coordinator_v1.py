@@ -13,7 +13,8 @@ import subprocess
 import sys
 from launch_seatsurfing_browser_v1 import launch_native_browser
 from launch_seatsurfing_api_v1 import run_api_operation
-from seatsurfing_fixture_lifecycle_v1 import FixtureLifecycle
+from seatsurfing_fixture_lifecycle_v1 import FixtureLifecycle, command as lifecycle_command
+from seatsurfing_postgres_checkpoint_v2 import APP, PG, BROWSER
 from capture_seatsurfing_comparison_state_v1 import capture_state
 from compare_seatsurfing_ordinary_producers_v1 import compare_creation_step, compare_producer_rows
 from compare_seatsurfing_ordinary_state_v1 import compare_ordinary_state
@@ -226,6 +227,122 @@ class OrdinaryCoordinator:
         finally:
             write_private(self.directory/'warm-lifecycle.json',self.lifecycle.events)
             write_private(self.directory/'warm-stage.json',report)
+
+    def restore_native_editor(self, *, private_key):
+        if self.phase != 'warm_edit_paused': raise RuntimeError('Restore requires the completed original warm branch')
+        self.phase='restore_native_in_progress'
+        report={'status':self.phase,'runtime_qualified':False}
+        try:
+            self.lifecycle.resume()
+            stopped=self.lifecycle.stop(self.bridge.close)
+            # Retain final native trace before removing the stopped container.
+            final_trace=self.bridge.artifact_directory/'final-network.json'
+            final_raw=final_trace.read_bytes()
+            if len(final_raw)>32*1024*1024:raise RuntimeError('Final native trace bound')
+            final=json.loads(final_raw)
+            if final.get('failure') is not None or final.get('pendingIds') or final.get('pendingCaptures')!=0:
+                raise RuntimeError('Original worker did not retain a complete final trace')
+            original=json.loads((self.directory/'checkpoint-observation.json').read_text())
+            proof={**original,'browser_and_application_paused':False,'browser_and_application_stopped':True,
+                   'stopped_identity':stopped['after'],'original_final_trace_sha256':hashlib.sha256(final_raw).hexdigest()}
+            observation=self.directory/'native-restore-observation.json';write_private(observation,proof)
+            output=self.directory/'native-restore-result.json'
+            command=[sys.executable,str(Path(__file__).with_name('seatsurfing_joint_checkpoint_v2.py')),
+                'restore','--checkpoint',str(self.checkpoint),'--build-report',str(self.build_report),
+                '--private-key',str(Path(private_key).absolute()),'--public-key',str(self.public_key),
+                '--origin','http://127.0.0.1:8080','--expected-manifest-sha256',self.checkpoint_result['manifest_sha256'],
+                '--observation',str(observation),'--output',str(output)]
+            try:result=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=330)
+            except subprocess.TimeoutExpired as error:
+                (self.directory/'native-restore.stdout').write_bytes(error.stdout or b'')
+                (self.directory/'native-restore.stderr').write_bytes(error.stderr or b'')
+                raise
+            (self.directory/'native-restore.stdout').write_bytes(result.stdout)
+            (self.directory/'native-restore.stderr').write_bytes(result.stderr)
+            if result.returncode or result.stdout or result.stderr:raise RuntimeError('Stopped joint restore unavailable')
+            restored=json.loads(output.read_text())
+            if restored['status']!='database_restored_browser_context_not_started':raise RuntimeError('Restore was not verified')
+            if restored['storage_sha256']!=self.warm['capture']['storageSha256']:raise RuntimeError('Restored storage differs from original checkpoint')
+            identity=self.lifecycle._inspect('stopped')
+            if identity['container_ids']!=stopped['after']['container_ids']:raise RuntimeError('Stopped fixture changed during restore')
+            # Both original processes are stopped, restoration verified, and the
+            # old worker artifacts retained. Remove only that labelled browser.
+            lifecycle_command(['docker','rm',BROWSER])
+            startup_start=time.time_ns()//1000
+            lifecycle_command(['docker','start',APP])
+            for _ in range(90):
+                app,=json.loads(lifecycle_command(['docker','inspect',APP]))
+                if app['Id']!=identity['container_ids'][0] or not app['State']['Running'] or app['State'].get('Restarting'):
+                    raise RuntimeError('Original application failed restart')
+                health=app['State'].get('Health',{}).get('Status')
+                if health=='healthy':break
+                if health=='unhealthy':raise RuntimeError('Original application health failed after restore')
+                time.sleep(1)
+            else:raise TimeoutError('Original application readiness observation expired')
+            captured=json.loads(Path(restored['storage_path']).read_text())
+            values={row['name']:row['value'] for row in captured['origins'][0]['localStorage']}
+            configuration=self.directory/'restored-native-config.json'
+            write_private(configuration,{'mode':'verified_restoration','origin':'http://127.0.0.1:8080',
+                'storagePath':str(Path(restored['storage_path']).absolute()),'storageSha256':restored['storage_sha256'],
+                'nativeCredentials':{'accessToken':values['accessToken'],'refreshToken':values['refreshToken']}})
+            self.original_bridge,self.original_lifecycle=self.bridge,self.lifecycle
+            self.bridge=launch_native_browser(tools=self.provision['node_tools'],configuration=configuration,
+                private_directory=self.directory/'restored-native',build_report=self.build_report)
+            while not self.bridge.ready and not self.bridge.failed:
+                try:self.bridge.await_ready(seconds=30)
+                except TimeoutError:continue
+            if not self.bridge.ready:raise RuntimeError('Restored native worker unavailable')
+            self.lifecycle=FixtureLifecycle(self.build)
+            if self.lifecycle.ids[:2]!=tuple(identity['container_ids'][:2]):raise RuntimeError('Restored application/database identities changed')
+            if self.lifecycle.processes[1]!=self.original_lifecycle.processes[1]:raise RuntimeError('Database process changed during restore')
+            opened=observe_command(self.bridge,{'requestId':'open','operation':'open','id':self.warm['api_id']})
+            capture=observe_command(self.bridge,{'requestId':'capture','operation':'capture'})
+            self.lifecycle.pause()
+            startup_end=time.time_ns()//1000
+            state=self.snapshot('restored-native-editor-state')
+            comparison=compare_ordinary_state(self.warm['state'],state,session_id=self.report['session_id'],
+                location_id=self.warm['api_id'],window_start_us=startup_start,window_end_us=startup_end)
+            write_private(self.directory/'restored-native-startup-comparison.json',comparison)
+            storage=self.bridge.artifact_directory/'browser-storage.json'
+            actor=self.actor('actor-restored-native-editor',capture,storage,self.warm['actor']['continuity'])
+            if opened['readback']!=self.warm['opened']['readback']:raise RuntimeError('Restored native readback differs from original warm editor')
+            if opened['loader']['materialization']!=self.warm['opened']['loader']['materialization']:
+                raise RuntimeError('Restored native editor inputs differ from original warm inputs')
+            self.restored_native={'opened':opened,'capture':capture,'state':state,'actor':actor,'storage':storage}
+            self.phase='restored_native_editor_paused';report.update(status=self.phase)
+            return self.restored_native
+        except Exception as error:
+            self.phase='failed';report.update(status='native_restore_unavailable',error_type=type(error).__name__)
+            raise
+        finally:
+            write_private(self.directory/'native-restore-stage.json',report)
+            write_private(self.directory/'native-restore-lifecycle.json',self.lifecycle.events)
+
+    def restored_native_edit(self):
+        if self.phase!='restored_native_editor_paused':raise RuntimeError('Require verified restored native editor')
+        self.phase='restored_native_edit_in_progress'
+        report={'status':self.phase,'runtime_qualified':False}
+        try:
+            start=time.time_ns()//1000
+            self.lifecycle.resume()
+            edited=observe_command(self.bridge,{'requestId':'edit','operation':'edit','edit':self.edit})
+            self.lifecycle.pause()
+            end=time.time_ns()//1000
+            after=self.snapshot('after-restored-native-edit')
+            comparison=compare_ordinary_state(self.warm['state'],after,session_id=self.report['session_id'],
+                location_id=self.warm['api_id'],window_start_us=start,window_end_us=end,edit=self.edit)
+            write_private(self.directory/'restored-native-edit-state-comparison.json',comparison)
+            captured={**self.restored_native['capture'],'network':edited['network']}
+            actor=self.actor('actor-after-restored-native-edit',captured,self.restored_native['storage'],self.warm['actor']['continuity'])
+            self.native_result={'native':edited,'state':after,'actor':actor,'state_comparison':comparison}
+            self.phase='restored_native_edit_paused';report.update(status=self.phase,request_comparison_pending=True)
+            return self.native_result
+        except Exception as error:
+            self.phase='failed';report.update(status='restored_native_edit_unavailable',error_type=type(error).__name__)
+            raise
+        finally:
+            write_private(self.directory/'restored-native-edit-stage.json',report)
+            write_private(self.directory/'restored-native-edit-lifecycle.json',self.lifecycle.events)
 
 
 def build_checkpoint_observation(warm, storage_raw, network_raw, current_state, paused):
