@@ -446,6 +446,8 @@ class OrdinaryCoordinator:
             compared=json.loads(output.read_text())
             if compared.get('status')!='both_native_write_plans_match_independent_api' or compared.get('inputHashes')!=hashes:
                 raise ValueError('Request comparison does not bind actual retained inputs')
+            if compared.get('apiTransportBound') is not True or compared.get('apiTransportCaptureComplete') is not False:
+                raise ValueError('Partial API diagnostic evidence not explicitly bound')
             self.request_comparisons=compared
             self.phase='ordinary_comparisons_complete_transport_unqualified'
             report.update(status=self.phase,comparison_sha256=hashlib.sha256(output.read_bytes()).hexdigest(),

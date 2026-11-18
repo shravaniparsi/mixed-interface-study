@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFile, writeFile, lstat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { bindApiTransport } from './seatsurfing_api_transport_v1.mjs';
 import { compareContinuationRequests } from './compare_seatsurfing_continuation_requests_v1.mjs';
 assert.equal(process.argv.slice(2).length, 5);
 const [warmPath, nativePath, apiPath, storagePath, output] = process.argv.slice(2);
@@ -21,8 +22,24 @@ try {
   assert.ok(typeof accessToken === 'string' && accessToken.length > 0);
   assert.equal(values.api.status, 'api_operation_observed');
   assert.equal(values.api.operation, 'ordinary_continue');
+  const actual = bindApiTransport(values.api.transport, [...values.api.result.loaded.envelopes, ...values.api.result.execution.envelopes]);
+  assert.deepEqual(values.api.transmittedRequests, actual, 'Saved transport mapping differs from raw diagnostics');
+  report.apiTransportBound = true;
+  report.apiTransportCaptureComplete = false;
   report.warm = compareContinuationRequests({ native: values.warm, api: values.api.result, accessToken });
   report.restoredNative = compareContinuationRequests({ native: values.native, api: values.api.result, accessToken });
+  const writes = actual.slice(values.api.result.loaded.envelopes.length);
+  report.headerDifferences = {};
+  for (const [name, comparison] of [['warm', report.warm], ['restoredNative', report.restoredNative]]) {
+    report.headerDifferences[name] = comparison.native.matched.map((native, index) => {
+      const api = writes[index]; assert.equal(native.request.url, api.url); assert.equal(native.request.method, api.method);
+      const fields = [...new Set([...Object.keys(native.headers), ...Object.keys(api.headers)])].sort();
+      return { method: api.method, url: api.url, differences: fields.filter(field => native.headers[field] !== api.headers[field]).map(field => ({
+        field, native: native.headers[field] ?? null, apiDiagnostic: api.headers[field] ?? null,
+        apiAbsenceProven: false, sourceRelevanceQualified: false,
+      })) };
+    });
+  }
   report.status = 'both_native_write_plans_match_independent_api';
 } catch (error) {
   report.status = 'request_comparison_unavailable'; report.errorType = error.name; process.exitCode = 1;

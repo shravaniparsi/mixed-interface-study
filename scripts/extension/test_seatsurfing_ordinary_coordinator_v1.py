@@ -331,7 +331,7 @@ class RetainedRequestIntegration(unittest.TestCase):
                 def execute(argv,**kwargs):
                     hashes={name:hashlib.sha256(path.read_bytes()).hexdigest() for name,path in paths.items()}
                     if changed=='result_hash':hashes['warm']='wrong'
-                    Path(argv[-1]).write_text(json.dumps({'status':'both_native_write_plans_match_independent_api','inputHashes':hashes}))
+                    Path(argv[-1]).write_text(json.dumps({'status':'both_native_write_plans_match_independent_api','inputHashes':hashes,'apiTransportBound':True,'apiTransportCaptureComplete':False}))
                     return subprocess.CompletedProcess(argv,0,b'',b'')
                 with patch.object(module.subprocess,'run',side_effect=execute) as run:
                     if changed:
