@@ -1,0 +1,78 @@
+name: Extension Kanban ordinary controls v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Install pinned browser
+        run: |
+          set -euo pipefail
+          echo "STUDY_JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/evidence" "$RUNNER_TEMP/binaries"
+          export CI_ARTIFACT_DIR="$RUNNER_TEMP/evidence"
+          timeout --signal=TERM --kill-after=15 600 bash scripts/ci/install_browser.sh 2>&1 | tee "$CI_ARTIFACT_DIR/install.log"
+      - name: Retrieve verified fixed binaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14385643336/zip > "$RUNNER_TEMP/binaries.zip"
+          python3 - <<'PY'
+          import hashlib,os,zipfile
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP']);p=root/'binaries.zip'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='1551ee522a9cd07fb44f9db13323a31f1e0c4408bf83fe1c945317077537d38e'
+          expected={'application.jar':'6e5348777f57305daebbc9c4c83cab42b98722a26f3c1c57ce2c10c4f921d831','frontend.tar':'7f012b071931de2884f8426eda9ddd4b6a5410ca288ae53b1a959c7e772b4a02'}
+          with zipfile.ZipFile(p) as z:
+              assert set(z.namelist())==set(expected)
+              for name,digest in expected.items():
+                  raw=z.read(name);assert hashlib.sha256(raw).hexdigest()==digest
+                  (root/'binaries'/name).write_bytes(raw)
+          PY
+      - name: Pull pinned runtime images then remove credentials
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          export DOCKER_CONFIG="$RUNNER_TEMP/study-docker-auth"
+          mkdir -m 700 "$DOCKER_CONFIG"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+          unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
+          for image in maven@sha256:f7ffbcfeae6e5d56019afeb8c4b288afe73d25b4a0b0b2954fe5866143c1dda0 nginx@sha256:17bd1698318e9c0f9ba2c5ed49f53d690684dab7fe3e8019b855c352528d57be postgres@sha256:8342bcb43446694428ec6594e72e4299692854f0fc3aca090b0ab46f4c7f32a1; do
+            timeout 180 docker pull "$image" >> "$RUNNER_TEMP/evidence/pulls.log" 2>&1
+          done
+      - name: Ordinary control in fresh isolated runtime
+        run: |
+          set -euo pipefail
+          status=0
+          for arm in ui-ui api-ui api-api; do
+            remaining=$((1650 - $(date +%s) + STUDY_JOB_START))
+            if test "$remaining" -le 0; then status=1; break; fi
+            budget=$((remaining < 450 ? remaining : 450))
+            arm_status=0
+            timeout --signal=TERM --kill-after=15 "$budget" python3 scripts/extension/run_extension_kanban_control_v1.py --arm "$arm" --out "$RUNNER_TEMP/evidence/$arm" --binaries "$RUNNER_TEMP/binaries" || arm_status=$?
+            if test "$arm_status" -ne 0; then status=1; fi
+            if test "$arm_status" -eq 124 || test "$arm_status" -eq 137; then break; fi
+          done
+          exit "$status"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: extension-kanban-controls-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence/*
+          retention-days: 7
+          if-no-files-found: warn

@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/extension-ordinary-controls-v1.md',
+    'scripts/extension/run_extension_kanban_control_v1.py',
+    'scripts/extension/qualify_extension_kanban_control_v1.mjs',
+    '.github/workflows/extension_booklore_controls_v1.yml',
+    '.github/workflows/extension_kanban_controls_v1.yml',
     'protocol/infrastructure-feasibility-extension-v1.md',
     'scripts/ci/browser_smoke_v1.mjs',
     '.github/workflows/infrastructure_preflight_v1.yml',
