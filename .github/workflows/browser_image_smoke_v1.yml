@@ -1,0 +1,71 @@
+name: Pinned browser image smoke v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Install exact retained npm lock without browsers or OS packages
+        run: |
+          mkdir -p "$RUNNER_TEMP/browser-image-evidence" "$RUNNER_TEMP/browser-image-tools"
+          cp scripts/ci/package.json "$RUNNER_TEMP/browser-image-tools/package.json"
+          cp results/development-admin-control-v2-api-ci-44105779135/node-tools-package-lock.json "$RUNNER_TEMP/browser-image-tools/package-lock.json"
+          set +e
+          timeout 180 npm ci --prefix "$RUNNER_TEMP/browser-image-tools" --ignore-scripts --no-audit --no-fund > "$RUNNER_TEMP/browser-image-evidence/npm-ci.log" 2>&1
+          install_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$install_exit" > "$RUNNER_TEMP/browser-image-evidence/npm-ci-exit.json"
+          cp "$RUNNER_TEMP/browser-image-tools/package-lock.json" "$RUNNER_TEMP/browser-image-evidence/package-lock.json"
+          test "$install_exit" -eq 0
+      - name: Pull one immutable official browser image
+        run: |
+          evidence_dir="$RUNNER_TEMP/browser-image-evidence"
+          df -h > "$evidence_dir/disk-before.txt"
+          set +e
+          timeout 600 docker pull --platform linux/amd64 mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac > "$evidence_dir/image-pull.log" 2>&1
+          pull_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$pull_exit" > "$evidence_dir/image-pull-exit.json"
+          test "$pull_exit" -eq 0
+          docker image inspect mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac > "$evidence_dir/image-inspect.json"
+          python3 - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'browser-image-evidence/image-inspect.json').read_text())[0]
+          assert d['Id']=='sha256:fee853fafa59550d162cef52bca02d907694b44ebf6ef9fb075bcc0c65d8dedb'
+          assert d['Architecture']=='amd64' and d['Os']=='linux'
+          PY
+      - name: Exercise exact Chromium on isolated loopback
+        run: |
+          set +e
+          timeout 90 docker run --name study-browser-smoke --network none --shm-size=1g -v "$(command -v node):/study/node:ro" -v "$RUNNER_TEMP/browser-image-tools:/study/tools:ro" -v "$GITHUB_WORKSPACE/scripts/extension/qualify_browser_image_v1.mjs:/study/smoke.mjs:ro" -v "$RUNNER_TEMP/browser-image-evidence:/study/evidence" mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac /study/node /study/smoke.mjs
+          smoke_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$smoke_exit" > "$RUNNER_TEMP/browser-image-evidence/smoke-exit.json"
+          exit "$smoke_exit"
+      - name: Retain container identity and cleanup
+        if: ${{ always() }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/browser-image-evidence"
+          docker inspect study-browser-smoke > "$RUNNER_TEMP/browser-image-evidence/container-inspect.json" 2>/dev/null || true
+          docker rm -f study-browser-smoke || true
+          df -h > "$RUNNER_TEMP/browser-image-evidence/disk-after.txt"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: browser-image-smoke-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/browser-image-evidence/
+          retention-days: 1
+          if-no-files-found: warn
