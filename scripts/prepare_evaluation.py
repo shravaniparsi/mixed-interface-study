@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/infrastructure_preflight_20261117.md',
+    'manifests/infrastructure-preflight-v1.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/browser.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/github-artifacts.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/github-jobs.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/github-run.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/github-timing.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/install.log',
+    'results/infrastructure-preflight-v1-ci-44218771396/node-tools-package-lock.json',
+    'results/infrastructure-preflight-v1-ci-44218771396/runner.txt',
+    'results/infrastructure-preflight-v1-ci-44218771396/smoke.json',
     'notes/related_work_methods_followup_20261117.md',
     'scripts/extension/summarize_infrastructure_preflight_v1.py',
     'protocol/extension-ordinary-controls-v1.md',
