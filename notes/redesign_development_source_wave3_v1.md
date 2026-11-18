@@ -1,0 +1,11 @@
+# Auth-key source qualification
+
+Nine original files acquired under published freeze 741db63a92e5a6f206d8c0534e159067585ed1de. No APIs, validators, application code or experiments executed. Hash verification covers the retained acquisition, not runtime behavior.
+
+The original persisted AuthKey has scalar name, description and user_path. The native creation modal exposes those fields, but existing-record native updates mapped here provide name, labels, allowed models and access flags. The label control serializes an array through parseAuthKeyLabels; a text input widget does not make that whole stored property scalar text. The mapped store contract exposes UpdateName, array/access updates and deactivation. Description/user_path can be changed through API import replacement, but no native existing-record editor for either is established by this bounded mapping. The first two producer operations therefore fail the registered two-independent-editable-scalar-text-properties gate for this mapped workflow. This does not establish an application-wide absence of other editors.
+
+Create and import are distinct operations: import accepts a pre-existing token hash and may update a previous import. They are retained as separate inventory rows, not silently merged as aliases. Both lead to the same mapped native editor and neither qualifies. Do not replace the missing native description control with a handwritten API update or count a comma-separated label array as a scalar property. No malformed producer was tried and this is not a negative editability result.
+
+Evidence: wave-3 2.txt defines AuthKey/CreateInput/ImportInput; 5.txt is explicitly a create modal; 6.txt is the existing-name editor; 7.txt/8.txt show array label update; 1.txt maps original handlers; 4.txt defines Store and normalization. Validation source was encountered during eligibility mapping and is recorded as development exposure. It did not determine altered input selection, which remains omission/null by the design.
+
+Next pending operation in fixed order is PUT /admin/budgets. The remaining ten provisional producer operations remain unresolved. No project has passed source qualification, no runtime is authorized and no scientific case has been added.
