@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'results/catalog-source-wave13-v1/collection.json',
+    'notes/catalog_openelis_fhir_and_materialization_v1.md',
+    'manifests/catalog-qualification-progress-v20.json',
+    'scripts/extension/materialize_openelis_organization_update_v1.mjs',
     'protocol/catalog-source-wave13-v1.md',
     'manifests/catalog-source-wave13-schedule-v1.json',
     'scripts/extension/collect_catalog_source_wave13_v1.py',
