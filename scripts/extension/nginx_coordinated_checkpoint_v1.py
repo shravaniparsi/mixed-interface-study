@@ -110,7 +110,7 @@ class NginxCheckpoint:
             report['quiescence_before'] = require_quiescence(live_quiescence_check())
             database = self.database('capture', self.roots['/data'], checkpoint / 'database-capture.json', checkpoint)
             report['backup_sha256'] = database['backupSha256']
-            self.command(['pause', self.container])
+            self.command(['pause', metadata['Id']])
             paused = True
             guard = inspect_container(self.container, 'capture', self.roots)
             if guard['container_id'] != metadata['Id']:
@@ -122,7 +122,7 @@ class NginxCheckpoint:
             (checkpoint / 'paused-container.json').write_text(json.dumps(self.metadata(), indent=2) + '\n')
             (checkpoint / 'container-diff.txt').write_bytes(self.command(['diff', self.container]))
             verify_same_guard(guard, inspect_container(self.container, 'capture', self.roots))
-            self.command(['unpause', self.container])
+            self.command(['unpause', metadata['Id']])
             paused = False
             resumed = self.metadata()
             if resumed['Id'] != metadata['Id'] or resumed['State']['Pid'] != metadata['State']['Pid'] or resumed['State']['StartedAt'] != metadata['State']['StartedAt']:
@@ -143,7 +143,7 @@ class NginxCheckpoint:
             raise
         finally:
             if paused:
-                self.command(['unpause', self.container])
+                self.command(['unpause', metadata['Id']])
 
     def stop_and_restore(self, checkpoint, evidence):
         checkpoint, evidence = canonical(checkpoint), canonical(evidence)
@@ -168,7 +168,7 @@ class NginxCheckpoint:
         if digest(checkpoint / 'database.sqlite') != saved['backup_sha256']:
             raise ValueError('Standalone backup identity mismatch')
         expected = json.loads((checkpoint / 'database-capture.json').read_text())['before']['state']
-        self.command(['stop', '--time', '20', self.container], timeout=30)
+        self.command(['stop', '--time', '20', saved['container_id']], timeout=30)
         guard = inspect_container(self.container, 'restore', self.roots)
         if guard['container_id'] != saved['container_id']:
             raise ValueError('Container identity changed while stopping')
