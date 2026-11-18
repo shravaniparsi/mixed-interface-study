@@ -42,6 +42,16 @@ class RecoveryTests(unittest.TestCase):
             with patch.object(m.subprocess,'run') as called:
                 with self.assertRaisesRegex(ValueError,'identity'):m.recover(*args)
                 called.assert_not_called()
+    def test_oversized_tar_header_rejected_before_payload_read(self):
+        import tarfile
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'oversized.tar.gz'
+            with tarfile.open(path,'w:gz') as archive:
+                member=tarfile.TarInfo('evidence/oversized');member.size=m.MAX_BYTES+1
+                archive.addfile(member)
+            with self.assertRaisesRegex(ValueError,'uncompressed byte bound'):
+                m.audit_archive(path)
+
     def test_archive_inventory_mismatch_is_not_published_as_recovered(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);args=self.fixture(root)

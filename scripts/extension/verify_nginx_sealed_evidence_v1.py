@@ -17,43 +17,45 @@ MAX_ARCHIVE=600*1024*1024
 
 
 def audit_archive(path):
-    with tarfile.open(path,'r:gz') as archive:
-        members=archive.getmembers()
-        if len(members)>MAX_ENTRIES+1:raise ValueError('Archive member bound')
-        indexed={m.name:m for m in members}
-        if len(indexed)!=len(members):raise ValueError('Duplicate archive member')
-        item=indexed.get('_archive-inventory.json')
-        if item is None or not item.isfile() or item.size>64*1024*1024:raise ValueError('Private inventory missing/oversized')
-        manifest=json.load(archive.extractfile(item));rows=manifest['entries']
-        if not isinstance(rows,list) or len(rows)>MAX_ENTRIES:raise ValueError('Private inventory row bound')
-        expected={};total=0
-        for row in rows:
-            relative=row['path']
-            if not isinstance(relative,str) or (relative!='.' and (str(PurePosixPath(relative))!=relative or relative.startswith('/') or '..' in PurePosixPath(relative).parts)):
-                raise ValueError('Noncanonical private inventory path')
-            name='evidence' if relative=='.' else 'evidence/'+relative
-            if name in expected:raise ValueError('Duplicate private inventory path')
-            expected[name]=row
-            member=indexed.get(name)
-            if member is None:raise ValueError('Inventory member missing')
-            if (member.mode,member.uid,member.gid)!=(row['mode'],row['uid'],row['gid']):raise ValueError('Archive metadata differs')
-            if int(member.mtime)!=row['mtime_ns']//1000000000:raise ValueError('Archive timestamp differs at whole-second precision')
-            if row['kind']=='file':
-                if not member.isfile() or member.size!=row['bytes']:raise ValueError('Archive file type/size differs')
-                total+=member.size
-                if total>MAX_BYTES:raise ValueError('Private uncompressed byte bound')
-                h=hashlib.sha256()
-                stream=archive.extractfile(member)
+    # Streaming prevents a malicious oversized tar member from being skipped or
+    # decompressed before its declared size is checked. No member is extracted.
+    observed={};manifest=None;total=0
+    with tarfile.open(path,'r|gz') as archive:
+        for member in archive:
+            if member.name in observed:raise ValueError('Duplicate archive member')
+            if len(observed)>=MAX_ENTRIES+1:raise ValueError('Archive member bound')
+            row=dict(mode=member.mode,uid=member.uid,gid=member.gid,mtime_seconds=int(member.mtime))
+            if member.name=='_archive-inventory.json':
+                if not member.isfile() or not 0<=member.size<=64*1024*1024:raise ValueError('Private inventory missing/oversized')
+                manifest=json.load(archive.extractfile(member));row['kind']='inventory'
+            elif member.isfile():
+                if member.size<0 or total+member.size>MAX_BYTES:raise ValueError('Private uncompressed byte bound')
+                total+=member.size;h=hashlib.sha256();stream=archive.extractfile(member)
                 for chunk in iter(lambda:stream.read(1024*1024),b''):h.update(chunk)
-                if h.hexdigest()!=row['sha256']:raise ValueError('Private member digest differs')
-            elif row['kind']=='directory':
-                if not member.isdir():raise ValueError('Archive directory type differs')
-            elif row['kind']=='symlink':
-                if not member.issym() or member.linkname!=row['target']:raise ValueError('Archive literal symlink differs')
+                row.update(kind='file',bytes=member.size,sha256=h.hexdigest())
+            elif member.isdir():row['kind']='directory'
+            elif member.issym():row.update(kind='symlink',target=member.linkname)
             else:raise ValueError('Unsupported archived member kind')
-        if set(indexed)!=set(expected)|{'_archive-inventory.json'}:raise ValueError('Unregistered archive member')
-        if total!=manifest['total_file_bytes']:raise ValueError('Private byte count differs')
-        return {'members_verified':len(rows),'private_file_bytes_verified':total,'members_extracted':0}
+            observed[member.name]=row
+    if manifest is None:raise ValueError('Private inventory missing')
+    rows=manifest['entries']
+    if not isinstance(rows,list) or len(rows)>MAX_ENTRIES:raise ValueError('Private inventory row bound')
+    expected={}
+    for row in rows:
+        relative=row['path']
+        if not isinstance(relative,str) or (relative!='.' and (str(PurePosixPath(relative))!=relative or relative.startswith('/') or '..' in PurePosixPath(relative).parts)):
+            raise ValueError('Noncanonical private inventory path')
+        name='evidence' if relative=='.' else 'evidence/'+relative
+        if name in expected:raise ValueError('Duplicate private inventory path')
+        expected[name]=row
+        actual=observed.get(name)
+        if actual is None:raise ValueError('Inventory member missing')
+        compared={k:v for k,v in row.items() if k not in ('path','mtime_ns')}
+        compared['mtime_seconds']=row['mtime_ns']//1000000000
+        if actual!=compared:raise ValueError('Private archive member/metadata/digest differs')
+    if set(observed)!=set(expected)|{'_archive-inventory.json'}:raise ValueError('Unregistered archive member')
+    if total!=manifest['total_file_bytes']:raise ValueError('Private byte count differs')
+    return {'members_verified':len(rows),'private_file_bytes_verified':total,'members_extracted':0}
 
 
 def recover(ciphertext,report,recipient,key,output):
