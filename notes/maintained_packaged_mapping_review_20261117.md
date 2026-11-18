@@ -281,3 +281,11 @@ The new 13-row progress snapshot separates four bounded mappings without an esta
 ## Maxun parent callback resolution schedule
 
 Existing RobotCreate crawl/scrape producer handlers and RobotEditPage complete save handler were reread. Crawl create forwards url/name plus nested crawlConfig and formats; update forwards name/targetUrl, workflow, limits and credentials. The post-save handleStart(robot) is a prop callback whose behavior is still unknown; its name is not evidence of a run. Wave 22 registers two fixed-tree native parent candidates and the explicitly imported backend Robot model. Maxun will use five dependency files after this wave. No workflow substitution, source execution or crawl was performed.
+
+## Maxun parent callback and persistence resolution
+
+Wave 22 was collected once after published freeze ba3abd80fb0e368adbcc0afaa628d266cf89e30c; all three blobs verified. Robot model and Recordings parent were read fully. MainPage received targeted DisplayContent mounting review, not a full-file review. Recordings passes an empty handleStart callback to RobotEditPage and routes its table edit callback to /robots/{id}/edit. The edit-save callback therefore does not itself execute a crawl. The model stores recording_meta and recording as JSONB with a separate row UUID, owner userId and recording_meta.id used by the routes. Top-level request name/url map to nested persistence; this differs from the previously excluded nested request envelopes.
+
+The crawl create handler and complete ordinary update handler were reviewed. Crawl creation stores the workflow and emits analytics rather than calling a run function. Update normalizes workflow URLs and persists metadata; the response includes the previously loaded model, so final persistence must be established by fresh readback, not that response alone. Name defaults, trimming and URL normalization are exposed source behavior, not runtime findings; no additional variants are authorized. No scientific case or runtime control has been executed.
+
+Wave 23 registers five explicit imports for auth, database, telemetry, URL normalization and native table navigation, bringing Maxun to 10/24 dependencies. The workflow remains unselected pending the earlier-prefix and isolation review.
