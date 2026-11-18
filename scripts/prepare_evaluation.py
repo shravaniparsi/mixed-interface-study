@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/run_maintained_maxun_controls_v1.py',
     'scripts/extension/qualify_maintained_maxun_v1.mjs',
     'scripts/extension/maxun_comparison_v1.mjs',
     'tests/maxun_comparison_v1.test.mjs',
