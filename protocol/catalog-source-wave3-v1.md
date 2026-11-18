@@ -1,0 +1,7 @@
+# Catalog source wave 3: original serialization and persistence dependencies
+
+Under the unchanged cohort protocol, retrieve exactly the 56 blobs in catalog-source-wave3-schedule-v1.json. These resolve dependencies identified from acquired forms, route tables and pinned tree paths: original frontend API serializers/shared forms, backend handlers/validators, persistence utilities, and conference/transfer operation scope. No source from the two closed scope exclusions (ChartDB and socks5-proxy-server) is scheduled.
+
+The earlier source reviews were partial. Neither this schedule nor preview of a later form selects that workflow over an unresolved earlier candidate. Preserve candidate ordering and unresolved prefixes. Source-access findings are not altered-input outcomes; no tests, issue discussions, patches, benchmarks or runtime requests are included. Existing incidental comments/fix exposure remains recorded, and newly encountered such material must not drive scientific input choice.
+
+Enforce cumulative limits over waves1–3: 256 scheduled blobs and 8 MiB decoded per project, 256 KiB/file, 512 KiB envelope, 30 seconds/request. No repeated paths, request retries, alternative revisions or source execution. Freeze both prior collection ledgers, reconstruct cumulative counts/bytes, and retain every new unavailable file. These files are insufficient by themselves to authorize builds or experiments. Frozen per-project source contracts, provenance, local initialization, ordinary-control state comparisons and runtime recipes remain required.
