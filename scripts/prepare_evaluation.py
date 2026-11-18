@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/catalog_mathesar_runtime_preparation_v1.md',
+    'manifests/catalog-runtime-preparation-ci-accounting-v1.json',
+    'protocol/catalog-mathesar-postgres-checkpoint-v1.md',
+    'scripts/extension/mathesar_postgres_checkpoint_v1.py',
+    'results/catalog-mathesar-runtime-image-metadata-v1/collection.json',
+    'results/catalog-mathesar-runtime-image-metadata-v1/postgres/config.json',
+    'results/catalog-mathesar-runtime-image-metadata-v1/postgres/index.json',
+    'results/catalog-mathesar-runtime-image-metadata-v1/postgres/manifest.json',
+    'results/catalog-mathesar-runtime-image-metadata-v1/python/config.json',
+    'results/catalog-mathesar-runtime-image-metadata-v1/python/index.json',
+    'results/catalog-mathesar-runtime-image-metadata-v1/python/manifest.json',
     'protocol/catalog-mathesar-runtime-image-metadata-v1.md',
     'scripts/extension/collect_mathesar_runtime_image_metadata_v1.py',
     'manifests/catalog-qualification-progress-v5.json',
