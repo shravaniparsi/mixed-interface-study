@@ -26,6 +26,16 @@ function envelope(method, params) {
   return { jsonrpc: '2.0', id: 0, method, params };
 }
 
+function publicEnvelope(body) {
+  return JSON.parse(JSON.stringify(body, (key, value) => {
+    if (/password/i.test(key) && typeof value === 'string') {
+      return { private_value_sha256: createHash('sha256').update(value).digest('hex'),
+        utf8_bytes: Buffer.byteLength(value) };
+    }
+    return value;
+  }));
+}
+
 export function monitorLocalRequests(page) {
   const external = [];
   const pageErrors = [];
@@ -126,19 +136,17 @@ async function nativeSubmit(page, save, expected) {
   actionability.clicked = true;
   const response = await responsePromise;
   const actual = response.request().postDataJSON();
-  equal(actual, expected, 'Native emitted request differs from source materialization');
+  try { equal(actual, expected, 'Native emitted request differs from source materialization'); }
+  catch (error) {
+    error.evidence = { emitted_request: publicEnvelope(actual), expected_request: publicEnvelope(expected),
+      actionability, http_status: response.status() };
+    throw error;
+  }
   const answer = await response.json();
   check(response.status() === 200 && answer.id === 0 && answer.jsonrpc === '2.0'
     && Object.hasOwn(answer, 'result') && !Object.hasOwn(answer, 'error'),
   'Native RPC application response failed');
-  const captured = structuredClone(actual);
-  if (typeof captured.params?.user_def?.password === 'string') {
-    const password = captured.params.user_def.password;
-    captured.params.user_def.password = {
-      private_value_sha256: createHash('sha256').update(password).digest('hex'),
-      utf8_bytes: Buffer.byteLength(password),
-    };
-  }
+  const captured = publicEnvelope(actual);
   return { actionability, status: response.status(), result: answer.result,
     emitted_request: captured, complete_request_match: true };
 }
