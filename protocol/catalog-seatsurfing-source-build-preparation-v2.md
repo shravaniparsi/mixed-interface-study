@@ -1,0 +1,3 @@
+# SeatSurfing build preparation v2: complete acquired-source inventory
+
+Supersedes v1 only for the set of acquired source files to verify during a future build: include all 46 files through source wave 36, including the original Go checksum file. Preserve v1 artifacts and identities. Every base reference, Dockerfile operation, runtime restriction, original-lock requirement and qualification limit in catalog-seatsurfing-source-build-preparation-v1.md remains unchanged. No acquisition, installation, build or application run is authorized here. Verify deterministic output locally; the generated Dockerfile must be byte-identical to v1, with only the inventory manifest expanding.

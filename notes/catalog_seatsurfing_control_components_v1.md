@@ -1,0 +1,7 @@
+# SeatSurfing baseline component preparation
+
+Source wave 36 verified all six scheduled files at freeze 7033af543e54aa1aeca945bc58b373dd469fdd20, adding 33,114 bytes. SeatSurfing totals are 46 slots and 552,612 bytes. Date formatting uses native local year/month/day getters. Ancillary space and attribute models confirm the retained native serialization and endpoints. No application or schema execution occurred.
+
+Prepared three components: original visible-form password login (syntax checked only), a Go probe importing the original router decoder/validator (not compiled/run), and a scalar-edit location request-plan materializer. Six synthetic materializer tests passed locally. These observations are instrument checks, not qualified native/API controls or scientific cases. The materializer retains existing attribute writes and original asynchronous completion semantics and rejects the unmapped designed-map branch rather than reducing it to one update.
+
+Build preparation v2 extends runtime source identity verification from forty to all forty-six acquired files while retaining the same pinned Dockerfile and dependency references. Full native request equality, original-schema execution, complete HTTP/authentication dispatch, process/network bounds, checkpoint/restore, actor checks and input/workflow freeze remain pending. No runtime slot has been consumed for SeatSurfing. Cohort totals remain six application jobs and zero scientific cases.
