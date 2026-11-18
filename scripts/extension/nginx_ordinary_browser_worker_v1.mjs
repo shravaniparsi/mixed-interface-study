@@ -15,7 +15,7 @@ import { materializeNginxAccessListUpdate } from './materialize_nginx_access_lis
 
 assert.equal(process.argv.slice(2).length, 3);
 const [toolsDirectory, frontendDirectory, evidenceDirectory] = process.argv.slice(2).map((value) => resolve(value));
-assert.equal(process.version, 'v20.20.2');
+assert.equal(process.version, 'v24.18.1');
 const require = createRequire(resolve(toolsDirectory, 'package.json'));
 assert.equal(require('playwright/package.json').version, '1.62.1');
 const { chromium } = require('playwright');
