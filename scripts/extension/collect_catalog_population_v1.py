@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 import signal
+import sys
 import subprocess
 import tarfile
 import time
@@ -59,23 +60,33 @@ def select(rows):
     return ranked,selected
 
 def main():
+    global OUT
+    offline=sys.argv[1:]==['--offline-existing-archive']
+    if sys.argv[1:] and not offline:raise ValueError('Unknown arguments')
+    if offline:OUT=ROOT/'results/catalog-population-offline-v1'
     OUT.mkdir(exist_ok=False);start=time.monotonic()
     result={'status':'failed','revision':REV,'rows':[]}
     try:
         assert subprocess.check_output(['ruby','-r','yaml','-e','puts RUBY_VERSION;puts Psych::VERSION'],text=True).split()==['2.6.10','3.1.0']
-        def deadline(*args):raise TimeoutError('120-second acquisition deadline')
-        signal.signal(signal.SIGALRM,deadline);signal.alarm(120)
-        archive=OUT/'catalog.tar.gz';used=0
-        with urllib.request.urlopen('https://codeload.github.com/awesome-selfhosted/awesome-selfhosted-data/tar.gz/'+REV,timeout=120) as response,archive.open('wb') as output:
-            while True:
-                if time.monotonic()-start>120:raise ValueError('Acquisition deadline')
-                chunk=response.read(65536)
-                if not chunk:break
-                used+=len(chunk)
-                if used>20*1024*1024:raise ValueError('Compressed byte bound')
-                output.write(chunk)
-        signal.alarm(0)
-        result.update(archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),archive_bytes=used)
+        if offline:
+            archive=ROOT/'results/catalog-population-v1/catalog.tar.gz'
+            assert hashlib.sha256(archive.read_bytes()).hexdigest()=='a90f041d6a3c6cfbce0c2338ce2c66ae08156ebefb1101688c93378ef7ef9f39'
+            used=archive.stat().st_size
+        else:
+            def deadline(*args):raise TimeoutError('120-second acquisition deadline')
+            signal.signal(signal.SIGALRM,deadline);signal.alarm(120)
+            archive=OUT/'catalog.tar.gz';used=0
+            with urllib.request.urlopen('https://codeload.github.com/awesome-selfhosted/awesome-selfhosted-data/tar.gz/'+REV,timeout=120) as response,archive.open('wb') as output:
+                while True:
+                    if time.monotonic()-start>120:raise ValueError('Acquisition deadline')
+                    chunk=response.read(65536)
+                    if not chunk:break
+                    used+=len(chunk)
+                    if used>20*1024*1024:raise ValueError('Compressed byte bound')
+                    output.write(chunk)
+            signal.alarm(0)
+            result.update(archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),archive_bytes=used)
+        result.update(archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),archive_bytes=used,offline_existing_archive=offline)
         tree=json.loads((ROOT/'results/catalog-frame-metadata-v1/3.json').read_text())['tree']
         expected={r['path']:r for r in tree if r['path'].startswith('software/') and r['type']=='blob'}
         assert len(expected)==1362
@@ -90,9 +101,12 @@ def main():
                 if relative not in expected and relative!='AUTHORS':continue
                 assert item.isfile()
                 if relative in texts:raise ValueError('Duplicate member')
-                if item.size>64*1024:raise ValueError('Entry byte bound')
+                if relative in expected and item.size>64*1024:raise ValueError('Entry byte bound')
                 raw=tf.extractfile(item).read()
                 if relative=='AUTHORS':
+                    author=next(r for r in tree if r['path']=='AUTHORS')
+                    assert len(raw)==author['size']
+                    assert hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()==author['sha']
                     (OUT/'AUTHORS').write_bytes(raw);continue
                 decoded+=len(raw)
                 if decoded>2*1024*1024:raise ValueError('Software total byte bound')

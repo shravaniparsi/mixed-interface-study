@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/catalog-preselection-ci-accounting-v1.json',
+    'protocol/catalog-population-offline-correction-v1.md',
+    'results/catalog-population-v1/selection.json',
+    'results/catalog-population-v1/catalog.tar.gz',
     'scripts/extension/collect_catalog_population_v1.py',
     'scripts/extension/test_catalog_population_v1.py',
     'protocol/catalog-population-selection-v1.md',
