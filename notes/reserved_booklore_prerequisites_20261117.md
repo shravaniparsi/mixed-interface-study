@@ -1,0 +1,11 @@
+# Booklore local prerequisite assessment
+
+Four dependency files were frozen at c667a88 and retrieved with matching Git blob and SHA256 identities, bringing dependency reads to 17/24. No build, application or browser has run.
+
+AuthenticationSettings is the first resource candidate after the application root. It has group-mapping create/edit methods with description and oidcGroupClaim text fields, JSON POST collection/PUT ID, and collection readback. Mapping UI is inside the oidcEnabled conditional and existing mappings load only when enabled. The frontend's enable action checks provider-name/client-ID/issuer and claim mappings; connection testing is a separate action. Backend settings update persists and refreshes settings, with special validation for OIDC_FORCE_ONLY_MODE. The reviewed update method itself makes no issuer HTTP call. This is not yet proof that the complete controller/cache path has no external dependency.
+
+SetupController exposes initial-admin provisioning and status, refusing new setup after an initial user exists. SecurityConfig includes setup/auth routes among public endpoints while other API routes require authentication. Mapping controller requires admin. These support a possible original local-admin flow; required request DTO and local login mapping still need establishment before runtime freeze. No forced authentication, database-injected user or mocked identity response is justified by this review.
+
+Original production Dockerfile uses node:24-alpine, gradle:9.3.1-jdk25-alpine and eclipse-temurin:25-jre-alpine; MariaDB11.4 appears in the development Compose. Build dependencies have not yet been resolved. application.yaml disables springdoc by default; any schema availability outcome must preserve that distinction and use an explicit frozen configuration if original generation is enabled. It must not synthesize schema constraints from frontend validators.
+
+Next: resolve the remaining setup/login/settings-controller prerequisites within seven remaining dependency slots, then freeze the selected workflow and bounded original build. Other source-prefix dispositions remain pending; do not infer runtime qualification from the existence of endpoints or the absence of a network call in one method.
