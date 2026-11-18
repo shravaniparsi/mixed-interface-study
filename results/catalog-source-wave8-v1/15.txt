@@ -1,0 +1,489 @@
+"""API handlers."""
+
+from __future__ import annotations
+
+import inspect
+import json
+import logging
+from functools import partial, wraps
+from http import HTTPStatus
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypedDict, cast
+
+import tornado.routing
+import voluptuous as vol
+from voluptuous.humanize import humanize_error
+
+from viseron.components.webserver.api.const import API_BASE
+from viseron.components.webserver.auth import Role
+from viseron.components.webserver.request_handler import ViseronRequestHandler
+from viseron.helpers.json import JSONEncoder
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Coroutine
+    from re import Match, Pattern
+
+    from typing_extensions import NotRequired
+    from voluptuous.schema_builder import Schema
+
+    from viseron import Viseron
+    from viseron.components.webserver.auth import Auth
+
+LOGGER = logging.getLogger(__name__)
+
+METHOD_ALLOWED_ROLES = {
+    "GET": [Role.ADMIN, Role.WRITE, Role.READ],
+    "POST": [Role.ADMIN, Role.WRITE],
+    "PUT": [Role.ADMIN, Role.WRITE],
+    "DELETE": [Role.ADMIN, Role.WRITE],
+}
+
+
+class Route(TypedDict):
+    """Routes type."""
+
+    path_pattern: str | Pattern
+    supported_methods: list[Literal["GET", "POST", "PUT", "DELETE"]]
+    method: str
+    requires_auth: NotRequired[bool]
+    requires_camera_token: NotRequired[bool]
+    requires_role: NotRequired[list[Role]]
+    allow_token_parameter: NotRequired[bool]
+    json_body_schema: NotRequired[Schema]
+    request_arguments_schema: NotRequired[Schema]
+    rate_limit: NotRequired[str]
+
+
+def require_auth(
+    func: Callable[..., Coroutine[Any, Any, None]],
+) -> Callable[..., Coroutine[Any, Any, None]]:
+    """Decorate an endpoint to require auth to be enabled.
+
+    Returns HTTP 503 if authentication is not configured.
+    Methods decorated with this can safely use self.auth.
+    """
+
+    @wraps(func)
+    async def wrapper(self: BaseAPIHandler, *args: Any, **kwargs: Any) -> None:
+        if self._webserver.auth is None:  # pylint: disable=protected-access
+            self.response_error(
+                HTTPStatus.SERVICE_UNAVAILABLE,
+                reason="Authentication is not enabled",
+            )
+            return
+        await func(self, *args, **kwargs)
+
+    return wrapper
+
+
+class BaseAPIHandler(ViseronRequestHandler):
+    """Base handler for all API endpoints."""
+
+    routes: ClassVar[list[Route]] = []
+
+    @property
+    def auth(self) -> Auth:
+        """Return auth instance.
+
+        Only safe to use inside @require_auth-decorated methods.
+        """
+        if self._webserver.auth is None:
+            raise RuntimeError("auth property used without @require_auth guard")
+        return self._webserver.auth
+
+    def initialize(self, vis: Viseron) -> None:
+        """Initialize."""
+        super().initialize(vis)
+        self.route: Route = {}  # type: ignore[typeddict-item]
+        self.request_arguments: dict[str, Any] = {}
+        self.json_body = {}
+        self.browser_request = False
+
+    @property
+    def json_body(self) -> dict[str, Any]:
+        """Return JSON body."""
+        return self._json_body
+
+    @json_body.setter
+    def json_body(self, value: dict[str, Any]) -> None:
+        """Set JSON body."""
+        self._json_body = value
+
+    def check_xsrf_cookie(self) -> None:
+        """XSRF protection.
+
+        Enforce XSRF for any cookie-authenticated, state-changing request,
+        regardless of the X-Requested-With header. Non-cookie clients
+        (Authorization header / PAT) are exempt because CSRF requires the
+        browser to attach credentials automatically.
+        """
+        has_signature_cookie = self.get_secure_cookie("signature_cookie") is not None
+
+        # Determine if the current route explicitly allows token via query parameter
+        # (used for read-only streaming endpoints). In that case, we skip XSRF even
+        # for browser requests.
+        allows_token_param = bool(self.route.get("allow_token_parameter", False))
+
+        # Enforce XSRF only for state-changing methods coming from browser flows
+        # that rely on cookies. Safe methods (GET, HEAD, OPTIONS) are excluded.
+        state_changing = self.request.method in ("POST", "PUT", "DELETE", "PATCH")
+
+        if has_signature_cookie and state_changing and not allows_token_param:
+            # Use Tornado's default CSRF check when cookies are the credential
+            # source and the request can change server state.
+            return super().check_xsrf_cookie()
+
+        # Non-browser clients or requests not using cookies: skip CSRF check
+        return None
+
+    async def response_success(
+        self,
+        *,
+        status: HTTPStatus = HTTPStatus.OK,
+        response: Any | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> None:
+        """Send successful response."""
+
+        def _json_dumps() -> str:
+            return partial(json.dumps, cls=JSONEncoder, allow_nan=False)(response)
+
+        if response is None:
+            response = {"success": True}
+        self.set_status(status)
+
+        if headers:
+            for header, value in headers.items():
+                await self.run_in_executor(self.set_header, header, value)
+
+        if isinstance(response, dict):
+            self.set_header("Content-Type", "application/json")
+            self.finish(await self.run_in_executor(_json_dumps))
+            return
+
+        self.finish(response)
+
+    def response_error(self, status_code: HTTPStatus, reason: str) -> None:
+        """Send error response."""
+        self.set_status(status_code, reason=reason.replace("\n", ""))
+        self.set_header("Content-Type", "application/json")
+        response = {"status": status_code, "error": reason}
+        self.finish(response)
+
+    def check_rate_limit(self, bucket: str) -> bool:
+        """Check the per-IP rate limit for bucket.
+
+        Returns True when the request is allowed. When throttled, sets a 429
+        response with a Retry-After header and returns False.
+        """
+        limiters = self._webserver.rate_limiters
+        limiter = limiters.get(bucket)
+        if limiter is None:
+            return True
+        key = self.request.remote_ip or "unknown"
+        allowed, retry_after = limiter.check(key)
+        if not allowed:
+            self.set_header("Retry-After", str(int(retry_after) + 1))
+            self.response_error(
+                HTTPStatus.TOO_MANY_REQUESTS,
+                reason="Too many requests, please try again later",
+            )
+            return False
+        return True
+
+    def reset_rate_limit(self, bucket: str) -> None:
+        """Reset the rate limit counter for the requesting IP and bucket."""
+        limiter = self._webserver.rate_limiters.get(bucket)
+        if limiter is None:
+            return
+        limiter.reset(self.request.remote_ip or "unknown")
+
+    def handle_endpoint_not_found(self) -> None:
+        """Return 404."""
+        self.response_error(HTTPStatus.NOT_FOUND, "Endpoint not found")
+
+    def handle_method_not_allowed(self) -> None:
+        """Return 405."""
+        self.response_error(
+            HTTPStatus.METHOD_NOT_ALLOWED, f"Method '{self.request.method}' not allowed"
+        )
+
+    def validate_json_body(
+        self, route: Route
+    ) -> tuple[Literal[False], str] | tuple[Literal[True], None]:
+        """Validate JSON body."""
+        if schema := route.get("json_body_schema", None):
+            try:
+                json_body = json.loads(self.request.body)
+            except json.JSONDecodeError:
+                return False, f"Invalid JSON in body: {self.request.body.decode()}"
+
+            try:
+                self.json_body = schema(json_body)
+            except vol.Invalid as err:
+                LOGGER.exception(
+                    f"Invalid body: {self.request.body.decode()}",
+                )
+                return (
+                    False,
+                    (
+                        f"Invalid body: {self.request.body.decode()}. "
+                        f"{humanize_error(json_body, err)}"
+                    ),
+                )
+        return True, None
+
+    def _construct_jwt_from_header_and_cookies(self) -> str | None:
+        """Construct JWT from Header and Cookies."""
+        signature = self.get_secure_cookie("signature_cookie")
+        if signature is None:
+            return None
+        jwt_header_payload = self.request.headers.get("Authorization", None)
+        if jwt_header_payload is None:
+            return None
+        return jwt_header_payload + "." + signature.decode()
+
+    def _construct_jwt_from_parameter_and_cookies(self) -> str | None:
+        """Construct JWT from Query parameter 'token' and Cookies."""
+        signature = self.get_secure_cookie("signature_cookie")
+        if signature is None:
+            return None
+        jwt_header_payload = self.get_argument("token", None)
+        if jwt_header_payload is None:
+            return None
+        return "Bearer " + jwt_header_payload + "." + signature.decode()
+
+    def validate_auth_header(self) -> bool:
+        """Validate auth header."""
+        # Call is coming from browser? Construct the JWT from the cookies
+        auth_header = None
+        if self.request.headers.get("X-Requested-With", "") == "XMLHttpRequest":
+            self.browser_request = True
+            auth_header = self._construct_jwt_from_header_and_cookies()
+        # Route allows JWT Header + Payload in URL parameter
+        if auth_header is None and self.route.get("allow_token_parameter", False):
+            auth_header = self._construct_jwt_from_parameter_and_cookies()
+        # Header could not be constructed from cookies or URL parameter
+        if auth_header is None:
+            auth_header = self.request.headers.get("Authorization", None)
+
+        if auth_header is None:
+            LOGGER.debug("Auth header is missing")
+            return False
+
+        # Check correct auth header format
+        try:
+            auth_type, auth_val = auth_header.split(" ", 1)
+        except ValueError:
+            LOGGER.debug("Invalid auth header")
+            return False
+        if auth_type != "Bearer":
+            LOGGER.debug(f"Auth type not Bearer: {auth_type}")
+            return False
+
+        return self.validate_access_token(
+            auth_val, check_refresh_token=self.browser_request
+        )
+
+    def _allow_token_parameter(self, schema: Schema, route: Route) -> Schema:
+        """Allow token parameter in schema."""
+        if route.get("allow_token_parameter", False):
+            try:
+                schema = schema.extend({vol.Optional("token"): str})
+            except AssertionError:
+                LOGGER.warning(
+                    "Schema is not a dict, cannot extend with token parameter "
+                    "for route %s",
+                    self.request.uri,
+                )
+        return schema
+
+    def _path_match(self, route: Route) -> Match[str] | None:
+        """Check if path matches."""
+        path_match = tornado.routing.PathMatches(f"{API_BASE}{route['path_pattern']}")
+        return path_match.regex.match(self.request.path)
+
+    def _get_params(self, route: Route) -> dict[str, Any] | None:
+        """Get params from path."""
+        path_match = tornado.routing.PathMatches(f"{API_BASE}{route['path_pattern']}")
+        return path_match.match(self.request)
+
+    async def route_request(self) -> None:
+        """Route request to correct API endpoint."""
+        unsupported_method = False
+
+        for route in self.routes:
+            if await self.run_in_executor(self._path_match, route):
+                if self.request.method not in route["supported_methods"]:
+                    unsupported_method = True
+                    continue
+
+                self.route = route
+                # Enforce per-route rate limiting before any expensive work
+                # Throttled requests are rejected with 429 + Retry-After.
+                if self._webserver.auth:
+                    rate_limit_bucket = route.get("rate_limit")
+                    if rate_limit_bucket and not self.check_rate_limit(
+                        rate_limit_bucket
+                    ):
+                        return None
+
+                if self._webserver.auth and route.get("requires_auth", True):
+                    if not await self.run_in_executor(self.validate_auth_header):
+                        self.response_error(
+                            HTTPStatus.UNAUTHORIZED, reason="Authentication required"
+                        )
+                        return None
+
+                    if not self.current_user:
+                        self.response_error(
+                            HTTPStatus.UNAUTHORIZED, reason="User not set"
+                        )
+                        return None
+
+                    if requires_role := route.get("requires_role", None):
+                        if self.current_user.role not in requires_role:
+                            LOGGER.debug(
+                                "Request with invalid permissions, endpoint requires"
+                                f" {requires_role}, user has role"
+                                f" {self.current_user.role}"
+                            )
+                            self.response_error(
+                                HTTPStatus.FORBIDDEN, reason="Insufficient permissions"
+                            )
+                            return None
+                    elif (
+                        self.current_user.role
+                        not in METHOD_ALLOWED_ROLES[self.request.method]
+                    ):
+                        LOGGER.debug(
+                            "Request with invalid permissions, endpoint requires"
+                            f" {METHOD_ALLOWED_ROLES[self.request.method]}, user"
+                            f" has role {self.current_user.role}"
+                        )
+                        self.response_error(
+                            HTTPStatus.FORBIDDEN, reason="Insufficient permissions"
+                        )
+                        return None
+
+                params = await self.run_in_executor(self._get_params, route)
+                if params is None:
+                    params = {}
+
+                request_arguments = {
+                    k: self.get_argument(k) for k in self.request.arguments
+                }
+                if schema := route.get("request_arguments_schema", None):
+                    try:
+                        # Implicitly allow token parameter if route allows it
+                        schema = self._allow_token_parameter(schema, route)
+                        self.request_arguments = schema(request_arguments)
+                    except vol.Invalid as err:
+                        LOGGER.exception(
+                            f"Invalid request arguments: {request_arguments}",
+                        )
+                        self.response_error(
+                            HTTPStatus.BAD_REQUEST,
+                            reason=(
+                                f"Invalid request arguments: {request_arguments}. "
+                                f"{humanize_error(request_arguments, err)}"
+                            ),
+                        )
+                        return None
+
+                path_args = [param.decode() for param in params.get("path_args", [])]
+                path_kwargs = params.get("path_kwargs", {})
+                for key, value in path_kwargs.items():
+                    path_kwargs[key] = value.decode()
+
+                if self._webserver.auth and route.get("requires_camera_token", False):
+                    camera_identifier = path_kwargs.get("camera_identifier", None)
+                    if not camera_identifier:
+                        self.response_error(
+                            HTTPStatus.BAD_REQUEST,
+                            reason="Missing camera identifier in request",
+                        )
+                        return None
+
+                    camera = await self.run_in_executor(
+                        self._get_camera, camera_identifier
+                    )
+                    if not camera:
+                        self.response_error(
+                            HTTPStatus.NOT_FOUND,
+                            reason=f"Camera {camera_identifier} not found",
+                        )
+                        return None
+
+                    if not await self.run_in_executor(
+                        self.validate_camera_token, camera
+                    ):
+                        self.response_error(
+                            HTTPStatus.UNAUTHORIZED,
+                            reason="Unauthorized",
+                        )
+                        return None
+
+                result, reason = await self.run_in_executor(
+                    self.validate_json_body, route
+                )
+                if not result:
+                    self.response_error(
+                        HTTPStatus.BAD_REQUEST,
+                        reason=cast("str", reason),
+                    )
+                    return None
+
+                LOGGER.debug(
+                    "Routing to %s.%s(*args=%s, **kwargs=%s, request_arguments=%s)",
+                    self.__class__.__name__,
+                    route["method"],
+                    path_args,
+                    path_kwargs,
+                    self.request_arguments,
+                )
+                try:
+                    func = getattr(self, route["method"])
+                    if inspect.iscoroutinefunction(func):
+                        return await func(*path_args, **path_kwargs)
+                    return func(*path_args, **path_kwargs)
+                except Exception:  # pylint: disable=broad-except
+                    LOGGER.exception(
+                        f"Error in API {self.__class__.__name__}.{self.route['method']}"
+                    )
+                    self.response_error(
+                        HTTPStatus.INTERNAL_SERVER_ERROR, reason="Internal server error"
+                    )
+                    return None
+
+        if unsupported_method:
+            LOGGER.warning(f"Method not allowed for URI: {self.request.uri}")
+            self.handle_method_not_allowed()
+        else:
+            LOGGER.warning(f"Endpoint not found for URI: {self.request.uri}")
+            self.handle_endpoint_not_found()
+
+        return None
+
+    async def delete(self) -> None:
+        """Route DELETE requests."""
+        await self.route_request()
+
+    async def get(self) -> None:
+        """Route GET requests."""
+        await self.route_request()
+
+    async def post(self) -> None:
+        """Route POST requests."""
+        await self.route_request()
+
+    async def put(self) -> None:
+        """Route PUT requests."""
+        await self.route_request()
+
+
+class APINotFoundHandler(BaseAPIHandler):
+    """Default handler."""
+
+    async def get(self) -> None:
+        """Catch all methods."""
+        self.response_error(HTTPStatus.NOT_FOUND, "Endpoint not found")
