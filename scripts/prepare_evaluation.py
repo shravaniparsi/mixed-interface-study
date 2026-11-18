@@ -28,6 +28,18 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/catalog-mathesar-workflow-selection-v1.json',
+    'protocol/catalog-mathesar-browser-adapter-v1.md',
+    'scripts/extension/mathesar_ordinary_browser_v1.mjs',
+    'results/catalog-source-wave6-v1/1.json',
+    'results/catalog-source-wave6-v1/1.txt',
+    'results/catalog-source-wave6-v1/2.json',
+    'results/catalog-source-wave6-v1/2.txt',
+    'results/catalog-source-wave6-v1/3.json',
+    'results/catalog-source-wave6-v1/3.txt',
+    'results/catalog-source-wave6-v1/4.json',
+    'results/catalog-source-wave6-v1/4.txt',
+    'results/catalog-source-wave6-v1/collection.json',
     'manifests/catalog-source-wave6-schedule-v1.json',
     'protocol/catalog-source-wave6-v1.md',
     'scripts/extension/collect_catalog_source_wave6_v1.py',
