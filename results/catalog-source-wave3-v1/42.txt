@@ -1,0 +1,214 @@
+import { Entity } from "./Entity";
+import Ajax from "../util/Ajax";
+import SpaceAttributeValue from "./SpaceAttributeValue";
+
+export default class Location extends Entity {
+  name: string;
+  description: string;
+  maxConcurrentBookings: number;
+  timezone: string;
+  enabled: boolean;
+  mapWidth: number;
+  mapHeight: number;
+  mapMimeType: string;
+  mapScale: number;
+  mapType: string;
+  allowedBookerGroupIds: string[];
+  /** weekdays (0=Sunday..6=Saturday) the location can be booked on; empty array means unrestricted */
+  bookableDays: number[];
+  /** first day ("YYYY-MM-DD") of the period the location cannot be booked in; empty means open start */
+  blockedFrom: string;
+  /** last day ("YYYY-MM-DD") of the period the location cannot be booked in; empty means open end */
+  blockedUntil: string;
+  /** Markdown text shown as a banner in the booking UI; empty means no announcement */
+  announcement: string;
+
+  constructor() {
+    super();
+    this.name = "";
+    this.description = "";
+    this.maxConcurrentBookings = 0;
+    this.timezone = "";
+    this.enabled = true;
+    this.mapWidth = 0;
+    this.mapHeight = 0;
+    this.mapMimeType = "";
+    this.mapScale = 1.0;
+    this.mapType = "";
+    this.allowedBookerGroupIds = [];
+    this.bookableDays = [];
+    this.blockedFrom = "";
+    this.blockedUntil = "";
+    this.announcement = "";
+  }
+
+  serialize(): Object {
+    return Object.assign(super.serialize(), {
+      name: this.name,
+      description: this.description,
+      maxConcurrentBookings: this.maxConcurrentBookings,
+      timezone: this.timezone,
+      enabled: this.enabled,
+      mapScale: this.mapScale,
+      mapType: this.mapType,
+      allowedBookerGroupIds: this.allowedBookerGroupIds,
+      bookableDays: this.bookableDays,
+      blockedFrom: this.blockedFrom,
+      blockedUntil: this.blockedUntil,
+      announcement: this.announcement,
+    });
+  }
+
+  deserialize(input: any): void {
+    super.deserialize(input);
+    this.name = input.name;
+    this.description = input.description;
+    this.maxConcurrentBookings = input.maxConcurrentBookings;
+    this.timezone = input.timezone;
+    this.enabled = input.enabled;
+    this.mapWidth = input.mapWidth;
+    this.mapHeight = input.mapHeight;
+    this.mapMimeType = input.mapMimeType;
+    this.mapScale = input.mapScale;
+    this.mapType = input.mapType || "";
+    if (input.allowedBookerGroupIds) {
+      this.allowedBookerGroupIds = input.allowedBookerGroupIds;
+    }
+    this.bookableDays = input.bookableDays || [];
+    this.blockedFrom = input.blockedFrom || "";
+    this.blockedUntil = input.blockedUntil || "";
+    this.announcement = input.announcement || "";
+  }
+
+  getBackendUrl(): string {
+    return "/location/";
+  }
+
+  getMapUrl(bookingContext: boolean = false): string {
+    return (
+      "/location/" +
+      this.id +
+      "/map" +
+      Location.bookingContextQuery(bookingContext)
+    );
+  }
+
+  /**
+   * Returns the query string to append when requesting locations from the
+   * booking frontend. In this context, locations hidden for disallowed bookers
+   * are filtered for users with administrative permissions as well.
+   */
+  static bookingContextQuery(bookingContext: boolean): string {
+    return bookingContext ? "?context=booking" : "";
+  }
+
+  async save(): Promise<Location> {
+    return Ajax.saveEntity(this, this.getBackendUrl()).then(() => this);
+  }
+
+  async delete(): Promise<void> {
+    return Ajax.delete(this.getBackendUrl() + this.id).then(() => undefined);
+  }
+
+  async getMap(): Promise<LocationMap> {
+    return Ajax.get(this.getMapUrl()).then((result) => {
+      return {
+        width: result.json.width,
+        height: result.json.height,
+        mimeType: result.json.mimeType,
+        scale: result.json.scale,
+        data: result.json.data,
+      } as LocationMap;
+    });
+  }
+
+  async setMap(file: File): Promise<void> {
+    return Ajax.postData(this.getBackendUrl() + this.id + "/map", file).then(
+      () => undefined,
+    );
+  }
+
+  async getFloorPlanDesign(): Promise<string> {
+    const result = await Ajax.get(
+      this.getBackendUrl() + encodeURIComponent(this.id) + "/floorplan-design",
+    );
+    return result.json.designData as string;
+  }
+
+  async setFloorPlanDesign(designData: string): Promise<void> {
+    await Ajax.postData(
+      this.getBackendUrl() + encodeURIComponent(this.id) + "/floorplan-design",
+      { designData },
+    );
+  }
+
+  async getAttributes(
+    bookingContext: boolean = false,
+  ): Promise<SpaceAttributeValue[]> {
+    return Ajax.get(
+      this.getBackendUrl() +
+        this.id +
+        "/attribute" +
+        Location.bookingContextQuery(bookingContext),
+    ).then((result) => {
+      const list: SpaceAttributeValue[] = [];
+      (result.json as []).forEach((item) => {
+        let e: SpaceAttributeValue = new SpaceAttributeValue();
+        e.deserialize(item);
+        list.push(e);
+      });
+      return list;
+    });
+  }
+
+  async setAttribute(attributeId: string, value: string): Promise<void> {
+    const payload = {
+      value: value,
+    };
+    return Ajax.postData(
+      this.getBackendUrl() + this.id + "/attribute/" + attributeId,
+      payload,
+    ).then(() => undefined);
+  }
+
+  async deleteAttribute(attributeId: string): Promise<void> {
+    return Ajax.delete(
+      this.getBackendUrl() + this.id + "/attribute/" + attributeId,
+    ).then(() => undefined);
+  }
+
+  static async get(
+    id: string,
+    bookingContext: boolean = false,
+  ): Promise<Location> {
+    return Ajax.get(
+      "/location/" + id + Location.bookingContextQuery(bookingContext),
+    ).then((result) => {
+      let e: Location = new Location();
+      e.deserialize(result.json);
+      return e;
+    });
+  }
+
+  static async list(bookingContext: boolean = false): Promise<Location[]> {
+    return Ajax.get(
+      "/location/" + Location.bookingContextQuery(bookingContext),
+    ).then((result) => {
+      let list: Location[] = [];
+      (result.json as []).forEach((item) => {
+        let e: Location = new Location();
+        e.deserialize(item);
+        list.push(e);
+      });
+      return list;
+    });
+  }
+}
+
+export interface LocationMap {
+  width: number;
+  height: number;
+  scale: number;
+  mimeType: string;
+  data: string;
+}
