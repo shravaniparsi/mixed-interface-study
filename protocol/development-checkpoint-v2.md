@@ -1,0 +1,7 @@
+# Checkpoint observation correction v2
+
+V1 is closed at run44253036482: its seed create/readback succeeded but the native authority observer failed before checkpoint creation. Retain that run and its source CI, costs and unexecuted restore phases. This separate engineering correction repeats the same one-seed/two-restore schedule once, under all limits and outcome definitions in development-checkpoint-v1.md.
+
+Only two observation changes are permitted. Read selected authority option text (the original template displays the authority) instead of Angular's encoded DOM option value. Record origin on blocked requests and tolerate only GET https://fonts.googleapis.com/css2, which the original built index.html requests. Continue blocking these font requests; any other blocked request still fails qualification. This fixes classification of enforced isolation, not network access. No original application, payload, validation, checkpoint, restart or expected business outcome changes.
+
+Freeze the separate v2 browser observer, runtime wrapper, workflow and verifier before its single dispatch. Use the same exact artifact/JAR and Elasticsearch digest. Maximum one standard public35-minute job, orchestration1,500seconds, three starts, three logins, one create and zero edits. No automatic retries or additional source acquisition. Stop and retain any remaining failure. Successful read-only observations still do not qualify native/API edit-outcome equivalence, warm-session behavior, independent evaluation or Q1 readiness.
