@@ -1,0 +1,956 @@
+{
+  "files": {
+    "config.yaml": {
+      "bytes": 23,
+      "sha256": "129f5c84011fcaf1e21e5e3f31701917cab0ed4c60eadb2f3defe2e723207df2"
+    }
+  },
+  "schema": [
+    [
+      "index",
+      "idx_auth_keys_created_at",
+      "auth_keys",
+      "CREATE INDEX idx_auth_keys_created_at ON auth_keys(created_at DESC)"
+    ],
+    [
+      "index",
+      "idx_auth_keys_enabled",
+      "auth_keys",
+      "CREATE INDEX idx_auth_keys_enabled ON auth_keys(enabled)"
+    ],
+    [
+      "index",
+      "idx_batches_created_at",
+      "batches",
+      "CREATE INDEX idx_batches_created_at ON batches(created_at DESC)"
+    ],
+    [
+      "index",
+      "idx_batches_status",
+      "batches",
+      "CREATE INDEX idx_batches_status ON batches(status)"
+    ],
+    [
+      "index",
+      "idx_batches_user_path",
+      "batches",
+      "CREATE INDEX idx_batches_user_path ON batches(user_path)"
+    ],
+    [
+      "index",
+      "idx_conversation_snapshots_expires_at",
+      "conversation_snapshots",
+      "CREATE INDEX idx_conversation_snapshots_expires_at ON conversation_snapshots(expires_at)"
+    ],
+    [
+      "index",
+      "idx_file_mappings_created_at",
+      "file_mappings",
+      "CREATE INDEX idx_file_mappings_created_at ON file_mappings(created_at DESC)"
+    ],
+    [
+      "index",
+      "idx_file_mappings_provider_type",
+      "file_mappings",
+      "CREATE INDEX idx_file_mappings_provider_type ON file_mappings(provider_type)"
+    ],
+    [
+      "index",
+      "idx_guardrail_definitions_type",
+      "guardrail_definitions",
+      "CREATE INDEX idx_guardrail_definitions_type ON guardrail_definitions(type)"
+    ],
+    [
+      "index",
+      "idx_guardrail_definitions_updated_at",
+      "guardrail_definitions",
+      "CREATE INDEX idx_guardrail_definitions_updated_at ON guardrail_definitions(updated_at DESC)"
+    ],
+    [
+      "index",
+      "idx_mcp_servers_enabled",
+      "mcp_servers",
+      "CREATE INDEX idx_mcp_servers_enabled ON mcp_servers(enabled)"
+    ],
+    [
+      "index",
+      "idx_mcp_servers_updated_at",
+      "mcp_servers",
+      "CREATE INDEX idx_mcp_servers_updated_at ON mcp_servers(updated_at DESC)"
+    ],
+    [
+      "index",
+      "idx_media_objects_expires_at",
+      "media_objects",
+      "CREATE INDEX idx_media_objects_expires_at ON media_objects(expires_at)"
+    ],
+    [
+      "index",
+      "idx_media_objects_request_id",
+      "media_objects",
+      "CREATE INDEX idx_media_objects_request_id ON media_objects(request_id)"
+    ],
+    [
+      "index",
+      "idx_model_pricing_overrides_model",
+      "model_pricing_overrides",
+      "CREATE INDEX idx_model_pricing_overrides_model ON model_pricing_overrides(model)"
+    ],
+    [
+      "index",
+      "idx_model_pricing_overrides_provider_name",
+      "model_pricing_overrides",
+      "CREATE INDEX idx_model_pricing_overrides_provider_name ON model_pricing_overrides(provider_name)"
+    ],
+    [
+      "index",
+      "idx_model_pricing_overrides_updated_at",
+      "model_pricing_overrides",
+      "CREATE INDEX idx_model_pricing_overrides_updated_at ON model_pricing_overrides(updated_at DESC)"
+    ],
+    [
+      "index",
+      "idx_provider_credentials_enabled",
+      "provider_credentials",
+      "CREATE INDEX idx_provider_credentials_enabled ON provider_credentials(enabled)"
+    ],
+    [
+      "index",
+      "idx_rate_limit_window_snapshots_updated_at",
+      "rate_limit_window_snapshots",
+      "CREATE INDEX idx_rate_limit_window_snapshots_updated_at ON rate_limit_window_snapshots(updated_at)"
+    ],
+    [
+      "index",
+      "idx_rate_limits_subject",
+      "rate_limits",
+      "CREATE INDEX idx_rate_limits_subject ON rate_limits(scope, subject)"
+    ],
+    [
+      "index",
+      "idx_response_snapshots_expires_at",
+      "response_snapshots",
+      "CREATE INDEX idx_response_snapshots_expires_at ON response_snapshots(expires_at)"
+    ],
+    [
+      "index",
+      "idx_usage_auth_key_id",
+      "usage",
+      "CREATE INDEX idx_usage_auth_key_id ON usage(auth_key_id)"
+    ],
+    [
+      "index",
+      "idx_usage_cache_type",
+      "usage",
+      "CREATE INDEX idx_usage_cache_type ON usage(cache_type)"
+    ],
+    [
+      "index",
+      "idx_usage_model",
+      "usage",
+      "CREATE INDEX idx_usage_model ON usage(model)"
+    ],
+    [
+      "index",
+      "idx_usage_provider",
+      "usage",
+      "CREATE INDEX idx_usage_provider ON usage(provider)"
+    ],
+    [
+      "index",
+      "idx_usage_provider_id",
+      "usage",
+      "CREATE INDEX idx_usage_provider_id ON usage(provider_id)"
+    ],
+    [
+      "index",
+      "idx_usage_provider_name",
+      "usage",
+      "CREATE INDEX idx_usage_provider_name ON usage(provider_name)"
+    ],
+    [
+      "index",
+      "idx_usage_request_id",
+      "usage",
+      "CREATE INDEX idx_usage_request_id ON usage(request_id)"
+    ],
+    [
+      "index",
+      "idx_usage_session_id",
+      "usage",
+      "CREATE INDEX idx_usage_session_id ON usage(session_id)"
+    ],
+    [
+      "index",
+      "idx_usage_timestamp",
+      "usage",
+      "CREATE INDEX idx_usage_timestamp ON usage(timestamp)"
+    ],
+    [
+      "index",
+      "idx_usage_timestamp_epoch",
+      "usage",
+      "CREATE INDEX idx_usage_timestamp_epoch ON usage(unixepoch(REPLACE(timestamp, ' ', 'T')))"
+    ],
+    [
+      "index",
+      "idx_usage_user_path",
+      "usage",
+      "CREATE INDEX idx_usage_user_path ON usage(user_path)"
+    ],
+    [
+      "index",
+      "idx_usage_user_path_normalized",
+      "usage",
+      "CREATE INDEX idx_usage_user_path_normalized ON usage(COALESCE(NULLIF(TRIM(user_path), ''), '/'))"
+    ],
+    [
+      "index",
+      "idx_usage_written_at",
+      "usage",
+      "CREATE INDEX idx_usage_written_at ON usage(written_at) WHERE written_at IS NOT NULL"
+    ],
+    [
+      "index",
+      "idx_virtual_models_enabled",
+      "virtual_models",
+      "CREATE INDEX idx_virtual_models_enabled ON virtual_models(enabled)"
+    ],
+    [
+      "index",
+      "idx_virtual_models_model",
+      "virtual_models",
+      "CREATE INDEX idx_virtual_models_model ON virtual_models(model)"
+    ],
+    [
+      "index",
+      "idx_virtual_models_provider_name",
+      "virtual_models",
+      "CREATE INDEX idx_virtual_models_provider_name ON virtual_models(provider_name)"
+    ],
+    [
+      "index",
+      "idx_virtual_models_updated_at",
+      "virtual_models",
+      "CREATE INDEX idx_virtual_models_updated_at ON virtual_models(updated_at DESC)"
+    ],
+    [
+      "index",
+      "idx_workflow_versions_active_created_at",
+      "workflow_versions",
+      "CREATE INDEX idx_workflow_versions_active_created_at\n\t\tON workflow_versions(active, created_at DESC)"
+    ],
+    [
+      "index",
+      "idx_workflow_versions_active_scope",
+      "workflow_versions",
+      "CREATE UNIQUE INDEX idx_workflow_versions_active_scope\n\t\tON workflow_versions(scope_key) WHERE active = TRUE"
+    ],
+    [
+      "index",
+      "idx_workflow_versions_scope_version",
+      "workflow_versions",
+      "CREATE UNIQUE INDEX idx_workflow_versions_scope_version\n\t\tON workflow_versions(scope_key, version)"
+    ],
+    [
+      "index",
+      "sqlite_autoindex_auth_keys_1",
+      "auth_keys",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_auth_keys_2",
+      "auth_keys",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_batches_1",
+      "batches",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_config_revisions_1",
+      "config_revisions",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_conversation_snapshots_1",
+      "conversation_snapshots",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_encryption_keys_1",
+      "encryption_keys",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_file_mappings_1",
+      "file_mappings",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_guardrail_definitions_1",
+      "guardrail_definitions",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_mcp_server_oauth_1",
+      "mcp_server_oauth",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_mcp_servers_1",
+      "mcp_servers",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_mcp_virtual_servers_1",
+      "mcp_virtual_servers",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_media_objects_1",
+      "media_objects",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_model_pricing_overrides_1",
+      "model_pricing_overrides",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_provider_credentials_1",
+      "provider_credentials",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_rate_limit_window_snapshots_1",
+      "rate_limit_window_snapshots",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_rate_limits_1",
+      "rate_limits",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_response_snapshots_1",
+      "response_snapshots",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_tagging_settings_1",
+      "tagging_settings",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_usage_1",
+      "usage",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_users_1",
+      "users",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_virtual_models_1",
+      "virtual_models",
+      null
+    ],
+    [
+      "index",
+      "sqlite_autoindex_workflow_versions_1",
+      "workflow_versions",
+      null
+    ],
+    [
+      "table",
+      "auth_keys",
+      "auth_keys",
+      "CREATE TABLE auth_keys (\n\t\tid TEXT PRIMARY KEY,\n\t\tname TEXT NOT NULL,\n\t\tdescription TEXT NOT NULL DEFAULT '',\n\t\tuser_path TEXT,\n\t\tlabels JSON,\n\t\tallowed_models JSON,\n\t\tdashboard_access INTEGER NOT NULL DEFAULT FALSE,\n\t\tpassthrough_access INTEGER NOT NULL DEFAULT TRUE,\n\t\tredacted_value TEXT NOT NULL,\n\t\tsecret_hash TEXT NOT NULL UNIQUE,\n\t\timported_from TEXT,\n\t\tenabled INTEGER NOT NULL DEFAULT TRUE,\n\t\texpires_at INTEGER,\n\t\tdeactivated_at INTEGER,\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "batches",
+      "batches",
+      "CREATE TABLE batches (\n\t\tid TEXT PRIMARY KEY,\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL,\n\t\tstatus TEXT NOT NULL,\n\t\tdata TEXT NOT NULL\n\t, user_path TEXT, usage_claimed_at INTEGER, usage_logged_at INTEGER)"
+    ],
+    [
+      "table",
+      "config_revisions",
+      "config_revisions",
+      "CREATE TABLE config_revisions (\n\t\tentity TEXT PRIMARY KEY,\n\t\trevision INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "conversation_snapshots",
+      "conversation_snapshots",
+      "CREATE TABLE conversation_snapshots (\n\t\tid TEXT PRIMARY KEY,\n\t\tdata TEXT NOT NULL,\n\t\titems TEXT NOT NULL DEFAULT '[]',\n\t\tstored_at INTEGER NOT NULL,\n\t\texpires_at INTEGER NOT NULL DEFAULT 0\n\t)"
+    ],
+    [
+      "table",
+      "encryption_keys",
+      "encryption_keys",
+      "CREATE TABLE encryption_keys (\n\tid TEXT PRIMARY KEY,\n\twrapped_key TEXT NOT NULL,\n\twrapper_id TEXT NOT NULL,\n\tkdf TEXT NOT NULL DEFAULT '',\n\tkdf_params TEXT NOT NULL DEFAULT '',\n\tkdf_salt TEXT NOT NULL DEFAULT '',\n\tactive INTEGER NOT NULL DEFAULT FALSE,\n\tcreated_at INTEGER NOT NULL\n)"
+    ],
+    [
+      "table",
+      "file_mappings",
+      "file_mappings",
+      "CREATE TABLE file_mappings (\n\t\tid TEXT PRIMARY KEY,\n\t\tprovider_type TEXT NOT NULL,\n\t\tpurpose TEXT NOT NULL DEFAULT '',\n\t\tfilename TEXT NOT NULL DEFAULT '',\n\t\tbytes INTEGER NOT NULL DEFAULT 0,\n\t\tcreated_at INTEGER NOT NULL DEFAULT 0,\n\t\tupdated_at INTEGER NOT NULL,\n\t\tuser_path TEXT NOT NULL DEFAULT ''\n\t)"
+    ],
+    [
+      "table",
+      "guardrail_definitions",
+      "guardrail_definitions",
+      "CREATE TABLE guardrail_definitions (\n\t\tname TEXT PRIMARY KEY,\n\t\ttype TEXT NOT NULL,\n\t\tdescription TEXT NOT NULL DEFAULT '',\n\t\tuser_path TEXT,\n\t\tconfig JSON NOT NULL,\n\t\tfail_mode TEXT NOT NULL DEFAULT '',\n\t\ttimeout_ms INTEGER NOT NULL DEFAULT 0,\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "mcp_server_oauth",
+      "mcp_server_oauth",
+      "CREATE TABLE mcp_server_oauth (\n\tname TEXT PRIMARY KEY,\n\tdata TEXT NOT NULL DEFAULT '',\n\tupdated_at INTEGER NOT NULL\n)"
+    ],
+    [
+      "table",
+      "mcp_servers",
+      "mcp_servers",
+      "CREATE TABLE mcp_servers (\n\tname TEXT PRIMARY KEY,\n\tdisplay_name TEXT NOT NULL DEFAULT '',\n\turl TEXT NOT NULL DEFAULT '',\n\ttransport TEXT NOT NULL DEFAULT 'http',\n\theaders TEXT NOT NULL DEFAULT '{}',\n\tdescription TEXT NOT NULL DEFAULT '',\n\tenabled INTEGER NOT NULL DEFAULT TRUE,\n\tallowed_tools TEXT NOT NULL DEFAULT '[]',\n\tdisallowed_tools TEXT NOT NULL DEFAULT '[]',\n\tuser_paths TEXT NOT NULL DEFAULT '[]',\n\tdisallowed_user_paths TEXT NOT NULL DEFAULT '[]',\n\ttool_timeout_seconds INTEGER NOT NULL DEFAULT 0,\n\tcreated_at INTEGER NOT NULL,\n\tupdated_at INTEGER NOT NULL\n)"
+    ],
+    [
+      "table",
+      "mcp_virtual_servers",
+      "mcp_virtual_servers",
+      "CREATE TABLE mcp_virtual_servers (\n\tname TEXT PRIMARY KEY,\n\tdescription TEXT NOT NULL DEFAULT '',\n\tservers TEXT NOT NULL DEFAULT '[]',\n\ttool_discovery TEXT NOT NULL DEFAULT '',\n\tcreated_at INTEGER NOT NULL,\n\tupdated_at INTEGER NOT NULL\n, generation TEXT NOT NULL DEFAULT '')"
+    ],
+    [
+      "table",
+      "media_objects",
+      "media_objects",
+      "CREATE TABLE media_objects (\n\t\tid TEXT PRIMARY KEY,\n\t\tkind TEXT NOT NULL,\n\t\tsource TEXT NOT NULL,\n\t\tcontent_type TEXT NOT NULL DEFAULT '',\n\t\tbytes INTEGER NOT NULL DEFAULT 0,\n\t\tstorage_key TEXT NOT NULL,\n\t\trequest_id TEXT NOT NULL DEFAULT '',\n\t\tuser_path TEXT NOT NULL DEFAULT '',\n\t\tcreated_at INTEGER NOT NULL,\n\t\texpires_at INTEGER NOT NULL DEFAULT 0\n\t)"
+    ],
+    [
+      "table",
+      "model_pricing_overrides",
+      "model_pricing_overrides",
+      "CREATE TABLE model_pricing_overrides (\n\t\tselector TEXT PRIMARY KEY,\n\t\tprovider_name TEXT NOT NULL DEFAULT '',\n\t\tmodel TEXT NOT NULL DEFAULT '',\n\t\tpricing TEXT NOT NULL DEFAULT '{}',\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "provider_credentials",
+      "provider_credentials",
+      "CREATE TABLE provider_credentials (\n\t\tname TEXT PRIMARY KEY,\n\t\ttype TEXT NOT NULL,\n\t\tapi_keys TEXT NOT NULL DEFAULT '[]',\n\t\tsession_sticky_keys INTEGER NOT NULL DEFAULT TRUE,\n\t\tbillable INTEGER NOT NULL DEFAULT TRUE,\n\t\tbase_url TEXT NOT NULL DEFAULT '',\n\t\tapi_version TEXT NOT NULL DEFAULT '',\n\t\tbackend TEXT NOT NULL DEFAULT '',\n\t\tauth_type TEXT NOT NULL DEFAULT '',\n\t\tapi_mode TEXT NOT NULL DEFAULT '',\n\t\tvertex_project TEXT NOT NULL DEFAULT '',\n\t\tvertex_location TEXT NOT NULL DEFAULT '',\n\t\tservice_account_file TEXT NOT NULL DEFAULT '',\n\t\tservice_account_json TEXT NOT NULL DEFAULT '',\n\t\tservice_account_json_base64 TEXT NOT NULL DEFAULT '',\n\t\tgcp_scope TEXT NOT NULL DEFAULT '',\n\t\tproxy_url TEXT NOT NULL DEFAULT '',\n\t\tmodels TEXT NOT NULL DEFAULT '[]',\n\t\tmodels_mode TEXT NOT NULL DEFAULT '',\n\t\tenabled INTEGER NOT NULL DEFAULT TRUE,\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "rate_limit_window_snapshots",
+      "rate_limit_window_snapshots",
+      "CREATE TABLE rate_limit_window_snapshots (\n\t\tscope TEXT NOT NULL,\n\t\tsubject TEXT NOT NULL,\n\t\tpartition TEXT NOT NULL DEFAULT '',\n\t\tperiod_seconds INTEGER NOT NULL,\n\t\twriter TEXT NOT NULL DEFAULT '',\n\t\tepoch TEXT NOT NULL DEFAULT '',\n\t\trequests_window_start INTEGER NOT NULL DEFAULT 0,\n\t\trequests_current INTEGER NOT NULL DEFAULT 0,\n\t\trequests_previous INTEGER NOT NULL DEFAULT 0,\n\t\ttokens_window_start INTEGER NOT NULL DEFAULT 0,\n\t\ttokens_current INTEGER NOT NULL DEFAULT 0,\n\t\ttokens_previous INTEGER NOT NULL DEFAULT 0,\n\t\tin_flight INTEGER NOT NULL DEFAULT 0,\n\t\tupdated_at INTEGER NOT NULL,\n\t\town_counts INTEGER NOT NULL DEFAULT FALSE,\n\t\tPRIMARY KEY (scope, subject, partition, period_seconds, writer)\n\t)"
+    ],
+    [
+      "table",
+      "rate_limits",
+      "rate_limits",
+      "CREATE TABLE rate_limits (\n\t\tscope TEXT NOT NULL DEFAULT 'user_path',\n\t\tsubject TEXT NOT NULL,\n\t\tsubject_display TEXT NOT NULL DEFAULT '',\n\t\tper_child INTEGER NOT NULL DEFAULT FALSE,\n\t\tperiod_seconds INTEGER NOT NULL,\n\t\tmax_requests INTEGER,\n\t\tmax_tokens INTEGER,\n\t\tsource TEXT NOT NULL DEFAULT '',\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL,\n\t\tcounter_epoch TEXT NOT NULL DEFAULT '',\n\t\tPRIMARY KEY (scope, subject, period_seconds)\n\t)"
+    ],
+    [
+      "table",
+      "response_snapshots",
+      "response_snapshots",
+      "CREATE TABLE response_snapshots (\n\t\tid TEXT PRIMARY KEY,\n\t\tdata TEXT NOT NULL,\n\t\tstored_at INTEGER NOT NULL,\n\t\texpires_at INTEGER NOT NULL DEFAULT 0\n\t)"
+    ],
+    [
+      "table",
+      "sqlite_stat1",
+      "sqlite_stat1",
+      "CREATE TABLE sqlite_stat1(tbl,idx,stat)"
+    ],
+    [
+      "table",
+      "sqlite_stat4",
+      "sqlite_stat4",
+      "CREATE TABLE sqlite_stat4(tbl,idx,neq,nlt,ndlt,sample)"
+    ],
+    [
+      "table",
+      "tagging_settings",
+      "tagging_settings",
+      "CREATE TABLE tagging_settings (\n\t\tkey TEXT PRIMARY KEY,\n\t\tvalue TEXT NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "usage",
+      "usage",
+      "CREATE TABLE usage (\n\t\tid TEXT PRIMARY KEY,\n\t\trequest_id TEXT NOT NULL,\n\t\tprovider_id TEXT NOT NULL,\n\t\ttimestamp DATETIME NOT NULL,\n\t\tmodel TEXT NOT NULL,\n\t\tprovider TEXT NOT NULL,\n\t\tprovider_name TEXT,\n\t\tendpoint TEXT NOT NULL,\n\t\tuser_path TEXT,\n\t\tsession_id TEXT,\n\t\tauth_key_id TEXT,\n\t\tcache_type TEXT,\n\t\tinput_tokens INTEGER NOT NULL DEFAULT 0,\n\t\toutput_tokens INTEGER NOT NULL DEFAULT 0,\n\t\ttotal_tokens INTEGER NOT NULL DEFAULT 0,\n\t\trewrite_tokens_saved INTEGER NOT NULL DEFAULT 0,\n\t\trewrite_cost_saved REAL,\n\t\traw_data JSON\n\t, input_cost REAL, output_cost REAL, total_cost REAL, cost_source TEXT DEFAULT '', costs_calculation_caveat TEXT DEFAULT '', labels JSON, markup_percent REAL, markup_selector TEXT DEFAULT '', billed_cost REAL, billable INTEGER NOT NULL DEFAULT TRUE, writer_id TEXT, written_at INTEGER)"
+    ],
+    [
+      "table",
+      "users",
+      "users",
+      "CREATE TABLE users (\n\t\tuser_path TEXT PRIMARY KEY,\n\t\tallowed_models TEXT NOT NULL DEFAULT '[]',\n\t\tdescription TEXT NOT NULL DEFAULT '',\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "virtual_models",
+      "virtual_models",
+      "CREATE TABLE virtual_models (\n\t\tsource TEXT PRIMARY KEY,\n\t\ttargets TEXT NOT NULL DEFAULT '[]',\n\t\tstrategy TEXT NOT NULL DEFAULT '',\n\t\tstrategy_plugin TEXT NOT NULL DEFAULT '',\n\t\tstrategy_config TEXT NOT NULL DEFAULT '{}',\n\t\tsession_affinity TEXT NOT NULL DEFAULT '',\n\t\tfailover TEXT NOT NULL DEFAULT '',\n\t\tprovider_name TEXT NOT NULL DEFAULT '',\n\t\tmodel TEXT NOT NULL DEFAULT '',\n\t\tuser_paths TEXT NOT NULL DEFAULT '[]',\n\t\tdescription TEXT NOT NULL DEFAULT '',\n\t\tslowdown DOUBLE PRECISION DEFAULT NULL,\n\t\treasoning_effort TEXT NOT NULL DEFAULT '',\n\t\tparams TEXT NOT NULL DEFAULT '',\n\t\tdefault_params TEXT NOT NULL DEFAULT '',\n\t\tenabled INTEGER NOT NULL DEFAULT TRUE,\n\t\tcreated_at INTEGER NOT NULL,\n\t\tupdated_at INTEGER NOT NULL\n\t)"
+    ],
+    [
+      "table",
+      "workflow_versions",
+      "workflow_versions",
+      "CREATE TABLE workflow_versions (\n\t\tid TEXT PRIMARY KEY,\n\t\tscope_provider TEXT,\n\t\tscope_model TEXT,\n\t\tscope_user_path TEXT,\n\t\tscope_key TEXT NOT NULL,\n\t\tversion INTEGER NOT NULL,\n\t\tactive INTEGER NOT NULL DEFAULT TRUE,\n\t\tmanaged_default INTEGER NOT NULL DEFAULT FALSE,\n\t\tname TEXT NOT NULL,\n\t\tdescription TEXT NOT NULL DEFAULT '',\n\t\tworkflow_payload JSON NOT NULL,\n\t\tworkflow_hash TEXT NOT NULL,\n\t\tcreated_at INTEGER NOT NULL,\n\t\tCHECK (scope_provider IS NOT NULL OR scope_model IS NULL)\n\t)"
+    ]
+  ],
+  "tables": {
+    "auth_keys": {
+      "columns": [
+        "id",
+        "name",
+        "description",
+        "user_path",
+        "labels",
+        "allowed_models",
+        "dashboard_access",
+        "passthrough_access",
+        "redacted_value",
+        "secret_hash",
+        "imported_from",
+        "enabled",
+        "expires_at",
+        "deactivated_at",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "batches": {
+      "columns": [
+        "id",
+        "created_at",
+        "updated_at",
+        "status",
+        "data",
+        "user_path",
+        "usage_claimed_at",
+        "usage_logged_at"
+      ],
+      "rows": []
+    },
+    "config_revisions": {
+      "columns": [
+        "entity",
+        "revision",
+        "updated_at"
+      ],
+      "rows": [
+        [
+          "guardrails",
+          2,
+          1795039062
+        ]
+      ]
+    },
+    "conversation_snapshots": {
+      "columns": [
+        "id",
+        "data",
+        "items",
+        "stored_at",
+        "expires_at"
+      ],
+      "rows": []
+    },
+    "encryption_keys": {
+      "columns": [
+        "id",
+        "wrapped_key",
+        "wrapper_id",
+        "kdf",
+        "kdf_params",
+        "kdf_salt",
+        "active",
+        "created_at"
+      ],
+      "rows": []
+    },
+    "file_mappings": {
+      "columns": [
+        "id",
+        "provider_type",
+        "purpose",
+        "filename",
+        "bytes",
+        "created_at",
+        "updated_at",
+        "user_path"
+      ],
+      "rows": []
+    },
+    "guardrail_definitions": {
+      "columns": [
+        "name",
+        "type",
+        "description",
+        "user_path",
+        "config",
+        "fail_mode",
+        "timeout_ms",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": [
+        [
+          "study-api-ordinary",
+          "header_edit",
+          "Ordinary local configuration",
+          "/study/local",
+          "{\"request_remove\":\"X-Study-Remove\",\"request_set\":\"X-Study-Request: original\",\"response_add\":\"X-Study-Additional: original\",\"response_remove\":\"X-Study-Remove-Response\",\"response_set\":\"X-Study-Response: original\",\"upstream_set\":\"X-Study-Upstream: original\"}",
+          "",
+          0,
+          1795039062,
+          1795039062
+        ],
+        [
+          "study-native-ordinary",
+          "header_edit",
+          "Ordinary local configuration",
+          "/study/local",
+          "{\"request_remove\":\"X-Study-Remove\",\"request_set\":\"X-Study-Request: original\",\"response_add\":\"X-Study-Additional: original\",\"response_remove\":\"X-Study-Remove-Response\",\"response_set\":\"X-Study-Response: original\",\"upstream_set\":\"X-Study-Upstream: original\"}",
+          "",
+          0,
+          1795039062,
+          1795039062
+        ]
+      ]
+    },
+    "mcp_server_oauth": {
+      "columns": [
+        "name",
+        "data",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "mcp_servers": {
+      "columns": [
+        "name",
+        "display_name",
+        "url",
+        "transport",
+        "headers",
+        "description",
+        "enabled",
+        "allowed_tools",
+        "disallowed_tools",
+        "user_paths",
+        "disallowed_user_paths",
+        "tool_timeout_seconds",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "mcp_virtual_servers": {
+      "columns": [
+        "name",
+        "description",
+        "servers",
+        "tool_discovery",
+        "created_at",
+        "updated_at",
+        "generation"
+      ],
+      "rows": []
+    },
+    "media_objects": {
+      "columns": [
+        "id",
+        "kind",
+        "source",
+        "content_type",
+        "bytes",
+        "storage_key",
+        "request_id",
+        "user_path",
+        "created_at",
+        "expires_at"
+      ],
+      "rows": []
+    },
+    "model_pricing_overrides": {
+      "columns": [
+        "selector",
+        "provider_name",
+        "model",
+        "pricing",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "provider_credentials": {
+      "columns": [
+        "name",
+        "type",
+        "api_keys",
+        "session_sticky_keys",
+        "billable",
+        "base_url",
+        "api_version",
+        "backend",
+        "auth_type",
+        "api_mode",
+        "vertex_project",
+        "vertex_location",
+        "service_account_file",
+        "service_account_json",
+        "service_account_json_base64",
+        "gcp_scope",
+        "proxy_url",
+        "models",
+        "models_mode",
+        "enabled",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "rate_limit_window_snapshots": {
+      "columns": [
+        "scope",
+        "subject",
+        "partition",
+        "period_seconds",
+        "writer",
+        "epoch",
+        "requests_window_start",
+        "requests_current",
+        "requests_previous",
+        "tokens_window_start",
+        "tokens_current",
+        "tokens_previous",
+        "in_flight",
+        "updated_at",
+        "own_counts"
+      ],
+      "rows": []
+    },
+    "rate_limits": {
+      "columns": [
+        "scope",
+        "subject",
+        "subject_display",
+        "per_child",
+        "period_seconds",
+        "max_requests",
+        "max_tokens",
+        "source",
+        "created_at",
+        "updated_at",
+        "counter_epoch"
+      ],
+      "rows": []
+    },
+    "response_snapshots": {
+      "columns": [
+        "id",
+        "data",
+        "stored_at",
+        "expires_at"
+      ],
+      "rows": []
+    },
+    "sqlite_stat1": {
+      "columns": [
+        "tbl",
+        "idx",
+        "stat"
+      ],
+      "rows": [
+        [
+          "config_revisions",
+          "sqlite_autoindex_config_revisions_1",
+          "1 1"
+        ],
+        [
+          "guardrail_definitions",
+          "idx_guardrail_definitions_type",
+          "2 2"
+        ],
+        [
+          "guardrail_definitions",
+          "idx_guardrail_definitions_updated_at",
+          "2 2"
+        ],
+        [
+          "guardrail_definitions",
+          "sqlite_autoindex_guardrail_definitions_1",
+          "2 1"
+        ],
+        [
+          "workflow_versions",
+          "idx_workflow_versions_active_created_at",
+          "1 1 1"
+        ],
+        [
+          "workflow_versions",
+          "idx_workflow_versions_active_scope",
+          "1 1"
+        ],
+        [
+          "workflow_versions",
+          "idx_workflow_versions_scope_version",
+          "1 1 1"
+        ],
+        [
+          "workflow_versions",
+          "sqlite_autoindex_workflow_versions_1",
+          "1 1"
+        ]
+      ]
+    },
+    "sqlite_stat4": {
+      "columns": [
+        "tbl",
+        "idx",
+        "neq",
+        "nlt",
+        "ndlt",
+        "sample"
+      ],
+      "rows": []
+    },
+    "tagging_settings": {
+      "columns": [
+        "key",
+        "value",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "usage": {
+      "columns": [
+        "id",
+        "request_id",
+        "provider_id",
+        "timestamp",
+        "model",
+        "provider",
+        "provider_name",
+        "endpoint",
+        "user_path",
+        "session_id",
+        "auth_key_id",
+        "cache_type",
+        "input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "rewrite_tokens_saved",
+        "rewrite_cost_saved",
+        "raw_data",
+        "input_cost",
+        "output_cost",
+        "total_cost",
+        "cost_source",
+        "costs_calculation_caveat",
+        "labels",
+        "markup_percent",
+        "markup_selector",
+        "billed_cost",
+        "billable",
+        "writer_id",
+        "written_at"
+      ],
+      "rows": []
+    },
+    "users": {
+      "columns": [
+        "user_path",
+        "allowed_models",
+        "description",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "virtual_models": {
+      "columns": [
+        "source",
+        "targets",
+        "strategy",
+        "strategy_plugin",
+        "strategy_config",
+        "session_affinity",
+        "failover",
+        "provider_name",
+        "model",
+        "user_paths",
+        "description",
+        "slowdown",
+        "reasoning_effort",
+        "params",
+        "default_params",
+        "enabled",
+        "created_at",
+        "updated_at"
+      ],
+      "rows": []
+    },
+    "workflow_versions": {
+      "columns": [
+        "id",
+        "scope_provider",
+        "scope_model",
+        "scope_user_path",
+        "scope_key",
+        "version",
+        "active",
+        "managed_default",
+        "name",
+        "description",
+        "workflow_payload",
+        "workflow_hash",
+        "created_at"
+      ],
+      "rows": [
+        [
+          "6f293cae-9a31-4ea7-98be-59f51a58b1cd",
+          null,
+          null,
+          null,
+          "global",
+          1,
+          1,
+          1,
+          "default-global",
+          "Bootstrapped from runtime configuration",
+          "{\"schema_version\":2,\"features\":{\"cache\":false,\"audit\":false,\"usage\":false,\"budget\":false,\"guardrails\":false,\"failover\":true}}",
+          "be44287df65f6f616bc719a0be775c7b55eb970f140ecbc74d7d8e0502d9bfd5",
+          1795039059
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# Ordinary lifecycle calibration v2 outcome
+
+Run 44406666608 completed successfully at prospective freeze 456e2c52d4aef3ef4a991fb9761e6f8dc24e4a6d. The artifact-level verifier recomputed all 18 checks from retained evidence with no missing checks. Original native creation and ordinary API creation persisted the expected values. Both warm and restored edits emitted the intended original PUT and preserved the full declared frame. The restored database, files, actor, browser storage and form matched the checkpoint exactly, including SQLite planner statistics. Post-state comparison passed with only the two previously declared row timestamps allowed to differ.
+
+The original startup-maintenance initialization preserved all non-statistics state, and the configured PID file was absent. This supports the amended checkpoint procedure for this one ordinary edit in this fixture. It does not prove every altered state is restart-equivalent; each later branch must pass its own gate. The first failed run 44403274880 remains failed and is not counted as a separate scientific sample. The amended method was informed by that development failure.
+
+GitHub reports 60 seconds run duration and zero Ubuntu billable milliseconds for this run. The original executable was verified; the runtime network namespace had loopback only. No malformed input, repair/sham comparison, source-aware baseline prediction or evaluation-cohort case ran. Scientific cases remain zero.
+
+Next: qualify the source-aware preflight comparator against ordinary native behavior; freeze the literal field/input schedule, compatibility obligation, normalization-versus-frame outcome rules, repair and sham branches, and stopping/budget rules before any altered-input run. Preserve field- and project-level dependence in analysis. This ordinary result is an engineering qualification, not evidence of a defect or journal readiness.
