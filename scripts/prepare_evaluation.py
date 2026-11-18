@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/summarize_extension_controls_v1.py',
     'notes/infrastructure_preflight_20261117.md',
     'manifests/infrastructure-preflight-v1.json',
     'results/infrastructure-preflight-v1-ci-44218771396/browser.json',
