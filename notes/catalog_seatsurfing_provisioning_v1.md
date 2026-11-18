@@ -1,0 +1,7 @@
+# SeatSurfing provisioning implementation
+
+Previous turn was progress: the source-build component and artifact inventory were committed with seven local safeguard tests. This turn implements the next deployment component using the already retained config and startup source. The source requires a 32-byte CRYPT_KEY in addition to persistent signing keys; this is now generated once and retained in the unchanged fixture environment. Original bootstrap/sample records remain part of the state scope.
+
+The provisioner prepares the pinned PostgreSQL/browser tooling, synthetic credentials, fixed keys and network-disabled database/application fixture. Its success status deliberately leaves browser, actor and ordinary equality unqualified. Eight synthetic layout/configuration tests passed, plus Python compilation; no runtime execution occurred. It refuses pre-existing resources and leaves app/database evidence cleanup to the parent, avoiding silent replacement of failed fixtures.
+
+Remaining before a qualification dispatch: original healthcheck contract, concrete browser bridge/actor/loader evidence, original schema compilation, source-materialized API continuation, joint pause/restore orchestration, prospective generated-field comparisons, evidence sealing and full ordinary/qualification registration. SeatSurfing still has zero attempts and zero scientific cases. Fixed cohort totals remain six prior application jobs and zero scientific cases. Source-search totals remain 46 SeatSurfing blobs and 552,612 bytes.
