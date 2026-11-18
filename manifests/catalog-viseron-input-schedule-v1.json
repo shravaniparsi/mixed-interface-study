@@ -1,0 +1,121 @@
+{
+  "repository": "roflcoopter/viseron",
+  "revision": "3d77e324d8316033f30acb83058736aa7e468d81",
+  "status": "prospective_not_authorized_for_dispatch_until_ordinary_qualification",
+  "supported_properties": [
+    "/name",
+    "/username"
+  ],
+  "unsupported_properties": [
+    {
+      "pointer": "/password",
+      "reason": "Not editable in the selected UserDialog continuation; original ChangePasswordDialog uses a separate endpoint. No same-editor target mapping."
+    },
+    {
+      "pointer": "/role",
+      "reason": "Categorical enum selected from Admin/Write/Read, not an independently editable text control."
+    }
+  ],
+  "ordinary_actor": {
+    "name": "Study Administrator",
+    "username": "studyadmin",
+    "password": "Study-Only-Admin-2026"
+  },
+  "credential_scope": "Public synthetic fixtures only, unique disposable local isolated service; no real account or reused credential.",
+  "cases": [
+    {
+      "case": "ordinary",
+      "mutation": null,
+      "producer_body": {
+        "name": "Study Control",
+        "username": "studycontrol",
+        "password": "Study-Only-Control-2026",
+        "role": "read"
+      },
+      "unrelated_edit": {
+        "field": "name",
+        "value": "Study Edited"
+      }
+    },
+    {
+      "case": "name-omit",
+      "mutation": {
+        "pointer": "/name",
+        "operation": "omit"
+      },
+      "producer_body": {
+        "username": "studycontrol",
+        "password": "Study-Only-Control-2026",
+        "role": "read"
+      },
+      "unrelated_edit": {
+        "field": "username",
+        "value": "studyedited"
+      }
+    },
+    {
+      "case": "name-null",
+      "mutation": {
+        "pointer": "/name",
+        "operation": "null"
+      },
+      "producer_body": {
+        "name": null,
+        "username": "studycontrol",
+        "password": "Study-Only-Control-2026",
+        "role": "read"
+      },
+      "unrelated_edit": {
+        "field": "username",
+        "value": "studyedited"
+      }
+    },
+    {
+      "case": "username-omit",
+      "mutation": {
+        "pointer": "/username",
+        "operation": "omit"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "password": "Study-Only-Control-2026",
+        "role": "read"
+      },
+      "unrelated_edit": {
+        "field": "name",
+        "value": "Study Edited"
+      }
+    },
+    {
+      "case": "username-null",
+      "mutation": {
+        "pointer": "/username",
+        "operation": "null"
+      },
+      "producer_body": {
+        "name": "Study Control",
+        "username": null,
+        "password": "Study-Only-Control-2026",
+        "role": "read"
+      },
+      "unrelated_edit": {
+        "field": "name",
+        "value": "Study Edited"
+      }
+    }
+  ],
+  "max_scientific_jobs": 5,
+  "qualification_required_before_scientific_dispatch": true,
+  "baseline_labels": [
+    "H",
+    "S",
+    "A",
+    "U"
+  ],
+  "S": "Original executable Voluptuous create schema; validator acceptance does not imply persistence success.",
+  "A": "Full materialized UserDialog update with same actor, ID and persisted start state.",
+  "U": "Original controls only; no force or programmatic submission.",
+  "unsupported_altered_readback": "Preserve H/S/U observations when possible; A incremental comparison unavailable if exact persisted state cannot be source-materialized.",
+  "counting": "Five correlated producer inputs in one workflow, not five independent defects or projects.",
+  "outcome_based_replacement_or_retry": false
+}

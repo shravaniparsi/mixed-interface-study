@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/catalog-viseron-preparation-ci-accounting-v1.json',
+    'protocol/catalog-viseron-ordinary-recipe-v1.md',
+    'manifests/catalog-viseron-workflow-selection-v1.json',
+    'manifests/catalog-viseron-input-schedule-v1.json',
+    'scripts/extension/viseron_native_controls_v1.mjs',
     'protocol/catalog-viseron-checkpoint-design-v1.md',
     'scripts/extension/viseron_postgres_checkpoint_v1.py',
     'scripts/extension/viseron_filesystem_checkpoint_v1.py',

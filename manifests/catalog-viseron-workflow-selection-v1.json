@@ -1,0 +1,88 @@
+{
+  "repository": "roflcoopter/viseron",
+  "revision": "3d77e324d8316033f30acb83058736aa7e468d81",
+  "status": "source_mapping_selected_pending_runtime_qualification",
+  "selection_label": "deterministic_first_mapped_candidate_with_unresolved_prefix",
+  "exhaustive_first_eligible_claimed": false,
+  "workflow": "admin_user_create_edit",
+  "actor": "locally_onboarded_admin_creating_a_distinct_user",
+  "native_page": "/#/settings/users",
+  "producer": {
+    "method": "POST",
+    "path": "/api/v1/auth/create",
+    "body_keys": [
+      "name",
+      "password",
+      "role",
+      "username"
+    ]
+  },
+  "continuation": {
+    "method": "PUT",
+    "path": "/api/v1/auth/user/{id}",
+    "body_keys": [
+      "assigned_cameras",
+      "name",
+      "role",
+      "username"
+    ]
+  },
+  "readback": {
+    "list": "/api/v1/auth/users",
+    "record": "/api/v1/auth/user/{id}",
+    "stable_identifier": "id"
+  },
+  "mapped_source_files": [
+    {
+      "path": "frontend/src/pages/settings/Users.tsx",
+      "sha256": "73e391803818ad31b819fb2c41b4fa5a092b049d852e90573700981450d07695"
+    },
+    {
+      "path": "frontend/src/components/settings/user/AddUserDialog.tsx",
+      "sha256": "8dc7e10b405c4c20c988a4be893249c418e54d50506d4547edc2064d5145fb2f"
+    },
+    {
+      "path": "frontend/src/components/settings/user/UserDialog.tsx",
+      "sha256": "57fcb3fe19f254266a1570e4eb0d73b93eb6e5a5d3c18dc25de511217dbd7441"
+    },
+    {
+      "path": "frontend/src/hooks/UseUserForm.ts",
+      "sha256": "afacfdb5a04eeb8e580084dff70d69dd8a49afad849ba5fa3e40d6c44d60db77"
+    },
+    {
+      "path": "viseron/components/webserver/api/v1/auth.py",
+      "sha256": "0c019600f23ed4483817663b0159e0dfa15735f93f6482a08213738c41eb8dad"
+    }
+  ],
+  "earlier_unresolved_tree_candidates": [
+    "frontend/src/components/camera/CameraPickerDialog.tsx",
+    "frontend/src/components/dialog/ConfirmDeleteDialog.tsx",
+    "frontend/src/components/events/DatePickerDialog.tsx",
+    "frontend/src/components/events/ExportDialog.tsx",
+    "frontend/src/components/player/grid/GridLayoutSelectorDialog.tsx",
+    "frontend/src/components/player/view/SaveViewDialog.tsx"
+  ],
+  "prefix_disposition": "Tree-identified dialogs preceding AddUserDialog remain unreviewed; names alone do not establish eligibility or exclusion. Route enumeration is not a complete create-form inventory.",
+  "later_source_reviewed_flows": [
+    {
+      "path": "frontend/src/pages/Onboarding.tsx",
+      "disposition": "onboarding_used_only_for_actor_bootstrap; not_an_alternate_scientific_workflow"
+    },
+    {
+      "path": "frontend/src/pages/Configuration.tsx",
+      "disposition": "configuration_candidate_not_selected; source_acquired; no_runtime_qualification"
+    }
+  ],
+  "runtime_failure_policy": "retain fixed workflow and two-job qualification cap; no alternate after failure",
+  "scientific_inputs": "manifests/catalog-viseron-input-schedule-v1.json",
+  "original_schema": {
+    "dialect": "original_executable_Voluptuous",
+    "version": "0.16.0",
+    "route": "/auth/create",
+    "availability": "helper_written_runtime_agreement_pending",
+    "translated_json_schema": false
+  },
+  "independent_lineage_established": false,
+  "prior_source_exposure": true,
+  "scientific_outcomes_observed": false
+}
