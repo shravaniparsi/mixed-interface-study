@@ -1,0 +1,63 @@
+name: Reserved Booklore ordinary controls v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Install pinned browser
+        run: |
+          mkdir -p "$RUNNER_TEMP/evidence" "$RUNNER_TEMP/binaries"
+          export CI_ARTIFACT_DIR="$RUNNER_TEMP/evidence"
+          timeout 240 bash scripts/ci/install_browser.sh
+      - name: Retrieve verified fixed binaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14388119282/zip > "$RUNNER_TEMP/binaries.zip"
+          python3 - <<'PY'
+          import hashlib,os,zipfile
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP']);p=root/'binaries.zip'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='3fd91aa229e3bf2b9e390d342c492a914c82b115c8e994d51463f877539456f3'
+          expected={'application.jar':'7fe6375fcd89880c12df4de3bd84c238b130d80aa4574df46c495fb1ce3476f0'}
+          with zipfile.ZipFile(p) as z:
+              assert set(z.namelist())==set(expected)
+              for name,digest in expected.items():
+                  raw=z.read(name);assert hashlib.sha256(raw).hexdigest()==digest
+                  (root/'binaries'/name).write_bytes(raw)
+          PY
+      - name: Pull pinned runtime images then remove credentials
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          export DOCKER_CONFIG="$RUNNER_TEMP/study-docker-auth"
+          mkdir -m 700 "$DOCKER_CONFIG"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+          unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
+          for image in gradle@sha256:c60c0cfda2348ff28c0d561428a5aab20c23211e165ab3350a95b33cb15ab495 mariadb:11.4; do
+            timeout 120 docker pull "$image" >> "$RUNNER_TEMP/evidence/pulls.log" 2>&1
+          done
+      - name: Ordinary control in fresh isolated runtime
+        run: |
+          timeout --signal=TERM --kill-after=15 1250 python3 scripts/extension/run_reserved_booklore_controls_v1.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: reserved-booklore-controls-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence/*
+          retention-days: 7
+          if-no-files-found: warn

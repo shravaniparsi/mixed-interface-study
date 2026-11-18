@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/reserved-booklore-controls-v1.md',
+    '.github/workflows/reserved_booklore_controls_v1.yml',
+    'scripts/extension/run_reserved_booklore_controls_v1.py',
+    'scripts/extension/qualify_reserved_booklore_control_v1.mjs',
     'manifests/reserved-continuation-dependency-collection-v10.json',
     'manifests/reserved-booklore-binary-verification-v1.json',
     'manifests/reserved-continuation-dependency-schedule-v10.json',
