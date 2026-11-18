@@ -1,0 +1,7 @@
+# SeatSurfing source-build implementation
+
+The prior goal turn made progress by committing native worker integration; its CI run 44327477900 completed successfully. This turn implements the CI-only build and dependency/artifact inspection component. It verifies the complete frozen Git tree and 46 acquired files, preserves the original build operations with recorded base pins, and compares final artifacts against original build stages. Its successful report satisfies the existing checkpoint build-identity contract, without claiming runtime or ordinary-control qualification.
+
+Seven synthetic Git/filesystem checks passed locally. Python compilation and Node syntax passed. No source clone, dependency installation, image pull, application build or browser execution took place. The prospective full build acquisition and limits are documented before execution. Source-search exposure remains 46 SeatSurfing blobs / 552,612 bytes; future full build acquisition must be reported separately from that source-review count.
+
+Remaining work: concrete provisioning and private evidence retention, actor and native loader verification, original schema compilation, API continuation integration, pause/resume/restoration orchestration, ordinary generated-field comparisons, complete qualification recipe and dispatch registration. SeatSurfing has used zero qualification attempts. Cohort totals remain six application jobs and zero scientific cases. Scientific inputs and stopping bounds are unchanged.
