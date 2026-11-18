@@ -125,10 +125,10 @@ def main():
         assert tree_response['truncated'] is False
         tree = tree_response['tree']
         rows = []
-        for wave in range(1, 25):
+        for wave in range(1, 26):
             collection = json.loads((ROOT / f'results/catalog-source-wave{wave}-v1/collection.json').read_text())
             rows += [r for r in collection['rows'] if r['repository'] == REPOSITORY and r['status'] == 'collected_verified']
-        assert len(rows) == 96
+        assert len(rows) == 97
         run('git-init', ['git', 'init', str(checkout)], 20)
         run('git-fetch', ['git', '-C', str(checkout), 'fetch', '--depth=1', '--no-tags',
                          'https://github.com/nginxproxymanager/nginx-proxy-manager.git', REVISION], 120)

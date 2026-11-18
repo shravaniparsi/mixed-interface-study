@@ -15,6 +15,7 @@ const ROOTS = ['/data', '/etc/letsencrypt', '/etc/nginx', '/tmp/nginx', '/var/li
   '/var/cache/nginx', '/var/log/nginx', '/run/nginx', '/var/lib/logrotate'];
 const REVISION = '20016b9d91d49c9133f1b4d26ab5a289c72ec1db';
 const CONFIG = {
+  '/etc/logrotate.d/nginx-proxy-manager': '891f989d446fe455a4067013bf791af313089d50fff2cfdf2cca94502519a24d',
   '/etc/nginx/nginx.conf': '964daf41a24278eecfa5afae38005ac187075ca50d8a61e2ce4859562ab9b0ea',
   '/etc/nginx/conf.d/include/log-proxy.conf': 'd9985f766e4fec5902730acfa567a9c430aac1e7fad7d89720ecb8962b9f948f',
   '/etc/nginx/conf.d/include/log-stream.conf': 'a460455d0d1c6ec9c892c8a6ab1432bf76ec51efc8cee2b14d835d78aee4a76a',
