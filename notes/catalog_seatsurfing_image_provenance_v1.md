@@ -1,0 +1,9 @@
+# SeatSurfing declared-image metadata outcome
+
+The preregistered metadata collector ran once at freeze a18e56c55cd4c3caad169df3fbda4c8559148809. Four requests were made: anonymous token, latest index, linux/amd64 child manifest and referenced config. Index and child hashes verified; the config request returned HTTP 307, rejected by the published no-redirect policy. No redirect was followed, request retried, alternate tag selected, layer downloaded or application executed.
+
+The retained index digest is sha256:818ae75277c02b62bbfa91bfefdd97eb73b3b3297fdf54deb507a8393b81c4a6. The amd64 child is sha256:7baaf7a24b78eb2122f376313a69f282f5576d7e2da5cbefae050e4cd68ab144; its config reference is sha256:ae16c6514792563c3ceb1b8e48e8fa779eabd529a9f827c632ffef0f234043f3. Neither retained manifest supplies the required source revision. Config absence means source identity is unverified, not mismatching. This is a bounded metadata-collection limitation, not an application failure or evidence of a defect. No qualification slot was consumed.
+
+The original-source build path remains available for separate prospective preparation. It must use the frozen source, verify all acquired blobs, pin original base images and record dependency/build identities under a registered runtime recipe. Do not repair this metadata outcome by silently following its redirect or searching alternate tags. The existing source cap does not authorize fetching the oversized UI lockfile by another route; any full-source runtime acquisition must be separately registered and must retain the untouched lock and production build behavior.
+
+The already acquired location migration adds map_scale with default 1.0. This resolves the earlier source question about the omitted create-column, but actual persisted state and complete ordinary equivalence still require runtime qualification. Six application jobs and zero scientific cases remain unchanged.
