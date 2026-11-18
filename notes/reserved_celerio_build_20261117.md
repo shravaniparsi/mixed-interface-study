@@ -1,0 +1,9 @@
+# Celerio bounded build outcome
+
+Run 44214437747 executed the published freeze 83e07cc at pinned subject ef5e6457d73e02ad74d72c86fac8b787d2beece9. Backend compilation exited 0 in 33.55 seconds, with test compilation/execution skipped. Frontend npm install completed; ng build --prod then exited 1 because @angular-devkit/core was not found by Angular CLI. Frontend elapsed time was 28.30 seconds. This is the observed build failure; the build did not establish whether the separately identified Material/PrimeNG import mismatch would also fail.
+
+The original dependency declarations and chosen runtime were retained. Adding or pinning missing application/build dependencies would exceed the infrastructure-only correction scope. No such patch or rerun was performed. The project remains build-unqualified in the original sample; backend-only HTTP probes cannot substitute for the planned native continuation comparison. No application was started and no scientific variation case ran.
+
+The evidence ZIP SHA256 matched GitHub's artifact metadata before safe extraction. Logs, resulting package-lock, image identities, build measurements and GitHub provenance are archived. CI reports a 34,656,393-byte JAR with SHA256 d061f7533330b7189391e8d81243901be335a377e92a60d95988aa2c693ffd4f; the binary archive itself was not downloaded or independently checked locally because no native runtime is qualified. No frontend binary was produced. GitHub reports 93,000 ms run duration and zero Ubuntu billable milliseconds; this is timing metadata, not an invoice. No paid model calls were made.
+
+This result adds no confirmed defect, compatibility success, independent scientific observation, or evidence of Q1 readiness. Continue the remaining registered source/runtime assessments without replacing this project based on its outcome.

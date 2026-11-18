@@ -28,6 +28,22 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-tutorials-prefix-disposition-v1.json',
+    'manifests/reserved-celerio-build-v1.json',
+    'notes/reserved_celerio_build_20261117.md',
+    'results/reserved-celerio-build-v1-ci-44214437747/backend-build.log',
+    'results/reserved-celerio-build-v1-ci-44214437747/backend-image.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/binaries.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/frontend-build.log',
+    'results/reserved-celerio-build-v1-ci-44214437747/frontend-image.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/frontend-package-lock.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/github-artifacts.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/github-run.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/github-timing.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/image-pulls.log',
+    'results/reserved-celerio-build-v1-ci-44214437747/measurement.json',
+    'results/reserved-celerio-build-v1-ci-44214437747/source-commit.txt',
+
     'manifests/reserved-microservices-prefix-disposition-v1.json',
     'manifests/reserved-reddit-prefix-disposition-v1.json',
     'notes/reserved_sai_family_scope_20261117.md',

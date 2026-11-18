@@ -1,0 +1,49 @@
+{
+  "backend": {
+    "exit_code": 0,
+    "elapsed_seconds": 33.55292731200001,
+    "command": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=15",
+      "600",
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "study-celerio-build-backend",
+      "-v",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/subject:/source",
+      "-w",
+      "/source/quickstart-generated",
+      "maven@sha256:f7ffbcfeae6e5d56019afeb8c4b288afe73d25b4a0b0b2954fe5866143c1dda0",
+      "mvn",
+      "-B",
+      "-Dmaven.test.skip=true",
+      "package"
+    ]
+  },
+  "frontend": {
+    "exit_code": 1,
+    "elapsed_seconds": 28.29761153999999,
+    "command": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=15",
+      "900",
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "study-celerio-build-frontend",
+      "-v",
+      "/home/runner/work/mixed-interface-study/mixed-interface-study/subject:/source",
+      "-w",
+      "/source/quickstart-generated/web",
+      "node@sha256:300e3d2c19067c1aec9d9b2bd3acbd43d53797a5836d70a23e437a5634bcd33a",
+      "sh",
+      "-c",
+      "npm install && npm run build"
+    ]
+  }
+}

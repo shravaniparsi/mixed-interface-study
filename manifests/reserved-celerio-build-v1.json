@@ -1,0 +1,82 @@
+{
+  "kind": "closed_celerio_original_build",
+  "run_id": 44214437747,
+  "freeze_commit": "83e07cc07ddc300fe267721bb850c345bc6f4b6e",
+  "source_revision": "ef5e6457d73e02ad74d72c86fac8b787d2beece9",
+  "backend": "compiled",
+  "frontend": "build_failed_missing_angular_devkit_core",
+  "runtime_qualified": false,
+  "scientific_cases": 0,
+  "disposition": "unavailable_under_original_dependency_build",
+  "reason": "Changing package dependencies to resolve missing modules is outside the frozen infrastructure-only correction scope. No frontend binary or native control; no scientific variants run.",
+  "measurement": {
+    "backend": {
+      "exit_code": 0,
+      "elapsed_seconds": 33.55292731200001,
+      "command": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=15",
+        "600",
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "study-celerio-build-backend",
+        "-v",
+        "/home/runner/work/mixed-interface-study/mixed-interface-study/subject:/source",
+        "-w",
+        "/source/quickstart-generated",
+        "maven@sha256:f7ffbcfeae6e5d56019afeb8c4b288afe73d25b4a0b0b2954fe5866143c1dda0",
+        "mvn",
+        "-B",
+        "-Dmaven.test.skip=true",
+        "package"
+      ]
+    },
+    "frontend": {
+      "exit_code": 1,
+      "elapsed_seconds": 28.29761153999999,
+      "command": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=15",
+        "900",
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "study-celerio-build-frontend",
+        "-v",
+        "/home/runner/work/mixed-interface-study/mixed-interface-study/subject:/source",
+        "-w",
+        "/source/quickstart-generated/web",
+        "node@sha256:300e3d2c19067c1aec9d9b2bd3acbd43d53797a5836d70a23e437a5634bcd33a",
+        "sh",
+        "-c",
+        "npm install && npm run build"
+      ]
+    }
+  },
+  "binaries_reported_by_ci": {
+    "application.jar": {
+      "bytes": 34656393,
+      "sha256": "d061f7533330b7189391e8d81243901be335a377e92a60d95988aa2c693ffd4f"
+    }
+  },
+  "binary_downloaded_and_independently_verified": false,
+  "evidence_hashes": {
+    "results/reserved-celerio-build-v1-ci-44214437747/backend-build.log": "465c06a087167d35ad8e8fa7a5b66ec94aaf2711c8a12ec5c1c61c641e71a3fe",
+    "results/reserved-celerio-build-v1-ci-44214437747/backend-image.json": "90267977f0bc4ab4c9ced4fa7141dedeb173598e85cf37d4caa85e57e2f0c5cb",
+    "results/reserved-celerio-build-v1-ci-44214437747/binaries.json": "9c9bb70bd8b70139a8c843ad16a8032bccd1518969bcb7bac2f3f15e3d2e2ba8",
+    "results/reserved-celerio-build-v1-ci-44214437747/frontend-build.log": "fc98dfd683869426442e1ca21715a72b2557d53941ba4415f4f5f62a15440534",
+    "results/reserved-celerio-build-v1-ci-44214437747/frontend-image.json": "7f93a8cdfa71fd2c39087876ee757b8589bffc144b0d5612d8a85ec9700d2aa0",
+    "results/reserved-celerio-build-v1-ci-44214437747/frontend-package-lock.json": "d47e1d517b7b1efddefbecfdb77d81e789d1d422b121e045df07dbe3be4d054f",
+    "results/reserved-celerio-build-v1-ci-44214437747/github-artifacts.json": "cf140b63dc98f501e6bd50744c6cee0eebef4a1117b9b0225c5761137784324e",
+    "results/reserved-celerio-build-v1-ci-44214437747/github-run.json": "f803c9415e1893ac6c3e7a7d463123599ec3d40467e1c06ad2a5b5c79a02c325",
+    "results/reserved-celerio-build-v1-ci-44214437747/github-timing.json": "2e7c4a493687846a4bed3e7caa04c61a25ceb62dd836a25bbb886b18a3ca2a69",
+    "results/reserved-celerio-build-v1-ci-44214437747/image-pulls.log": "8a5bebe9515969a9c99951602b1dd7b63163de5a4a25c643418e41b73f0bb85a",
+    "results/reserved-celerio-build-v1-ci-44214437747/measurement.json": "5fbe09178b9ec59bc95aa982e73f83fd25716b6807daba6adc8e687a801db0a8",
+    "results/reserved-celerio-build-v1-ci-44214437747/source-commit.txt": "1d5d582dadbd9cf8b84a7c9e75be571b8c84d43f886a247233de11604a7ae750"
+  }
+}
