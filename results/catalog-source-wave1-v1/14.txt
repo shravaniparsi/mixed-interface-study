@@ -1,0 +1,247 @@
+ARG ARCH
+ARG BASE_VERSION
+ARG OPENCV_VERSION
+ARG FFMPEG_VERSION
+ARG WHEELS_VERSION
+ARG GPAC_IMAGE
+ARG UBUNTU_VERSION
+ARG NODE_VERSION
+# Fall back to an empty Hailo image for architectures without a build
+ARG HAILO_IMAGE=hailo-empty
+FROM scratch AS hailo-empty
+WORKDIR /usr/local
+WORKDIR /wheels
+
+FROM roflcoopter/${ARCH}-opencv:${OPENCV_VERSION}-${UBUNTU_VERSION} AS opencv
+FROM roflcoopter/${ARCH}-ffmpeg:${FFMPEG_VERSION}-${UBUNTU_VERSION} AS ffmpeg
+FROM roflcoopter/${ARCH}-wheels:${WHEELS_VERSION}-${UBUNTU_VERSION} AS wheels
+FROM ${GPAC_IMAGE} AS gpac
+FROM ${HAILO_IMAGE} AS hailo
+
+# Install go2rtc
+FROM roflcoopter/${ARCH}-base:${BASE_VERSION}-${UBUNTU_VERSION} AS go2rtc-base
+ARG ARCH
+ARG GO2RTC_VERSION
+ARG UBUNTU_VERSION
+
+WORKDIR /usr/local/bin
+
+# docker-clean would delete the downloaded .debs from the cache mount
+RUN \
+  --mount=type=cache,id=apt-cache-${ARCH}-${UBUNTU_VERSION},target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=apt-lists-${ARCH}-${UBUNTU_VERSION},target=/var/lib/apt/lists,sharing=locked \
+  rm -f /etc/apt/apt.conf.d/docker-clean \
+  && apt-get update && apt-get install -y --no-install-recommends \
+  wget
+
+RUN if [ "$ARCH" = "amd64-cuda" ]; then PLATFORM="amd64"; \
+  elif [ "$ARCH" = "armhf" ] || [ "$ARCH" = "rpi3" ]; then PLATFORM="arm"; \
+  elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "jetson-nano" ]; then PLATFORM="arm64"; \
+  else PLATFORM="$ARCH"; fi \
+  && wget https://github.com/AlexxIT/go2rtc/releases/download/v${GO2RTC_VERSION}/go2rtc_linux_$PLATFORM -O go2rtc \
+  && chmod +x /usr/local/bin/go2rtc
+
+WORKDIR /go2rtc
+RUN wget https://raw.githubusercontent.com/AlexxIT/go2rtc/refs/tags/v${GO2RTC_VERSION}/www/video-rtc.js -O video-rtc.js
+
+FROM scratch AS go2rtc
+COPY --from=go2rtc-base /usr/local/bin/go2rtc /usr/local/bin/go2rtc
+COPY --from=go2rtc-base /go2rtc/video-rtc.js /go2rtc/
+
+
+# Build frontend
+FROM node:${NODE_VERSION} AS frontend
+
+ARG NODE_OPTIONS=""
+ENV NODE_OPTIONS=${NODE_OPTIONS}
+
+WORKDIR /frontend
+
+COPY frontend/package.json ./
+COPY frontend/package-lock.json ./
+
+RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
+
+COPY frontend/ ./
+COPY --from=go2rtc /go2rtc/video-rtc.js /frontend/src/components/player/liveplayer/video-rtc.js
+RUN npm run build
+
+
+# Build Viseron
+FROM roflcoopter/${ARCH}-base:${BASE_VERSION}-${UBUNTU_VERSION}
+
+WORKDIR /src
+
+ARG ARCH
+ARG S6_OVERLAY_ARCH
+ARG S6_OVERLAY_VERSION
+ARG EXTRA_APT_PACKAGES
+ARG OPENBLAS_APT_PACKAGE="libopenblas0-pthread"
+ARG UBUNTU_VERSION
+ARG EDGETPU_RELEASE="16.0TF2.19.1-1"
+ARG EDGETPU_VERSION="16.0tf2.19.1-1"
+
+ENV \
+  VISERON_CONFIG_DIR=/config \
+  DEBIAN_FRONTEND=noninteractive \
+  S6_KEEP_ENV=1 \
+  S6_SERVICES_GRACETIME=30000 \
+  S6_KILL_GRACETIME=30000 \
+  S6_KILL_FINISH_MAXTIME=30000 \
+  PATH=$PATH:/home/abc/bin \
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/ffmpeg/lib \
+  PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.12/site-packages \
+  PIP_BREAK_SYSTEM_PACKAGES=1 \
+  OPENCV_OPENCL_CACHE_ENABLE=false \
+  PG_COLOR="always"
+
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}-installer /tmp/s6-overlay-installer
+
+# docker-clean is moved aside so the downloaded .debs stay in the cache mount,
+# and restored afterwards so runtime apt usage in the image is unchanged.
+RUN \
+  --mount=type=cache,id=apt-cache-${ARCH}-${UBUNTU_VERSION},target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=apt-lists-${ARCH}-${UBUNTU_VERSION},target=/var/lib/apt/lists,sharing=locked \
+  { mv /etc/apt/apt.conf.d/docker-clean /tmp/docker-clean 2>/dev/null || true; } \
+  && apt-get update && apt-get install -y --no-install-recommends \
+  software-properties-common \
+  curl \
+  cpulimit \
+  gnupg \
+  tzdata \
+  python3 \
+  python3-pip \
+  usbutils \
+  # OpenCV and FFmpeg Dependencies
+  libgomp1 \
+  libwebpdemux2 \
+  # Qt XCB platform plugin dependencies (bundled with opencv-python)
+  libsm6 \
+  libice6 \
+  # dlib Dependencies
+  # OpenBLAS provided via build-arg since Jetson Nano runs on older Ubuntu version
+  "${OPENBLAS_APT_PACKAGE}" \
+  # PostgreSQL
+  postgresql \
+  postgresql-contrib \
+  # NGNX \
+  nginx \
+  # Install extra apt packages from build-arg
+  ${EXTRA_APT_PACKAGES} \
+  # GStreamer
+  libgstreamer1.0-0 \
+  libgstreamer-plugins-base1.0-0 \
+  libgstreamer-plugins-bad1.0-0 \
+  gstreamer1.0-alsa \
+  gstreamer1.0-libav \
+  gstreamer1.0-plugins-base \
+  gstreamer1.0-plugins-good \
+  gstreamer1.0-plugins-bad \
+  gstreamer1.0-plugins-ugly \
+  gstreamer1.0-tools \
+  gstreamer1.0-vaapi \
+  gstreamer1.0-gl \
+  gstreamer1.0-pulseaudio \
+  python3-gst-1.0 \
+  \
+  # Install Python 3.9 if it doesn't exist
+  && if [ ! -f /usr/local/bin/python3.9 ]; then \
+  add-apt-repository ppa:deadsnakes/ppa -y && \
+  apt-get update && apt-get install -y --no-install-recommends \
+  python3.9 \
+  python3.9-distutils \
+  # Get pip
+  && curl -s https://bootstrap.pypa.io/pip/3.9/get-pip.py | python3.9 - --ignore-installed ; \
+  fi \
+  \
+  # Install Coral Edge TPU runtime from feranick/libedgetpu, since Google's
+  # apt repo is gone. Jetson Nano is still on Ubuntu 18.04, which the
+  # bullseye build supports (glibc 2.17).
+  && case "${UBUNTU_VERSION}" in \
+  noble) EDGETPU_DIST="ubuntu24.04" ;; \
+  bionic) EDGETPU_DIST="bullseye" ;; \
+  *) echo "No libedgetpu build for Ubuntu ${UBUNTU_VERSION}" >&2; exit 1 ;; \
+  esac \
+  && EDGETPU_DEB="libedgetpu1-max_${EDGETPU_VERSION}.${EDGETPU_DIST}_$(dpkg --print-architecture).deb" \
+  && case "${EDGETPU_DEB}" in \
+  *.ubuntu24.04_amd64.deb) EDGETPU_SHA256="27b294c05db9d9a57d141c50d06763a34e0111cfb7fb441c20c8ed75f885714a" ;; \
+  *.ubuntu24.04_arm64.deb) EDGETPU_SHA256="99f768daa68796f3d52ad162463e3263be1c6fad0d9f4ed337a332185d7f460f" ;; \
+  *.ubuntu24.04_armhf.deb) EDGETPU_SHA256="52965d47531e54a83c9ef000e440b0d91e6a7200101bd168379c3d75a1b53a66" ;; \
+  *.bullseye_arm64.deb) EDGETPU_SHA256="8fd59510d16f39b550a01be996081451793a8e4e5dec545d32c9441680ace035" ;; \
+  *) echo "No checksum for ${EDGETPU_DEB}" >&2; exit 1 ;; \
+  esac \
+  && curl -fsSL -o "/tmp/${EDGETPU_DEB}" \
+  "https://github.com/feranick/libedgetpu/releases/download/${EDGETPU_RELEASE}/${EDGETPU_DEB}" \
+  && echo "${EDGETPU_SHA256}  /tmp/${EDGETPU_DEB}" | sha256sum -c - \
+  && echo "libedgetpu1-max libedgetpu/accepted-eula select true" | debconf-set-selections \
+  && apt-get -qq update && apt-get -qq install -y --no-install-recommends \
+  "/tmp/${EDGETPU_DEB}" \
+  && rm "/tmp/${EDGETPU_DEB}" \
+  \
+  # Python 3.9 wheels (e.g. Pillow for armhf) may have been compiled against
+  # Ubuntu 22.04 which shipped libtiff.so.5 and libwebp.so.6.  Ubuntu 24.04
+  # ships libtiff.so.6 and libwebp.so.7 instead.  Create compatibility
+  # symlinks so that those wheels can load on 24.04.  The loop is a no-op on
+  # architectures where the old SONAME is already present.
+  && ldconfig \
+  && for pair in "libtiff.so.5 libtiff.so.6" "libwebp.so.6 libwebp.so.7"; do \
+  old="${pair%% *}"; new="${pair##* }"; \
+  if ! ldconfig -p | grep -qF " $old "; then \
+  src=$(find /usr/lib -name "$new" -not -name "$new.*" 2>/dev/null | head -1); \
+  [ -n "$src" ] && ln -sf "$new" "$(dirname "$src")/$old" || true; \
+  fi; \
+  done \
+  && ldconfig \
+  \
+  && chmod +x /tmp/s6-overlay-installer && /tmp/s6-overlay-installer / \
+  && apt-get autoremove -y \
+  && { mv /tmp/docker-clean /etc/apt/apt.conf.d/docker-clean 2>/dev/null || true; } \
+  && rm -r /tmp/s6-overlay-installer \
+  && useradd --uid 911 --user-group --create-home abc \
+  && if id -u ubuntu >/dev/null 2>&1; then deluser --remove-home ubuntu; fi \
+  && mkdir -p /home/abc/bin
+
+# hailortcli and libhailort.so
+# Has to be copied before the ldconfig step below
+COPY --from=hailo /usr/local /usr/local/
+
+# Bind mount is used so the wheels dont become an image layer
+RUN \
+  --mount=type=bind,from=wheels,source=/wheels,target=/tmp/wheels \
+  --mount=type=bind,from=wheels,source=/wheels-3.9,target=/tmp/wheels-3.9 \
+  --mount=type=bind,from=hailo,source=/wheels,target=/tmp/hailo-wheels \
+  python3 -m pip install --no-cache-dir --no-deps --ignore-installed /tmp/wheels/*.whl \
+  # Installed separately so pip only adds the hailort dependencies that are not
+  # already installed above
+  && if [ -n "$(ls -A /tmp/hailo-wheels)" ]; then \
+  python3 -m pip install --no-cache-dir --no-index --find-links=/tmp/hailo-wheels hailort; \
+  fi \
+  # onnxruntime-gpu bundles a TensorRT execution provider linked against
+  # TensorRT 10, which the CUDA base image does not ship. Only the CUDA/CPU
+  # providers are ever requested, so drop the unloadable stub.
+  && rm -f /usr/local/lib/python3.*/*-packages/onnxruntime/capi/libonnxruntime_providers_tensorrt.so \
+  # Register PyTorch runtime libs (installed via ultralytics) with the system
+  # linker so that ldd and ld.so can resolve libtorch.so / libc10.so etc.
+  && { python3 -c \
+  "import torch, os; open('/etc/ld.so.conf.d/torch.conf','w').write(os.path.join(os.path.dirname(torch.__file__),'lib')+'\n')" \
+  2>/dev/null || true; } \
+  && ldconfig \
+  && python3.9 -m pip install --no-cache-dir --ignore-installed /tmp/wheels-3.9/*.whl
+
+ENTRYPOINT ["/init"]
+
+COPY docker/ffprobe_wrapper /home/abc/bin/ffprobe
+COPY docker/ffmpeg_wrapper /home/abc/bin/ffmpeg
+COPY --from=opencv /opt/opencv /usr/local/
+COPY --from=ffmpeg /usr/local /ffmpeg/
+COPY --from=gpac /gpac/bin/gcc /usr/bin
+COPY --from=go2rtc /usr/local/bin/go2rtc /usr/local/bin/go2rtc
+COPY rootfs/ /
+COPY --from=frontend /frontend/dist /src/viseron/frontend/
+COPY manager.py /src/manager.py
+COPY viseron /src/viseron/
+
+ARG VISERON_VERSION="dev"
+ARG VISERON_GIT_COMMIT="unknown"
+ENV VISERON_VERSION=${VISERON_VERSION}
+ENV VISERON_GIT_COMMIT=${VISERON_GIT_COMMIT}
