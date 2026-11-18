@@ -1,0 +1,5 @@
+# Nginx Proxy Manager original build-base metadata
+
+Resolve exactly nginxproxymanager/nginx-full:certbot-node (original Dockerfile BASE_IMAGE and frontend CI builder) and nginxproxymanager/testca:latest (the original untagged FROM stage). These are build dependencies, not candidate application images. The mismatched application latest tag remains unqualified; no application tag is substituted. Immutable base digests will support a prospective build of the same frozen application source.
+
+Per image: at most four sequential HTTPS requests for an anonymous pull token, declared tag manifest/index, one linux/amd64 child if needed and its config. Thirty seconds/request, 120 seconds/image, 240 seconds total. Response caps: token 64 KiB, tag 2 MiB, child 1 MiB, config 256 KiB. Verify child/config digest and platform; retain public metadata and compressed byte totals. Tokens stay in memory. No retries, layers, package installs, builds, runtime or scientific cases. Publish this protocol and collector first and verify their frozen hashes before collection. Do not treat base-image provenance as proof of an application executable.

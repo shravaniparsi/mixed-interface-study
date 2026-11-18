@@ -1,0 +1,3 @@
+# Source wave 22: AccessList isolated runtime prerequisites
+
+Acquire exactly nine original files at the frozen Nginx Proxy Manager revision. Inspect the certificate timer invoked by startup for an empty-certificate fixture, app/request token access and rate-limit state, auth/audit model hooks, original proxy peer-secret template and migration configuration. This resolves identified supporting operations of the same candidate; do not explore certificate workflows, historical fixes or tests. No application job, package install or scientific input. Existing per-project/per-file/envelope caps, no retries, immutable source and publication-before-acquisition rules remain.
