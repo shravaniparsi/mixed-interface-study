@@ -28,6 +28,22 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-kanban-build-v1.json',
+    'notes/reserved_kanban_build_20261117.md',
+    'results/reserved-kanban-build-v1-ci-44211741738/backend-build.log',
+    'results/reserved-kanban-build-v1-ci-44211741738/backend-exit.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/binaries.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/frontend-build.log',
+    'results/reserved-kanban-build-v1-ci-44211741738/frontend-exit.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/frontend-image.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/frontend.Dockerfile',
+    'results/reserved-kanban-build-v1-ci-44211741738/github-artifacts.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/github-run.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/github-timing.json',
+    'results/reserved-kanban-build-v1-ci-44211741738/image-pulls.log',
+    'results/reserved-kanban-build-v1-ci-44211741738/source-commit.txt',
+
+    'manifests/reserved-kanban-prefix-disposition-v1.json',
     'manifests/reserved-kanban-images-v1.json',
     'protocol/reserved-kanban-build-v1.md',
     '.github/workflows/reserved_kanban_build_v1.yml',

@@ -1,0 +1,47 @@
+{
+  "kind": "kanban_complete_prefix_disposition",
+  "repository": "wkrzywiec/kanban-board",
+  "revision": "d5cbe1b7204916f48c4e66d2da11ccd21ba7aee8",
+  "selection_frozen_in": "14f0107",
+  "runtime_qualified": false,
+  "independent_evaluation_cases": 0,
+  "rows": [
+    {
+      "source_index": 283,
+      "path": "kanban-ui/src/app/app.component.ts",
+      "source_sha256": "4452eed601f0a8190654224e5763d952c1a91e2109a275f9c186d5d34cce8811",
+      "disposition": "root_only",
+      "reason": "Application root; no resource create/edit pair."
+    },
+    {
+      "source_index": 285,
+      "path": "kanban-ui/src/app/home/home.component.ts",
+      "source_sha256": "56777814e934fdb16a4b0f47095f9ee99b44bd99706b94316a3c14af1fba2562",
+      "disposition": "board_list_and_launcher",
+      "reason": "Loads boards and launches the board-create dialog; not a separate resource pair."
+    },
+    {
+      "source_index": 287,
+      "path": "kanban-ui/src/app/kanban-dialog/kanban-dialog.component.ts",
+      "source_sha256": "76832a7f9728529767bba990acc284cdccdafcc3becdbb8af55ff124a241c8fb",
+      "disposition": "one_text_field",
+      "reason": "Board create exposes title only, so it does not meet the two-text-field criterion."
+    },
+    {
+      "source_index": 289,
+      "path": "kanban-ui/src/app/kanban/kanban.component.ts",
+      "source_sha256": "ebdea52c3e437f28b4da86e61ea17ad92ed05ef13009876d736e185183cbbbf4",
+      "disposition": "task_list_and_launcher",
+      "reason": "Loads board/tasks, opens task by ID for editing, and implements status drag/drop; task text editing is delegated to TaskDialog."
+    },
+    {
+      "source_index": 291,
+      "path": "kanban-ui/src/app/task-dialog/task-dialog.component.ts",
+      "source_sha256": "bcad1ae2cb67c9c4392d2022eea1fe8d6d77b1541632bf5450fab889939db597",
+      "disposition": "selected",
+      "reason": "TaskDialog maps description/title and color to Task, branches on task.id for create/update, and sets status TODO."
+    }
+  ],
+  "native_edit_entry": "Double-click sticky-note element with persisted task ID; handler reads task by ID before opening dialog.",
+  "native_save_behavior": "Handler subscribes to API write then immediately closes dialog and reloads page; ordinary controls must establish whether the request completes. No forced waits or application patch may replace native behavior."
+}
