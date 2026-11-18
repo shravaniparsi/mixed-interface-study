@@ -138,6 +138,22 @@ def fingerprint():
     return result
 
 
+def bind_build(build):
+    global APP_IMAGE_ID
+    if build.get('status') != 'source_build_verified_and_inventory_complete':
+        raise RuntimeError('Require complete source-build/inventory verification')
+    if build.get('application_revision') != '9953f452324bab6fb8f7106dd8965cc401aa456c':
+        raise RuntimeError('Unexpected built source revision')
+    root = Path(__file__).resolve().parents[2]
+    preparation = root / 'results/catalog-seatsurfing-source-build-preparation-v4/manifest.json'
+    if build.get('source_preparation_sha256') != digest(preparation.read_bytes()):
+        raise RuntimeError('Build does not bind the current source preparation')
+    APP_IMAGE_ID = build.get('application_image_id')
+    if not isinstance(APP_IMAGE_ID, str) or not re.fullmatch(r'sha256:[0-9a-f]{64}', APP_IMAGE_ID):
+        raise RuntimeError('Missing exact application image identity')
+    return APP_IMAGE_ID
+
+
 def main():
     global APP_IMAGE_ID, CAPTURE_PAUSED
     parser = argparse.ArgumentParser()
@@ -148,17 +164,7 @@ def main():
     args = parser.parse_args()
     CAPTURE_PAUSED = args.action == "capture"
     build = json.loads(args.build_report.read_text())
-    if build.get('status') != 'source_build_verified_and_inventory_complete':
-        raise RuntimeError('Require complete source-build/inventory verification')
-    if build.get('source_revision') != '9953f452324bab6fb8f7106dd8965cc401aa456c':
-        raise RuntimeError('Unexpected built source revision')
-    root = Path(__file__).resolve().parents[2]
-    preparation = root / 'results/catalog-seatsurfing-source-build-preparation-v4/manifest.json'
-    if build.get('source_preparation_sha256') != digest(preparation.read_bytes()):
-        raise RuntimeError('Build does not bind the current source preparation')
-    APP_IMAGE_ID = build.get('application_image_id')
-    if not isinstance(APP_IMAGE_ID, str) or not re.fullmatch(r'sha256:[0-9a-f]{64}', APP_IMAGE_ID):
-        raise RuntimeError('Missing exact application image identity')
+    bind_build(build)
     os.umask(0o077)
     if args.report.exists():
         raise RuntimeError('Refuse report overwrite')

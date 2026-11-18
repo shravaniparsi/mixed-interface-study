@@ -1,0 +1,7 @@
+# SeatSurfing ordinary state comparison implementation
+
+Previous goal turn made progress by integrating original-schema build and execution preparation. This turn adds full private row capture and a prospective ordinary comparison with one narrowly checked session-activity difference. Exact dump/restore comparison is unchanged. Original rows, sample records, metadata and both audit values are retained; session expiry, refresh/user changes and unrelated data cannot be hidden by normalization.
+
+Fourteen synthetic checks passed, and the eleven prior active checkpoint guards still passed. The integration check found that the checkpoint expected source_revision while the builder emits application_revision. This was corrected and regression-tested before any application attempt. No fixture, schema, browser or application ran, and no scientific case was produced.
+
+The coordinator must still record authentic operation windows, bind actor/transport evidence, perform paused capture and stopped restore, verify original warm versus restored outcomes, qualify ordinary producer equivalence and complete request/readback equality, and seal private artifacts under the final registered job recipe. The current comparator is not a substitute for those checks. Totals remain six prior application jobs and zero scientific cases; SeatSurfing has zero attempts. Source review remains 56 files / 648,771 bytes and inputs/stopping limits are unchanged.
