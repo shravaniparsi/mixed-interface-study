@@ -9,6 +9,8 @@ import json
 import os
 from pathlib import Path
 import time
+import subprocess
+import sys
 from launch_seatsurfing_browser_v1 import launch_native_browser
 from launch_seatsurfing_api_v1 import run_api_operation
 from seatsurfing_fixture_lifecycle_v1 import FixtureLifecycle
@@ -138,8 +140,9 @@ class OrdinaryCoordinator:
                 checkpoint_storage=str(checkpoint_storage), storage_sha256=checkpoint_capture['storageSha256'])
             # Keep the same browser/processes for checkpoint and the warm edit.
             # Parent must retain/seal and clean up even if any later gate fails.
-            return {'opened':opened,'capture':checkpoint_capture,'state':warm_state,
+            self.warm = {'opened':opened,'capture':checkpoint_capture,'state':warm_state,
                     'actor':current_actor,'storage':checkpoint_storage,'api_id':api['createdId']}
+            return self.warm
         except Exception as error:
             self.phase = 'failed'
             self.report.update(status='producer_stage_unavailable',error_type=type(error).__name__)
@@ -148,3 +151,108 @@ class OrdinaryCoordinator:
             if self.lifecycle is not None:
                 write_private(self.directory/'producer-lifecycle.json', self.lifecycle.events)
             write_private(self.directory/'producer-stage.json', self.report)
+
+    def capture_checkpoint(self, *, private_key):
+        if self.phase != 'warm_editor_paused': raise RuntimeError('Require original paused warm editor')
+        self.phase = 'checkpoint_in_progress'
+        report = {'status':'checkpoint_in_progress','runtime_qualified':False}
+        try:
+            if hashlib.sha256(Path(private_key).read_bytes()).hexdigest() != self.provision['private_key_sha256']:
+                raise RuntimeError('Private signing key differs from original provisioning')
+            observed = self.lifecycle._inspect('paused')
+            current = self.snapshot('pre-checkpoint-state')
+            if current != self.warm['state']: raise RuntimeError('Warm state changed before checkpoint')
+            storage_raw = self.warm['storage'].read_bytes()
+            network_path = self.bridge.artifact_directory/'browser-network.json'
+            network_raw = network_path.read_bytes()
+            proof = build_checkpoint_observation(self.warm, storage_raw, network_raw, current, observed)
+            observation = self.directory/'checkpoint-observation.json'; write_private(observation, proof)
+            checkpoint = self.directory/'joint-checkpoint'; output = self.directory/'checkpoint-result.json'
+            command = [sys.executable, str(Path(__file__).with_name('seatsurfing_joint_checkpoint_v2.py')),
+                'capture','--checkpoint',str(checkpoint),'--build-report',str(self.build_report),
+                '--private-key',str(Path(private_key).absolute()),'--public-key',str(self.public_key),
+                '--origin','http://127.0.0.1:8080','--storage',str(self.warm['storage']),
+                '--observation',str(observation),'--output',str(output)]
+            try:
+                result = subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=330)
+            except subprocess.TimeoutExpired as error:
+                (self.directory/'checkpoint.stdout').write_bytes(error.stdout or b'')
+                (self.directory/'checkpoint.stderr').write_bytes(error.stderr or b'')
+                raise
+            (self.directory/'checkpoint.stdout').write_bytes(result.stdout)
+            (self.directory/'checkpoint.stderr').write_bytes(result.stderr)
+            if result.returncode or result.stdout or result.stderr: raise RuntimeError('Joint checkpoint acquisition unavailable')
+            value = json.loads(output.read_text())
+            if value['status'] != 'joint_checkpoint_captured_runtime_unqualified': raise RuntimeError('Unexpected joint checkpoint result')
+            manifest_raw = (checkpoint/'manifest.json').read_bytes()
+            if hashlib.sha256(manifest_raw).hexdigest() != value['manifest_sha256']: raise RuntimeError('Checkpoint manifest binding mismatch')
+            baseline = json.loads((checkpoint/'database/baseline.json').read_text())
+            if baseline['state'] != current['state']: raise RuntimeError('Dump baseline differs from full warm row evidence')
+            self.lifecycle._inspect('paused')
+            self.checkpoint, self.checkpoint_result = checkpoint, value
+            self.phase = 'checkpoint_captured'
+            report.update(status=self.phase,manifest_sha256=value['manifest_sha256'])
+            return value
+        except Exception as error:
+            self.phase='failed'; report.update(status='checkpoint_unavailable',error_type=type(error).__name__)
+            raise
+        finally: write_private(self.directory/'checkpoint-stage.json',report)
+
+    def warm_edit(self):
+        if self.phase != 'checkpoint_captured': raise RuntimeError('Warm edit requires captured original checkpoint')
+        self.phase='warm_edit_in_progress'
+        report={'status':self.phase,'runtime_qualified':False}
+        try:
+            start=time.time_ns()//1000
+            self.lifecycle.resume()
+            edited=observe_command(self.bridge,{'requestId':'edit','operation':'edit','edit':self.edit})
+            self.lifecycle.pause()
+            end=time.time_ns()//1000
+            after=self.snapshot('after-warm-edit')
+            comparison=compare_ordinary_state(self.warm['state'],after,session_id=self.report['session_id'],
+                location_id=self.warm['api_id'],window_start_us=start,window_end_us=end,edit=self.edit)
+            write_private(self.directory/'warm-edit-state-comparison.json',comparison)
+            # Native worker checks unchanged original credentials after its edit;
+            # fresh database evidence independently verifies current identity.
+            captured={**self.warm['capture'],'network':edited['network']}
+            actor=self.actor('actor-after-warm-edit',captured,self.warm['storage'],self.warm['actor']['continuity'])
+            self.phase='warm_edit_paused'
+            self.warm_result={'native':edited,'state':after,'actor':actor,'state_comparison':comparison}
+            report.update(status=self.phase,request_comparison_pending=True)
+            return self.warm_result
+        except Exception as error:
+            self.phase='failed';report.update(status='warm_edit_unavailable',error_type=type(error).__name__)
+            raise
+        finally:
+            write_private(self.directory/'warm-lifecycle.json',self.lifecycle.events)
+            write_private(self.directory/'warm-stage.json',report)
+
+
+def build_checkpoint_observation(warm, storage_raw, network_raw, current_state, paused):
+    capture=warm['capture'];actor=warm['actor'];network=capture['network']
+    if capture.get('nativeStorageCapture') is not True or capture.get('browserRequestsSettled') is not True:
+        raise ValueError('Original native capture evidence missing')
+    if hashlib.sha256(storage_raw).hexdigest()!=capture['storageSha256'] or storage_raw.decode()!=capture['storageBytes']:
+        raise ValueError('Original storage evidence mismatch')
+    if hashlib.sha256(network_raw).hexdigest()!=network['traceSha256'] or json.loads(network_raw)!=network['events']:
+        raise ValueError('Original network evidence mismatch')
+    if network.get('pendingRequests')!=0 or network.get('pendingCaptures')!=0:
+        raise ValueError('Unsettled browser evidence')
+    if actor.get('status')!='actor_acquisition_and_identity_verified' or actor.get('database_acquisition_provenance_verified') is not True:
+        raise ValueError('Verified actor acquisition missing')
+    diagnostics=capture['diagnostics'];continuity=actor['continuity']
+    for field, expected in [('accessToken','accessTokenSha256'),('refreshToken','refreshTokenSha256')]:
+        if hashlib.sha256(diagnostics[field].encode()).hexdigest()!=continuity[expected]:raise ValueError('Original credential changed')
+    if diagnostics['sessionStorage']!={} or diagnostics['cacheNames']!=[]:raise ValueError('Unmapped browser state')
+    now_ms=time.time_ns()//1000000
+    if diagnostics['expiry']<=now_ms+120000:raise ValueError('Insufficient original token lifetime')
+    if not 0<=now_ms-network['observedAt']<=60000:raise ValueError('Checkpoint observation exceeded sixty seconds')
+    if paused.get('state')!='paused' or current_state!=warm['state'] or current_state.get('status')!='paused_comparison_state_captured':
+        raise ValueError('Original paused complete state unavailable')
+    return {'native_storage_capture':True,'browser_requests_settled':True,
+        'application_operations_settled':True,'settlement_scope':'observed_network_and_idle_database_under_paused_processes',
+        'actor_verified':True,'token_unchanged':True,'refresh_outside_checkpoint_interval':True,
+        'no_unmapped_browser_state':True,'browser_and_application_paused':True,
+        'storage_sha256':capture['storageSha256'],'network_trace_sha256':network['traceSha256'],
+        'paused_identity':paused,'pending_application_tasks_proven_absent':False,
+        'warm_restore_equivalence_established':False}

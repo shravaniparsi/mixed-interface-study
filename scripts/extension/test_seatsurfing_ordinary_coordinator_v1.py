@@ -88,4 +88,101 @@ class ProducerStage(unittest.TestCase):
         with self.assertRaises(RuntimeError):stage.producer_stage()
 
 
+
+
+class CheckpointEvidence(unittest.TestCase):
+    def fixture(self):
+        now=module.time.time_ns()//1000000
+        storage=b'{"cookies":[],"origins":[]}'
+        network=b'[]'
+        state={'status':'paused_comparison_state_captured','state':{'fixture':True}}
+        actor={'status':'actor_acquisition_and_identity_verified','database_acquisition_provenance_verified':True,
+               'continuity':{'accessTokenSha256':hashlib.sha256(b'access').hexdigest(),'refreshTokenSha256':hashlib.sha256(b'refresh').hexdigest()}}
+        capture={'nativeStorageCapture':True,'browserRequestsSettled':True,'storageSha256':hashlib.sha256(storage).hexdigest(),'storageBytes':storage.decode(),
+                 'network':{'events':[],'traceSha256':hashlib.sha256(network).hexdigest(),'pendingRequests':0,'pendingCaptures':0,'observedAt':now},
+                 'diagnostics':{'sessionStorage':{},'cacheNames':[],'accessToken':'access','refreshToken':'refresh','expiry':now+600000}}
+        return {'capture':capture,'actor':actor,'state':state},storage,network,state,{'state':'paused'}
+    def test_evidence_bound_proof_preserves_background_task_uncertainty(self):
+        result=module.build_checkpoint_observation(*self.fixture())
+        self.assertTrue(result['application_operations_settled'])
+        self.assertFalse(result['pending_application_tasks_proven_absent'])
+        self.assertFalse(result['warm_restore_equivalence_established'])
+    def test_missing_actor_or_changed_storage_rejected(self):
+        data=list(self.fixture());data[0]['actor']['database_acquisition_provenance_verified']=False
+        with self.assertRaisesRegex(ValueError,'actor'):module.build_checkpoint_observation(*data)
+        data=list(self.fixture());data[1]=b'changed'
+        with self.assertRaisesRegex(ValueError,'storage'):module.build_checkpoint_observation(*data)
+    def test_pending_capture_and_stale_observation_rejected(self):
+        data=list(self.fixture());data[0]['capture']['network']['pendingCaptures']=1
+        with self.assertRaisesRegex(ValueError,'Unsettled'):module.build_checkpoint_observation(*data)
+        data=list(self.fixture());data[0]['capture']['network']['observedAt']-=61000
+        with self.assertRaisesRegex(ValueError,'sixty'):module.build_checkpoint_observation(*data)
+    def test_changed_token_and_unmapped_storage_rejected(self):
+        data=list(self.fixture());data[0]['capture']['diagnostics']['accessToken']='other'
+        with self.assertRaisesRegex(ValueError,'credential'):module.build_checkpoint_observation(*data)
+        data=list(self.fixture());data[0]['capture']['diagnostics']['cacheNames']=['unmapped']
+        with self.assertRaisesRegex(ValueError,'Unmapped'):module.build_checkpoint_observation(*data)
+    def test_changed_full_state_or_running_process_rejected(self):
+        data=list(self.fixture());data[3]={'different':True}
+        with self.assertRaisesRegex(ValueError,'paused complete'):module.build_checkpoint_observation(*data)
+        data=list(self.fixture());data[4]={'state':'running'}
+        with self.assertRaisesRegex(ValueError,'paused complete'):module.build_checkpoint_observation(*data)
+
+
+class WarmEdit(unittest.TestCase):
+    def test_warm_edit_requires_joint_checkpoint_and_keeps_same_worker(self):
+        # Reuse the connected producer fixture; runtime boundaries remain mocked.
+        helper=ProducerStage();self.addCleanup(helper.doCleanups)
+        stage,_=helper.run_stage()
+        with self.assertRaisesRegex(RuntimeError,'checkpoint'):stage.warm_edit()
+        stage.phase='checkpoint_captured'
+        after=copy.deepcopy(stage.warm['state'])
+        tables={}
+        for table in after['row_data']:
+            rows=[json.loads(raw) for raw in table['rows']]
+            if table['relation_name']=='locations':
+                next(row for row in rows if row['id']=='api')['description']='Edit description'
+            if table['relation_name']=='sessions':rows[0]['last_activity']='2026-11-18T00:00:11'
+            tables[table['relation_name']]=rows
+        after=snapshot(tables)
+        base=epoch_microseconds('2026-11-18T00:00:00Z')
+        original=stage.bridge
+        with patch.object(module,'observe_command',return_value={'network':{'events':[]}}) as command,patch.object(module,'capture_state',return_value=after),patch.object(stage,'actor',return_value=stage.warm['actor']),patch.object(module.time,'time_ns',side_effect=[(base+10000000)*1000,(base+12000000)*1000]):
+            result=stage.warm_edit()
+        self.assertIs(stage.bridge,original);self.assertEqual(command.call_count,1)
+        self.assertEqual(command.call_args.args[1],{'requestId':'edit','operation':'edit','edit':stage.edit})
+        self.assertEqual(stage.phase,'warm_edit_paused');self.assertEqual(result['state_comparison']['status'],'ordinary_operation_state_matches')
+        with self.assertRaises(RuntimeError):stage.warm_edit()
+
+
+
+
+class JointCheckpointIntegration(unittest.TestCase):
+    def test_dump_baseline_must_equal_full_warm_state(self):
+        import subprocess
+        for mismatch in [False,True]:
+            with self.subTest(mismatch=mismatch):
+                helper=ProducerStage();self.addCleanup(helper.doCleanups)
+                stage,_=helper.run_stage()
+                private_key=stage.directory/'private.pem';private_key.write_bytes(b'private-fixture')
+                stage.provision['private_key_sha256']=hashlib.sha256(private_key.read_bytes()).hexdigest()
+                stage.warm['storage'].parent.mkdir(parents=True,exist_ok=True)
+                stage.warm['storage'].write_bytes(b'{}')
+                (stage.bridge.artifact_directory/'browser-network.json').write_bytes(b'[]')
+                def execute(argv,**kwargs):
+                    checkpoint=Path(argv[argv.index('--checkpoint')+1]);(checkpoint/'database').mkdir(parents=True)
+                    raw=b'{"synthetic_manifest":true}';(checkpoint/'manifest.json').write_bytes(raw)
+                    baseline={'state':{'different':True} if mismatch else stage.warm['state']['state']}
+                    (checkpoint/'database/baseline.json').write_text(json.dumps(baseline))
+                    Path(argv[argv.index('--output')+1]).write_text(json.dumps({'status':'joint_checkpoint_captured_runtime_unqualified','manifest_sha256':hashlib.sha256(raw).hexdigest()}))
+                    return subprocess.CompletedProcess(argv,0,b'',b'')
+                with patch.object(stage.lifecycle,'_inspect',return_value={'state':'paused'},create=True),patch.object(module,'capture_state',return_value=stage.warm['state']),patch.object(module,'build_checkpoint_observation',return_value={}),patch.object(module.subprocess,'run',side_effect=execute) as run:
+                    if mismatch:
+                        with self.assertRaisesRegex(RuntimeError,'baseline differs'):stage.capture_checkpoint(private_key=private_key)
+                    else:stage.capture_checkpoint(private_key=private_key)
+                self.assertEqual(run.call_count,1)
+                self.assertEqual(stage.phase,'failed' if mismatch else 'checkpoint_captured')
+                with self.assertRaises(RuntimeError):stage.capture_checkpoint(private_key=private_key)
+
+
 if __name__=='__main__':unittest.main()
