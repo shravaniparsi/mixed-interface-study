@@ -1,0 +1,456 @@
+import User from "@/types/User";
+import OrgSettings from "@/types/Settings";
+import Ajax from "@/util/Ajax";
+import UserPreference from "@/types/UserPreference";
+import Organization from "@/types/Organization";
+import {
+  Permission,
+  PermissionKey,
+  PermissionLevel,
+  PermissionMap,
+} from "@/types/Permission";
+
+interface RuntimeUserInfos {
+  username: string;
+  userId: string;
+  firstname: string;
+  lastname: string;
+  idpLogin: boolean;
+  isLoading: boolean;
+  maxBookingsPerUser: number;
+  maxConcurrentBookingsPerUser: number;
+  maxDaysInAdvance: number;
+  maxBookingDurationHours: number;
+  maxHoursBeforeDelete: number;
+  minBookingDurationHours: number;
+  dailyBasisBooking: boolean;
+  noAdminRestrictions: boolean;
+  showNames: boolean;
+  customLogoUrl: string;
+  defaultTimezone: string;
+  orgLanguage: string;
+  disableBuddies: boolean;
+  maxHoursPartiallyBooked: number;
+  maxHoursPartiallyBookedEnabled: boolean;
+  featureRecurringBookings: boolean;
+  organizationId: string;
+  orgName: string;
+  /** The signed-in user's resolved access, keyed by permission name. */
+  permissions: PermissionMap;
+  pluginMenuItems: any[];
+  pluginWelcomeScreens: any[];
+  bookingUIIntegrations: any[];
+  featureGroups: boolean;
+  featureSpaceImages: boolean;
+  featureAuthProviders: boolean;
+  featureKioskMode: boolean;
+  kioskModeEnabled: boolean;
+  featurePublicBooking: boolean;
+  publicBookingEnabled: boolean;
+  cloudHosted: boolean;
+  subscriptionActive: boolean;
+  orgPrimaryDomain: string;
+  disablePasswordLogin: boolean;
+  allowRecurringBookings: boolean;
+  subjectDefault: number;
+  use24HourTime: boolean;
+  dateFormat: string;
+  weekStartDay: number;
+  totpEnabled: boolean;
+  enforceTOTP: boolean;
+  hideReports: boolean;
+  hideStats: boolean;
+  hasPasskeys: boolean;
+  isPrimaryDomain: boolean;
+  targetUtilizationHoursPerWeek: number;
+  orgAnnouncement: string;
+  defaultBookingView: string;
+}
+
+export default class RuntimeConfig {
+  /**
+   * Reports whether the signed-in user holds at least the given level for a
+   * permission. Absence means not granted.
+   *
+   * This governs presentation only. The server checks every request
+   * independently, so a stale or tampered map can hide or reveal navigation
+   * but never grants access.
+   */
+  static hasPermission = (
+    permission: PermissionKey,
+    level: number = PermissionLevel.Admin,
+  ): boolean => {
+    return (RuntimeConfig.INFOS.permissions[permission] ?? 0) >= level;
+  };
+
+  /**
+   * Reports whether the user holds any administrative permission at all. It
+   * backs the checks that used to ask "is this user some kind of admin", such
+   * as whether to offer the link into the administration UI.
+   */
+  static hasAnyPermission = (): boolean => {
+    return Object.values(RuntimeConfig.INFOS.permissions).some((l) => l > 0);
+  };
+
+  /**
+   * Decides whether a plugin's menu item belongs in the given sidebar section.
+   *
+   * A plugin may declare the permission its screen needs; those that do not
+   * fall back to the coarse "admin" / "spaceadmin" visibility they used
+   * before the permission model existed.
+   */
+  static canSeePluginMenuItem = (item: any, section: string): boolean => {
+    if (item.requiredPermissionsAny && item.requiredPermissionsAny.length) {
+      if (section !== "admin") {
+        return false;
+      }
+      const level = item.requiredLevel ?? PermissionLevel.Admin;
+      return item.requiredPermissionsAny.some((p: string) =>
+        RuntimeConfig.hasPermission(p, level),
+      );
+    }
+    if (item.requiredPermission) {
+      if (section !== "admin") {
+        return false;
+      }
+      return RuntimeConfig.hasPermission(
+        item.requiredPermission,
+        item.requiredLevel ?? PermissionLevel.Admin,
+      );
+    }
+    if (item.visibility !== section) {
+      return false;
+    }
+    return section === "admin"
+      ? RuntimeConfig.hasPermission(
+          Permission.OrgSettings,
+          PermissionLevel.Admin,
+        )
+      : RuntimeConfig.hasAnyPermission();
+  };
+
+  /**
+   * Decides whether a plugin's booking UI integration should be shown to the
+   * signed-in user. This mirrors canSeePluginMenuItem, except a plugin that
+   * declares no permission at all is visible to everyone: unlike the admin
+   * menu, the booking UI has no coarse admin/spaceadmin gate to fall back
+   * to. This is presentation only - the server independently filters the
+   * same list before it ever reaches the client.
+   */
+  static canSeeBookingUIIntegration = (item: any): boolean => {
+    if (item.requiredPermissionsAny && item.requiredPermissionsAny.length) {
+      const level = item.requiredLevel ?? PermissionLevel.Admin;
+      return item.requiredPermissionsAny.some((p: string) =>
+        RuntimeConfig.hasPermission(p, level),
+      );
+    }
+    if (item.requiredPermission) {
+      return RuntimeConfig.hasPermission(
+        item.requiredPermission,
+        item.requiredLevel ?? PermissionLevel.Admin,
+      );
+    }
+    return true;
+  };
+
+  /**
+   * Picks the title to show for a booking UI integration: the entry for the
+   * signed-in user's exact language, then its base language (e.g. "de" for
+   * "de-CH"), then the plugin's non-localized title.
+   */
+  static pickBookingUIIntegrationTitle = (item: any): string => {
+    const titles = item.titles;
+    if (titles) {
+      const lang = RuntimeConfig.getLanguage();
+      if (titles[lang]) {
+        return titles[lang];
+      }
+      const base = lang.split("-")[0];
+      if (titles[base]) {
+        return titles[base];
+      }
+    }
+    return item.title;
+  };
+
+  static parseArray = (value: string): any[] => {
+    try {
+      const v = value ? JSON.parse(value) : undefined;
+      return Array.isArray(v) ? v : [];
+    } catch {
+      return [];
+    }
+  };
+
+  static EMBEDDED: boolean = false;
+  static INFOS: RuntimeUserInfos;
+
+  static resetInfos = () => {
+    RuntimeConfig.INFOS = {
+      username: "",
+      firstname: "",
+      lastname: "",
+      userId: "",
+      idpLogin: false,
+      isLoading: true,
+      maxBookingsPerUser: 0,
+      maxConcurrentBookingsPerUser: 0,
+      maxDaysInAdvance: 0,
+      maxBookingDurationHours: 0,
+      maxHoursBeforeDelete: 0,
+      minBookingDurationHours: 0,
+      dailyBasisBooking: false,
+      noAdminRestrictions: false,
+      disableBuddies: false,
+      customLogoUrl: "",
+      maxHoursPartiallyBooked: 0,
+      maxHoursPartiallyBookedEnabled: false,
+      showNames: false,
+      defaultTimezone: "",
+      orgLanguage: "",
+      featureRecurringBookings: false,
+      organizationId: "",
+      orgName: "",
+      permissions: {},
+      pluginMenuItems: [],
+      pluginWelcomeScreens: [],
+      bookingUIIntegrations: [],
+      featureGroups: false,
+      featureSpaceImages: false,
+      featureAuthProviders: false,
+      featureKioskMode: false,
+      kioskModeEnabled: false,
+      featurePublicBooking: false,
+      publicBookingEnabled: false,
+      cloudHosted: false,
+      subscriptionActive: false,
+      orgPrimaryDomain: "",
+      disablePasswordLogin: false,
+      allowRecurringBookings: true,
+      subjectDefault: 2,
+      use24HourTime: true,
+      dateFormat: "Y-m-d",
+      weekStartDay: 1,
+      totpEnabled: false,
+      enforceTOTP: false,
+      hideReports: false,
+      hideStats: false,
+      hasPasskeys: false,
+      isPrimaryDomain: false,
+      targetUtilizationHoursPerWeek: 0,
+      orgAnnouncement: "",
+      defaultBookingView: "map",
+    };
+  };
+
+  static verifyToken = async (resolve: Function) => {
+    let credentials = Ajax.PERSISTER.readCredentialsFromLocalStorage();
+    if (!credentials.accessToken) {
+      const refreshToken = Ajax.PERSISTER.readRefreshTokenFromLocalStorage();
+      if (refreshToken) {
+        await Ajax.refreshAccessToken(refreshToken);
+        credentials = Ajax.PERSISTER.readCredentialsFromLocalStorage();
+      }
+    }
+    if (credentials.accessToken) {
+      try {
+        await RuntimeConfig.loadUserAndSettings();
+      } catch {
+        Ajax.PERSISTER.deleteCredentialsFromStorage();
+      }
+    }
+    resolve();
+  };
+
+  static loadSettings = async (): Promise<void> => {
+    const settings = await OrgSettings.list();
+    settings.forEach((s) => {
+      if (typeof window !== "undefined") {
+        if (s.name === Organization.PREF_MAX_BOOKINGS_PER_USER)
+          RuntimeConfig.INFOS.maxBookingsPerUser = window.parseInt(s.value);
+        if (s.name === Organization.PREF_MAX_CONCURRENT_BOOKINGS_PER_USER)
+          RuntimeConfig.INFOS.maxConcurrentBookingsPerUser = window.parseInt(
+            s.value,
+          );
+        if (s.name === Organization.PREF_MAX_DAYS_IN_ADVANCE)
+          RuntimeConfig.INFOS.maxDaysInAdvance = window.parseInt(s.value);
+        if (s.name === Organization.PREF_MAX_BOOKING_DURATION_HOURS)
+          RuntimeConfig.INFOS.maxBookingDurationHours = window.parseInt(
+            s.value,
+          );
+        if (s.name === Organization.PREF_MAX_HOURS_BEFORE_DELETE)
+          RuntimeConfig.INFOS.maxHoursBeforeDelete = window.parseInt(s.value);
+        if (s.name === Organization.PREF_MAX_HOURS_PARTIALLY_BOOKED)
+          RuntimeConfig.INFOS.maxHoursPartiallyBooked = window.parseInt(
+            s.value,
+          );
+        if (s.name === Organization.PREF_MIN_BOOKING_DURATION_HOURS)
+          RuntimeConfig.INFOS.minBookingDurationHours = window.parseInt(
+            s.value,
+          );
+      }
+      if (s.name === Organization.PREF_DAILY_BASIS_BOOKING)
+        RuntimeConfig.INFOS.dailyBasisBooking = s.value === "1";
+      if (s.name === Organization.PREF_NO_ADMIN_RESTRICTIONS)
+        RuntimeConfig.INFOS.noAdminRestrictions = s.value === "1";
+      if (s.name === Organization.PREF_MAX_HOURS_PARTIALLY_BOOKED_ENABLED)
+        RuntimeConfig.INFOS.maxHoursPartiallyBookedEnabled = s.value === "1";
+      if (s.name === Organization.PREF_SHOW_NAMES)
+        RuntimeConfig.INFOS.showNames = s.value === "1";
+      if (s.name === Organization.PREF_DISABLE_BUDDIES)
+        RuntimeConfig.INFOS.disableBuddies = s.value === "1";
+      if (s.name === Organization.PREF_CUSTOM_LOGO_URL)
+        RuntimeConfig.INFOS.customLogoUrl = s.value;
+      if (s.name === Organization.PREF_DEFAULT_TIMEZONE)
+        RuntimeConfig.INFOS.defaultTimezone = s.value;
+      if (s.name === "_sys_org_language")
+        RuntimeConfig.INFOS.orgLanguage = s.value;
+      if (s.name === "feature_recurring_bookings")
+        RuntimeConfig.INFOS.featureRecurringBookings = s.value === "1";
+      if (s.name === Organization.PREF_ALLOW_RECURRING_BOOKINGS)
+        RuntimeConfig.INFOS.allowRecurringBookings = s.value === "1";
+      if (s.name === "_sys_admin_menu_items")
+        RuntimeConfig.INFOS.pluginMenuItems = RuntimeConfig.parseArray(s.value);
+      if (s.name === "_sys_admin_welcome_screens")
+        RuntimeConfig.INFOS.pluginWelcomeScreens = RuntimeConfig.parseArray(
+          s.value,
+        );
+      if (s.name === "_sys_booking_ui_integrations")
+        RuntimeConfig.INFOS.bookingUIIntegrations = RuntimeConfig.parseArray(
+          s.value,
+        );
+      if (s.name === "feature_groups")
+        RuntimeConfig.INFOS.featureGroups = s.value === "1";
+      if (s.name === "feature_space_images")
+        RuntimeConfig.INFOS.featureSpaceImages = s.value === "1";
+      if (s.name === "feature_auth_providers")
+        RuntimeConfig.INFOS.featureAuthProviders = s.value === "1";
+      if (s.name === "feature_kiosk_mode")
+        RuntimeConfig.INFOS.featureKioskMode = s.value === "1";
+      if (s.name === Organization.PREF_KIOSK_MODE_ENABLED)
+        RuntimeConfig.INFOS.kioskModeEnabled = s.value === "1";
+      if (s.name === "feature_public_booking")
+        RuntimeConfig.INFOS.featurePublicBooking = s.value === "1";
+      if (s.name === Organization.PREF_PUBLIC_BOOKING_ENABLED)
+        RuntimeConfig.INFOS.publicBookingEnabled = s.value === "1";
+      if (s.name === "cloud_hosted")
+        RuntimeConfig.INFOS.cloudHosted = s.value === "1";
+      if (s.name === "subscription_active")
+        RuntimeConfig.INFOS.subscriptionActive = s.value === "1";
+      if (s.name === "_sys_org_primary_domain")
+        RuntimeConfig.INFOS.orgPrimaryDomain = s.value;
+      if (s.name === "_sys_disable_password_login")
+        RuntimeConfig.INFOS.disablePasswordLogin = s.value === "1";
+      if (s.name === Organization.PREF_SUBJECT_DEFAULT)
+        RuntimeConfig.INFOS.subjectDefault = window.parseInt(s.value);
+      if (s.name === Organization.PREF_DEFAULT_BOOKING_VIEW)
+        RuntimeConfig.INFOS.defaultBookingView = s.value;
+      if (s.name === Organization.PREF_ENFORCE_TOTP) {
+        const enforceTotpSetting = window.parseInt(s.value);
+        RuntimeConfig.INFOS.enforceTOTP =
+          enforceTotpSetting === Organization.ENFORCE_TOTP_ALL_USERS ||
+          (enforceTotpSetting === Organization.ENFORCE_TOTP_ADMINS_ONLY &&
+            RuntimeConfig.hasAnyPermission());
+      }
+      if (s.name === Organization.PREF_HIDE_REPORTS)
+        RuntimeConfig.INFOS.hideReports = s.value === "1";
+      if (s.name === Organization.PREF_HIDE_STATS)
+        RuntimeConfig.INFOS.hideStats = s.value === "1";
+      if (s.name === Organization.PREF_ORG_ANNOUNCEMENT_TEXT)
+        RuntimeConfig.INFOS.orgAnnouncement = s.value;
+      if (s.name === Organization.PREF_TARGET_UTILIZATION_HOURS_PER_WEEK)
+        RuntimeConfig.INFOS.targetUtilizationHoursPerWeek = window.parseInt(
+          s.value,
+        );
+    });
+  };
+
+  static loadUserPreferences = async (): Promise<void> => {
+    try {
+      const list = await UserPreference.list();
+      list.forEach((pref) => {
+        if (pref.name === UserPreference.PREF_USE_24_HOUR_TIME) {
+          RuntimeConfig.INFOS.use24HourTime = pref.value === "1";
+        }
+        if (pref.name === UserPreference.PREF_DATE_FORMAT) {
+          RuntimeConfig.INFOS.dateFormat = pref.value;
+        }
+        if (pref.name === UserPreference.PREF_WEEK_START_DAY) {
+          const v = parseInt(pref.value);
+          RuntimeConfig.INFOS.weekStartDay = [0, 1, 6].includes(v) ? v : 1;
+        }
+      });
+    } catch {
+      // Nothing to do
+    }
+  };
+
+  static loadUserAndSettings = async (): Promise<void> => {
+    RuntimeConfig.resetInfos();
+    const user = await User.getSelf();
+    RuntimeConfig.INFOS.organizationId = user.organizationId;
+    RuntimeConfig.INFOS.permissions = user.permissions;
+    RuntimeConfig.INFOS.idpLogin = !user.requirePassword;
+    RuntimeConfig.INFOS.totpEnabled = user.totpEnabled;
+    RuntimeConfig.INFOS.hasPasskeys = user.hasPasskeys;
+    RuntimeConfig.INFOS.isPrimaryDomain = user.isPrimaryDomain;
+    RuntimeConfig.INFOS.username = user.email;
+    RuntimeConfig.INFOS.userId = user.id;
+    RuntimeConfig.INFOS.firstname = user.firstname;
+    RuntimeConfig.INFOS.lastname = user.lastname;
+    RuntimeConfig.INFOS.orgName = user.organization.name;
+    await RuntimeConfig.loadSettings();
+    await RuntimeConfig.loadUserPreferences();
+  };
+
+  static getLanguage(): string {
+    if (typeof window !== "undefined") {
+      const curLang = window.localStorage.getItem("next-export-i18n-lang");
+      if (curLang) {
+        return curLang;
+      }
+    }
+    return "en-GB";
+  }
+
+  static getAvailableLanguages(): { [key: string]: string } {
+    return {
+      "en-GB": "English (UK)",
+      "en-US": "English (US)",
+      de: "Deutsch",
+      et: "Eesti",
+      fi: "Suomi",
+      fr: "Français",
+      he: "עברית",
+      hu: "Magyar",
+      it: "Italiano",
+      nl: "Nederlands",
+      pl: "Polski",
+      pt: "Português",
+      ro: "Română",
+      es: "Español",
+      "zh-TW": "繁體中文",
+    };
+  }
+
+  static async logOut(): Promise<void> {
+    const credentials = Ajax.PERSISTER.readCredentialsFromLocalStorage();
+    const logoutUrl = credentials.logoutUrl;
+    const proceed = () => {
+      Ajax.PERSISTER.deleteCredentialsFromStorage();
+      RuntimeConfig.resetInfos();
+      if (logoutUrl) {
+        window.location.href = logoutUrl;
+        return;
+      }
+      window.location.href = "/ui/login?noredirect=1";
+    };
+    try {
+      await Ajax.get("/auth/logout/current");
+    } finally {
+      proceed();
+    }
+  }
+}
+
+RuntimeConfig.resetInfos();

@@ -1,0 +1,13 @@
+# SeatSurfing original startup and build mapping
+
+Wave 35 verified eight scheduled files at freeze dbe695549e7130aad10744f2d872a122b1f700ed, adding 51,233 bytes. SeatSurfing now consumes 40 source slots and 519,498 decoded bytes. No application or scientific case ran.
+
+main.go orders database initialization, plugin initialization, schema/default settings, default organization creation, single-organization settings, plugin notification, router initialization, timers and HTTP run. Schema target is 67; migrations visit all listed repositories, write the database-version setting and initialize a global install ID without replacing a non-empty value. Settings cache invalidation follows install-ID initialization. This is a source contract, not proof restart leaves full state unchanged.
+
+Sessions persist created/expiry/last-activity values and are linked to refresh-token state. Session deletion also deletes its refresh tokens; UpdateActivity writes current time. A future ordinary checkpoint recipe must specify operation-specific permitted audit differences and preserve warm-versus-restored equivalence, rather than excluding the entire session tables. Full browser state and persistent JWT keys remain required.
+
+The mail helper validates/builds content before the MockSendmail branch, which stores mock content and returns before constructing/sending via the real transport. This supports the existing MOCK_SENDMAIL setting as a local no-send prerequisite. The actual isolated runtime must still enforce no external network and confirm startup succeeds. No mail operation has been invoked.
+
+Next configuration declares static export, trailing slashes and /ui base path. Both official backend-development and release workflows build the root Dockerfile for amd64/arm64; release passes CI_VERSION, which the Dockerfile uses for frontend version text. The original Dockerfile depends on tonistiigi/xx:latest, node:24-alpine, golang:1.27-bookworm (shared by server and healthcheck builders), and its already digest-pinned distroless final stage. The compose database is postgres:18. No alternate Go version, production source patch or frontend substitution is authorized.
+
+Next resolve immutable metadata for those four Docker Hub build/support dependencies only. The final distroless digest remains exactly as recorded in the frozen Dockerfile. This does not retry the failed GHCR application metadata request or qualify that image. A later build recipe must verify the full source tree, all forty acquired blob identities, untouched dependency locks, base-image identities and installed/build artifacts. Dependency availability, native/schema baselines and restoration remain unqualified.
