@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-microservices-prefix-disposition-v1.json',
+    'manifests/reserved-reddit-prefix-disposition-v1.json',
+    'notes/reserved_sai_family_scope_20261117.md',
     'protocol/reserved-celerio-build-v1.md',
     '.github/workflows/reserved_celerio_build_v1.yml',
     'scripts/extension/build_reserved_celerio_v1.py',
