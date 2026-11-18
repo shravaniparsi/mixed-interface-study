@@ -4,6 +4,7 @@ import {mkdirSync,readFileSync,writeFileSync,openSync,closeSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {framePreserved,decodedConfig,postComparable} from './frame.mjs';
 const dir=path.dirname(fileURLToPath(import.meta.url));
 const input=JSON.parse(readFileSync(path.join(dir,'input.json')));
 const base=process.env.ORDINARY_BASE;assert(base);
@@ -31,7 +32,7 @@ async function start(){
  const errors=[];for(let i=0;i<60;i++){assert(proc.exitCode===null,'application exited '+proc.exitCode);try{const r=await fetch(origin+'/admin/access',{headers:{Authorization:'Bearer '+input.actor_key},signal:AbortSignal.timeout(1000)});if(r.ok){save(`startup-${processNumber}`,{pid:proc.pid,env,access:await r.json()});return;}}catch(e){errors.push(String(e));}await pause(500);}
  throw new Error('startup unavailable: '+errors.slice(-2).join('; '));
 }
-async function stop(){if(!proc||proc.exitCode!==null)return;proc.kill('SIGTERM');for(let i=0;i<100&&proc.exitCode===null;i++)await pause(100);if(proc.exitCode===null){proc.kill('SIGKILL');throw new Error('graceful shutdown exceeded ten seconds');}}
+async function stop(){if(!proc||proc.exitCode!==null||proc.signalCode!==null)return;proc.kill('SIGTERM');for(let i=0;i<100&&proc.exitCode===null&&proc.signalCode===null;i++)await pause(100);if(proc.exitCode===null&&proc.signalCode===null){proc.kill('SIGKILL');throw new Error('graceful shutdown exceeded ten seconds');}}
 async function newPage(storage,session){
  context=await browser.newContext({locale:'en-US',...(storage?{storageState:storage}:{})});
  if(session)await context.addInitScript(({origin,session})=>{if(location.origin===origin)for(const [k,v]of Object.entries(session))sessionStorage.setItem(k,v);},{origin,session});
@@ -52,13 +53,13 @@ async function submit(){
 async function openEdit(){await page.getByRole('button',{name:'Edit Guardrail '+input.api_name,exact:true}).click();await page.locator('#guardrail-field-request_set').waitFor({state:'visible'});}
 async function form(){return await page.locator('[aria-label="Guardrail editor"]').evaluate(el=>Array.from(el.querySelectorAll('input,textarea,select')).map(x=>({id:x.id,type:x.type,value:x.value,disabled:x.disabled,required:x.required,checked:x.checked??null})));}
 async function storage(){return {persistent:await context.storageState({indexedDB:true}),session:await page.evaluate(()=>Object.fromEntries(Object.entries(sessionStorage)))};}
-function record(snapshot,name){const t=snapshot.tables.guardrail_definitions;assert(t);const row=t.rows.find(r=>r[t.columns.indexOf('name')]===name);assert(row,'missing independent DB row');const obj=Object.fromEntries(t.columns.map((k,i)=>[k,row[i]]));obj.config=JSON.parse(obj.config);return obj;}
+function record(snapshot,name){const t=snapshot.tables.guardrail_definitions;assert(t);const row=t.rows.find(r=>r[t.columns.indexOf('name')]===name);assert(row,'missing independent DB row');const obj=Object.fromEntries(t.columns.map((k,i)=>[k,row[i]]));obj.config=decodedConfig(obj.config);return obj;}
 function checkRecord(snapshot,name,edited=false){const row=record(snapshot,name);assert.equal(row.type,input.type);assert.equal(row.description,input.description);assert.equal(row.user_path,input.user_path);assert(equal(row.config,{...input.config,...(edited?{[input.edit_property]:input.edit_value}:{})}));return row;}
-function postComparable(snapshot){const copy=structuredClone(snapshot);const t=copy.tables.guardrail_definitions;const name=t.columns.indexOf('name'),updated=t.columns.indexOf('updated_at');assert(updated>=0);for(const r of t.rows)if(r[name]===input.api_name)r[updated]='PERMITTED_TARGET_UPDATED_AT';return copy;}
 async function branch(label){
  epoch=label;result.stage=label;const before=state('capture');save(label+'-before',before);const formBefore=await form();save(label+'-form-before',formBefore);
  await page.locator('#guardrail-field-'+input.edit_property).fill(input.edit_value);const request=await submit();
  const apiRows=await api('/admin/guardrails');const after=state('capture');save(label+'-after',after);save(label+'-api-after',apiRows);checkRecord(after,input.api_name,true);assert(equal(apiRows.find(x=>x.name===input.api_name).config,{...input.config,[input.edit_property]:input.edit_value}));
+ result.checks[label+'_frame_preserved']=framePreserved(before,after,input.api_name,input.edit_property,input.edit_value);
  const row={label,request,intended_edit:true};result.branches.push(row);return {before,after,request,formBefore};
 }
 try{
@@ -69,7 +70,7 @@ try{
  const cp=spawnSync('python3',[path.join(dir,'state.py'),'capture',checkpoint],{encoding:'utf8',timeout:10000,maxBuffer:32*1024*1024});assert.equal(cp.status,0,cp.stderr);assert(equal(before,JSON.parse(cp.stdout)),'backup state differs');result.checks.checkpoint_backup=true;
  const warm=await branch('warm');assert(equal(warm.before,before));await context.close();await stop();state('restore',checkpoint);epoch='restored_start';result.stage='restored_start';await start();await newPage(savedStorage.persistent,savedStorage.session);await openEdit();const restoredBefore=state('capture');save('restored-precheck-state',restoredBefore);const restoredAccess=await api('/admin/access'),restoredStorage=await storage(),restoredForm=await form();save('restored-precheck-browser',restoredStorage);save('restored-precheck-form',restoredForm);save('restored-precheck-access',restoredAccess);
  result.checks.restored_start_state=equal(before,restoredBefore);result.checks.restored_actor=equal(access,restoredAccess);result.checks.restored_browser=equal(savedStorage,restoredStorage);result.checks.restored_form=equal(savedForm,restoredForm);assert(Object.entries(result.checks).filter(([k])=>k.startsWith('restored_')).every(([,v])=>v),'restored start equivalence failed; no restored write allowed');
- const restored=await branch('restored');result.checks.requests_equal=equal(warm.request,restored.request);result.checks.post_state_equal_with_target_timestamp_exception=equal(postComparable(warm.after),postComparable(restored.after));
+ const restored=await branch('restored');result.checks.requests_equal=equal(warm.request,restored.request);result.checks.post_state_equal_with_target_timestamp_exception=equal(postComparable(warm.after,input.api_name),postComparable(restored.after,input.api_name));
  result.status=Object.values(result.checks).every(Boolean)?'ordinary_lifecycle_checks_passed':'ordinary_observed_equivalence_unresolved';result.stage='complete';
 }catch(e){result.status='qualification_unavailable';result.error=String(e);result.stack=e.stack;if(page)try{await page.screenshot({path:path.join(out,'failure.png'),fullPage:true});writeFileSync(path.join(out,'failure.html'),await page.content());}catch{}}
 finally{await Promise.allSettled(pending);if(browser)await browser.close().catch(()=>{});try{await stop();}catch(e){result.shutdown_error=String(e);result.status='qualification_unavailable';}save('trace',traces);save('result',result);console.log(JSON.stringify(result));}
