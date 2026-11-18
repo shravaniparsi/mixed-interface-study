@@ -1,0 +1,5 @@
+# Source wave 16: OpenELIS session and local initialization contracts
+
+Acquire exactly seven scheduled original files at the frozen revision: frontend base URL configuration, session response and session-held user data, the native administrator initialization task, facility-organization service implementation, and both packaged and compose-mounted Tomcat server configurations. These resolve identified authentication, startup and asynchronous organization-transform dependencies. Previously acquired App.jsx lines 305–311 explicitly map /session response csrf to localStorage CSRF; no new fetch is needed for that path.
+
+Apply the existing cumulative 256-blob/8-MiB bounds, 256-KiB file/512-KiB envelope caps, 30-second requests, no retry or duplicate paths, and publish before acquisition. This is source reading only: no login, package installation, image pull, application execution or scientific case. Do not display configuration credential values. The oversized original database seed remains unacquired and unresolved; this schedule does not waive its cap. Retain incidental source-fix exposure. Closed projects remain closed.
