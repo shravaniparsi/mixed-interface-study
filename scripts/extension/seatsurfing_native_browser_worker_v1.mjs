@@ -12,6 +12,7 @@ import { nativeSeatsurfingLogin } from './seatsurfing_native_login_v1.mjs';
 import { nativeSeatsurfingOrdinaryCreate, openSeatsurfingLocationEditor, nativeSeatsurfingScalarEdit } from './seatsurfing_native_location_v1.mjs';
 import { observeSeatsurfingBrowser, captureSeatsurfingBrowserState } from './seatsurfing_browser_observation_v1.mjs';
 import { materializeSeatsurfingLocationUpdate } from './materialize_seatsurfing_location_update_v1.mjs';
+import { reconstructSeatsurfingLoader } from './reconstruct_seatsurfing_loader_v1.mjs';
 
 assert.equal(process.argv.slice(2).length, 3);
 const [toolsDirectory, configurationPath, evidenceDirectory] = process.argv.slice(2).map(x => resolve(x));
@@ -120,8 +121,13 @@ async function execute(command) {
     case 'open': {
       assert.ok(['authenticated', 'created'].includes(phase));
       if (createdId) assert.equal(command.id, createdId);
+      await quiet();
+      const afterRequestId = Math.max(0, ...observer.snapshot().events.filter(e => e.kind === 'request').map(e => e.id));
       opened = await openSeatsurfingLocationEditor(page, { baseUrl: origin, id: command.id });
-      await quiet(); await tokenGuard(); phase = 'editor';
+      const loadingNetwork = await quiet(); await tokenGuard();
+      opened.loader = reconstructSeatsurfingLoader({ events: loadingNetwork.events, afterRequestId, id: command.id, accessToken: nativeCredentials.accessToken, origin });
+      assert.deepEqual(opened.loader.materialization.readback, opened.readback);
+      phase = 'editor';
       return opened;
     }
     case 'capture': {
@@ -136,8 +142,8 @@ async function execute(command) {
     case 'edit': {
       assert.equal(phase, 'editor');
       assert.ok(edits.some(edit => JSON.stringify(edit) === JSON.stringify(command.edit)));
-      assert.deepEqual(command.materialization.readback, opened.readback);
-      const plan = materializeSeatsurfingLocationUpdate({ ...command.materialization, edit: command.edit, browserTimezone: 'UTC' });
+      assert.equal(Object.hasOwn(command, 'materialization'), false, 'Loader inputs must come from original observed editor requests');
+      const plan = materializeSeatsurfingLocationUpdate({ ...opened.loader.materialization, edit: command.edit, browserTimezone: 'UTC' });
       await tokenGuard();
       const result = await nativeSeatsurfingScalarEdit(page, { baseUrl: origin, id: opened.readback.id, edit: command.edit, expectedJson: plan.main.json });
       await retain('native-edit.json', { plan, result });

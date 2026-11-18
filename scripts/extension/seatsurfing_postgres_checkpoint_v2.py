@@ -153,7 +153,7 @@ def main():
     if build.get('source_revision') != '9953f452324bab6fb8f7106dd8965cc401aa456c':
         raise RuntimeError('Unexpected built source revision')
     root = Path(__file__).resolve().parents[2]
-    preparation = root / 'results/catalog-seatsurfing-source-build-preparation-v3/manifest.json'
+    preparation = root / 'results/catalog-seatsurfing-source-build-preparation-v4/manifest.json'
     if build.get('source_preparation_sha256') != digest(preparation.read_bytes()):
         raise RuntimeError('Build does not bind the current source preparation')
     APP_IMAGE_ID = build.get('application_image_id')

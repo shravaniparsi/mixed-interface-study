@@ -85,7 +85,7 @@ def main():
     build = json.loads(args.build_report.read_text())
     assert build['study_commit'] == head and build['application_revision'] == REVISION
     assert build['status'] == 'source_build_verified_and_inventory_complete'
-    prepared = ROOT / 'results/catalog-seatsurfing-source-build-preparation-v3/manifest.json'
+    prepared = ROOT / 'results/catalog-seatsurfing-source-build-preparation-v4/manifest.json'
     assert build['source_preparation_sha256'] == digest(prepared)
     assert re.fullmatch(r'sha256:[0-9a-f]{64}', build['application_image_id'])
     recipe = json.loads(prepared.read_text())
