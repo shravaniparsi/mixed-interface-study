@@ -1,0 +1,1494 @@
+package router
+
+import (
+	"context"
+	"crypto/sha256"
+	"database/sql"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"net/url"
+	"slices"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+	"github.com/gorilla/mux"
+	"github.com/pquerna/otp"
+	"github.com/pquerna/otp/totp"
+	"golang.org/x/oauth2"
+
+	. "github.com/seatsurfing/seatsurfing/server/api"
+	. "github.com/seatsurfing/seatsurfing/server/config"
+	. "github.com/seatsurfing/seatsurfing/server/repository"
+	"github.com/seatsurfing/seatsurfing/server/service"
+	. "github.com/seatsurfing/seatsurfing/server/util"
+)
+
+// How long a consumed auth state stays valid to tolerate duplicate verification requests
+const authStateVerifyGraceWindow = 30 * time.Second
+
+var TotpOptions *totp.ValidateOpts = &totp.ValidateOpts{
+	Period:    30,
+	Skew:      1,
+	Digits:    6,
+	Algorithm: otp.AlgorithmSHA1, // SHA1
+}
+
+// TOTP replay protection cache
+type usedTotpCode struct {
+	timestamp time.Time
+}
+
+type totpReplayCache struct {
+	mu    sync.RWMutex
+	codes map[string]usedTotpCode
+}
+
+var totpCache = &totpReplayCache{
+	codes: make(map[string]usedTotpCode),
+}
+
+func (c *totpReplayCache) isCodeUsed(userID, code string) bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	// Create a hash of userID + code for the key
+	hash := sha256.Sum256([]byte(userID + ":" + code))
+	key := hex.EncodeToString(hash[:])
+
+	_, exists := c.codes[key]
+	return exists
+}
+
+func (c *totpReplayCache) markCodeAsUsed(userID, code string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	// Create a hash of userID + code for the key
+	hash := sha256.Sum256([]byte(userID + ":" + code))
+	key := hex.EncodeToString(hash[:])
+
+	c.codes[key] = usedTotpCode{timestamp: time.Now()}
+
+	// Clean up old entries (older than 90 seconds)
+	cutoff := time.Now().Add(-90 * time.Second)
+	for k, v := range c.codes {
+		if v.timestamp.Before(cutoff) {
+			delete(c.codes, k)
+		}
+	}
+}
+
+type JWTResponse struct {
+	AccessToken    string `json:"accessToken"`
+	RefreshToken   string `json:"refreshToken"`
+	LogoutURL      string `json:"logoutUrl"`
+	ProfilePageURL string `json:"profilePageUrl"`
+}
+
+type Claims struct {
+	Email     string `json:"email"`
+	UserID    string `json:"userID"`
+	SessionID string `json:"sid"`
+	jwt.RegisteredClaims
+}
+
+type IdPUserInfo struct {
+	Email     string
+	Firstname string
+	Lastname  string
+	// Groups as reported by the identity provider, used to assign roles and
+	// group memberships. Empty when the provider declares no groups claim.
+	Groups []string
+}
+
+type InitPasswordResetRequest struct {
+	OrganizationID string `json:"organizationId" validate:"required,uuid"`
+	Email          string `json:"email" validate:"required,email,max=256"`
+}
+
+type CompletePasswordResetRequest struct {
+	Password string `json:"password" validate:"required,min=8,max=64"`
+}
+
+type AuthPreflightResponse struct {
+	Organization         *GetOrganizationResponse         `json:"organization"`
+	AuthProviders        []*GetAuthProviderPublicResponse `json:"authProviders"`
+	RequirePassword      bool                             `json:"requirePassword"`
+	DisablePasswordLogin bool                             `json:"disablePasswordLogin"`
+	Domain               string                           `json:"domain"`
+	CustomLogoUrl        string                           `json:"customLogoUrl"`
+}
+
+type AuthPasswordRequest struct {
+	Email             string          `json:"email" validate:"required,email,max=256"`
+	Password          string          `json:"password" validate:"required,min=8,max=64"`
+	OrganizationID    string          `json:"organizationId" validate:"required,uuid"`
+	Code              string          `json:"code,omitempty"`
+	PasskeyStateID    string          `json:"passkeyStateId,omitempty"`
+	PasskeyCredential json.RawMessage `json:"passkeyCredential,omitempty"`
+}
+
+type PasswordUpdateRequest struct {
+	Email          string `json:"email" validate:"required,email,max=256"`
+	Password       string `json:"password" validate:"required,min=8,max=64"`
+	NewPassword    string `json:"newPassword" validate:"required,min=8,max=64"`
+	OrganizationID string `json:"organizationId" validate:"required,uuid"`
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refreshToken" validate:"required"`
+}
+
+type CreateAccessTokenOptions int
+
+const (
+	WithoutIssuer CreateAccessTokenOptions = iota
+	WithoutAudience
+	WithoutExpiry
+	WithoutIssuedAt
+	WithoutNotBefore
+)
+
+type AuthRouter struct {
+}
+
+func (router *AuthRouter) SetupRoutes(s *mux.Router) {
+	s.HandleFunc("/verify/{id}", router.verify).Methods("GET")
+	s.HandleFunc("/{id}/login/{type}/", router.login).Methods("GET")
+	s.HandleFunc("/{id}/callback", router.callback).Methods("GET")
+	s.HandleFunc("/login", router.loginPassword).Methods("POST")
+	s.HandleFunc("/updatepw", router.updatePassword).Methods("POST")
+	s.HandleFunc("/passkey/login/begin", router.beginPasskeyLogin).Methods("POST")
+	s.HandleFunc("/passkey/login/finish", router.finishPasskeyLogin).Methods("POST")
+	s.HandleFunc("/logout/{where}", router.logout).Methods("GET")
+	s.HandleFunc("/initpwreset", router.initPasswordReset).Methods("POST")
+	s.HandleFunc("/pwreset/{id}", router.completePasswordReset).Methods("POST")
+	s.HandleFunc("/setpw/{id}", router.validateUserInvitation).Methods("GET")
+	s.HandleFunc("/setpw/{id}", router.completeUserInvitation).Methods("POST")
+	s.HandleFunc("/refresh", router.refreshAccessToken).Methods("POST")
+	s.HandleFunc("/singleorg", router.singleOrg).Methods("GET")
+	s.HandleFunc("/org/{domain}", router.getOrgDetails).Methods("GET")
+}
+
+func (router *AuthRouter) getOrgDetails(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if vars["domain"] == "" {
+		SendBadRequest(w)
+		return
+	}
+	org, err := GetOrganizationRepository().GetOneByDomain(vars["domain"])
+	if err != nil || org == nil {
+		SendNotFound(w)
+		return
+	}
+	res := router.getPreflightResponseForOrg(org)
+	if res == nil {
+		SendInternalServerError(w)
+		return
+	}
+	requirePassword, err := GetUserRepository().HasAnyUserInOrgPasswordSet(org.ID)
+	if err != nil {
+		SendInternalServerError(w)
+		return
+	}
+	if requirePassword && GetConfig().DisablePasswordLogin {
+		requirePassword = false
+	}
+	res.RequirePassword = requirePassword
+	res.DisablePasswordLogin = GetConfig().DisablePasswordLogin
+	SendJSON(w, res)
+}
+
+func (router *AuthRouter) singleOrg(w http.ResponseWriter, r *http.Request) {
+	numOrgs, err := GetOrganizationRepository().GetNumOrgs()
+	if err != nil {
+		SendInternalServerError(w)
+		return
+	}
+	if numOrgs != 1 {
+		SendNotFound(w)
+		return
+	}
+	list, err := GetOrganizationRepository().GetAll()
+	if err != nil {
+		SendInternalServerError(w)
+		return
+	}
+	if len(list) != 1 {
+		SendInternalServerError(w)
+		return
+	}
+	org := list[0]
+	res := router.getPreflightResponseForOrg(org)
+	if res == nil {
+		SendInternalServerError(w)
+		return
+	}
+	requirePassword, err := GetUserRepository().HasAnyUserInOrgPasswordSet(org.ID)
+	if err != nil {
+		SendInternalServerError(w)
+		return
+	}
+	if requirePassword && GetConfig().DisablePasswordLogin {
+		requirePassword = false
+	}
+	res.RequirePassword = requirePassword
+	res.DisablePasswordLogin = GetConfig().DisablePasswordLogin
+	SendJSON(w, res)
+}
+
+func (router *AuthRouter) refreshAccessToken(w http.ResponseWriter, r *http.Request) {
+	var m RefreshRequest
+	if UnmarshalValidateBody(r, &m) != nil {
+		SendBadRequest(w)
+		return
+	}
+	refreshToken, err := service.GetRefreshTokenService().Consume(m.RefreshToken)
+	if err != nil {
+		if errors.Is(err, service.ErrRefreshTokenInvalid) ||
+			errors.Is(err, service.ErrRefreshTokenReplayed) ||
+			errors.Is(err, service.ErrRefreshTokenReused) {
+			SendNotFound(w)
+		} else {
+			log.Println("Error consuming refresh token: " + err.Error())
+			SendInternalServerError(w)
+		}
+		return
+	}
+	user, err := GetUserRepository().GetOne(refreshToken.UserID)
+	if err != nil {
+		SendNotFound(w)
+		return
+	}
+	if user.Disabled {
+		SendNotFound(w)
+		return
+	}
+	session, err := GetSessionRepository().GetOne(refreshToken.SessionID)
+	if session == nil || err != nil {
+		SendNotFound(w)
+		return
+	}
+	now := time.Now().UTC()
+	user.LastActivityAtUTC = &now
+	GetUserRepository().UpdateLastActivity(user.ID, now)
+	// Update session activity timestamp
+	if err := GetSessionRepository().UpdateActivity(session.ID); err != nil {
+		log.Println("Error updating session activity: " + err.Error())
+	}
+	claims := router.CreateClaims(user, session)
+	accessToken := router.CreateAccessToken(claims)
+	newRefreshToken, err := router.createRefreshToken(claims)
+	if err != nil {
+		log.Println("Error creating refresh token: " + err.Error())
+		SendInternalServerError(w)
+		return
+	}
+	res := &JWTResponse{
+		AccessToken:  accessToken,
+		RefreshToken: newRefreshToken,
+	}
+	SendJSON(w, res)
+}
+
+func (router *AuthRouter) initPasswordReset(w http.ResponseWriter, r *http.Request) {
+	if GetConfig().DisablePasswordLogin {
+		SendNotFound(w)
+		return
+	}
+	var m InitPasswordResetRequest
+	if UnmarshalValidateBody(r, &m) != nil {
+		SendBadRequest(w)
+		return
+	}
+	user, err := GetUserRepository().GetByEmail(m.OrganizationID, m.Email)
+	if user == nil || err != nil {
+		if err != nil {
+			log.Println(err)
+		}
+		log.Printf("Password reset failed: user %s not found in org %s\n", MaskEmail(m.Email), m.OrganizationID)
+		SendUpdated(w)
+		return
+	}
+	if !CanResetPassword(user) {
+		SendUpdated(w)
+		return
+	}
+	org, err := GetOrganizationRepository().GetOne(user.OrganizationID)
+	if org == nil || err != nil {
+		SendUpdated(w)
+		return
+	}
+	existingStates, _ := GetAuthStateRepository().GetActiveByPayloadAndType(user.ID, AuthResetPasswordRequest)
+	if len(existingStates) >= 2 {
+		log.Printf("Max. password reset requests exceeded for user %s\n", user.ID)
+		SendUpdated(w) // for security reasons, we send success message to not disclose existing user accounts
+		return
+	}
+	authState := &AuthState{
+		Expiry:        time.Now().Add(time.Hour * 1),
+		AuthStateType: AuthResetPasswordRequest,
+		Payload:       user.ID,
+	}
+	GetAuthStateRepository().Create(authState)
+	if err := router.SendPasswordResetEmail(user, authState.ID, org); err != nil {
+		log.Printf("Password reset email failed: %s\n", err)
+	}
+	SendUpdated(w)
+}
+
+func (router *AuthRouter) completePasswordReset(w http.ResponseWriter, r *http.Request) {
+	if GetConfig().DisablePasswordLogin {
+		SendNotFound(w)
+		return
+	}
+	var m CompletePasswordResetRequest
+	if UnmarshalValidateBody(r, &m) != nil {
+		SendBadRequest(w)
+		return
+	}
+
+	if !ValidatePassword(m.Password) {
+		SendBadRequest(w)
+		return
+	}
+
+	vars := mux.Vars(r)
+	authState, err := GetAuthStateRepository().GetOneActive(vars["id"])
+	if err != nil {
+		SendNotFound(w)
+		return
+	}
+	if authState.AuthStateType != AuthResetPasswordRequest {
+		SendNotFound(w)
+		return
+	}
+	user, err := GetUserRepository().GetOne(authState.Payload)
+	if user == nil || err != nil {
+		SendNotFound(w)
+		return
+	}
+	if user.HashedPassword == "" {
+		SendNotFound(w)
+		return
+	}
+	if user.Disabled {
+		SendNotFound(w)
+		return
+	}
+	if user.AccountType.IsServiceAccount() {
+		SendNotFound(w)
+		return
+	}
+	user.HashedPassword = NullString(GetUserRepository().GetHashedPassword(m.Password))
+	GetUserRepository().Update(user)
+	GetAuthStateRepository().Delete(authState)
+	if err := GetSessionRepository().DeleteOfUser(user); err != nil {
+		log.Println("Error deleting sessions of user after password reset: " + err.Error())
+		SendInternalServerError(w)
+		return
+	}
+	SendUpdated(w)
+}
+
+func (router *AuthRouter) validateUserInvitation(w http.ResponseWriter, r *http.Request) {
+	if GetConfig().DisablePasswordLogin {
+		SendNotFound(w)
+		return
+	}
+	vars := mux.Vars(r)
+	authState, err := GetAuthStateRepository().GetOneActive(vars["id"])
+	if err != nil {
+		SendNotFound(w)
+		return
+	}
+	if authState.AuthStateType != AuthInviteUser {
+		SendNotFound(w)
+		return
+	}
+	user, err := GetUserRepository().GetOne(authState.Payload)
+	if user == nil || err != nil {
+		SendNotFound(w)
+		return
+	}
+	if !user.PasswordPending {
+		// Password has already been set - link is no longer valid
+		SendGone(w)
+		return
+	}
+	if user.Disabled {
+		SendNotFound(w)
+		return
+	}
+	if user.AccountType.IsServiceAccount() {
+		SendNotFound(w)
+		return
+	}
+	// Link is valid
+	SendUpdated(w)
+}
+
+func (router *AuthRouter) completeUserInvitation(w http.ResponseWriter, r *http.Request) {
+	if GetConfig().DisablePasswordLogin {
+		SendNotFound(w)
+		return
+	}
+	var m CompletePasswordResetRequest
+	if UnmarshalValidateBody(r, &m) != nil {
+		SendBadRequest(w)
+		return
+	}
+
+	if !ValidatePassword(m.Password) {
+		SendBadRequest(w)
+		return
+	}
+
+	vars := mux.Vars(r)
+	authState, err := GetAuthStateRepository().GetOneActive(vars["id"])
+	if err != nil {
+		SendNotFound(w)
+		return
+	}
+	if authState.AuthStateType != AuthInviteUser {
+		SendNotFound(w)
+		return
+	}
+	user, err := GetUserRepository().GetOne(authState.Payload)
+	if user == nil || err != nil {
+		SendNotFound(w)
+		return
+	}
+	if !user.PasswordPending {
+		// Password has already been set - link is no longer valid
+		SendGone(w)
+		return
+	}
+	if user.Disabled {
+		SendNotFound(w)
+		return
+	}
+	if user.AccountType.IsServiceAccount() {
+		SendNotFound(w)
+		return
+	}
+	user.HashedPassword = NullString(GetUserRepository().GetHashedPassword(m.Password))
+	user.PasswordPending = false
+	user.PasswordUpdateRequired = false
+	user.AuthProviderID = NullUUID("")
+	GetUserRepository().Update(user)
+	GetAuthStateRepository().Delete(authState)
+	if err := GetSessionRepository().DeleteOfUser(user); err != nil {
+		log.Println("Error deleting sessions of user after completing invitation: " + err.Error())
+		SendInternalServerError(w)
+		return
+	}
+	SendUpdated(w)
+}
+
+func (router *AuthRouter) logout(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	where := vars["where"]
+	_, uuidErr := uuid.Parse(where)
+	if uuidErr != nil && where != "all" && where != "current" {
+		SendBadRequest(w)
+		return
+	}
+	sessionID := GetRequestSessionID(r)
+	if sessionID == "" {
+		SendBadRequest(w)
+		return
+	}
+	session, err := GetSessionRepository().GetOne(sessionID)
+	if err != nil || session == nil {
+		SendBadRequest(w)
+		return
+	}
+	user, err := GetUserRepository().GetOne(session.UserID)
+	if err != nil || user == nil {
+		SendBadRequest(w)
+		return
+	}
+	if uuidErr == nil {
+		requestedSession, err := GetSessionRepository().GetOne(where)
+		if err != nil || requestedSession == nil || requestedSession.UserID != user.ID {
+			SendNotFound(w)
+			return
+		}
+		if err := GetSessionRepository().Delete(requestedSession); err != nil {
+			log.Println("Error deleting requested session during logout: " + err.Error())
+			SendInternalServerError(w)
+			return
+		}
+		SendUpdated(w)
+		return
+	}
+	if where == "all" {
+		if err := GetSessionRepository().DeleteOfUser(user); err != nil {
+			log.Println("Error deleting sessions of user during logout: " + err.Error())
+			SendInternalServerError(w)
+			return
+		}
+		SendUpdated(w)
+		return
+	}
+	if err := GetSessionRepository().Delete(session); err != nil {
+		log.Println("Error deleting session during logout: " + err.Error())
+		SendInternalServerError(w)
+		return
+	}
+	SendUpdated(w)
+}
+
+func (router *AuthRouter) loginPassword(w http.ResponseWriter, r *http.Request) {
+	if GetConfig().DisablePasswordLogin {
+		SendNotFound(w)
+		return
+	}
+	var m AuthPasswordRequest
+	if UnmarshalValidateBody(r, &m) != nil {
+		SendBadRequest(w)
+		return
+	}
+	user, err := GetUserRepository().GetByEmail(m.OrganizationID, m.Email)
+	if err == sql.ErrNoRows {
+		recordAuthEvent(r, &AuthEvent{OrganizationID: m.OrganizationID, Email: m.Email, Method: AuthMethodPassword, ErrorCode: AuthErrorUserNotFound})
+		SendBadRequest(w)
+		return
+	}
+	if err != nil {
+		recordAuthEvent(r, &AuthEvent{OrganizationID: m.OrganizationID, Email: m.Email, Method: AuthMethodPassword, ErrorCode: AuthErrorInternal, ErrorDetail: err.Error()})
+		SendInternalServerError(w)
+		return
+	}
+
+	if !CanPasswordLogin(user) {
+		recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodPassword, ErrorCode: router.getPasswordLoginDenialReason(user)})
+		SendBadRequest(w)
+		return
+	}
+
+	if !GetUserRepository().CheckPassword(string(user.HashedPassword), m.Password) {
+		recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodPassword, ErrorCode: AuthErrorWrongPassword, BanCheck: true})
+		SendBadRequest(w)
+		return
+	}
+
+	// check if password update is required
+	if user.PasswordUpdateRequired {
+		recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodPassword, ErrorCode: AuthErrorPasswordUpdateReq})
+		SendUnauthorizedCode(w, ResponseCodePasswordUpdateRequired)
+		return
+	}
+
+	passkeyResult := router.handlePasskey2FA(w, r, user, &m)
+	if passkeyResult == passkey2FAHandled {
+		return
+	}
+	method := AuthMethodPassword
+	if passkeyResult == passkey2FAVerified {
+		method = AuthMethodPasskey2FA
+	}
+	// If passkey 2FA was verified, skip TOTP entirely.
+	if passkeyResult != passkey2FAVerified && user.TotpSecret != "" {
+		method = AuthMethodTOTP
+		if m.Code == "" {
+			// Password was correct but a second factor is required. This is
+			// the expected first step of the TOTP flow (client re-submits
+			// with a code next), not a failed login attempt, so it must not
+			// be recorded as one.
+			SendUnauthorized(w)
+			return
+		}
+
+		// Check for replay attack
+		if totpCache.isCodeUsed(user.ID, m.Code) {
+			recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodTOTP, ErrorCode: AuthErrorTotpReplay, BanCheck: true})
+			SendBadRequest(w)
+			return
+		}
+
+		totpSecret, err := DecryptString(string(user.TotpSecret))
+		if err != nil {
+			log.Println("Error decrypting TOTP secret for user " + user.ID + ": " + err.Error())
+			recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodTOTP, ErrorCode: AuthErrorInternal, ErrorDetail: "failed to decrypt TOTP secret: " + err.Error()})
+			SendInternalServerError(w)
+			return
+		}
+		valid, err := totp.ValidateCustom(m.Code, totpSecret, time.Now(), *TotpOptions)
+		if err != nil || !valid {
+			detail := ""
+			if err != nil {
+				detail = err.Error()
+			}
+			recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodTOTP, ErrorCode: AuthErrorTotpInvalid, ErrorDetail: detail, BanCheck: true})
+			SendBadRequest(w)
+			return
+		}
+
+		// Mark code as used to prevent replay
+		totpCache.markCodeAsUsed(user.ID, m.Code)
+	}
+
+	router.createAndSendJWT(w, r, user, method, "", "", "")
+}
+
+func (router *AuthRouter) updatePassword(w http.ResponseWriter, r *http.Request) {
+	if GetConfig().DisablePasswordLogin {
+		SendNotFound(w)
+		return
+	}
+	var m PasswordUpdateRequest
+	if UnmarshalValidateBody(r, &m) != nil {
+		SendBadRequest(w)
+		return
+	}
+
+	if m.Password == m.NewPassword {
+		SendBadRequest(w)
+		return
+	}
+
+	if !ValidatePassword(m.NewPassword) {
+		SendBadRequest(w)
+		return
+	}
+
+	user, err := GetUserRepository().GetByEmail(m.OrganizationID, m.Email)
+	if err == sql.ErrNoRows {
+		SendBadRequest(w)
+		return
+	}
+	if err != nil {
+		SendInternalServerError(w)
+		return
+	}
+
+	// check if password update is allowed
+	if !CanUpdatePassword(user) {
+		SendBadRequest(w)
+		return
+	}
+
+	if !GetUserRepository().CheckPassword(string(user.HashedPassword), m.Password) {
+		recordAuthEvent(r, &AuthEvent{User: user, Method: AuthMethodPassword, ErrorCode: AuthErrorWrongPassword, BanCheck: true})
+		SendBadRequest(w)
+		return
+	}
+
+	passkeyCount, err := GetPasskeyRepository().GetCountByUserID(user.ID)
+	if err != nil {
+		log.Println(err)
+		SendInternalServerError(w)
+		return
+	}
+
+	user.HashedPassword = NullString(GetUserRepository().GetHashedPassword(m.NewPassword))
+	user.PasswordUpdateRequired = false
+	GetUserRepository().Update(user)
+	if err := GetSessionRepository().DeleteOfUser(user); err != nil {
+		log.Println("Error deleting sessions of user after password update: " + err.Error())
+		SendInternalServerError(w)
+		return
+	}
+
+	// A second factor must be completed via a regular login.
+	if user.TotpSecret != "" || passkeyCount > 0 {
+		SendUpdated(w)
+		return
+	}
+
+	router.createAndSendJWT(w, r, user, AuthMethodPassword, "", "", "")
+}
+
+func (router *AuthRouter) CreateSession(r *http.Request, user *User) *Session {
+	// Check concurrent session limit (default: 10 sessions per user)
+	maxSessions := 10
+	if maxSessionsConfig := GetConfig().MaxSessionsPerUser; maxSessionsConfig > 0 {
+		maxSessions = maxSessionsConfig
+	}
+
+	count, err := GetSessionRepository().GetActiveSessionCount(user)
+	if err != nil {
+		log.Println("Error getting session count: " + err.Error())
+	}
+
+	// If user has too many sessions, delete the oldest one
+	if count >= maxSessions {
+		if err := GetSessionRepository().DeleteOldestSession(user); err != nil {
+			log.Println("Error deleting oldest session: " + err.Error())
+		}
+	}
+
+	session := &Session{
+		UserID:  user.ID,
+		Device:  router.GetDeviceInfo(r),
+		Created: time.Now().UTC(),
+	}
+	if err := GetSessionRepository().Create(session); err != nil {
+		log.Println("Error creating session: " + err.Error())
+		return nil
+	}
+	return session
+}
+
+func (router *AuthRouter) GetDeviceInfo(r *http.Request) string {
+	if r == nil {
+		return "Unknown Device"
+	}
+
+	ua := r.UserAgent()
+	if ua == "" {
+		return "Unknown Device"
+	}
+
+	browser := router.parseBrowser(ua)
+	os := router.parseOS(ua)
+
+	return fmt.Sprintf("%s on %s", browser, os)
+}
+
+func (router *AuthRouter) parseBrowser(ua string) string {
+	// Check for Edge before Chrome as Edge contains "Chrome" in UA
+	if strings.Contains(ua, "Edg/") || strings.Contains(ua, "Edge/") {
+		return "Edge"
+	}
+	// Check for Chrome before Safari as Chrome contains "Safari" in UA
+	if strings.Contains(ua, "Chrome/") {
+		if strings.Contains(ua, "OPR/") || strings.Contains(ua, "Opera/") {
+			return "Opera"
+		}
+		return "Chrome"
+	}
+	if strings.Contains(ua, "Firefox/") {
+		return "Firefox"
+	}
+	if strings.Contains(ua, "Safari/") {
+		return "Safari"
+	}
+	if strings.Contains(ua, "MSIE") || strings.Contains(ua, "Trident/") {
+		return "Internet Explorer"
+	}
+	return "Unknown Browser"
+}
+
+func (router *AuthRouter) parseOS(ua string) string {
+	// Windows
+	if strings.Contains(ua, "Windows NT 10.0") {
+		return "Windows 10/11"
+	}
+	if strings.Contains(ua, "Windows NT 6.3") {
+		return "Windows 8.1"
+	}
+	if strings.Contains(ua, "Windows NT 6.2") {
+		return "Windows 8"
+	}
+	if strings.Contains(ua, "Windows NT 6.1") {
+		return "Windows 7"
+	}
+	if strings.Contains(ua, "Windows NT") || strings.Contains(ua, "Windows") {
+		return "Windows"
+	}
+
+	// macOS/iOS
+	if strings.Contains(ua, "iPhone") {
+		return "iOS (iPhone)"
+	}
+	if strings.Contains(ua, "iPad") {
+		return "iOS (iPad)"
+	}
+	if strings.Contains(ua, "Macintosh") || strings.Contains(ua, "Mac OS X") {
+		return "macOS"
+	}
+
+	// Android
+	if strings.Contains(ua, "Android") {
+		return "Android"
+	}
+
+	// Linux
+	if strings.Contains(ua, "Linux") {
+		return "Linux"
+	}
+
+	// Other Unix-like
+	if strings.Contains(ua, "X11") {
+		return "Unix"
+	}
+
+	return "Unknown OS"
+}
+
+func (router *AuthRouter) verify(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	authState, err := GetAuthStateRepository().GetOneActive(vars["id"])
+	if err != nil {
+		SendNotFound(w)
+		return
+	}
+	if authState.AuthStateType != AuthResponseCache {
+		SendNotFound(w)
+		return
+	}
+	payload := unmarshalAuthStateLoginPayload(authState.Payload)
+	var user *User
+	var provider *AuthProvider
+	if authState.Key != "" {
+		provider, _ = GetAuthProviderRepository().GetOne(authState.Key)
+		if provider == nil {
+			SendNotFound(w)
+			return
+		}
+		user, _ = GetUserRepository().GetByEmail(provider.OrganizationID, payload.UserID)
+		if user == nil {
+			org, err := GetOrganizationRepository().GetOne(provider.OrganizationID)
+			if err != nil {
+				recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: payload.UserID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorInternal, ErrorDetail: "organization not found"})
+				SendInternalServerError(w)
+				return
+			}
+			allowAnyUser, _ := GetSettingsRepository().GetBool(provider.OrganizationID, SettingAllowAnyUser.Name)
+			if !allowAnyUser {
+				recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: payload.UserID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserNotFound})
+				SendNotFound(w)
+				return
+			}
+			if !GetUserRepository().CanCreateUser(org) {
+				recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: payload.UserID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserLimitReached})
+				SendPaymentRequired(w)
+				return
+			}
+			user = &User{
+				Email:          payload.UserID,
+				OrganizationID: org.ID,
+				AuthProviderID: NullUUID(provider.ID),
+			}
+			if err := GetUserRepository().Create(user); err != nil {
+				recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: payload.UserID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserCreateFailed, ErrorDetail: err.Error()})
+			}
+		} else {
+			if user.OrganizationID != provider.OrganizationID {
+				recordAuthEvent(r, &AuthEvent{User: user, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorOrgMismatch})
+				SendBadRequest(w)
+				return
+			}
+		}
+
+		needUserUpdate := false
+
+		// Backwards compatibility: Set AuthProviderID if not yet set
+		authProviderIDStr := string(user.AuthProviderID)
+		nullUUID := GetSettingsRepository().GetNullUUID()
+		if authProviderIDStr == "" || authProviderIDStr == nullUUID {
+			user.AuthProviderID = NullUUID(provider.ID)
+			needUserUpdate = true
+		}
+
+		// Check if user is trying to log in with a different auth provider than bound to
+		if authProviderIDStr != "" && authProviderIDStr != nullUUID && authProviderIDStr != provider.ID {
+			log.Printf("User %s tried to login with provider %s but is bound to provider %s\n", user.ID, provider.ID, authProviderIDStr)
+			recordAuthEvent(r, &AuthEvent{User: user, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorIdpProviderMismatch, ErrorDetail: "user is bound to auth provider " + authProviderIDStr})
+			SendForbidden(w)
+			return
+		}
+
+		if needUserUpdate {
+			GetUserRepository().Update(user)
+		}
+	} else if err := uuid.Validate(payload.UserID); err == nil {
+		user, _ = GetUserRepository().GetOne(payload.UserID)
+	}
+	if user == nil {
+		SendNotFound(w)
+		return
+	}
+	verifyProviderID := ""
+	if provider != nil {
+		verifyProviderID = provider.ID
+	}
+	if user.Disabled {
+		recordAuthEvent(r, &AuthEvent{User: user, AuthProviderID: verifyProviderID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserDisabled})
+		SendNotFound(w)
+		return
+	}
+	if user.AccountType.IsServiceAccount() {
+		recordAuthEvent(r, &AuthEvent{User: user, AuthProviderID: verifyProviderID, Method: AuthMethodOAuth, ErrorCode: AuthErrorServiceAccount})
+		SendNotFound(w)
+		return
+	}
+	GetAuthStateRepository().MarkForDeletion(authState, authStateVerifyGraceWindow)
+
+	providerID := ""
+	if provider != nil {
+		providerID = provider.ID
+	}
+	router.createAndSendJWT(w, r, user, AuthMethodOAuth, providerID, router.getLogoutUrl(provider), router.getProfilePageURL(provider))
+}
+
+func (router *AuthRouter) getLogoutUrl(provider *AuthProvider) string {
+	if provider == nil || provider.LogoutURL == "" {
+		return ""
+	}
+	org, _ := GetOrganizationRepository().GetOne(provider.OrganizationID)
+	primaryDomain, _ := GetOrganizationRepository().GetPrimaryDomain(org)
+	redirectUrl := FormatURL(primaryDomain.DomainName) + "/ui/login"
+	logoutUrl := strings.ReplaceAll(provider.LogoutURL, "{logoutRedirectUri}", redirectUrl)
+	return logoutUrl
+}
+
+func (router *AuthRouter) getProfilePageURL(provider *AuthProvider) string {
+	if provider == nil || provider.ProfilePageURL == "" {
+		return ""
+	}
+	return provider.ProfilePageURL
+}
+
+func (router *AuthRouter) login(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	loginType := vars["type"]
+	if loginType != "web" && loginType != "app" && loginType != "ui" {
+		SendBadRequest(w)
+		return
+	}
+	provider, err := GetAuthProviderRepository().GetOne(vars["id"])
+	if err != nil {
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl(loginType, provider, "provider"))
+		return
+	}
+	redir := r.URL.Query().Get("redir")
+	config, err := router.getConfig(provider)
+	if err != nil {
+		recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorIdpConfigInvalid, ErrorDetail: err.Error()})
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl(loginType, provider, "config"))
+		return
+	}
+	verifier := oauth2.GenerateVerifier()
+	encryptedVerifier, err := EncryptString(verifier)
+	if err != nil {
+		recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorInternal, ErrorDetail: "failed to encrypt PKCE verifier: " + err.Error()})
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl(loginType, provider, "authState"))
+		return
+	}
+	payload := &AuthStateLoginPayload{
+		LoginType:    loginType,
+		UserID:       "",
+		Redirect:     redir,
+		PKCEVerifier: encryptedVerifier,
+	}
+	authState := &AuthState{
+		Key:           provider.ID,
+		Expiry:        time.Now().Add(time.Minute * 5),
+		AuthStateType: AuthRequestState,
+		Payload:       marshalAuthStateLoginPayload(payload),
+	}
+	if err := GetAuthStateRepository().Create(authState); err != nil {
+		recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorInternal, ErrorDetail: "failed to create auth state: " + err.Error()})
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl(loginType, provider, "authState"))
+		return
+	}
+	url := config.AuthCodeURL(authState.ID, oauth2.S256ChallengeOption(verifier))
+	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+}
+
+func (router *AuthRouter) callback(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	provider, err := GetAuthProviderRepository().GetOne(vars["id"])
+	if err != nil {
+		log.Printf("Error getting auth provider %s: %s\n", vars["id"], err)
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl("ui", provider, "provider"))
+		return
+	}
+	userInfo, payload, err := router.getUserInfo(provider, r.FormValue("state"), r.FormValue("code"))
+	if err != nil {
+		log.Printf("Error getting user info for provider %s: %s\n", vars["id"], err)
+
+		detail := err.Error()
+		// forward error and error_description from callback URL to our login failed page
+		redirectUrl := router.getRedirectFailedUrl("ui", provider, "userinfo")
+		if error := r.FormValue("error"); error != "" {
+			redirectUrl += "&error=" + url.QueryEscape(error)
+			detail += ", IdP error: " + error
+		}
+		if errorDesc := r.FormValue("error_description"); errorDesc != "" {
+			redirectUrl += "&error_description=" + url.QueryEscape(errorDesc)
+			detail += ", IdP error description: " + errorDesc
+		}
+		recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: authErrorCode(err, AuthErrorIdpUserinfoFailed), ErrorDetail: detail})
+		SendTemporaryRedirect(w, redirectUrl)
+
+		return
+	}
+	allowAnyUser, _ := GetSettingsRepository().GetBool(provider.OrganizationID, SettingAllowAnyUser.Name)
+	user, err := GetUserRepository().GetByEmail(provider.OrganizationID, userInfo.Email)
+	if !allowAnyUser {
+		if err != nil || user == nil {
+			recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: userInfo.Email, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserNotFound})
+			SendTemporaryRedirect(w, router.getRedirectFailedUrl(payload.LoginType, provider, "login"))
+			return
+		}
+	}
+	if user == nil {
+		org, err := GetOrganizationRepository().GetOne(provider.OrganizationID)
+		if org == nil || err != nil {
+			recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: userInfo.Email, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorInternal, ErrorDetail: "organization not found"})
+			SendNotFound(w)
+			return
+		}
+		if !GetUserRepository().CanCreateUser(org) {
+			recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: userInfo.Email, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserLimitReached})
+			SendPaymentRequired(w)
+			return
+		}
+		user = &User{
+			Email:          userInfo.Email,
+			OrganizationID: org.ID,
+			AuthProviderID: NullUUID(provider.ID),
+		}
+		if err := GetUserRepository().Create(user); err != nil {
+			recordAuthEvent(r, &AuthEvent{OrganizationID: provider.OrganizationID, Email: userInfo.Email, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorUserCreateFailed, ErrorDetail: err.Error()})
+		}
+	}
+	needUserUpdate := false
+
+	// Backwards compatibility: Set AuthProviderID if not yet set
+	authProviderIDStr := string(user.AuthProviderID)
+	nullUUID := GetSettingsRepository().GetNullUUID()
+	if authProviderIDStr == "" || authProviderIDStr == nullUUID {
+		user.AuthProviderID = NullUUID(provider.ID)
+		needUserUpdate = true
+	}
+
+	// Check if user is trying to log in with a different auth provider than bound to
+	if authProviderIDStr != "" && authProviderIDStr != nullUUID && authProviderIDStr != provider.ID {
+		log.Printf("User %s tried to login with provider %s but is bound to provider %s\n", user.ID, provider.ID, authProviderIDStr)
+		recordAuthEvent(r, &AuthEvent{User: user, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorIdpProviderMismatch, ErrorDetail: "user is bound to auth provider " + authProviderIDStr})
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl(payload.LoginType, provider, "login"))
+		return
+	}
+
+	if userInfo.Firstname != "" && user.Firstname != userInfo.Firstname {
+		user.Firstname = userInfo.Firstname
+		needUserUpdate = true
+	}
+	if userInfo.Lastname != "" && user.Lastname != userInfo.Lastname {
+		user.Lastname = userInfo.Lastname
+		needUserUpdate = true
+	}
+	if needUserUpdate {
+		GetUserRepository().Update(user)
+	}
+	// Apply the provider's role and group mappings on every login, so that a
+	// change made in the identity provider takes effect the next time the user
+	// signs in.
+	ReconcileUserFromIdP(user, provider, userInfo.Groups)
+	payloadNew := &AuthStateLoginPayload{
+		UserID:    userInfo.Email,
+		LoginType: payload.LoginType,
+	}
+	authState := &AuthState{
+		Key:           provider.ID,
+		Expiry:        time.Now().Add(time.Minute * 5),
+		AuthStateType: AuthResponseCache,
+		Payload:       marshalAuthStateLoginPayload(payloadNew),
+	}
+	if err := GetAuthStateRepository().Create(authState); err != nil {
+		log.Println(err)
+		recordAuthEvent(r, &AuthEvent{User: user, AuthProviderID: provider.ID, Method: AuthMethodOAuth, ErrorCode: AuthErrorInternal, ErrorDetail: "failed to create auth state: " + err.Error()})
+		SendTemporaryRedirect(w, router.getRedirectFailedUrl(payload.LoginType, provider, "authState"))
+		return
+	}
+	redirectUrl := router.getRedirectSuccessUrl(payload.LoginType, authState, provider)
+	if payload.Redirect != "" {
+		redirectUrl = redirectUrl + "?redir=" + url.QueryEscape(payload.Redirect)
+	}
+	SendTemporaryRedirect(w, redirectUrl)
+}
+
+func (router *AuthRouter) getRedirectSuccessUrl(loginType string, authState *AuthState, provider *AuthProvider) string {
+	org, _ := GetOrganizationRepository().GetOne(provider.OrganizationID)
+	primaryDomain, _ := GetOrganizationRepository().GetPrimaryDomain(org)
+	if loginType == "ui" {
+		return FormatURL(primaryDomain.DomainName) + "/ui/login/success/" + authState.ID + "/"
+	} else {
+		return FormatURL(primaryDomain.DomainName) + "/ui/login/success/" + authState.ID + "/"
+	}
+}
+
+func (router *AuthRouter) getRedirectFailedUrl(loginType string, provider *AuthProvider, reason string) string {
+	org, _ := GetOrganizationRepository().GetOne(provider.OrganizationID)
+	primaryDomain, _ := GetOrganizationRepository().GetPrimaryDomain(org)
+
+	queryString := "?reason=" + url.QueryEscape(reason)
+
+	if primaryDomain == nil {
+		log.Println("Error compiling redirect failed URL for auth provider " + provider.Name + ": No primary domain found for organization")
+		return "/ui/login/failed/" + queryString
+	}
+	return FormatURL(primaryDomain.DomainName) + "/ui/login/failed/" + queryString
+}
+
+// authError carries a stable auth event error code alongside the error detail.
+type authError struct {
+	code   string
+	detail string
+}
+
+func (e *authError) Error() string {
+	return e.detail
+}
+
+// authErrorCode maps an error to its auth event error code, using fallback for
+// untyped errors.
+func authErrorCode(err error, fallback string) string {
+	var ae *authError
+	if errors.As(err, &ae) {
+		return ae.code
+	}
+	return fallback
+}
+
+func (router *AuthRouter) getUserInfo(provider *AuthProvider, state string, code string) (*IdPUserInfo, *AuthStateLoginPayload, error) {
+	// Verify state string
+	authState, err := GetAuthStateRepository().ClaimActiveForKey(state, AuthRequestState, provider.ID)
+	if err != nil {
+		return nil, nil, &authError{code: AuthErrorIdpStateInvalid, detail: fmt.Sprintf("state not found for id %s", strings.Replace(strings.Replace(state, "\r", "", -1), "\n", "", -1))}
+	}
+	var payload *AuthStateLoginPayload
+	if err := json.Unmarshal([]byte(authState.Payload), &payload); err != nil || payload == nil {
+		return nil, nil, &authError{code: AuthErrorIdpStateInvalid, detail: "invalid auth state payload"}
+	}
+	var options []oauth2.AuthCodeOption
+	// Allow logins started before PKCE support was deployed to finish.
+	if payload.PKCEVerifier != "" {
+		verifier, err := DecryptString(payload.PKCEVerifier)
+		if err != nil || verifier == "" {
+			return nil, nil, &authError{code: AuthErrorIdpStateInvalid, detail: "failed to decrypt PKCE verifier"}
+		}
+		options = append(options, oauth2.VerifierOption(verifier))
+	}
+	// Exchange authorization code for an access token
+	config, err := router.getConfig(provider)
+	if err != nil {
+		return nil, nil, &authError{code: AuthErrorIdpConfigInvalid, detail: err.Error()}
+	}
+	client := GetOutboundHTTPClient()
+	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, client)
+	token, err := config.Exchange(ctx, code, options...)
+	if err != nil {
+		detail := "code exchange failed: " + err.Error()
+		var retrieveErr *oauth2.RetrieveError
+		if errors.As(err, &retrieveErr) {
+			detail = fmt.Sprintf("code exchange failed: token endpoint returned HTTP %d", retrieveErr.Response.StatusCode)
+			if retrieveErr.ErrorCode != "" {
+				detail += ": " + retrieveErr.ErrorCode
+			}
+		}
+		return nil, nil, &authError{code: AuthErrorIdpCodeExchangeFailed, detail: detail}
+	}
+	// Get user info from resource server
+	req, err := http.NewRequest("GET", provider.UserInfoURL, nil)
+	if err != nil {
+		return nil, nil, &authError{code: AuthErrorIdpUserinfoFailed, detail: "failed creating http request: " + err.Error()}
+	}
+	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
+	response, err := client.Do(req)
+	if err != nil {
+		return nil, nil, &authError{code: AuthErrorIdpUserinfoFailed, detail: "failed getting user info: " + err.Error()}
+	}
+	defer response.Body.Close()
+	contents, err := io.ReadAll(io.LimitReader(response.Body, 1<<20))
+	if err != nil {
+		return nil, nil, &authError{code: AuthErrorIdpUserinfoFailed, detail: "failed reading response body: " + err.Error()}
+	}
+	if response.StatusCode < 200 || response.StatusCode > 299 {
+		return nil, nil, &authError{code: AuthErrorIdpUserinfoFailed, detail: fmt.Sprintf("userinfo endpoint returned HTTP %d", response.StatusCode)}
+	}
+	// Extract email address from JSON response
+	var result map[string]interface{}
+	if err := json.Unmarshal(contents, &result); err != nil {
+		return nil, nil, &authError{code: AuthErrorIdpUserinfoFailed, detail: "failed parsing userinfo response as JSON: " + err.Error()}
+	}
+	info, err := ExtractUserInfoFields(result, provider.UserInfoEmailField, provider.UserInfoFirstnameField, provider.UserInfoLastnameField, provider.UserInfoGroupsField)
+	if err != nil {
+		keys := make([]string, 0, len(result))
+		for k := range result {
+			keys = append(keys, k)
+		}
+		slices.Sort(keys)
+		return nil, nil, &authError{code: AuthErrorIdpAttributeMapping, detail: err.Error() + ", userinfo fields: " + strings.Join(keys, ", ")}
+	}
+	return info, payload, nil
+}
+
+func ExtractUserInfoFields(result map[string]interface{}, emailField, firstnameField, lastnameField, groupsField string) (*IdPUserInfo, error) {
+	emailVal, ok := result[emailField].(string)
+	if !ok || strings.TrimSpace(emailVal) == "" {
+		return nil, fmt.Errorf("could not read email address from field: %s", emailField)
+	}
+	firstname := ""
+	lastname := ""
+	if firstnameField != "" {
+		if val, ok := result[firstnameField].(string); ok {
+			firstname = strings.TrimSpace(val)
+		}
+	}
+	if lastnameField != "" {
+		if val, ok := result[lastnameField].(string); ok {
+			lastname = strings.TrimSpace(val)
+		}
+	}
+	return &IdPUserInfo{
+		Email:     strings.TrimSpace(emailVal),
+		Firstname: firstname,
+		Lastname:  lastname,
+		Groups:    extractGroupsClaim(result, groupsField),
+	}, nil
+}
+
+// extractGroupsClaim reads the groups a provider reports. Providers differ:
+// most send an array of strings, some a single string. Values are returned
+// verbatim, including Keycloak's leading-slash paths such as "/parent/child",
+// which are matched in full rather than by their last segment - two groups can
+// share a leaf name under different parents.
+func extractGroupsClaim(result map[string]interface{}, groupsField string) []string {
+	if groupsField == "" {
+		return nil
+	}
+	raw, ok := result[groupsField]
+	if !ok {
+		return nil
+	}
+	var groups []string
+	switch v := raw.(type) {
+	case []interface{}:
+		for _, item := range v {
+			if str, ok := item.(string); ok {
+				if str = strings.TrimSpace(str); str != "" {
+					groups = append(groups, str)
+				}
+			}
+		}
+	case string:
+		if str := strings.TrimSpace(v); str != "" {
+			groups = append(groups, str)
+		}
+	}
+	return groups
+}
+
+func (router *AuthRouter) SendPasswordResetEmail(user *User, ID string, org *Organization) error {
+	domain, err := GetOrganizationRepository().GetPrimaryDomain(org)
+	if err != nil {
+		return err
+	}
+	vars := map[string]string{
+		"recipientName":  user.GetSafeRecipientName(),
+		"recipientEmail": user.Email,
+		"confirmID":      ID,
+		"orgDomain":      FormatURL(domain.DomainName) + "/",
+	}
+	language := org.Language
+	if userLang, err := GetUserPreferencesRepository().Get(user.ID, PreferenceMailLanguage.Name); err == nil && userLang != "" {
+		language = userLang
+	}
+	return SendEmailWithOrg(&MailAddress{Address: user.Email}, GetEmailTemplatePathResetpassword(), language, vars, org.ID)
+}
+
+func (router *AuthRouter) SendUserInvitationEmail(user *User, ID string, org *Organization) error {
+	domain, err := GetOrganizationRepository().GetPrimaryDomain(org)
+	if err != nil {
+		return err
+	}
+	vars := map[string]string{
+		"recipientName":  user.GetSafeRecipientName(),
+		"recipientEmail": user.Email,
+		"confirmID":      ID,
+		"orgDomain":      FormatURL(domain.DomainName) + "/",
+	}
+	return SendEmailWithOrg(&MailAddress{Address: user.Email}, GetEmailTemplatePathInviteUser(), org.Language, vars, org.ID)
+}
+
+func (router *AuthRouter) getConfig(provider *AuthProvider) (*oauth2.Config, error) {
+	org, _ := GetOrganizationRepository().GetOne(provider.OrganizationID)
+	primaryDomain, _ := GetOrganizationRepository().GetPrimaryDomain(org)
+	if primaryDomain == nil {
+		log.Println("Error compiling config for auth provider " + provider.Name + ": No primary domain found for organization")
+		return nil, fmt.Errorf("no primary domain found for organization %s", provider.OrganizationID)
+	}
+
+	clientSecret, err := DecryptString(provider.ClientSecret)
+	if err != nil {
+		log.Printf("Error decrypting client secret for auth provider %s: %v\n", provider.ID, err)
+		return nil, fmt.Errorf("failed to decrypt client secret: %s", err.Error())
+	}
+
+	config := &oauth2.Config{
+		RedirectURL:  FormatURL(primaryDomain.DomainName) + "/auth/" + provider.ID + "/callback",
+		ClientID:     provider.ClientID,
+		ClientSecret: clientSecret,
+		Scopes:       strings.Split(provider.Scopes, ","),
+		Endpoint: oauth2.Endpoint{
+			AuthURL:   provider.AuthURL,
+			TokenURL:  provider.TokenURL,
+			AuthStyle: oauth2.AuthStyle(provider.AuthStyle),
+		},
+	}
+	return config, nil
+}
+
+func (router *AuthRouter) CreateClaims(user *User, session *Session) *Claims {
+	claims := &Claims{
+		UserID:    user.ID,
+		Email:     user.Email,
+		SessionID: session.ID,
+	}
+	return claims
+}
+
+func (router *AuthRouter) CreateAccessToken(claims *Claims, options ...CreateAccessTokenOptions) string {
+	installID, _ := GetSettingsRepository().GetGlobalString(SettingInstallID.Name)
+	jti := uuid.New().String()
+	claims.RegisteredClaims = jwt.RegisteredClaims{
+		ID: jti,
+	}
+	if !slices.Contains(options, WithoutIssuer) {
+		claims.RegisteredClaims.Issuer = installID
+	}
+	if !slices.Contains(options, WithoutAudience) {
+		claims.RegisteredClaims.Audience = jwt.ClaimStrings{installID}
+	}
+	if !slices.Contains(options, WithoutIssuedAt) {
+		claims.RegisteredClaims.IssuedAt = jwt.NewNumericDate(time.Now())
+	}
+	if !slices.Contains(options, WithoutExpiry) {
+		claims.RegisteredClaims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(15 * time.Minute))
+	}
+	if !slices.Contains(options, WithoutNotBefore) {
+		claims.RegisteredClaims.NotBefore = jwt.NewNumericDate(time.Now())
+	}
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodRS512, claims)
+	jwtString, err := accessToken.SignedString(GetConfig().JwtPrivateKey)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	return jwtString
+}
+
+func (router *AuthRouter) createRefreshToken(claims *Claims) (string, error) {
+	refreshToken, err := service.GetRefreshTokenService().Issue(claims.UserID, claims.SessionID)
+	if err != nil {
+		return "", err
+	}
+	return refreshToken.ID, nil
+}
+
+func (router *AuthRouter) getPreflightResponseForOrg(org *Organization) *AuthPreflightResponse {
+	list, err := GetAuthProviderRepository().GetAll(org.ID)
+	if err != nil {
+		return nil
+	}
+	res := &AuthPreflightResponse{
+		Organization: &GetOrganizationResponse{
+			ID: org.ID,
+			CreateOrganizationRequest: CreateOrganizationRequest{
+				Name: org.Name,
+			},
+		},
+		RequirePassword:      false,
+		DisablePasswordLogin: GetConfig().DisablePasswordLogin,
+		AuthProviders:        []*GetAuthProviderPublicResponse{},
+	}
+	domain, err := GetOrganizationRepository().GetPrimaryDomain(org)
+	if domain != nil && err == nil {
+		res.Domain = domain.DomainName
+	}
+	if customLogoUrl, err := GetSettingsRepository().Get(org.ID, SettingCustomLogoUrl.Name); err == nil {
+		res.CustomLogoUrl = customLogoUrl
+	}
+	for _, e := range list {
+		m := &GetAuthProviderPublicResponse{}
+		m.ID = e.ID
+		m.Name = e.Name
+		res.AuthProviders = append(res.AuthProviders, m)
+	}
+	return res
+}
+
+func marshalAuthStateLoginPayload(payload *AuthStateLoginPayload) string {
+	json, _ := json.Marshal(payload)
+	return string(json)
+}
+
+func unmarshalAuthStateLoginPayload(payload string) *AuthStateLoginPayload {
+	var o *AuthStateLoginPayload
+	json.Unmarshal([]byte(payload), &o)
+	return o
+}
+
+// recordAuthEvent persists an authentication event, deriving the device string
+// from the request. Recording must never fail the login flow itself.
+func recordAuthEvent(r *http.Request, e *AuthEvent) {
+	var ar AuthRouter
+	e.Device = ar.GetDeviceInfo(r)
+	if err := GetAuthAttemptRepository().RecordAuthEvent(e); err != nil {
+		log.Println("Error recording auth event: " + err.Error())
+	}
+}
+
+func (router *AuthRouter) createAndSendJWT(w http.ResponseWriter, r *http.Request, user *User, authMethod string, authProviderID string, logoutURL string, profilePageURL string) {
+	recordAuthEvent(r, &AuthEvent{User: user, Successful: true, Method: authMethod, AuthProviderID: authProviderID, BanCheck: true})
+	now := time.Now().UTC()
+	user.LastActivityAtUTC = &now
+	GetUserRepository().UpdateLastActivity(user.ID, now)
+	session := router.CreateSession(r, user)
+	if session == nil {
+		log.Println("Error: Failed to create session during " + authMethod)
+		SendInternalServerError(w)
+		return
+	}
+	claims := router.CreateClaims(user, session)
+	accessToken := router.CreateAccessToken(claims)
+	refreshToken, err := router.createRefreshToken(claims)
+	if err != nil {
+		log.Println("Error: Failed to create refresh token during " + authMethod + ": " + err.Error())
+		SendInternalServerError(w)
+		return
+	}
+	res := &JWTResponse{
+		AccessToken:    accessToken,
+		RefreshToken:   refreshToken,
+		LogoutURL:      logoutURL,
+		ProfilePageURL: profilePageURL,
+	}
+	SendJSON(w, res)
+}
+
+// PasswordLoginDenialReason returns the auth event error code explaining why
+// CanPasswordLogin() is false for this user ("" if password login is allowed).
+func (router *AuthRouter) getPasswordLoginDenialReason(user *User) string {
+	if user.PasswordPending {
+		return AuthErrorPasswordPending
+	}
+	if user.HashedPassword == "" {
+		return AuthErrorNoPasswordSet
+	}
+	if user.AuthProviderID != "" {
+		return AuthErrorBoundToAuthProvider
+	}
+	if user.Disabled {
+		return AuthErrorUserDisabled
+	}
+	if user.AccountType.IsServiceAccount() {
+		return AuthErrorServiceAccount
+	}
+	return ""
+}
