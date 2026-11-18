@@ -1,0 +1,3 @@
+# Source wave 23: original AccessList navigation and validation errors
+
+Acquire exactly five scheduled original files at revision 20016b9d91d49c9133f1b4d26ab5a289c72ec1db: the Access page, table and wrapper, the shared submit button, and the error classes used by the original API validator. These complete native create/edit entry controls and distinguish schema rejection from instrument/import failures. Do not inspect other workflows, fixes or upstream tests. Existing immutable-source, 256-slot/8-MiB project, 256-KiB file and 512-KiB envelope limits apply. Publish before acquisition; one request/file, no retries or replacement. This is source acquisition only, with no dependency installation, application job or scientific input execution.
