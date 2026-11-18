@@ -46,6 +46,8 @@ jobs:
           python scripts/extension/summarize_gotify_closure_v1.py --verify
       - name: Python harness tests
         run: python -m unittest discover -s tests -v 2>&1 | tee "$CI_ARTIFACT_DIR/python-tests.log"
+      - name: Test Viseron filesystem checkpoints on Linux
+        run: python scripts/extension/test_viseron_filesystem_checkpoint_v1.py
       - name: Bootstrap helper tests
         run: python -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"
       - name: Reconstruct README ordinary controls v1
