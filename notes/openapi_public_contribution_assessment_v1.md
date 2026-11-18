@@ -1,0 +1,15 @@
+# OpenAPI public-frame feasibility assessment
+
+The fixed seven-repository metadata screen produced two source-mapping candidates and zero qualified workflows. Faster Chat reached its 96-file collection cap with essential dependencies unresolved. Bichon collected and reviewed 87 files; its final nine-file schedule could not reach already identified native authentication, account forms and API bindings. Bichon is closed before those downloads. This is a late engineering stop, not a preregistered stopping rule. Its original schedule and unsealed queue are preserved; the nine files are not attempted, not failed downloads. Neither candidate ran application calibration or scientific cases.
+
+This result diagnoses the chosen mapping procedure within its fixed limits. It does not show that either application lacks suitable workflows, that public systems generally cannot support the research, or that native continuation adds no value. Breadth-first traversal from broad workspace and application roots spends much of a small file budget on infrastructure and route wrappers before reaching the concrete producer/editor. A file-count cap also treats a small wrapper and a large module equally. These design choices are observed limitations of this attempt; they are not retroactively changed to obtain a usable sample.
+
+There is no new H/S/A/U comparison, effect estimate, causal defect evidence or independently certified family contribution from this frame. The two candidate repositories also cannot meet the earlier four-family descriptive threshold. Existing exposed studies cannot fill that gap through pooling or relabeling. These findings do not support a Q1-ready empirical claim.
+
+A future study would need a scientifically justified, separately registered design whose engineering qualification can resolve a complete workflow before scientific inputs are frozen. Changing traversal or increasing the cap after this failure would be a disclosed redesign using exposed systems, not a continuation of this confirmatory sample. No replacement search, reopened cohort or additional runtime is authorized by this assessment. Synthetic fixtures could validate tooling but could not establish natural-defect prevalence or replace application evidence.
+
+Remaining project work is to reconcile costs and evidence provenance, and report the unmet empirical requirements honestly. Journal submission and a positive-effect claim are not supported by the current evidence.
+
+## Cost reconciliation
+
+The newest Actions inventory overlaps the previous 747 observed run IDs and adds four runs, all completed: three successful and one cancelled. One timing request per new run reports a combined zero billable Ubuntu milliseconds. This brings retained run-level timing observations to 751. It does not verify invoice totals, artifact storage, assistant/tool usage, local work or other services; total dollar spend remains unverified. No new jobs or reruns were started for this audit. The cancelled run is preserved, not silently replaced by a passing result.
