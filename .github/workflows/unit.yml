@@ -50,6 +50,10 @@ jobs:
         run: python scripts/extension/build_nginx_input_schedule_v1.py --verify
       - name: Test Viseron filesystem checkpoints on Linux
         run: python scripts/extension/test_viseron_filesystem_checkpoint_v1.py
+      - name: Verify SeatSurfing build preparation and checkpoint guards
+        run: |
+          python scripts/extension/prepare_seatsurfing_source_build_v2.py --verify
+          python scripts/extension/test_seatsurfing_postgres_checkpoint_v1.py
       - name: Bootstrap helper tests
         run: python -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"
       - name: Reconstruct README ordinary controls v1
