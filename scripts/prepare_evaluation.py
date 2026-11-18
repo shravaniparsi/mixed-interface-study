@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-nginx-sqlite-restore-component-v1.md',
+    'scripts/extension/nginx_sqlite_restore_v1.py',
+    'tests/test_nginx_sqlite_restore_v1.py',
     'scripts/extension/nginx_checkpoint_container_guard_v1.py',
     'tests/test_nginx_checkpoint_container_guard_v1.py',
     'results/catalog-nginx-filesystem-unit-ci-44291683064/collection.json',
