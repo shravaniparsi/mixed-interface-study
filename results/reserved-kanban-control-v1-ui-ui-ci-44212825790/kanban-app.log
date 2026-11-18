@@ -1,0 +1,84 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.6.RELEASE)
+
+2026-11-18 01:04:38.383  INFO 1 --- [           main] c.w.medium.kanban.KanbanApplication      : Starting KanbanApplication v0.0.1-SNAPSHOT on ba86b4eab36d with PID 1 (/study/application.jar started by root in /)
+2026-11-18 01:04:38.386  INFO 1 --- [           main] c.w.medium.kanban.KanbanApplication      : No active profile set, falling back to default profiles: default
+2026-11-18 01:04:39.160  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2026-11-18 01:04:39.207  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 39ms. Found 2 repository interfaces.
+2026-11-18 01:04:39.779  INFO 1 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$3fa18fe] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-11-18 01:04:40.009  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-11-18 01:04:40.035  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-18 01:04:40.035  INFO 1 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.21]
+2026-11-18 01:04:40.189  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-11-18 01:04:40.191  INFO 1 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1750 ms
+2026-11-18 01:04:40.526  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-18 01:04:40.592  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-18 01:04:41.045  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2026-11-18 01:04:41.053  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : CREATE TABLE public.databasechangeloglock (ID INTEGER NOT NULL, LOCKED BOOLEAN NOT NULL, LOCKGRANTED TIMESTAMP WITHOUT TIME ZONE, LOCKEDBY VARCHAR(255), CONSTRAINT DATABASECHANGELOGLOCK_PKEY PRIMARY KEY (ID))
+2026-11-18 01:04:41.058  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2026-11-18 01:04:41.059  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : DELETE FROM public.databasechangeloglock
+2026-11-18 01:04:41.060  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : INSERT INTO public.databasechangeloglock (ID, LOCKED) VALUES (1, FALSE)
+2026-11-18 01:04:41.061  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT LOCKED FROM public.databasechangeloglock WHERE ID=1
+2026-11-18 01:04:41.065  INFO 1 --- [           main] l.lockservice.StandardLockService        : Successfully acquired change log lock
+2026-11-18 01:04:41.688  INFO 1 --- [           main] l.c.StandardChangeLogHistoryService      : Creating database history table with name: public.databasechangelog
+2026-11-18 01:04:41.689  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : CREATE TABLE public.databasechangelog (ID VARCHAR(255) NOT NULL, AUTHOR VARCHAR(255) NOT NULL, FILENAME VARCHAR(255) NOT NULL, DATEEXECUTED TIMESTAMP WITHOUT TIME ZONE NOT NULL, ORDEREXECUTED INTEGER NOT NULL, EXECTYPE VARCHAR(10) NOT NULL, MD5SUM VARCHAR(35), DESCRIPTION VARCHAR(255), COMMENTS VARCHAR(255), TAG VARCHAR(255), LIQUIBASE VARCHAR(20), CONTEXTS VARCHAR(255), LABELS VARCHAR(255), DEPLOYMENT_ID VARCHAR(10))
+2026-11-18 01:04:41.692  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangelog
+2026-11-18 01:04:41.693  INFO 1 --- [           main] l.c.StandardChangeLogHistoryService      : Reading from public.databasechangelog
+2026-11-18 01:04:41.693  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT * FROM public.databasechangelog ORDER BY DATEEXECUTED ASC, ORDEREXECUTED ASC
+2026-11-18 01:04:41.695  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2026-11-18 01:04:41.701  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : CREATE TABLE kanban (
+    id SERIAL PRIMARY KEY,
+    title TEXT
+)
+2026-11-18 01:04:41.706  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : SQL in file 01_init_kanban.sql executed
+2026-11-18 01:04:41.707  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : ChangeSet classpath:/db/changelog/db.changelog-master.xml::1::Wojtek ran successfully in 6ms
+2026-11-18 01:04:41.708  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : SELECT MAX(ORDEREXECUTED) FROM public.databasechangelog
+2026-11-18 01:04:41.710  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : INSERT INTO public.databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('1', 'Wojtek', 'classpath:/db/changelog/db.changelog-master.xml', NOW(), 1, '8:340b5349bfea8a59f735e7591a313b43', 'sqlFile', 'Create table with Kanaban info', 'EXECUTED', NULL, NULL, '3.6.3', '4963881695')
+2026-11-18 01:04:41.713  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : CREATE TABLE task (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    color VARCHAR(50)
+)
+2026-11-18 01:04:41.717  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : SQL in file 02_init_task.sql executed
+2026-11-18 01:04:41.717  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : ChangeSet classpath:/db/changelog/db.changelog-master.xml::2::Wojtek ran successfully in 5ms
+2026-11-18 01:04:41.718  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : INSERT INTO public.databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('2', 'Wojtek', 'classpath:/db/changelog/db.changelog-master.xml', NOW(), 2, '8:44cf383cc056d4cbec3e6050b9582a8d', 'sqlFile', 'Create table with task info', 'EXECUTED', NULL, NULL, '3.6.3', '4963881695')
+2026-11-18 01:04:41.720  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : ALTER TABLE task
+ADD COLUMN kanban_id INTEGER  REFERENCES kanban(id)
+2026-11-18 01:04:41.721  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : SQL in file 03_kanban_column.sql executed
+2026-11-18 01:04:41.722  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : ChangeSet classpath:/db/changelog/db.changelog-master.xml::3::Wojtek ran successfully in 3ms
+2026-11-18 01:04:41.722  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : INSERT INTO public.databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('3', 'Wojtek', 'classpath:/db/changelog/db.changelog-master.xml', NOW(), 3, '8:689fcecaf75dd1d2f67561b84937b583', 'sqlFile', 'Add kanban_id column to task table', 'EXECUTED', NULL, NULL, '3.6.3', '4963881695')
+2026-11-18 01:04:41.724  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : ALTER TABLE task
+ADD COLUMN status VARCHAR(20)
+2026-11-18 01:04:41.724  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : SQL in file 04_task_status.sql executed
+2026-11-18 01:04:41.725  INFO 1 --- [           main] liquibase.changelog.ChangeSet            : ChangeSet classpath:/db/changelog/db.changelog-master.xml::4::Wojtek ran successfully in 2ms
+2026-11-18 01:04:41.725  INFO 1 --- [           main] liquibase.executor.jvm.JdbcExecutor      : INSERT INTO public.databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('4', 'Wojtek', 'classpath:/db/changelog/db.changelog-master.xml', NOW(), 4, '8:0c562ed8a9934ba2926d12a8d6c9c808', 'sqlFile', 'Add status column to task table', 'EXECUTED', NULL, NULL, '3.6.3', '4963881695')
+2026-11-18 01:04:41.728  INFO 1 --- [           main] l.lockservice.StandardLockService        : Successfully released change log lock
+2026-11-18 01:04:41.835  INFO 1 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2026-11-18 01:04:41.898  INFO 1 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.10.Final}
+2026-11-18 01:04:41.900  INFO 1 --- [           main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2026-11-18 01:04:42.026  INFO 1 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2026-11-18 01:04:42.204  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL95Dialect
+2026-11-18 01:04:42.325  INFO 1 --- [           main] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000421: Disabling contextual LOB creation as hibernate.jdbc.lob.non_contextual_creation is true
+2026-11-18 01:04:42.329  INFO 1 --- [           main] org.hibernate.type.BasicTypeRegistry     : HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@3301500b
+2026-11-18 01:04:42.882  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-18 01:04:43.416  WARN 1 --- [           main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-18 01:04:43.539  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2026-11-18 01:04:43.623  INFO 1 --- [           main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2026-11-18 01:04:43.768  INFO 1 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2026-11-18 01:04:44.131  INFO 1 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2026-11-18 01:04:44.156  INFO 1 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2026-11-18 01:04:44.202  INFO 1 --- [           main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2026-11-18 01:04:44.370  INFO 1 --- [           main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: handleUsingGET_1
+2026-11-18 01:04:44.371  INFO 1 --- [           main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: handleUsingGET_2
+2026-11-18 01:04:44.372  INFO 1 --- [           main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: handleUsingGET_3
+2026-11-18 01:04:44.420  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-11-18 01:04:44.423  INFO 1 --- [           main] c.w.medium.kanban.KanbanApplication      : Started KanbanApplication in 6.473 seconds (JVM running for 6.821)
