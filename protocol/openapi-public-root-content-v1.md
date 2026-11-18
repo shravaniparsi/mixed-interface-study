@@ -1,0 +1,7 @@
+# Root documentation and deployment content collection
+
+Read only the 24 exact entries in openapi-public-root-content-schedule-v1.json at their frozen repository revisions. This schedule derives from the published lexical root selection and is not changed to prefer English documents or smaller license files. Skip the already oversized rustmailer license.html (over 256 KiB); retain it as unavailable without replacement.
+
+Before requests, publish this protocol and collector. One Git blob request per nonoversized entry, sequential, no retries; 30 seconds per request, 512 KiB encoded-response ceiling, 256 KiB decoded blob ceiling and 900 seconds total. Verify exact byte size, Git blob SHA1 and SHA256. Keep original bytes privately under /private/tmp and publish metadata/hash records, not third-party file contents. Preserve every failure. No execution, dependencies, images, issue/history lookup, subdirectory traversal, or follow-up URL fetch is authorized.
+
+Review licensing/deployment/native-interface feasibility only. Log incidental defect or fix disclosures as exposure rather than discoveries. A license summary is not a new license grant or legal conclusion; conditional/source-available terms must not silently satisfy the user's open-source restriction. No workflow is admitted and no scientific cases are produced by this phase. Root contents may guide a separately registered mapping decision; they do not authorize arbitrary additional source collection.
