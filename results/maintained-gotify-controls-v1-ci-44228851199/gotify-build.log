@@ -1,0 +1,391 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from gotify-pinned.Dockerfile
+#1 transferring dockerfile: 2.38kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node@sha256:9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/gotify/build@sha256:cc760c755d7305f52598ba7cb9cd769745246730f845c4eb8477dff8bc69cb5d
+#3 DONE 0.0s
+
+#4 [internal] load metadata for docker.io/library/debian@sha256:07a3205e8583fdff12d2b05bd030f50437e9fd340ee616df0c05dc77af75767b
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 121B done
+#5 DONE 0.0s
+
+#6 [stage-2 1/4] FROM docker.io/library/debian@sha256:07a3205e8583fdff12d2b05bd030f50437e9fd340ee616df0c05dc77af75767b
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 1.47MB 0.0s done
+#7 DONE 0.1s
+
+#8 [builder 1/6] FROM docker.io/gotify/build@sha256:cc760c755d7305f52598ba7cb9cd769745246730f845c4eb8477dff8bc69cb5d
+#8 DONE 0.1s
+
+#9 [js-builder 1/4] FROM docker.io/library/node@sha256:9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496
+#9 DONE 0.1s
+
+#10 [stage-2 2/4] WORKDIR /app
+#10 DONE 0.1s
+
+#11 [js-builder 2/4] COPY ./Makefile /src/gotify/Makefile
+#11 DONE 0.0s
+
+#12 [js-builder 3/4] COPY ./ui /src/gotify/ui
+#12 DONE 0.1s
+
+#13 [stage-2 3/4] RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -yq --no-install-recommends     tzdata     curl     ca-certificates &&     rm -rf /var/lib/apt/lists/*
+#13 0.250 Get:1 http://deb.debian.org/debian sid InRelease [193 kB]
+#13 0.316 Get:2 http://deb.debian.org/debian sid/main amd64 Packages [10.9 MB]
+#13 1.257 Fetched 11.1 MB in 1s (10.9 MB/s)
+#13 1.257 Reading package lists...
+#13 2.211 Reading package lists...
+#13 3.197 Building dependency tree...
+#13 3.467 Reading state information...
+#13 3.513 tzdata is already the newest version (2026f-1).
+#13 3.513 tzdata set to manually installed.
+#13 3.513 Solving dependencies...
+#13 3.748 The following additional packages will be installed:
+#13 3.748   libbrotli1 libcom-err2 libcurl4t64 libgssapi-krb5-2 libidn2-0 libk5crypto3
+#13 3.748   libkeyutils1 libkrb5-3 libkrb5support0 libldap2 libnghttp2-14 libnghttp3-9
+#13 3.748   libngtcp2-16 libngtcp2-crypto-ossl0 libpsl5t64 libsasl2-2
+#13 3.749   libsasl2-modules-db libssh2-1t64 libunistring5 openssl
+#13 3.750 Suggested packages:
+#13 3.750   krb5-doc krb5-user
+#13 3.750 Recommended packages:
+#13 3.750   bash-completion krb5-locales libldap-common publicsuffix libsasl2-modules
+#13 3.917 The following NEW packages will be installed:
+#13 3.918   ca-certificates curl libbrotli1 libcom-err2 libcurl4t64 libgssapi-krb5-2
+#13 3.919   libidn2-0 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap2
+#13 3.919   libnghttp2-14 libnghttp3-9 libngtcp2-16 libngtcp2-crypto-ossl0 libpsl5t64
+#13 3.920   libsasl2-2 libsasl2-modules-db libssh2-1t64 libunistring5 openssl
+#13 3.965 0 upgraded, 22 newly installed, 0 to remove and 10 not upgraded.
+#13 3.965 Need to get 4900 kB of archives.
+#13 3.965 After this operation, 12.7 MB of additional disk space will be used.
+#13 3.965 Get:1 http://deb.debian.org/debian sid/main amd64 openssl amd64 3.6.5-1 [1554 kB]
+#13 3.980 Get:2 http://deb.debian.org/debian sid/main amd64 ca-certificates all 20260816+nmu1 [134 kB]
+#13 3.981 Get:3 http://deb.debian.org/debian sid/main amd64 libnghttp3-9 amd64 1.17.0-1 [68.1 kB]
+#13 3.983 Get:4 http://deb.debian.org/debian sid/main amd64 libngtcp2-16 amd64 1.24.0-1 [145 kB]
+#13 3.985 Get:5 http://deb.debian.org/debian sid/main amd64 libbrotli1 amd64 1.2.0-4.1 [325 kB]
+#13 3.986 Get:6 http://deb.debian.org/debian sid/main amd64 libkrb5support0 amd64 1.22.1-3 [31.1 kB]
+#13 3.987 Get:7 http://deb.debian.org/debian sid/main amd64 libcom-err2 amd64 1.47.4-1+b3 [19.6 kB]
+#13 3.989 Get:8 http://deb.debian.org/debian sid/main amd64 libk5crypto3 amd64 1.22.1-3 [79.0 kB]
+#13 3.990 Get:9 http://deb.debian.org/debian sid/main amd64 libkeyutils1 amd64 1.6.3-6+b2 [9348 B]
+#13 3.990 Get:10 http://deb.debian.org/debian sid/main amd64 libkrb5-3 amd64 1.22.1-3 [335 kB]
+#13 3.992 Get:11 http://deb.debian.org/debian sid/main amd64 libgssapi-krb5-2 amd64 1.22.1-3 [137 kB]
+#13 3.994 Get:12 http://deb.debian.org/debian sid/main amd64 libunistring5 amd64 1.4.2-1 [480 kB]
+#13 3.997 Get:13 http://deb.debian.org/debian sid/main amd64 libidn2-0 amd64 2.3.8-5 [109 kB]
+#13 4.000 Get:14 http://deb.debian.org/debian sid/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg1-12 [18.4 kB]
+#13 4.001 Get:15 http://deb.debian.org/debian sid/main amd64 libsasl2-2 amd64 2.1.28+dfsg1-12 [59.4 kB]
+#13 4.002 Get:16 http://deb.debian.org/debian sid/main amd64 libldap2 amd64 2.6.14+dfsg-2+b1 [201 kB]
+#13 4.002 Get:17 http://deb.debian.org/debian sid/main amd64 libnghttp2-14 amd64 1.71.0-1 [83.7 kB]
+#13 4.003 Get:18 http://deb.debian.org/debian sid/main amd64 libngtcp2-crypto-ossl0 amd64 1.24.0-1 [26.5 kB]
+#13 4.003 Get:19 http://deb.debian.org/debian sid/main amd64 libpsl5t64 amd64 0.23.3-1 [61.7 kB]
+#13 4.004 Get:20 http://deb.debian.org/debian sid/main amd64 libssh2-1t64 amd64 1.11.1-6 [253 kB]
+#13 4.005 Get:21 http://deb.debian.org/debian sid/main amd64 libcurl4t64 amd64 8.24.0~rc1-1 [476 kB]
+#13 4.006 Get:22 http://deb.debian.org/debian sid/main amd64 curl amd64 8.24.0~rc1-1 [294 kB]
+#13 5.160 Preconfiguring packages ...
+#13 5.260 Fetched 4900 kB in 0s (78.6 MB/s)
+#13 5.282 Selecting previously unselected package openssl.
+#13 5.294 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 4956 files and directories currently installed.)
+#13 5.294 Preparing to unpack .../00-openssl_3.6.5-1_amd64.deb ...
+#13 5.296 Unpacking openssl (3.6.5-1) ...
+#13 5.380 Selecting previously unselected package ca-certificates.
+#13 5.382 Preparing to unpack .../01-ca-certificates_20260816+nmu1_all.deb ...
+#13 5.383 Unpacking ca-certificates (20260816+nmu1) ...
+#13 5.431 Selecting previously unselected package libnghttp3-9:amd64.
+#13 5.432 Preparing to unpack .../02-libnghttp3-9_1.17.0-1_amd64.deb ...
+#13 5.435 Unpacking libnghttp3-9:amd64 (1.17.0-1) ...
+#13 5.461 Selecting previously unselected package libngtcp2-16:amd64.
+#13 5.462 Preparing to unpack .../03-libngtcp2-16_1.24.0-1_amd64.deb ...
+#13 5.463 Unpacking libngtcp2-16:amd64 (1.24.0-1) ...
+#13 5.493 Selecting previously unselected package libbrotli1:amd64.
+#13 5.494 Preparing to unpack .../04-libbrotli1_1.2.0-4.1_amd64.deb ...
+#13 5.495 Unpacking libbrotli1:amd64 (1.2.0-4.1) ...
+#13 5.534 Selecting previously unselected package libkrb5support0:amd64.
+#13 5.535 Preparing to unpack .../05-libkrb5support0_1.22.1-3_amd64.deb ...
+#13 5.537 Unpacking libkrb5support0:amd64 (1.22.1-3) ...
+#13 5.558 Selecting previously unselected package libcom-err2:amd64.
+#13 5.559 Preparing to unpack .../06-libcom-err2_1.47.4-1+b3_amd64.deb ...
+#13 5.561 Unpacking libcom-err2:amd64 (1.47.4-1+b3) ...
+#13 5.582 Selecting previously unselected package libk5crypto3:amd64.
+#13 5.584 Preparing to unpack .../07-libk5crypto3_1.22.1-3_amd64.deb ...
+#13 5.587 Unpacking libk5crypto3:amd64 (1.22.1-3) ...
+#13 5.613 Selecting previously unselected package libkeyutils1:amd64.
+#13 5.615 Preparing to unpack .../08-libkeyutils1_1.6.3-6+b2_amd64.deb ...
+#13 5.616 Unpacking libkeyutils1:amd64 (1.6.3-6+b2) ...
+#13 5.635 Selecting previously unselected package libkrb5-3:amd64.
+#13 5.637 Preparing to unpack .../09-libkrb5-3_1.22.1-3_amd64.deb ...
+#13 5.638 Unpacking libkrb5-3:amd64 (1.22.1-3) ...
+#13 5.678 Selecting previously unselected package libgssapi-krb5-2:amd64.
+#13 5.680 Preparing to unpack .../10-libgssapi-krb5-2_1.22.1-3_amd64.deb ...
+#13 5.681 Unpacking libgssapi-krb5-2:amd64 (1.22.1-3) ...
+#13 5.710 Selecting previously unselected package libunistring5:amd64.
+#13 5.711 Preparing to unpack .../11-libunistring5_1.4.2-1_amd64.deb ...
+#13 5.712 Unpacking libunistring5:amd64 (1.4.2-1) ...
+#13 5.766 Selecting previously unselected package libidn2-0:amd64.
+#13 5.768 Preparing to unpack .../12-libidn2-0_2.3.8-5_amd64.deb ...
+#13 5.771 Unpacking libidn2-0:amd64 (2.3.8-5) ...
+#13 5.799 Selecting previously unselected package libsasl2-modules-db:amd64.
+#13 5.801 Preparing to unpack .../13-libsasl2-modules-db_2.1.28+dfsg1-12_amd64.deb ...
+#13 5.802 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg1-12) ...
+#13 5.825 Selecting previously unselected package libsasl2-2:amd64.
+#13 5.826 Preparing to unpack .../14-libsasl2-2_2.1.28+dfsg1-12_amd64.deb ...
+#13 5.827 Unpacking libsasl2-2:amd64 (2.1.28+dfsg1-12) ...
+#13 5.856 Selecting previously unselected package libldap2:amd64.
+#13 5.857 Preparing to unpack .../15-libldap2_2.6.14+dfsg-2+b1_amd64.deb ...
+#13 5.859 Unpacking libldap2:amd64 (2.6.14+dfsg-2+b1) ...
+#13 5.902 Selecting previously unselected package libnghttp2-14:amd64.
+#13 5.904 Preparing to unpack .../16-libnghttp2-14_1.71.0-1_amd64.deb ...
+#13 5.906 Unpacking libnghttp2-14:amd64 (1.71.0-1) ...
+#13 5.934 Selecting previously unselected package libngtcp2-crypto-ossl0:amd64.
+#13 5.935 Preparing to unpack .../17-libngtcp2-crypto-ossl0_1.24.0-1_amd64.deb ...
+#13 5.936 Unpacking libngtcp2-crypto-ossl0:amd64 (1.24.0-1) ...
+#13 5.961 Selecting previously unselected package libpsl5t64:amd64.
+#13 5.963 Preparing to unpack .../18-libpsl5t64_0.23.3-1_amd64.deb ...
+#13 5.964 Unpacking libpsl5t64:amd64 (0.23.3-1) ...
+#13 6.005 Selecting previously unselected package libssh2-1t64:amd64.
+#13 6.008 Preparing to unpack .../19-libssh2-1t64_1.11.1-6_amd64.deb ...
+#13 6.012 Unpacking libssh2-1t64:amd64 (1.11.1-6) ...
+#13 6.044 Selecting previously unselected package libcurl4t64:amd64.
+#13 6.046 Preparing to unpack .../20-libcurl4t64_8.24.0~rc1-1_amd64.deb ...
+#13 6.047 Unpacking libcurl4t64:amd64 (8.24.0~rc1-1) ...
+#13 6.109 Selecting previously unselected package curl.
+#13 6.111 Preparing to unpack .../21-curl_8.24.0~rc1-1_amd64.deb ...
+#13 6.112 Unpacking curl (8.24.0~rc1-1) ...
+#13 6.164 Setting up libkeyutils1:amd64 (1.6.3-6+b2) ...
+#13 6.168 Setting up libbrotli1:amd64 (1.2.0-4.1) ...
+#13 6.171 Setting up libnghttp2-14:amd64 (1.71.0-1) ...
+#13 6.174 Setting up libcom-err2:amd64 (1.47.4-1+b3) ...
+#13 6.178 Setting up libkrb5support0:amd64 (1.22.1-3) ...
+#13 6.181 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg1-12) ...
+#13 6.184 Setting up libunistring5:amd64 (1.4.2-1) ...
+#13 6.186 Setting up libk5crypto3:amd64 (1.22.1-3) ...
+#13 6.189 Setting up libsasl2-2:amd64 (2.1.28+dfsg1-12) ...
+#13 6.192 Setting up libnghttp3-9:amd64 (1.17.0-1) ...
+#13 6.195 Setting up libngtcp2-16:amd64 (1.24.0-1) ...
+#13 6.198 Setting up libkrb5-3:amd64 (1.22.1-3) ...
+#13 6.201 Setting up libssh2-1t64:amd64 (1.11.1-6) ...
+#13 6.204 Setting up openssl (3.6.5-1) ...
+#13 6.209 Setting up libldap2:amd64 (2.6.14+dfsg-2+b1) ...
+#13 6.213 Setting up libidn2-0:amd64 (2.3.8-5) ...
+#13 6.216 Setting up ca-certificates (20260816+nmu1) ...
+#13 6.877 Updating certificates in /etc/ssl/certs...
+#13 7.718 120 added, 0 removed; done.
+#13 7.745 Setting up libgssapi-krb5-2:amd64 (1.22.1-3) ...
+#13 7.750 Setting up libngtcp2-crypto-ossl0:amd64 (1.24.0-1) ...
+#13 7.752 Setting up libpsl5t64:amd64 (0.23.3-1) ...
+#13 7.756 Setting up libcurl4t64:amd64 (8.24.0~rc1-1) ...
+#13 7.760 Setting up curl (8.24.0~rc1-1) ...
+#13 7.763 Processing triggers for libc-bin (2.43-7) ...
+#13 7.776 Processing triggers for ca-certificates (20260816+nmu1) ...
+#13 7.784 Updating certificates in /etc/ssl/certs...
+#13 8.499 0 added, 0 removed; done.
+#13 8.499 Running hooks in /etc/ca-certificates/update.d...
+#13 8.500 done.
+#13 DONE 9.2s
+
+#14 [builder 2/6] RUN apt-get update && apt-get install -yq --no-install-recommends     ca-certificates     git
+#14 0.269 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#14 0.281 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#14 0.281 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#14 0.365 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+#14 0.457 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+#14 0.528 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [376 kB]
+#14 1.427 Fetched 9415 kB in 1s (8007 kB/s)
+#14 1.427 Reading package lists...
+#14 2.212 Reading package lists...
+#14 2.971 Building dependency tree...
+#14 3.166 Reading state information...
+#14 3.369 git is already the newest version (1:2.39.5-0+deb12u3).
+#14 3.369 The following packages will be upgraded:
+#14 3.370   ca-certificates
+#14 3.398 1 upgraded, 0 newly installed, 0 to remove and 14 not upgraded.
+#14 3.398 Need to get 161 kB of archives.
+#14 3.398 After this operation, 2048 B disk space will be freed.
+#14 3.398 Get:1 http://deb.debian.org/debian-security bookworm-security/main amd64 ca-certificates all 20250419~deb12u2 [161 kB]
+#14 3.587 debconf: delaying package configuration, since apt-utils is not installed
+#14 3.624 Fetched 161 kB in 0s (6384 kB/s)
+#14 3.644 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 15625 files and directories currently installed.)
+#14 3.662 Preparing to unpack .../ca-certificates_20250419~deb12u2_all.deb ...
+#14 3.665 Unpacking ca-certificates (20250419~deb12u2) over (20250419~deb12u1) ...
+#14 3.899 Setting up ca-certificates (20250419~deb12u2) ...
+#14 6.200 Updating certificates in /etc/ssl/certs...
+#14 7.447 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+#14 7.455 0 added, 2 removed; done.
+#14 7.481 Processing triggers for ca-certificates (20250419~deb12u2) ...
+#14 7.488 Updating certificates in /etc/ssl/certs...
+#14 8.303 0 added, 0 removed; done.
+#14 8.303 Running hooks in /etc/ca-certificates/update.d...
+#14 8.304 done.
+#14 DONE 9.2s
+
+#15 [builder 3/6] COPY . /src/gotify
+#15 DONE 0.1s
+
+#16 [js-builder 4/4] RUN if [ "1" = "1" ]; then     (cd /src/gotify/ui && yarn install) &&     (cd /src/gotify && make build-js)     else     mkdir -p /src/gotify/ui/build;     fi
+#16 0.484 yarn install v1.22.22
+#16 0.497 (node:7) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+#16 0.497 (Use `node --trace-deprecation ...` to show where the warning was created)
+#16 0.535 [1/4] Resolving packages...
+#16 0.699 [2/4] Fetching packages...
+#16 32.41 [3/4] Linking dependencies...
+#16 32.41 warning "@uiw/codemirror-theme-material > @uiw/codemirror-themes@4.25.10" has unmet peer dependency "@codemirror/language@>=6.0.0".
+#16 32.41 warning "@uiw/codemirror-theme-material > @uiw/codemirror-themes@4.25.10" has unmet peer dependency "@codemirror/state@>=6.0.0".
+#16 32.41 warning "@uiw/codemirror-theme-material > @uiw/codemirror-themes@4.25.10" has unmet peer dependency "@codemirror/view@>=6.0.0".
+#16 32.41 warning " > @uiw/react-codemirror@4.25.10" has unmet peer dependency "@babel/runtime@>=7.11.0".
+#16 32.41 warning " > @uiw/react-codemirror@4.25.10" has unmet peer dependency "@codemirror/state@>=6.0.0".
+#16 32.41 warning " > @uiw/react-codemirror@4.25.10" has unmet peer dependency "@codemirror/theme-one-dark@>=6.0.0".
+#16 32.41 warning " > @uiw/react-codemirror@4.25.10" has unmet peer dependency "@codemirror/view@>=6.0.0".
+#16 32.41 warning " > @uiw/react-codemirror@4.25.10" has unmet peer dependency "codemirror@>=6.0.0".
+#16 32.41 warning "@uiw/react-codemirror > @uiw/codemirror-extensions-basic-setup@4.25.10" has unmet peer dependency "@codemirror/autocomplete@>=6.0.0".
+#16 32.41 warning "@uiw/react-codemirror > @uiw/codemirror-extensions-basic-setup@4.25.10" has unmet peer dependency "@codemirror/language@>=6.0.0".
+#16 32.41 warning "@uiw/react-codemirror > @uiw/codemirror-extensions-basic-setup@4.25.10" has unmet peer dependency "@codemirror/lint@>=6.0.0".
+#16 32.41 warning "@uiw/react-codemirror > @uiw/codemirror-extensions-basic-setup@4.25.10" has unmet peer dependency "@codemirror/search@>=6.0.0".
+#16 32.41 warning "@uiw/react-codemirror > @uiw/codemirror-extensions-basic-setup@4.25.10" has unmet peer dependency "@codemirror/view@>=6.0.0".
+#16 32.42 warning "notistack > goober@2.1.16" has unmet peer dependency "csstype@^3.0.10".
+#16 32.42 warning " > @rolldown/plugin-babel@0.2.3" has unmet peer dependency "rolldown@^1.0.0-rc.5".
+#16 32.42 warning Workspaces can only be enabled in private projects.
+#16 32.43 warning Workspaces can only be enabled in private projects.
+#16 32.43 warning Workspaces can only be enabled in private projects.
+#16 32.43 warning Workspaces can only be enabled in private projects.
+#16 32.43 warning Workspaces can only be enabled in private projects.
+#16 32.43 warning Workspaces can only be enabled in private projects.
+#16 32.43 warning Workspaces can only be enabled in private projects.
+#16 32.44 warning Workspaces can only be enabled in private projects.
+#16 43.76 [4/4] Building fresh packages...
+#16 48.18 Done in 47.70s.
+#16 48.24 (cd ui && yarn build)
+#16 48.38 yarn run v1.22.22
+#16 48.39 (node:46) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+#16 48.39 (Use `node --trace-deprecation ...` to show where the warning was created)
+#16 48.40 $ tsc
+#16 52.36 $ vite build
+#16 52.74 vite v8.1.2 building client environment for production...
+#16 52.75 [2Ktransforming...[38;5;147m[LARGE_BARREL_MODULES] [0mnode_modules/@mui/icons-material/index.mjs has 10750 re-exports. Eagerly resolving every entry can significantly slow down the build. Consider using `@rolldown/plugin-transform-imports` to rewrite imports at the source level so the barrel file is never loaded.
+#16 53.59  [38;5;240m │[0m 
+#16 53.59  [38;5;240m │[0m [38;5;115mHelp[0m: See https://github.com/rolldown/plugins/tree/main/packages/transform-imports for usage.
+#16 53.59 
+#16 53.60 ✓ 1187 modules transformed.
+#16 53.69 rendering chunks...
+#16 53.88 computing gzip size...
+#16 53.90 build/index.html                                                2.45 kB │ gzip:   0.68 kB
+#16 53.90 build/static/roboto-vietnamese-400-normal-DnpnVwnf.woff         6.34 kB
+#16 53.90 build/static/roboto-greek-400-normal-Bb5mj_fZ.woff              7.66 kB
+#16 53.90 build/static/roboto-vietnamese-400-normal-D2PTxGxD.woff2        8.36 kB
+#16 53.90 build/static/roboto-symbols-400-normal-DLYbZahX.woff            8.96 kB
+#16 53.90 build/static/roboto-greek-400-normal-ai2Z1K3C.woff2             9.55 kB
+#16 53.90 build/static/roboto-cyrillic-400-normal-Bjg-1-sg.woff          10.52 kB
+#16 53.90 build/static/roboto-symbols-400-normal-CB1Ce4Gk.woff2          10.73 kB
+#16 53.90 build/static/roboto-cyrillic-400-normal-CBPI_iaY.woff2         12.10 kB
+#16 53.90 build/static/roboto-latin-ext-400-normal-scX0fKtV.woff         14.31 kB
+#16 53.90 build/static/roboto-latin-ext-400-normal-C3tdtHj3.woff2        15.04 kB
+#16 53.90 build/static/roboto-cyrillic-ext-400-normal-CaK1767H.woff      16.33 kB
+#16 53.90 build/static/roboto-cyrillic-ext-400-normal-qHufge6k.woff2     17.37 kB
+#16 53.90 build/static/roboto-math-400-normal-C9RxBKAh.woff              19.22 kB
+#16 53.90 build/static/roboto-math-400-normal-BEFej5gc.woff2             20.08 kB
+#16 53.90 build/static/roboto-latin-400-normal-DyYNIH4P.woff             21.77 kB
+#16 53.90 build/static/roboto-latin-400-normal-BqEyEoaF.woff2            21.88 kB
+#16 53.90 build/static/index-BDMh_36D.css                                11.67 kB │ gzip:   6.82 kB
+#16 53.90 build/static/PluginDetailView-Bm-7PO13.js                     399.82 kB │ gzip: 128.98 kB
+#16 53.90 build/static/index-D9bDBkTC.js                              1,061.58 kB │ gzip: 325.21 kB
+#16 53.90 
+#16 53.90 ✓ built in 1.16s
+#16 53.90 [plugin builtin:vite-reporter] 
+#16 53.90 (!) Some chunks are larger than 500 kB after minification. Consider:
+#16 53.90 - Using dynamic import() to code-split the application
+#16 53.90 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+#16 53.90 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#16 53.97 Done in 5.59s.
+#16 DONE 56.1s
+
+#17 [builder 4/6] COPY --from=js-builder /src/gotify/ui/build /ui-build
+#17 DONE 0.0s
+
+#18 [builder 5/6] RUN if [ "1" = "1" ]; then     cp -r --update /ui-build /src/gotify/ui/build;     fi
+#18 DONE 0.1s
+
+#19 [builder 6/6] RUN cd /src/gotify &&     if [ "0" = "1" ] && [ "linux/amd64" = "linux/amd64" ]; then     go test -v ./...;     fi &&     LD_FLAGS=-w -s -X main.Version=study-01086b95 -X main.Commit=01086b95a8b69ee87383f6e8bcae601d8c33384b -X main.Mode=prod make OUTPUT=/target/app/gotify-app _build_within_docker
+#19 0.588 go build -mod=readonly -a -installsuffix cgo -ldflags "$LD_FLAGS" -o /target/app/gotify-app
+#19 0.620 go: downloading github.com/mattn/go-isatty v0.0.24
+#19 0.620 go: downloading github.com/rs/zerolog v1.35.1
+#19 0.648 go: downloading github.com/joho/godotenv v1.5.1
+#19 0.689 go: downloading gopkg.in/yaml.v3 v3.0.1
+#19 0.724 go: downloading github.com/gin-gonic/gin v1.12.0
+#19 0.734 go: downloading gorm.io/driver/mysql v1.6.0
+#19 0.735 go: downloading gorm.io/driver/postgres v1.6.3
+#19 0.736 go: downloading gorm.io/driver/sqlite v1.6.0
+#19 0.750 go: downloading gorm.io/gorm v1.31.2
+#19 0.759 go: downloading github.com/gin-contrib/cors v1.7.8
+#19 0.804 go: downloading github.com/gotify/location v0.0.0-20170722210143-03bc4ad20437
+#19 0.820 go: downloading golang.org/x/crypto v0.57.0
+#19 0.953 go: downloading golang.org/x/sys v0.48.0
+#19 1.107 go: downloading github.com/mattn/go-colorable v0.1.14
+#19 1.110 go: downloading github.com/go-sql-driver/mysql v1.9.3
+#19 1.113 go: downloading github.com/jackc/pgx/v5 v5.10.0
+#19 1.263 go: downloading github.com/mattn/go-sqlite3 v1.14.32
+#19 1.267 go: downloading github.com/gin-contrib/sse v1.1.1
+#19 1.268 go: downloading github.com/quic-go/quic-go v0.60.0
+#19 1.290 go: downloading golang.org/x/net v0.58.0
+#19 1.545 go: downloading github.com/jinzhu/now v1.1.5
+#19 1.559 go: downloading github.com/gorilla/websocket v1.5.3
+#19 1.602 go: downloading github.com/h2non/filetype v1.1.3
+#19 1.604 go: downloading github.com/modelcontextprotocol/go-sdk v1.8.0
+#19 1.773 go: downloading github.com/zitadel/oidc/v3 v3.51.3
+#19 1.950 go: downloading github.com/go-playground/validator/v10 v10.30.4
+#19 1.967 go: downloading github.com/gin-contrib/gzip v1.2.7
+#19 2.016 go: downloading github.com/jinzhu/inflection v1.0.0
+#19 2.018 go: downloading golang.org/x/text v0.42.0
+#19 2.028 go: downloading filippo.io/edwards25519 v1.1.0
+#19 2.031 go: downloading github.com/jackc/pgpassfile v1.0.0
+#19 2.057 go: downloading github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761
+#19 2.070 go: downloading github.com/goccy/go-yaml v1.19.2
+#19 2.291 go: downloading github.com/pelletier/go-toml/v2 v2.4.3
+#19 2.351 go: downloading github.com/ugorji/go/codec v1.3.1
+#19 2.428 go: downloading go.mongodb.org/mongo-driver/v2 v2.8.0
+#19 2.704 go: downloading google.golang.org/protobuf v1.36.11
+#19 2.705 go: downloading github.com/quic-go/qpack v0.6.0
+#19 2.728 go: downloading github.com/gotify/plugin-api v1.0.0
+#19 2.746 go: downloading github.com/google/jsonschema-go v0.4.3
+#19 2.772 go: downloading github.com/yosida95/uritemplate/v3 v3.0.2
+#19 2.791 go: downloading golang.org/x/oauth2 v0.36.0
+#19 2.802 go: downloading golang.org/x/sync v0.23.0
+#19 2.803 go: downloading golang.org/x/time v0.15.0
+#19 2.815 go: downloading github.com/go-jose/go-jose/v4 v4.1.4
+#19 2.840 go: downloading github.com/google/uuid v1.6.0
+#19 2.858 go: downloading github.com/gorilla/securecookie v1.1.2
+#19 2.858 go: downloading github.com/muhlemmer/gu v0.3.1
+#19 2.859 go: downloading github.com/zitadel/schema v1.3.2
+#19 2.883 go: downloading github.com/gabriel-vasile/mimetype v1.4.15
+#19 2.884 go: downloading github.com/go-playground/universal-translator v0.18.1
+#19 2.884 go: downloading github.com/leodido/go-urn v1.5.0
+#19 2.906 go: downloading github.com/jackc/puddle/v2 v2.2.2
+#19 2.928 go: downloading github.com/segmentio/encoding v0.5.4
+#19 2.968 go: downloading github.com/go-playground/locales v0.14.1
+#19 2.988 go: downloading go.opentelemetry.io/otel v1.45.0
+#19 3.087 go: downloading go.opentelemetry.io/otel/trace v1.45.0
+#19 3.116 go: downloading github.com/segmentio/asm v1.1.3
+#19 3.437 go: downloading go.opentelemetry.io/otel/metric v1.45.0
+#19 3.437 go: downloading github.com/go-logr/logr v1.4.4
+#19 3.437 go: downloading github.com/go-logr/stdr v1.2.2
+#19 3.452 go: downloading go.opentelemetry.io/auto/sdk v1.2.1
+#19 3.466 go: downloading github.com/cespare/xxhash/v2 v2.3.0
+#19 DONE 75.1s
+
+#20 [stage-2 4/4] COPY --from=builder /target /
+#20 DONE 0.0s
+
+#21 exporting to image
+#21 exporting layers
+#21 exporting layers 0.4s done
+#21 writing image sha256:ce5e67fd1ce2aad790626d372160697f2a386c8558bfeff0e051b5a4f61d1a49 done
+#21 naming to docker.io/library/study-gotify:01086b95 done
+#21 DONE 0.4s
+
+#22 resolving provenance for metadata file
+#22 DONE 0.0s

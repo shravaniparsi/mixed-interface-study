@@ -40,6 +40,10 @@ jobs:
           package-manager-cache: false
       - name: Record runtime versions
         run: python scripts/ci/capture_versions.py --output "$CI_ARTIFACT_DIR/runtime-versions.json"
+      - name: Verify closed Gotify qualification evidence
+        run: |
+          python scripts/extension/summarize_gotify_attempt1_v1.py --verify
+          python scripts/extension/summarize_gotify_closure_v1.py --verify
       - name: Python harness tests
         run: python -m unittest discover -s tests -v 2>&1 | tee "$CI_ARTIFACT_DIR/python-tests.log"
       - name: Bootstrap helper tests
