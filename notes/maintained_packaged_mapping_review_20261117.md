@@ -245,3 +245,9 @@ TaskTrove's already-collected mutation module was reread at buildGroupCreatePayl
 ## Meteroid prefix composition check
 
 A whole-file action/export symbol inventory was run over all 32 already-collected Meteroid prefix entries. It is an inventory, not full source review. CSVImportDialog's complete props/setup section establishes a File/onUpload wrapper, outside the no-upload workflow scope. ConfirmationModal and JsonEditor were read fully; they delegate callbacks and do not establish a concrete resource create/edit pair. The authentication files expose registration/login/reset/verification/MFA actions; their complete review remains pending. The selected prefix contains reusable field/modal components, authentication and payment UI rather than an established business CRUD form. This is a filename-prefix sampling limitation, not proof that Meteroid lacks such workflows. No further source was fetched or executed.
+
+## Vexa profile wire binding
+
+Wave 19 was collected once after freeze eccd185e85733b59a5a8e59f4661b39eef5fb2c0 and both blobs verified. PublicProfileSettings received complete component-body reading; unrelated directory/linked-profile rendering was not fully reviewed. It edits field objects containing value/public and calls saveOwnProfile(draft,true). Wave 20 registers that explicit API import to determine whether the wire contract remains nested before applying the top-level property rule. RoomsApi was read through its room and planned-call functions: room create sends name plus relationship/enum fields, and call creation sends title/time/optional invitee-array/agenda reference. No native two-text edit pair is established by these functions. No runtime request occurred.
+
+This metadata-only schedule update receives local preparation/hash verification. Its commit skips redundant full CI while the preceding full CI continues; execution adapters and experiment freezes still require their relevant full checks before dispatch.
