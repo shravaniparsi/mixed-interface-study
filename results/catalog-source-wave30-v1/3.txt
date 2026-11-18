@@ -1,0 +1,999 @@
+/*
+ * DBeaver - Universal Database Manager
+ * Copyright (C) 2010-2026 DBeaver Corp and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.cloudbeaver.service.admin.impl;
+
+import io.cloudbeaver.*;
+import io.cloudbeaver.auth.provider.local.LocalAuthProvider;
+import io.cloudbeaver.model.WebPropertyInfo;
+import io.cloudbeaver.model.session.WebAuthInfo;
+import io.cloudbeaver.model.session.WebSession;
+import io.cloudbeaver.model.user.WebUser;
+import io.cloudbeaver.registry.*;
+import io.cloudbeaver.server.*;
+import io.cloudbeaver.service.DBWServiceServerConfigurator;
+import io.cloudbeaver.service.admin.*;
+import io.cloudbeaver.service.security.SMUtils;
+import io.cloudbeaver.utils.ServletAppUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import org.jkiss.code.NotNull;
+import org.jkiss.code.Nullable;
+import org.jkiss.dbeaver.DBException;
+import org.jkiss.dbeaver.Log;
+import org.jkiss.dbeaver.model.DBConstants;
+import org.jkiss.dbeaver.model.DBPDataSourceContainer;
+import org.jkiss.dbeaver.model.app.DBPDataSourceRegistry;
+import org.jkiss.dbeaver.model.app.DBPProject;
+import org.jkiss.dbeaver.model.auth.SMAuthConfiguration;
+import org.jkiss.dbeaver.model.auth.SMObjectType;
+import org.jkiss.dbeaver.model.data.json.JSONUtils;
+import org.jkiss.dbeaver.model.navigator.DBNBrowseSettings;
+import org.jkiss.dbeaver.model.preferences.DBPPropertyDescriptor;
+import org.jkiss.dbeaver.model.rm.RMProjectType;
+import org.jkiss.dbeaver.model.secret.DBSSecretController;
+import org.jkiss.dbeaver.model.security.SMAuthProviderCustomConfiguration;
+import org.jkiss.dbeaver.model.security.SMConstants;
+import org.jkiss.dbeaver.model.security.SMDataSourceGrant;
+import org.jkiss.dbeaver.model.security.SMSubjectType;
+import org.jkiss.dbeaver.model.security.user.SMTeam;
+import org.jkiss.dbeaver.model.security.user.SMUser;
+import org.jkiss.dbeaver.model.security.user.SMUserTeam;
+import org.jkiss.dbeaver.utils.GeneralUtils;
+import org.jkiss.utils.ArrayUtils;
+import org.jkiss.utils.CommonUtils;
+
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * Web service implementation
+ */
+public class WebServiceAdmin implements DBWServiceAdmin {
+
+    private static final Log log = Log.getLog(WebServiceAdmin.class);
+
+    private final Map<String, WebPermissionDescriptor> permissionDescriptorByName = WebServiceRegistry.getInstance()
+        .getWebServices()
+        .stream()
+        .flatMap(service -> service.getPermissions().stream())
+        .collect(Collectors.toMap(WebPermissionDescriptor::getId, Function.identity()));
+
+    @NotNull
+    @Override
+    public AdminUserInfo getUserById(@NotNull WebSession webSession, @NotNull String userId) throws DBWebException {
+        try {
+            SMUser smUser = webSession.getAdminSecurityController().getUserById(userId);
+            if (smUser == null) {
+                throw new DBException("User '" + userId + "' not found");
+            }
+            return new AdminUserInfo(webSession, new WebUser(smUser));
+        } catch (Exception e) {
+            throw new DBWebException("Error getting user - " + userId, e);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<AdminUserInfo> listUsers(
+        @NotNull WebSession webSession,
+        @NotNull AdminUserInfoFilter adminFilter
+    ) throws DBWebException {
+        try {
+            var securityController = webSession.getAdminSecurityController();
+            SMUser[] foundUsers = securityController.findUsers(adminFilter.getFilter());
+            Set<String> userIds = Arrays.stream(foundUsers).map(SMUser::getUserId).collect(Collectors.toSet());
+            Map<String, SMUserTeam[]> userTeams = securityController.getUsersTeams(userIds);
+            List<AdminUserInfo> users = new ArrayList<>();
+            for (SMUser smUser : foundUsers) {
+                users.add(new AdminUserInfo(
+                    webSession,
+                    new WebUser(smUser),
+                    userTeams.getOrDefault(smUser.getUserId(), new SMUserTeam[0])
+                ));
+            }
+            return users;
+        } catch (Exception e) {
+            throw new DBWebException("Error reading users", e);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<AdminTeamInfo> listTeams(@NotNull WebSession webSession, String teamName) throws DBWebException {
+        try {
+            List<AdminTeamInfo> teams = new ArrayList<>();
+            if (CommonUtils.isEmpty(teamName)) {
+                for (SMTeam team : webSession.getAdminSecurityController().readAllTeams()) {
+                    teams.add(new AdminTeamInfo(webSession, team));
+                }
+            } else {
+                SMTeam team = webSession.getAdminSecurityController().findTeam(teamName);
+                if (team != null) {
+                    teams.add(new AdminTeamInfo(webSession, team));
+                }
+            }
+            return teams;
+        } catch (Exception e) {
+            throw new DBWebException("Error reading teams", e);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<AdminPermissionInfo> listPermissions(@NotNull WebSession webSession) throws DBWebException {
+        try {
+            return SMUtils.findPermissions(SMConstants.SUBJECT_PERMISSION_SCOPE);
+        } catch (Exception e) {
+            throw new DBWebException("Error reading permissions", e);
+        }
+    }
+
+    @Override
+    public WebPropertyInfo[] listTeamMetaParameters(@NotNull WebSession webSession) {
+        // First add user profile properties
+        List<DBPPropertyDescriptor> props = new ArrayList<>(
+            WebMetaParametersRegistry.getInstance().getTeamParameters());
+
+        // Add metas from enabled auth providers
+        for (WebAuthProviderDescriptor ap : WebServiceUtils.getEnabledAuthProviders()) {
+            List<DBPPropertyDescriptor> metaProps = ap.getMetaParameters(SMSubjectType.team);
+            if (!CommonUtils.isEmpty(metaProps)) {
+                props.addAll(metaProps);
+            }
+        }
+
+        return props.stream()
+            .map(p -> new WebPropertyInfo(webSession, p, null))
+            .toArray(WebPropertyInfo[]::new);
+    }
+
+    @NotNull
+    @Override
+    public AdminUserInfo createUser(
+        @NotNull WebSession webSession,
+        String userName,
+        @NotNull Boolean enabled,
+        @Nullable String authRole
+    ) throws DBWebException {
+        if (userName.isEmpty()) {
+            throw new DBWebException("Empty user name");
+        }
+        String userId = userName.trim().toLowerCase();
+        try {
+            GeneralUtils.validateResourceNameUnconditionally(userId);
+        } catch (DBException e) {
+            throw new DBWebException(e.getMessage(), e);
+        }
+        webSession.addInfoMessage("Create new user - " + userId);
+
+        try {
+            var securityController = webSession.getAdminSecurityController();
+            securityController.createUser(userId, Map.of(), enabled, authRole);
+            var smUser = securityController.getUserById(userId);
+            return new AdminUserInfo(webSession, new WebUser(smUser));
+        } catch (Exception e) {
+            throw new DBWebException("Error creating new user", e);
+        }
+    }
+
+    @Override
+    public List<String> listAuthRoles() {
+        return CBApplication.getInstance().getAvailableAuthRoles();
+    }
+
+    @Override
+    public List<String> listTeamRoles() {
+        return CBApplication.getInstance().getAvailableTeamRoles();
+    }
+
+    @Override
+    public boolean deleteUser(@NotNull WebSession webSession, @NotNull String userName) throws DBWebException {
+        if (CommonUtils.equalObjects(userName, webSession.getUser().getUserId())) {
+            throw new DBWebException("You cannot delete yourself");
+        }
+        webSession.addInfoMessage("Delete user - " + userName);
+        try {
+            var secretController = DBSSecretController.getSessionSecretControllerOrNull(webSession);
+            if (secretController != null) {
+                secretController.deleteSubjectSecrets(userName);
+            }
+            webSession.getAdminSecurityController().deleteUser(userName);
+        } catch (Exception e) {
+            throw new DBWebException("Error deleting user", e);
+        }
+        try {
+            webSession.getRmController().deleteProject(RMProjectType.USER + "_" + userName);
+        } catch (DBException e) {
+            log.error("Error deleting user project", e);
+            webSession.addSessionError(e);
+        }
+        return true;
+    }
+
+    @NotNull
+    @Override
+    public AdminTeamInfo createTeam(
+        @NotNull WebSession webSession,
+        @NotNull String teamId,
+        @Nullable String teamName,
+        @Nullable String description
+    ) throws DBWebException {
+        if (teamId.isEmpty()) {
+            throw new DBWebException("Empty team ID");
+        }
+        WebUser user = webSession.getUser();
+        if (user == null) {
+            throw new DBWebException("Admin user is not found");
+        }
+        try {
+            GeneralUtils.validateResourceNameUnconditionally(teamId);
+        } catch (DBException e) {
+            throw new DBWebException(e.getMessage(), e);
+        }
+
+        webSession.addInfoMessage("Create new team - " + teamId);
+        try {
+            SMTeam newTeam = webSession.getAdminSecurityController().createTeam(
+                teamId,
+                teamName,
+                description,
+                user.getUserId()
+            );
+            return new AdminTeamInfo(webSession, newTeam);
+        } catch (Exception e) {
+            throw new DBWebException("Error creating new team", e);
+        }
+    }
+
+    @NotNull
+    @Override
+    public AdminTeamInfo updateTeam(@NotNull WebSession webSession, @NotNull String teamId, @NotNull String teamName, @Nullable String description) throws DBWebException {
+        if (teamId.isEmpty()) {
+            throw new DBWebException("Empty team ID");
+        }
+
+        webSession.addInfoMessage("Update team - " + teamId);
+
+        try {
+            webSession.getAdminSecurityController().updateTeam(teamId, teamName, description);
+            SMTeam newTeam = webSession.getAdminSecurityController().findTeam(teamId);
+            return new AdminTeamInfo(webSession, newTeam);
+        } catch (Exception e) {
+            throw new DBWebException("Error updating team " + teamId, e);
+        }
+    }
+
+    @Override
+    public boolean deleteTeam(@NotNull WebSession webSession, @NotNull String teamId, boolean force) throws DBWebException {
+        try {
+            webSession.addInfoMessage("Delete team - " + teamId);
+
+            var adminSecurityController = webSession.getAdminSecurityController();
+            SMTeam[] userTeams = adminSecurityController.getUserTeams(webSession.getUser().getUserId());
+            if (Arrays.stream(userTeams).anyMatch(team -> team.getTeamId().equals(teamId))) {
+                throw new DBWebException("You can not delete your own team");
+            }
+            var secretController = DBSSecretController.getSessionSecretControllerOrNull(webSession);
+            if (secretController != null) {
+                secretController.deleteSubjectSecrets(teamId);
+            }
+            adminSecurityController.deleteTeam(teamId, force);
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error deleting team", e);
+        }
+    }
+
+    @Override
+    public boolean grantUserTeam(@NotNull WebSession webSession, @NotNull String user, @NotNull String team) throws DBWebException {
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot grant team in anonymous mode");
+        }
+        try {
+            var adminSecurityController = webSession.getAdminSecurityController();
+            adminSecurityController.addUserTeams(user, new String[]{team}, grantor.getUserId());
+
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error granting team", e);
+        }
+    }
+
+    @Override
+    public boolean revokeUserTeam(@NotNull WebSession webSession, @NotNull String user, @NotNull String team) throws DBWebException {
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot revoke team in anonymous mode");
+        }
+        if (CommonUtils.equalObjects(user, grantor.getUserId())) {
+            checkAdminPermissionsRetained(webSession, user, team);
+        }
+        try {
+            var adminSecurityController = webSession.getAdminSecurityController();
+            SMTeam[] userTeams = adminSecurityController.getUserTeams(user);
+            List<String> teamIds = Arrays.stream(userTeams).map(SMTeam::getTeamId).collect(Collectors.toList());
+            if (teamIds.contains(team)) {
+                adminSecurityController.deleteUserTeams(user, new String[]{team});
+            } else {
+                throw new DBWebException("User '" + user + "' doesn't have team '" + team + "'");
+            }
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error revoking team", e);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<AdminPermissionInfo> setSubjectPermissions(@NotNull WebSession webSession, @NotNull String subjectID, @NotNull List<String> permissions) throws DBWebException {
+        validatePermissions(SMConstants.SUBJECT_PERMISSION_SCOPE, permissions);
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot change permissions in anonymous mode");
+        }
+        if (CommonUtils.equalObjects(subjectID, CBConstants.DEFAULT_ADMIN_TEAM)) {
+            throw new DBWebException("Cannot change permissions for team '" + subjectID + "'");
+        }
+        if (!permissions.contains(DBWConstants.PERMISSION_ADMIN)
+            && isOwnSubject(webSession, grantor.getUserId(), subjectID)
+        ) {
+            checkAdminPermissionsRetained(webSession, grantor.getUserId(), subjectID);
+        }
+        webSession.addInfoMessage("Set permissions to subject - " + subjectID);
+
+        try {
+            webSession.getAdminSecurityController().setSubjectPermissions(subjectID, permissions, grantor.getUserId());
+            Set<String> subjectPermissions = webSession.getAdminSecurityController().getSubjectPermissions(subjectID);
+            webSession.refreshUserData();
+            return listPermissions(webSession).stream()
+                .filter(p -> subjectPermissions.contains(p.getId()))
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new DBWebException("Error setting subject permissions", e);
+        }
+    }
+
+    /**
+     * Checks that the specified subject is the user himself or one of his teams.
+     */
+    private boolean isOwnSubject(
+        @NotNull WebSession webSession,
+        @NotNull String userId,
+        @NotNull String subjectId
+    ) throws DBWebException {
+        if (subjectId.equals(userId)) {
+            return true;
+        }
+        try {
+            for (SMTeam userTeam : webSession.getAdminSecurityController().getUserTeams(userId)) {
+                if (userTeam.getTeamId().equals(subjectId)) {
+                    return true;
+                }
+            }
+        } catch (DBException e) {
+            throw new DBWebException("Error reading teams of user " + userId, e);
+        }
+        return false;
+    }
+
+    /**
+     * Checks that the user still has administrative permission after revoking permissions from the specified subject.
+     * Prevents the last administrator from locking himself out of the server.
+     */
+    private void checkAdminPermissionsRetained(
+        @NotNull WebSession webSession,
+        @NotNull String userId,
+        @NotNull String revokedSubjectId
+    ) throws DBWebException {
+        if (ServletAppUtils.getServletApplication().isDistributed()) {
+            // permissions are granted by auth roles, not by subjects
+            return;
+        }
+        try {
+            var adminSecurityController = webSession.getAdminSecurityController();
+            if (!adminSecurityController.getSubjectPermissions(revokedSubjectId).contains(DBWConstants.PERMISSION_ADMIN)) {
+                // subject doesn't grant administrative permission, nothing to lose
+                return;
+            }
+            for (SMTeam userTeam : adminSecurityController.getUserTeams(userId)) {
+                String teamId = userTeam.getTeamId();
+                if (!teamId.equals(revokedSubjectId)
+                    && adminSecurityController.getSubjectPermissions(teamId).contains(DBWConstants.PERMISSION_ADMIN)
+                ) {
+                    return;
+                }
+            }
+        } catch (DBException e) {
+            throw new DBWebException("Error reading permissions of user " + userId, e);
+        }
+        throw new DBWebException("You cannot revoke your own administrative permissions");
+    }
+
+    @Override
+    public boolean setUserCredentials(@NotNull WebSession webSession,
+                                      @NotNull String userID,
+                                      @NotNull String providerId,
+                                      @WebParameterSecure @NotNull Map<String, Object> credentials
+    ) throws DBWebException {
+        WebAuthProviderDescriptor authProvider = WebAuthProviderRegistry.getInstance().getAuthProvider(providerId);
+        if (authProvider == null) {
+            throw new DBWebException("Invalid auth provider '" + providerId + "'");
+        }
+        webSession.addInfoMessage("Set credentials for user - " + userID);
+
+        // Check userId credential.
+        // FIXME: It is actually a hack. All crdentials must be passed from client
+        if (LocalAuthProvider.PROVIDER_ID.equals(providerId)) {
+            credentials.put(LocalAuthProvider.CRED_USER, userID);
+        }
+        try {
+            webSession.getAdminSecurityController().setUserCredentials(userID, authProvider.getId(), credentials);
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error setting user credentials", e);
+        }
+    }
+
+    @Override
+    public boolean deleteUserCredentials(
+        @NotNull WebSession webSession,
+        @NotNull String userId,
+        @NotNull String providerId
+    ) throws DBWebException {
+        try {
+            webSession.getAdminSecurityController().deleteUserCredentials(userId, providerId);
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error setting user credentials", e);
+        }
+    }
+
+    @Override
+    public Boolean enableUser(@NotNull WebSession webSession, @NotNull String userID, @NotNull Boolean enabled) throws DBWebException {
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot activate user in anonymous mode");
+        }
+        if (CommonUtils.equalObjects(userID, webSession.getUser().getUserId())) {
+            throw new DBWebException("You cannot edit your own permissions");
+        }
+        webSession.addInfoMessage("Enable user - " + userID);
+        try {
+            webSession.getAdminSecurityController().enableUser(userID, enabled, grantor.getUserId(), "Disabled manually");
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error activating user", e);
+        }
+    }
+
+    @Override
+    public Boolean setUserAuthRole(@NotNull WebSession webSession, @NotNull String userId, @NotNull String authRole) throws DBWebException {
+        try {
+            log.info(String.format("User set auth role: [grantorUserId=%s]", webSession.getUserId()));
+            webSession.getAdminSecurityController().setUserAuthRole(userId, authRole);
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error updating user auth role", e);
+        }
+    }
+
+    @Override
+    public Boolean setUserTeamRole(
+        @NotNull WebSession webSession,
+        @NotNull String userId,
+        @NotNull String teamId,
+        @Nullable String teamRole
+    ) throws DBWebException {
+        try {
+            webSession.getAdminSecurityController().setUserTeamRole(userId, teamId, teamRole);
+            return true;
+        } catch (Exception e) {
+            throw new DBWebException("Error updating user auth role", e);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    // Connection management
+
+    @Override
+    public List<AdminConnectionSearchInfo> searchConnections(@NotNull WebSession webSession, @NotNull List<String> hostNames) throws DBWebException {
+        ConnectionSearcher searcher = new ConnectionSearcher(webSession, hostNames.toArray(new String[0]));
+        searcher.run(webSession.getProgressMonitor());
+        return searcher.getFoundConnections();
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    // Features
+
+    @Override
+    public List<DBWFeatureSet> listFeatureSets(@NotNull WebSession webSession) throws DBWebException {
+        return ServletAppUtils.getServletApplication().getFeatureRegistry().getWebFeatures();
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    // Auth providers
+
+    @Override
+    public List<WebPropertyInfo> listAuthProviderConfigurationParameters(@NotNull WebSession webSession, @NotNull String providerId) throws DBWebException {
+        WebAuthProviderDescriptor authProvider = WebAuthProviderRegistry.getInstance().getAuthProvider(providerId);
+        if (authProvider == null) {
+            throw new DBWebException("Invalid provider ID " + providerId);
+        }
+        var application = CBApplication.getInstance();
+
+
+        Stream<WebAuthProviderProperty> commonPropertiesStream = WebAuthProviderRegistry.getInstance()
+            .getCommonProperties()
+            .stream()
+            .filter(commonProperties -> commonProperties.isApplicableFor(authProvider))
+            .flatMap(commonProperties -> commonProperties.getConfigurationParameters().stream());
+
+        return Stream.concat(authProvider.getConfigurationParameters().stream(), commonPropertiesStream)
+            .filter(p -> {
+                boolean allFeaturesEnabled = true;
+                for (String feature : p.getRequiredFeatures()) {
+                    allFeaturesEnabled = application.getAppConfiguration().isFeatureEnabled(feature);
+                    if (!allFeaturesEnabled) {
+                        break;
+                    }
+                }
+                return allFeaturesEnabled;
+            }).map(p -> new WebPropertyInfo(webSession, p)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WebAuthProviderConfiguration> listAuthProviderConfigurations(
+        @NotNull HttpServletRequest request,
+        @NotNull WebSession webSession,
+        @Nullable String providerId
+    ) {
+        String origin = ServletAppUtils.getOriginFromRequest(request);
+        List<WebAuthProviderConfiguration> result = new ArrayList<>();
+        for (SMAuthProviderCustomConfiguration cfg : CBApplication.getInstance().getAppConfiguration().getAuthCustomConfigurations()) {
+            if (providerId != null && !providerId.equals(cfg.getProvider())) {
+                continue;
+            }
+            WebAuthProviderDescriptor authProvider = WebAuthProviderRegistry.getInstance().getAuthProvider(cfg.getProvider());
+            if (authProvider != null) {
+                result.add(new WebAuthProviderConfiguration(
+                    authProvider,
+                    maskSecuredConfigParameters(authProvider.getConfigurationParameters(), cfg),
+                    origin
+                ));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public WebAuthProviderConfiguration saveAuthProviderConfiguration(
+        @NotNull HttpServletRequest request,
+        @NotNull WebSession webSession,
+        @NotNull String providerId,
+        @NotNull String id,
+        @NotNull String displayName,
+        boolean disabled,
+        @Nullable String iconURL,
+        @Nullable String description,
+        @Nullable Map<String, Object> parameters
+    ) throws DBWebException {
+        WebAuthProviderDescriptor authProvider = WebAuthProviderRegistry.getInstance().getAuthProvider(providerId);
+        if (authProvider == null) {
+            throw new DBWebException("Auth provider '" + providerId + "' not found");
+        }
+        webSession.addInfoMessage("Save configuration for auth provider - " + providerId);
+
+        SMAuthProviderCustomConfiguration providerConfig = new SMAuthProviderCustomConfiguration(id);
+        providerConfig.setProvider(providerId);
+        providerConfig.setDisplayName(displayName);
+        providerConfig.setDisabled(disabled);
+        providerConfig.setIconURL(iconURL);
+        providerConfig.setDescription(description);
+        SMAuthProviderCustomConfiguration savedConfig = getProviderConfig(id);
+        if (parameters != null && savedConfig != null) {
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                if (CBConstants.SECURED_VALUE.equals(entry.getValue())) {
+                    parameters.put(entry.getKey(), savedConfig.getParameter(entry.getKey()));
+                }
+            }
+        }
+        providerConfig.setParameters(parameters);
+        CBApplication.getInstance().getAppConfiguration().addAuthProviderConfiguration(providerConfig);
+        try {
+            CBApplication.getInstance().flushConfiguration(webSession);
+        } catch (DBException e) {
+            throw new DBWebException("Error saving server configuration", e);
+        }
+        log.info(String.format(
+            "Auth provider configuration created: [id=%s, provider=%s, userId=%s]",
+            providerConfig.getId(),
+            providerConfig.getProvider(),
+            webSession.getUserId()
+        ));
+        return new WebAuthProviderConfiguration(
+            authProvider,
+            maskSecuredConfigParameters(authProvider.getConfigurationParameters(), providerConfig),
+            ServletAppUtils.getOriginFromRequest(request)
+        );
+    }
+
+    @Override
+    public boolean deleteAuthProviderConfiguration(@NotNull WebSession webSession, @NotNull String id) throws DBWebException {
+        webSession.addInfoMessage("Delete configuration for auth provider - " + id);
+
+        if (CBApplication.getInstance().getAppConfiguration().deleteAuthProviderConfiguration(id)) {
+            try {
+                CBApplication.getInstance().flushConfiguration(webSession);
+            } catch (DBException e) {
+                throw new DBWebException("Error saving server configuration", e);
+            }
+            log.info(String.format("Auth provider configuration deleted: [id=%s, userId=%s]", id, webSession.getUserId()));
+            return true;
+        }
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    // Server configuration
+
+
+    @Override
+    public boolean configureServer(@NotNull WebSession webSession, @NotNull Map<String, Object> params) throws DBWebException {
+        try {
+
+            CBServerConfigurationMapper<?, ?> mapper = CBApplication.getInstance()
+                .getServerConfigurationController().createServerConfigurationInputMapper();
+            CBServerConfigurations configurations = mapper.loadServerConfigurationsFromParams(params);
+            String adminName = configurations.adminName();
+            String adminPassword = configurations.adminPassword();
+            if (CommonUtils.isEmpty(adminName)) {
+                // Grant admin permissions to the current user
+                WebUser curUser = webSession.getUser();
+                adminName = curUser == null ? null : curUser.getUserId();
+                adminPassword = null;
+            }
+            List<SMAuthConfiguration> authInfos = new ArrayList<>();
+            List<WebAuthInfo> authInfoList = webSession.getAllAuthInfo();
+            if (CommonUtils.isEmpty(adminName)) {
+                // Try to get admin name from existing authentications (first one)
+                if (!authInfoList.isEmpty()) {
+                    adminName = authInfoList.getFirst().getUserId();
+                }
+            }
+            if (CommonUtils.isEmpty(adminName)) {
+                adminName = CBConstants.DEFAULT_ADMIN_NAME;
+            }
+            for (WebAuthInfo webAuthInfo : authInfoList) {
+                authInfos.add(new SMAuthConfiguration(
+                    webAuthInfo.getAuthProviderDescriptor().getId(),
+                    webAuthInfo.getUserCredentials()));
+            }
+
+            // Patch configuration by services
+            for (DBWServiceServerConfigurator wsc : WebServiceRegistry.getInstance().getWebServices(DBWServiceServerConfigurator.class)) {
+                try {
+                    wsc.configureServer(CBApplication.getInstance(), webSession, configurations.serverConfig(), configurations.appConfig());
+                } catch (Exception e) {
+                    log.warn("Error configuring server by web service " + wsc.getClass().getName(), e);
+                }
+            }
+
+            boolean configurationMode = CBApplication.getInstance().isConfigurationMode();
+
+            Map<String, Object> productConfiguration = JSONUtils.getObject(params, CBConstants.PARAM_PRODUCT_CONFIGURATION);
+            if (!productConfiguration.isEmpty()) {
+                CBApplication.getInstance().getServerConfigurationController().saveProductConfiguration(productConfiguration);
+            }
+
+            CBApplication.getInstance().finishConfiguration(
+                adminName,
+                adminPassword,
+                authInfos,
+                configurations.serverConfig(),
+                configurations.appConfig(),
+                webSession
+            );
+
+            // Refresh active session
+            if (configurationMode) {
+                // In config mode we always refresh because admin user doesn't exist yet
+                webSession.resetUserState();
+            } else {
+                // Just reload session state
+                webSession.refreshUserPermissions();
+            }
+
+            WebAppUtils.getWebApplication().getDriverRegistry().refreshApplicableDrivers();
+        } catch (Throwable e) {
+            throw new DBWebException("Error configuring server", e);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean setDefaultNavigatorSettings(@NotNull WebSession webSession, @NotNull DBNBrowseSettings settings) throws DBWebException {
+        CBApplication.getInstance().getAppConfiguration().setDefaultNavigatorSettings(settings);
+        if (CBApplication.getInstance().isConfigurationMode()) {
+            return true;
+        }
+        try {
+            CBApplication.getInstance().flushConfiguration(webSession);
+        } catch (DBException e) {
+            throw new DBWebException("Error saving server configuration", e);
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean updateProductConfiguration(@NotNull WebSession webSession, @NotNull Map<String, Object> productConfiguration) throws DBWebException {
+        try {
+            CBApplication.getInstance().saveProductConfiguration(webSession, productConfiguration);
+            return true;
+        } catch (DBException e) {
+            throw new DBWebException("Error updating product configuration", e);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    // Access management
+
+    @Override
+    public SMDataSourceGrant[] getConnectionSubjectAccess(
+        @NotNull WebSession webSession,
+        @Nullable String projectId,
+        @NotNull String connectionId
+    ) throws DBWebException {
+        DBPProject globalProject = ServletAppUtils.getProjectById(webSession, projectId);
+        if (!WebServiceUtils.isGlobalProject(globalProject)) {
+            throw new DBWebException("Project '" + projectId + "'is not global");
+        }
+        try {
+            return webSession.getAdminSecurityController().getObjectPermissionGrants(connectionId, SMObjectType.datasource)
+                .stream()
+                .map(objectPermissionGrant -> new SMDataSourceGrant(
+                    objectPermissionGrant.getObjectPermissions().getObjectId(),
+                    objectPermissionGrant.getSubjectId(),
+                    objectPermissionGrant.getSubjectType()
+                ))
+                .toArray(SMDataSourceGrant[]::new);
+        } catch (DBException e) {
+            throw new DBWebException("Error getting connection access info", e);
+        }
+    }
+
+    @Override
+    public boolean setConnectionSubjectAccess(
+        @NotNull WebSession webSession,
+        @Nullable String projectId,
+        @NotNull String connectionId,
+        @NotNull List<String> subjects
+    ) throws DBWebException {
+        validateThatConnectionGlobal(webSession, projectId, List.of(connectionId));
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot grant connection access in anonymous mode");
+        }
+        try {
+            var adminSM = webSession.getAdminSecurityController();
+            adminSM.deleteAllObjectPermissions(connectionId, SMObjectType.datasource);
+            webSession.getAdminSecurityController()
+                .setObjectPermissions(Set.of(connectionId), SMObjectType.datasource,
+                    new HashSet<>(subjects),
+                    Set.of(SMConstants.DATA_SOURCE_ACCESS_PERMISSION), grantor.getUserId());
+        } catch (DBException e) {
+            throw new DBWebException("Error setting connection subject access", e);
+        }
+        return true;
+    }
+
+    void validateThatConnectionGlobal(WebSession webSession, String projectId, Collection<String> connectionIds) throws DBWebException {
+        DBPProject globalProject = ServletAppUtils.getProjectById(webSession, projectId);
+        if (!WebServiceUtils.isGlobalProject(globalProject)) {
+            throw new DBWebException("Project '" + projectId + "'is not global");
+        }
+        for (String connectionId : connectionIds) {
+            DBPDataSourceContainer dataSource = getDataSourceRegistry(webSession, projectId).getDataSource(connectionId);
+            if (dataSource == null) {
+                throw new DBWebException("Connection '" + connectionId + "' not found");
+            }
+        }
+    }
+
+    @Override
+    public boolean addConnectionsAccess(
+        @NotNull WebSession webSession,
+        @Nullable String projectId,
+        @NotNull List<String> connectionIds,
+        @NotNull List<String> subjects
+    ) throws DBWebException {
+        validateThatConnectionGlobal(webSession, projectId, connectionIds);
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot grant connection access in anonymous mode");
+        }
+        try {
+            var adminSM = webSession.getAdminSecurityController();
+            adminSM.addObjectPermissions(
+                new HashSet<>(connectionIds),
+                SMObjectType.datasource,
+                new HashSet<>(subjects),
+                Set.of(SMConstants.DATA_SOURCE_ACCESS_PERMISSION),
+                grantor.getUserId()
+            );
+        } catch (DBException e) {
+            throw new DBWebException("Error adding connection subject access", e);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteConnectionsAccess(
+        @NotNull WebSession webSession,
+        @Nullable String projectId,
+        @NotNull List<String> connectionIds,
+        @NotNull List<String> subjects
+    ) throws DBWebException {
+        validateThatConnectionGlobal(webSession, projectId, connectionIds);
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot grant connection access in anonymous mode");
+        }
+        try {
+            var adminSM = webSession.getAdminSecurityController();
+            adminSM.deleteObjectPermissions(
+                new HashSet<>(connectionIds),
+                SMObjectType.datasource,
+                new HashSet<>(subjects),
+                Set.of(SMConstants.DATA_SOURCE_ACCESS_PERMISSION)
+            );
+        } catch (DBException e) {
+            throw new DBWebException("Error adding connection subject access", e);
+        }
+        return true;
+    }
+
+    @Override
+    public SMDataSourceGrant[] getSubjectConnectionAccess(@NotNull WebSession webSession, @NotNull String subjectId) throws DBWebException {
+        try {
+            return webSession.getAdminSecurityController().getSubjectObjectPermissionGrants(subjectId, SMObjectType.datasource)
+                .stream()
+                .map(objectPermissionsGrant ->
+                    new SMDataSourceGrant(
+                        objectPermissionsGrant.getObjectPermissions().getObjectId(),
+                        objectPermissionsGrant.getSubjectId(),
+                        objectPermissionsGrant.getSubjectType()
+                    ))
+                .toArray(SMDataSourceGrant[]::new);
+        } catch (DBException e) {
+            throw new DBWebException("Error getting connection access info", e);
+        }
+    }
+
+    @Override
+    public boolean setSubjectConnectionAccess(@NotNull WebSession webSession, @NotNull String subjectId, @NotNull List<String> connections) throws DBWebException {
+/*
+        for (String connectionId : connections) {
+            if (getGlobalRegistry(webSession).getDataSource(connectionId) == null) {
+                throw new DBWebException("Connection '" + connectionId + "' not found");
+            }
+        }
+*/
+        WebUser grantor = webSession.getUser();
+        if (grantor == null) {
+            throw new DBWebException("Cannot grant access in anonymous mode");
+        }
+        try {
+            webSession.getAdminSecurityController().deleteAllSubjectObjectPermissions(subjectId, SMObjectType.datasource);
+            webSession.getAdminSecurityController()
+                .setObjectPermissions(
+                    new HashSet<>(connections),
+                    SMObjectType.datasource,
+                    Set.of(subjectId),
+                    Set.of(SMConstants.DATA_SOURCE_ACCESS_PERMISSION),
+                    grantor.getUserId());
+        } catch (DBException e) {
+            throw new DBWebException("Error setting subject connection access", e);
+        }
+        return true;
+    }
+
+    @Override
+    public WebPropertyInfo saveUserMetaParameter(@NotNull WebSession webSession, @NotNull String id, @NotNull String displayName, String description, Boolean required) throws DBWebException {
+        throw new DBWebException("Not implemented");
+    }
+
+    @Override
+    public Boolean deleteUserMetaParameter(@NotNull WebSession webSession, @NotNull String id) throws DBWebException {
+        throw new DBWebException("Not implemented");
+    }
+
+    @Override
+    public Boolean setUserMetaParameterValues(@NotNull WebSession webSession, @NotNull String userId, @NotNull Map<String, String> parameters) throws DBWebException {
+        try {
+            webSession.getAdminSecurityController().setSubjectMetas(userId, parameters);
+            return true;
+        } catch (DBException e) {
+            throw new DBWebException("Error changing user '" + userId + "' meta parameters", e);
+        }
+    }
+
+    @Override
+    public Boolean setTeamMetaParameterValues(@NotNull WebSession webSession, @NotNull String teamId, @NotNull Map<String, String> parameters) throws DBWebException {
+        try {
+            webSession.getAdminSecurityController().setSubjectMetas(teamId, parameters);
+            return true;
+        } catch (DBException e) {
+            throw new DBWebException("Error changing team '" + teamId + "' meta parameters", e);
+        }
+    }
+
+    private DBPDataSourceRegistry getDataSourceRegistry(WebSession session, String projectId) throws DBWebException {
+        WebProjectImpl project = session.getProjectById(projectId);
+        if (project == null) {
+            throw new DBWebException("Project '" + projectId + "' not found");
+        }
+        return project.getDataSourceRegistry();
+    }
+
+    private void validatePermissions(@NotNull String expectedScope, @NotNull Collection<String> permissions) throws DBWebException {
+        for (String permission : permissions) {
+            var permissionDescriptor = permissionDescriptorByName.get(permission);
+            if (permissionDescriptor == null) {
+                throw new DBWebException("Unknown permission: " + permission);
+            }
+            if (!expectedScope.equals(permissionDescriptor.getScope())) {
+                throw new DBWebException(MessageFormat.format(
+                    "Unexpected permission scope, expected [{}] but was [{}]",
+                    expectedScope, permissionDescriptor.getScope()
+                ));
+            }
+        }
+    }
+
+    @NotNull
+    private SMAuthProviderCustomConfiguration maskSecuredConfigParameters(
+        @NotNull List<WebAuthProviderProperty> configProperties,
+        @NotNull SMAuthProviderCustomConfiguration config
+    ) {
+        SMAuthProviderCustomConfiguration securedConfig = new SMAuthProviderCustomConfiguration(config);
+        for (WebAuthProviderProperty property : configProperties) {
+            String[] features = property.getFeatures();
+            if (features != null && ArrayUtils.contains(features, DBConstants.PROP_FEATURE_PASSWORD)) {
+                String propertyId = property.getId();
+                Object securedParameterValue = config.getParameter(propertyId);
+                if (securedParameterValue != null && !securedParameterValue.toString().isEmpty()) {
+                    securedConfig.getParameters().put(propertyId, CBConstants.SECURED_VALUE);
+                }
+            }
+        }
+        return securedConfig;
+    }
+
+    @Nullable
+    private SMAuthProviderCustomConfiguration getProviderConfig(@NotNull String configId) {
+        return CBApplication.getInstance().getAppConfiguration().getAuthCustomConfigurations().stream()
+            .filter(cfg -> Objects.equals(cfg.getId(), configId))
+            .filter(cfg ->
+                WebAuthProviderRegistry.getInstance().getAuthProvider(cfg.getProvider()) != null
+            ).findFirst()
+            .orElse(null);
+    }
+}
