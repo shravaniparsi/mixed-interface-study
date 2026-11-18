@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/maintained-packaged-dependencies-v9.json',
     'scripts/extension/summarize_gotify_closure_v1.py',
     'manifests/maintained-gotify-closure-v1.json',
     'notes/maintained_gotify_closure_20261117.md',
