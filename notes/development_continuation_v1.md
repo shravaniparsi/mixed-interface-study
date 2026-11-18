@@ -1,0 +1,21 @@
+# Ordinary native/API continuation comparison qualified
+
+Run44258918439 at82cf82419cfceb388fab6c82dbc7a143a1f55f04 completed all four phases once: warm reference, seed, restored native and restored API. Two ordinary creates in separate fresh databases returned201. The warm native edit, restored native edit and restored API edit each returned200 and persisted firstName=Edited with the same record ID and checked non-target fields unchanged. Orchestration elapsed56.961seconds; this is a harness duration, not a controlled performance comparison.
+
+The native/API arms restored the same H2 checkpoint and supported Elasticsearch snapshot. Their full initial AdminUserDTOs, admin actor projections and canonical pre-edit search representations matched. Both also matched the seed's full record and actor. The API matching gate passed before its update. It submitted the complete eight-field JSON body captured from the native PUT, including the same ID; no frontend validation predicates were synthesized for the API arm. The API arm used native login as shared setup but did not load the editor.
+
+Both final full admin records matched except lastModifiedDate, the single audit field prospectively excluded from cross-arm equality. Its original values were retained: the native and API updates occurred sequentially and modification timestamps differed. All other returned fields were checked, including imageUrl and creation audit fields. Post-edit search digests also matched. This does not establish synchronization of every index field with every database audit field; that was not this experiment's outcome.
+
+The warm reference performed an ordinary API create followed immediately by native editing in the same running application. Its successful outcome supports ordinary workflow operability without a restart after creation. It used a separate fresh database and generated state, so it is not an identical-state causal comparison against the restored arms. Do not pool it with independent applications or treat it as proof about altered inputs.
+
+The retained-data verifier reconstructed the comparisons, complete update bodies, write counts, snapshot/restore checks and unchanged returned fields. Browser container image IDs, successful exits and shared isolated namespace were checked against the Elasticsearch container (network mode none). The npm lock remained byte-identical to the successful original control. GitHub artifact ZIP digest verification passed and source CI44258911416 passed. Timing metadata reports138000ms run duration for the application job and101000ms for source CI, both Ubuntu total_ms0. The retained timing count is now763; these reports are not an invoice or a complete cost account.
+
+## What this resolves and what remains
+
+There is now an executed ordinary matched-state API continuation comparator and an ordinary warm native reference on one exposed development workflow. This is a material engineering qualification, not a new defect, an independent evaluation unit or method-superiority evidence. No additional ordinary replay of this same schedule is needed.
+
+A native form that blocks submission emits no actual request. This run therefore does not yet qualify construction of an equivalent API request for such cases. The independent study must prospectively define how it obtains complete original serialization, how it marks unavailable comparisons, and how it distinguishes native blocking from a backend rejection or unequal input. It must not infer a request by dropping inconvenient fields or count a blocked native form as incremental evidence when its API comparator is unqualified. The warm/restored limitations also remain explicit.
+
+Next freeze the independent-input design and workflow-selection rules with these measurement requirements, competent schema/source/API baselines, exposure accounting and a bounded qualification policy. Do not add finding-driven perturbations to this already exposed workflow or reopen the closed nine-case variation experiment. Publication contribution and Q1 readiness remain unestablished.
+
+Reproduce the retained comparison with `python3 scripts/extension/verify_development_continuation_v1.py results/development-continuation-v1-ci-44258918439/continuation-measurement.json`.
