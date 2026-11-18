@@ -29,6 +29,8 @@ SOURCES = {
 }
 ARTIFACTS = [
     'manifests/maintained-packaged-dependency-collection-v31.json',
+    'manifests/maintained-packaged-dependency-collection-v32.json',
+    'manifests/maintained-packaged-dependencies-v33.json',
     'manifests/maintained-packaged-dependencies-v32.json',
     'manifests/maintained-packaged-dependencies-v31.json',
     'manifests/maintained-packaged-dependency-collection-v30.json',
