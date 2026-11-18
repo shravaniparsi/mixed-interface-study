@@ -49,6 +49,29 @@ def main():
         raise SystemExit('Dockerfile differs from inspected source')
     if (source / 'GO_VERSION').read_text().strip() != '1.27.2':
         raise SystemExit('Unexpected toolchain version')
+    bases = json.loads((out / 'gotify-base-images.json').read_text())
+    replacements = {
+        'node:24': 'FROM --platform=${BUILDPLATFORM} node:24 AS js-builder',
+        'gotify/build:1.27.2-linux-amd64': 'FROM --platform=${BUILDPLATFORM} gotify/build:${GO_VERSION}-${__TARGETPLATFORM_GO_NOTATION} AS builder',
+        'debian:sid-slim': 'FROM debian:${DEBIAN}',
+    }
+    prepared = dockerfile.read_text()
+    for tag, original in replacements.items():
+        if prepared.count(original) != 1:
+            raise SystemExit('Unexpected original FROM directive')
+        digest = bases[tag]['digest']
+        repository = tag.rsplit(':', 1)[0]
+        if not digest.startswith(repository + '@sha256:') or len(digest.rsplit(':', 1)[-1]) != 64:
+            raise SystemExit('Unexpected base digest')
+        if tag.startswith('node:'):
+            replacement = 'FROM --platform=${BUILDPLATFORM} ' + digest + ' AS js-builder'
+        elif tag.startswith('gotify/'):
+            replacement = 'FROM --platform=${BUILDPLATFORM} ' + digest + ' AS builder'
+        else:
+            replacement = 'FROM ' + digest
+        prepared = prepared.replace(original, replacement)
+    buildfile = out / 'gotify-pinned.Dockerfile'
+    buildfile.write_text(prepared)
     flags = '-w -s -X main.Version=study-01086b95 -X main.Commit=' + REVISION + ' -X main.Mode=prod'
     command = ['timeout', '--signal=TERM', '--kill-after=15', str(seconds),
                'docker', 'buildx', 'build', '--load', '--platform', 'linux/amd64',
@@ -56,9 +79,10 @@ def main():
                '--build-arg', 'GO_VERSION=1.27.2', '--build-arg', 'BUILD_JS=1',
                '--build-arg', 'RUN_TESTS=0', '--build-arg', 'LD_FLAGS=' + flags,
                '--label', 'org.opencontainers.image.revision=' + REVISION,
-               '-t', IMAGE, '-f', str(dockerfile), str(source)]
+               '-t', IMAGE, '-f', str(buildfile), str(source)]
     record = {'source_revision': revision, 'dockerfile_sha256': sha256(dockerfile),
               'command': command, 'application_started': False,
+              'base_images': bases, 'prepared_dockerfile_sha256': sha256(buildfile),
               'native_ui_build_requested': True, 'native_ui_serving_verified': False,
               'status': 'started', 'time_limit_seconds': seconds,
               'started_unix': time.time()}

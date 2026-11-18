@@ -1,0 +1,70 @@
+name: Maintained Gotify ordinary controls v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Establish shared deadline
+        run: |
+          mkdir -p "$RUNNER_TEMP/evidence"
+          printf 'STUDY_JOB_DEADLINE=%s\n' "$(( $(date +%s) + 1650 ))" >> "$GITHUB_ENV"
+          date -u +%FT%TZ > "$RUNNER_TEMP/evidence/job-start.txt"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: gotify/server
+          ref: 01086b95a8b69ee87383f6e8bcae601d8c33384b
+          path: subject
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Install pinned browser
+        run: |
+          set -euo pipefail
+          export CI_ARTIFACT_DIR="$RUNNER_TEMP/evidence"
+          timeout --signal=TERM --kill-after=15 600 bash scripts/ci/install_browser.sh 2>&1 | tee "$CI_ARTIFACT_DIR/install.log"
+      - name: Resolve original base images and remove credentials
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          export DOCKER_CONFIG="$RUNNER_TEMP/study-docker-auth"
+          mkdir -m 700 "$DOCKER_CONFIG"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+          unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
+          for image in node:24 gotify/build:1.27.2-linux-amd64 debian:sid-slim; do
+            timeout --signal=TERM --kill-after=15 120 docker pull --platform linux/amd64 "$image" >> "$RUNNER_TEMP/evidence/base-pulls.log" 2>&1
+          done
+          python3 - <<'PY'
+          import json,os,subprocess
+          from pathlib import Path
+          result={}
+          for tag in ['node:24','gotify/build:1.27.2-linux-amd64','debian:sid-slim']:
+              info=json.loads(subprocess.check_output(['docker','image','inspect',tag]))[0]
+              repository=tag.rsplit(':',1)[0]
+              matching=[d for d in info['RepoDigests'] if d.startswith(repository+'@sha256:')]
+              assert len(matching)==1 and info['Architecture']=='amd64' and info['Os']=='linux'
+              result[tag]={'digest':matching[0],'image_id':info['Id'],'inspection':info}
+          (Path(os.environ['RUNNER_TEMP'])/'evidence/gotify-base-images.json').write_text(json.dumps(result,indent=2)+'\n')
+          PY
+      - name: Build pinned source and native UI within shared budget
+        run: python3 scripts/extension/build_maintained_gotify_v1.py
+      - name: Qualify ordinary controls and exact snapshot restoration
+        run: python3 scripts/extension/run_maintained_gotify_controls_v1.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: maintained-gotify-controls-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence/**
+          retention-days: 7
+          if-no-files-found: warn
