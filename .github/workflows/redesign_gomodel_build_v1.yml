@@ -1,0 +1,48 @@
+name: Redesign GoModel original build v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published full commit for this one build attempt
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: redesign-gomodel-build-v1
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify frozen inputs and initialize evidence
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import json,hashlib,pathlib; x=json.load(open("manifests/redesign-gomodel-build-v1.json")); [(None if hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h else (_ for _ in ()).throw(ValueError(p))) for p,h in x["sha256"].items()]'
+          mkdir -p "$RUNNER_TEMP/redesign-gomodel-build-v1/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/redesign-gomodel-build-v1/evidence/freeze.txt"
+          date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/redesign-gomodel-build-v1/evidence/setup-started.txt"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22.23.2'
+          package-manager-cache: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: '1.27.4'
+          cache: false
+      - name: Verify original archive and build once
+        run: python3 development/redesign-gomodel-build-v1/build.py
+      - name: Retain build evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: redesign-gomodel-build-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/redesign-gomodel-build-v1/evidence/
+          retention-days: 14
+          if-no-files-found: warn
