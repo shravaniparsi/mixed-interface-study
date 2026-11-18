@@ -1,0 +1,3 @@
+# Source wave 21: original Nginx Proxy Manager build and actor lifecycle
+
+Acquire exactly ten scheduled original files at frozen revision 20016b9d91d49c9133f1b4d26ab5a289c72ec1db: frontend/build scripts, backend startup/migration, container helper/overlay installer, native authentication context/token request and token model. The original latest-image metadata declares a different source prefix; it is unqualified and will not be run. This acquisition prepares the separately permitted original-source build route, not an alternative tag or workflow. No build, dependency install, layer pull or application job is authorized here. Existing source caps, no-retry requests and publication-before-acquisition remain.
