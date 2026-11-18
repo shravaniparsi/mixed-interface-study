@@ -1,0 +1,43 @@
+{
+  "status": "qualification_unavailable",
+  "stage": "restored_start",
+  "scientific_cases": 0,
+  "altered_inputs_executed": false,
+  "checks": {
+    "native_create": true,
+    "api_create": true,
+    "checkpoint_backup": true,
+    "warm_frame_preserved": true,
+    "restored_start_state": false,
+    "restored_actor": true,
+    "restored_browser": true,
+    "restored_form": true
+  },
+  "branches": [
+    {
+      "label": "warm",
+      "request": {
+        "method": "PUT",
+        "path": "/admin/guardrails",
+        "body": {
+          "name": "study-api-ordinary",
+          "type": "header_edit",
+          "description": "Ordinary local configuration",
+          "user_path": "/study/local",
+          "config": {
+            "request_remove": "X-Study-Remove",
+            "request_set": "X-Study-Request: edited",
+            "response_add": "X-Study-Additional: original",
+            "response_remove": "X-Study-Remove-Response",
+            "response_set": "X-Study-Response: original",
+            "upstream_set": "X-Study-Upstream: original"
+          }
+        },
+        "actor": "Bearer synthetic-local-research-master-v1"
+      },
+      "intended_edit": true
+    }
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: restored start equivalence failed; no restored write allowed",
+  "stack": "AssertionError [ERR_ASSERTION]: restored start equivalence failed; no restored write allowed\n    at file:///home/runner/work/mixed-interface-study/mixed-interface-study/development/redesign-gomodel-ordinary-v1/run.mjs:72:249"
+}
