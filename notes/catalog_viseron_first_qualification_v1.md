@@ -1,0 +1,11 @@
+# Viseron first ordinary qualification outcome
+
+Run 44280326795 at published freeze 4f7e7d6178a539c5883d15d026eb912cd6a4e748 failed during the original native-producer setup. The application did not satisfy its 90-second readiness gate. All retained readiness calls exited 1. The stored exception-message hash exactly matches the registered Application readiness deadline message. No browser phase, target creation, warm edit, checkpoint capture or restored branch was reached. This is a qualification setup failure, not a defect finding or a well-qualified null scientific result.
+
+DockerHub authentication and pinned image pulls passed. Twenty-nine acquired packaged source files matched their hashes; 226 compiled frontend assets were inventoried. Compiled frontend/source byte equivalence remains unclaimed. The image reported Python 3.12.3, Voluptuous 0.16.0, SQLAlchemy 2.1.6, pydantic 2.14.1, Tornado 6.6 and PostgreSQL client 16.15. The original create schema accepted the ordinary body unchanged. The isolated network namespace and image IDs were checked before readiness.
+
+The public result contains command exit codes and hashes, not the underlying application/readiness error output. That instrument choice prevents distinguishing HTTP rejection, connection refusal, early process exit or an unfinished startup from these artifacts. Do not assert a specific startup cause or increase timeouts by guesswork. Private logs were deliberately excluded from upload and are not available for retrospective diagnosis.
+
+One narrowly documented qualification correction remains under the fixed two-job cap. An instrumentation correction could record structured readiness status/error classes, service exit state and listening ports, without publishing token values or changing the workflow, application, inputs, timeouts or success criteria. It is not yet registered or dispatched. Failure of a final corrected attempt closes Viseron; no third run or alternate workflow is permitted.
+
+The retained outcome manifest records file hashes and terminal GitHub timing. Timing is reported Actions usage, not an invoice or total-project cost. The fixed cohort has three application jobs and zero scientific cases. Other pending projects remain in scope; no new cohort is opened.
