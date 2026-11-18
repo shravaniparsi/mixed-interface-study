@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-book-social-prefix-disposition-v1.json',
     'manifests/reserved-continuation-dependency-collection-v7.json',
     'notes/reserved_book_social_upload_20261117.md',
     'manifests/reserved-continuation-dependency-schedule-v7.json',
