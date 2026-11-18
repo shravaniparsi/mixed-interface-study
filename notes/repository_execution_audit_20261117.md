@@ -1,0 +1,7 @@
+# Repository execution audit, fixed inventory
+
+The created-at cutoff2026-11-18T02:02:01Z yields695 unique GitHub runs over seven pages:530 push checks and165 workflow_dispatch runs. At collection689 were completed and six old Unit checks rows remained queued since11November. These queued metadata records are not proof of running processes. Two run IDs have run_attempt greater than1; per-attempt allocation remains unresolved. This inventory does not measure dollar spending.
+
+The audit exposed a failing guard in scripts/ci/test_workflow_contexts.py: its exact workflow filename list had not been updated for18 later files. Run44219825908 failed that equality before reaching subsequent evidence verification. Preserve its failed-step log. The repair discovers both .yml and .yaml files, asserts nonempty discovery with unit.yml present, and applies the existing forbidden-job-context checks to every discovered workflow. The six existing bootstrap/context tests pass locally. This changes test discovery only, not application code or archived outcomes; full downstream CI remains to be checked.
+
+The timing collector requests each inventoried run exactly once, four concurrent requests,25-second individual timeout, and preserves unavailable observations. No experiment is dispatched. Run-level service timing, especially with multiple attempts, must not be called a verified dollar invoice. Local work, assistant/tool usage and other service charges remain outside this API evidence.

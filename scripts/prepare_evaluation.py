@@ -28,6 +28,17 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/repository_execution_audit_20261117.md',
+    'manifests/repository-run-inventory-20261117.json',
+    'scripts/extension/collect_repository_run_timing_v1.py',
+    'results/repository-run-inventory-20261117/page-1.json',
+    'results/repository-run-inventory-20261117/page-2.json',
+    'results/repository-run-inventory-20261117/page-3.json',
+    'results/repository-run-inventory-20261117/page-4.json',
+    'results/repository-run-inventory-20261117/page-5.json',
+    'results/repository-run-inventory-20261117/page-6.json',
+    'results/repository-run-inventory-20261117/page-7.json',
+    'results/repository-run-inventory-20261117/workflow-context-failure-44219825908.log',
     'notes/infrastructure_extension_closure_20261117.md',
     'manifests/infrastructure-extension-closure-v1.json',
     'manifests/extension-booklore-controls-v1.json',

@@ -1,0 +1,52 @@
+unit	Bootstrap helper tests	﻿2026-11-18T01:59:25.0479689Z ##[group]Run python -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0480282Z ^[[36;1mpython -m unittest discover -s scripts/ci -p 'test_*.py' -v 2>&1 | tee "$CI_ARTIFACT_DIR/bootstrap-tests.log"^[[0m
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0507600Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0507857Z env:
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0508029Z   PYTHONDONTWRITEBYTECODE: 1
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0508219Z   PYTHONPATH: src
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0508424Z   CI_ARTIFACT_DIR: /home/runner/work/_temp/study-artifacts
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0508705Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0509007Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0509310Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0509682Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0509965Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0510290Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+unit	Bootstrap helper tests	2026-11-18T01:59:25.0510530Z ##[endgroup]
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1318072Z test_backend_and_frontend_are_explicit_independent_commit_pins (test_bootstrap.BootstrapTests.test_backend_and_frontend_are_explicit_independent_commit_pins) ... ok
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1323196Z test_corrupt_same_length_artifact_fails_checksum (test_bootstrap.BootstrapTests.test_corrupt_same_length_artifact_fails_checksum) ... ok
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1326634Z test_jar_paths_cannot_escape_runtime_or_select_platform_archive (test_bootstrap.BootstrapTests.test_jar_paths_cannot_escape_runtime_or_select_platform_archive) ... ok
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1339682Z test_checked_in_workflows_do_not_use_runner_in_job_env (test_workflow_contexts.WorkflowContextTests.test_checked_in_workflows_do_not_use_runner_in_job_env) ... FAIL
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1340801Z test_runner_is_rejected_in_job_env_but_not_step_artifact_inputs (test_workflow_contexts.WorkflowContextTests.test_runner_is_rejected_in_job_env_but_not_step_artifact_inputs) ... ok
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1342336Z test_shell_exports_and_allowed_dispatch_context_pass (test_workflow_contexts.WorkflowContextTests.test_shell_exports_and_allowed_dispatch_context_pass) ... ok
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1342802Z 
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1342949Z ======================================================================
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1343574Z FAIL: test_checked_in_workflows_do_not_use_runner_in_job_env (test_workflow_contexts.WorkflowContextTests.test_checked_in_workflows_do_not_use_runner_in_job_env)
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1344184Z ----------------------------------------------------------------------
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1344466Z Traceback (most recent call last):
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1345070Z   File "/home/runner/work/mixed-interface-study/mixed-interface-study/scripts/ci/test_workflow_contexts.py", line 45, in test_checked_in_workflows_do_not_use_runner_in_job_env
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1356327Z     self.assertEqual({path.name for path in paths}, {"agentcompany_gitlab_fixture_v2.yml", "agentcompany_gitlab_fixture_v1.yml", "agentcompany_owncloud_controls_v3.yml", "agentcompany_owncloud_controls_v2.yml", "agentcompany_owncloud_controls_v1.yml", "agentcompany_owncloud_source_v1.yml", "agentcompany_service_metadata_v1.yml", "benchmark_gitlab_readme_execution_v1.yml", "benchmark_gitlab_readme_controls_v2.yml", "benchmark_reddit_api_source_inspection_v1.yml", "benchmark_gitlab_readme_controls_v1.yml", "benchmark_gitlab_mr_source_inspection_v1.yml", "benchmark_gitlab_members_controls_v3.yml", "benchmark_gitlab_mr_form_inspection_v1.yml", "benchmark_gitlab_members_controls_v2.yml", "benchmark_gitlab_members_controls_v1.yml", "benchmark_gitlab_issue_execution_v1.yml", "benchmark_gitlab_issue_controls_v1.yml", "benchmark_gitlab_browser_inspection_v1.yml", "benchmark_gitlab_auth_qualification_v2.yml", "benchmark_gitlab_connectivity_diagnostic_v1.yml", "benchmark_gitlab_auth_qualification_v1.yml", "benchmark_gitlab_runtime_qualification_v1.yml", "benchmark_gitlab_image_inspection_v1.yml", "benchmark_host_capacity_v1.yml", "openapi_adapter_comparison_v2.yml", "openapi_adapter_comparison_v1.yml", "netbox_config_defaults_v2.yml", "netbox_config_defaults_v1.yml", "vibe_per_test_pilot_v1.yml", "restestbench_mutant_runtime_v1.yml", "restestbench_valid_golden_nestjs_correction_v1.yml", "runner_diagnostic_v1.yml", "restestbench_valid_golden_v1.yml", "testplanit_tags_calibration_v2.yml", "testplanit_tags_calibration_v1.yml", "fastdash_cascade_calibration_v1.yml", "vikunja_bulk_calibration_v2.yml", "vikunja_bulk_calibration_v1.yml", "iris_write_preservation_v1.yml", "write_preservation_calibration_v2.yml", "write_preservation_calibration_v1.yml", "independent_gitea_repo_cases_v1.yml", "independent_gitea_repo_probes_v1.yml", "independent_gitea_repo_controls_v1.yml", "independent_paperless_custom_controls_v1.yml", "independent_paperless_storage_cases_v2.yml", "independent_grocy_category_followups_v1.yml", "independent_vikunja_filter_controls_v1.yml", "independent_paperless_storage_probes_v1.yml", "independent_grocy_category_cases_v1.yml", "independent_paperless_storage_controls_v1.yml", "independent_grocy_category_probes_v1.yml", "independent_grocy_category_controls_v1.yml", "independent_api_capture_v2.yml", "independent_api_capture_v1.yml", "unit.yml", "applications.yml", "petclinic_v3.yml", 'petclinic_timing_v1.yml', 'common_petclinic_v1.yml', 'common_generated_v1.yml', 'primary_diagnostics_v1.yml', 'quartz_correction_v1.yml', 'quartz_recovery_v1.yml', 'quartz_public_qualification_v1.yml', 'quartz_recovery_v2.yml', 'quartz_recovery_dispatch_v3.yml', 'production_extension_screen_v1.yml', 'production_extension_screen_v2.yml', 'linkding_extension_controls_v1.yml', 'linkding_extension_controls_v2.yml', 'linkding_extension_controls_v3.yml', 'linkding_extension_probes_v1.yml', 'linkding_extension_probes_v2.yml', 'linkding_cases_v1.yml', 'paperless_extension_controls_v1.yml', 'paperless_extension_controls_v2.yml', 'paperless_extension_probes_v1.yml', 'paperless_extension_probes_v2.yml', 'paperless_cases_v1.yml', 'grocy_extension_controls_v1.yml', 'grocy_extension_controls_v2.yml', 'grocy_extension_controls_v3.yml', 'grocy_cases_v1.yml', 'grocy_followups_v1.yml', 'memos_preference_controls_v1.yml', 'memos_preference_controls_v2.yml', 'memos_preference_controls_v3.yml', 'memos_preference_controls_v4.yml', 'memos_preference_controls_v5.yml', 'memos_memo_controls_v1.yml', 'memos_cases_v1.yml', 'vikunja_controls_v1.yml', 'vikunja_controls_v2.yml', 'vikunja_controls_v3.yml', 'vikunja_probes_v1.yml', 'vikunja_cases_v1.yml', 'vikunja_followups_v1.yml', 'gitea_controls_v1.yml', 'gitea_controls_v2.yml', 'gitea_controls_v3.yml', 'gitea_issue_controls_v1.yml', 'gitea_issue_controls_v2.yml', 'gitea_probes_v1.yml', 'gitea_cases_v1.yml', 'gitea_followups_v1.yml', 'vikunja_task_controls_v1.yml', 'vikunja_task_controls_v2.yml', 'vikunja_task_controls_v3.yml', 'memos_followups_v1.yml', 'memos_memo_probe_v1.yml', 'memos_memo_probe_v2.yml', 'grocy_energy_v1.yml', 'grocy_extension_probes_v1.yml', 'grocy_product_controls_v1.yml', "realworld_v5.yml", "realworld_v6.yml", "realworld_identity_db.yml", "realworld_v7.yml", "realworld_v8.yml", "realworld_article_db.yml", "realworld_v9.yml", "realworld_v10.yml", "realworld_generated_v2.yml", "realworld_generated_v3.yml"})
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1366284Z AssertionError: Items in the first set but not the second:
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1366585Z 'development_admin_control_v2.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1366826Z 'development_spec_startup_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1367063Z 'reserved_booklore_controls_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1367305Z 'infrastructure_preflight_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1367540Z 'reserved_kanban_build_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1367781Z 'extension_booklore_controls_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1368068Z 'development_spec_resolution_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1368307Z 'development_fixture_http_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1368543Z 'development_admin_control_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1368777Z 'development_native_login_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1369078Z 'reserved_booklore_build_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1369311Z 'reserved_kanban_images_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1369540Z 'development_admin_variation_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1369779Z 'development_spec_startup_v2.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1370007Z 'extension_kanban_controls_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1370250Z 'reserved_celerio_build_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1370467Z 'reserved_kanban_controls_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1370693Z 'development_spec_build_v1.yml'
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1370813Z 
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1370985Z ----------------------------------------------------------------------
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1371245Z Ran 6 tests in 0.003s
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1371357Z 
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1371436Z FAILED (failures=1)
+unit	Bootstrap helper tests	2026-11-18T01:59:25.1445417Z ##[error]Process completed with exit code 1.
