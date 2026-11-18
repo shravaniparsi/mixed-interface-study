@@ -1,0 +1,463 @@
+import { batch } from 'react-redux';
+
+import { IStore } from '../app/types';
+import { silentLogout } from '../authentication/actions.web';
+import { isTokenAuthInline } from '../authentication/functions';
+import {
+    setStartMutedPolicy,
+    setStartReactionsMuted
+} from '../base/conference/actions';
+import { getConferenceState } from '../base/conference/functions';
+import { hangup } from '../base/connection/actions.web';
+import { openDialog } from '../base/dialog/actions';
+import { storeUserSelectedLanguage } from '../base/i18n/functions';
+import i18next from '../base/i18n/i18next';
+import { setJWT } from '../base/jwt/actions';
+import { browser } from '../base/lib-jitsi-meet';
+import { getNormalizedDisplayName } from '../base/participants/functions';
+import { updateSettings } from '../base/settings/actions';
+import { IAudioSettings } from '../base/settings/reducer';
+import { getLocalVideoTrack } from '../base/tracks/functions.web';
+import { appendURLHashParam } from '../base/util/uri';
+import { setFollowMe, setFollowMeRecorderExclusive } from '../follow-me/actions';
+import {
+    disableKeyboardShortcuts,
+    enableKeyboardShortcuts,
+    setCtrlAltReactionShortcutsEnabled
+} from '../keyboard-shortcuts/actions';
+import { toggleBackgroundEffect } from '../virtual-background/actions';
+import virtualBackgroundLogger from '../virtual-background/logger';
+
+import {
+    SET_AUDIO_SETTINGS,
+    SET_AUDIO_SETTINGS_VISIBILITY,
+    SET_PREVIEW_AUDIO_TRACK,
+    SET_VIDEO_SETTINGS_VISIBILITY
+} from './actionTypes';
+import LogoutDialog from './components/web/LogoutDialog';
+import SettingsDialog from './components/web/SettingsDialog';
+import { SETTINGS_TABS } from './constants';
+import {
+    getExperimentalTabProps,
+    getModeratorTabProps,
+    getMoreTabProps,
+    getNotificationsTabProps,
+    getProfileTabProps,
+    getShortcutsTabProps
+} from './functions.web';
+import logger from './logger';
+import { IConfigOptionValues, IExperimentalTabState } from './types';
+
+/**
+ * Opens {@code LogoutDialog}.
+ *
+ * @returns {Function}
+ */
+export function openLogoutDialog() {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const state = getState();
+
+        const config = state['features/base/config'];
+        const logoutUrl = config.tokenLogoutUrl;
+
+        const { conference } = state['features/base/conference'];
+        const { idToken } = state['features/base/jwt'];
+
+        if (!browser.isElectron() && logoutUrl && isTokenAuthInline(config)) {
+            let url = logoutUrl;
+
+            if (idToken) {
+                url += `${logoutUrl.indexOf('?') === -1 ? '?' : '&'}id_token_hint=${idToken}`;
+            }
+
+            silentLogout(url)
+                .then(() => {
+                    dispatch(setJWT());
+                })
+                .catch(() => logger.error('logout failed'));
+
+            return;
+        }
+
+        dispatch(openDialog('LogoutDialog', LogoutDialog, {
+            onLogout() {
+                if (logoutUrl && browser.isElectron()) {
+                    const url = appendURLHashParam(logoutUrl, 'electron', 'true');
+
+                    window.open(url, '_blank');
+                    dispatch(hangup(true));
+                } else {
+                    if (logoutUrl) {
+                        window.location.href = logoutUrl;
+
+                        return;
+                    }
+
+                    conference?.room.xmpp.moderator.logout(() => dispatch(hangup(true)));
+                }
+            }
+        }));
+    };
+}
+
+/**
+ * Opens {@code SettingsDialog}.
+ *
+ * @param {string} defaultTab - The tab in {@code SettingsDialog} that should be
+ * displayed initially.
+ * @param {boolean} isDisplayedOnWelcomePage - Indicates whether the device selection dialog is displayed on the
+ * welcome page or not.
+ * @returns {Function}
+ */
+export function openSettingsDialog(defaultTab?: string, isDisplayedOnWelcomePage?: boolean) {
+    return openDialog('SettingsDialog', SettingsDialog, {
+        defaultTab,
+        isDisplayedOnWelcomePage
+    });
+}
+
+/**
+ * Opens the settings tab that holds the self view toggle.
+ *
+ * @returns {Function}
+ */
+export function openSelfViewSettings() {
+    return openSettingsDialog(SETTINGS_TABS.MORE);
+}
+
+/**
+ * Sets the visibility of the audio settings.
+ *
+ * @param {boolean} value - The new value.
+ * @returns {Function}
+ */
+function setAudioSettingsVisibility(value: boolean) {
+    return {
+        type: SET_AUDIO_SETTINGS_VISIBILITY,
+        value
+    };
+}
+
+/**
+ * Sets the visibility of the video settings.
+ *
+ * @param {boolean} value - The new value.
+ * @returns {Function}
+ */
+function setVideoSettingsVisibility(value: boolean) {
+    return {
+        type: SET_VIDEO_SETTINGS_VISIBILITY,
+        value
+    };
+}
+
+/**
+ * Submits the settings from the "More" tab of the settings dialog.
+ *
+ * @param {Object} newState - The new settings.
+ * @returns {Function}
+ */
+export function submitMoreTab(newState: any) {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const state = getState();
+        const currentState = getMoreTabProps(state);
+
+        if (newState.maxStageParticipants !== currentState.maxStageParticipants) {
+            dispatch(updateSettings({ maxStageParticipants: Number(newState.maxStageParticipants) }));
+        }
+
+        if (newState.hideSelfView !== currentState.hideSelfView) {
+            dispatch(updateSettings({ disableSelfView: newState.hideSelfView }));
+        }
+
+        if (newState.currentLanguage !== currentState.currentLanguage) {
+            i18next.changeLanguage(newState.currentLanguage);
+            storeUserSelectedLanguage(newState.currentLanguage);
+
+            const { conference } = getConferenceState(state);
+
+            conference?.setTranscriptionLanguage(newState.currentLanguage);
+        }
+
+        if (newState.showSubtitlesOnStage !== currentState.showSubtitlesOnStage) {
+            dispatch(updateSettings({ showSubtitlesOnStage: newState.showSubtitlesOnStage }));
+        }
+    };
+}
+
+/**
+ * Submits the settings from the "Experimental" tab of the settings dialog. Only the options whose value the user
+ * changed are stored, so an option they leave alone keeps following the config.
+ *
+ * @param {IExperimentalTabState} newState - The new settings.
+ * @returns {Function}
+ */
+export function submitExperimentalTab(newState: IExperimentalTabState) {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const state = getState();
+        const { values: currentValues } = getExperimentalTabProps(state);
+        const newValues = newState.values ?? {};
+        const changedValues: IConfigOptionValues = {};
+
+        for (const optionId of Object.keys(newValues)) {
+            if (newValues[optionId] !== currentValues[optionId]) {
+                changedValues[optionId] = newValues[optionId];
+            }
+        }
+
+        if (Object.keys(changedValues).length === 0) {
+            return;
+        }
+
+        dispatch(updateSettings({
+            userSelectedConfig: {
+                ...state['features/base/settings'].userSelectedConfig,
+                ...changedValues
+            }
+        }));
+    };
+}
+
+/**
+ * Submits the settings from the "Moderator" tab of the settings dialog.
+ *
+ * @param {Object} newState - The new settings.
+ * @returns {Function}
+ */
+export function submitModeratorTab(newState: any) {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const currentState = getModeratorTabProps(getState());
+
+        // The recorder mode also sets follow me, thus apply it first and compare follow me with the result.
+        // Turning it on also turns off follow me first, so the followers get "off" and then the recorder command.
+        if (newState.followMeRecorderEnabled !== currentState.followMeRecorderEnabled) {
+            dispatch(setFollowMeRecorderExclusive(newState.followMeRecorderEnabled));
+        }
+
+        if (!newState.followMeRecorderEnabled
+                && newState.followMeEnabled !== getModeratorTabProps(getState()).followMeEnabled) {
+            dispatch(setFollowMe(newState.followMeEnabled));
+        }
+
+        if (newState.startReactionsMuted !== currentState.startReactionsMuted) {
+            batch(() => {
+                // updating settings we want to update and backend (notify the rest of the participants)
+                dispatch(setStartReactionsMuted(newState.startReactionsMuted, true));
+                dispatch(updateSettings({ soundsReactions: !newState.startReactionsMuted }));
+            });
+        }
+
+        if (newState.startAudioMuted !== currentState.startAudioMuted
+            || newState.startVideoMuted !== currentState.startVideoMuted) {
+            dispatch(setStartMutedPolicy(
+                newState.startAudioMuted, newState.startVideoMuted));
+        }
+
+        if (newState.chatWithPermissionsEnabled !== currentState.chatWithPermissionsEnabled
+            || newState.privateChatWithPermissionsEnabled !== currentState.privateChatWithPermissionsEnabled
+            || newState.sharedVideoWithPermissionsEnabled !== currentState.sharedVideoWithPermissionsEnabled
+            || newState.breakoutRoomJoinWithPermissionsEnabled
+                !== currentState.breakoutRoomJoinWithPermissionsEnabled) {
+            const { conference } = getState()['features/base/conference'];
+
+            const currentPermissions = conference?.getMetadataHandler().getMetadata().permissions || {};
+
+            // One update for all the restrictions. The metadata changes only when the server
+            // confirms it, thus a second update here would not see the first one.
+            conference?.getMetadataHandler().setMetadata('permissions', {
+                ...currentPermissions,
+                breakoutRoomJoinRestricted: newState.breakoutRoomJoinWithPermissionsEnabled,
+                groupChatRestricted: newState.chatWithPermissionsEnabled,
+                privateChatRestricted: newState.privateChatWithPermissionsEnabled,
+                sharedVideoRestricted: newState.sharedVideoWithPermissionsEnabled
+            });
+        }
+
+        if (newState.audioTranslationEnabled !== currentState.audioTranslationEnabled) {
+            const { conference } = getState()['features/base/conference'];
+
+            conference?.getMetadataHandler().setMetadata('audioTranslation', {
+                enabled: newState.audioTranslationEnabled
+            });
+        }
+    };
+}
+
+/**
+ * Submits the settings from the "Profile" tab of the settings dialog.
+ *
+ * @param {Object} newState - The new settings.
+ * @returns {Function}
+ */
+export function submitProfileTab(newState: any) {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const currentState = getProfileTabProps(getState());
+
+        if (newState.displayName !== currentState.displayName) {
+            dispatch(updateSettings({ displayName: getNormalizedDisplayName(newState.displayName) }));
+        }
+
+        if (newState.email !== currentState.email) {
+            APP.conference.changeLocalEmail(newState.email);
+        }
+    };
+}
+
+/**
+ * Submits the settings from the "Sounds" tab of the settings dialog.
+ *
+ * @param {Object} newState - The new settings.
+ * @returns {Function}
+ */
+export function submitNotificationsTab(newState: any) {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const currentState = getNotificationsTabProps(getState());
+        const shouldNotUpdateReactionSounds = getModeratorTabProps(getState()).startReactionsMuted;
+        const shouldUpdate = (newState.soundsIncomingMessage !== currentState.soundsIncomingMessage)
+            || (newState.soundsParticipantJoined !== currentState.soundsParticipantJoined)
+            || (newState.soundsParticipantKnocking !== currentState.soundsParticipantKnocking)
+            || (newState.soundsParticipantLeft !== currentState.soundsParticipantLeft)
+            || (newState.soundsTalkWhileMuted !== currentState.soundsTalkWhileMuted)
+            || (newState.soundsReactions !== currentState.soundsReactions);
+
+        if (shouldUpdate) {
+            const settingsToUpdate = {
+                soundsIncomingMessage: newState.soundsIncomingMessage,
+                soundsParticipantJoined: newState.soundsParticipantJoined,
+                soundsParticipantKnocking: newState.soundsParticipantKnocking,
+                soundsParticipantLeft: newState.soundsParticipantLeft,
+                soundsTalkWhileMuted: newState.soundsTalkWhileMuted,
+                soundsReactions: newState.soundsReactions
+            };
+
+            if (shouldNotUpdateReactionSounds) {
+                delete settingsToUpdate.soundsReactions;
+            }
+            dispatch(updateSettings(settingsToUpdate));
+        }
+
+        const enabledNotifications = newState.enabledNotifications;
+
+        if (enabledNotifications !== currentState.enabledNotifications) {
+            dispatch(updateSettings({
+                userSelectedNotifications: {
+                    ...getState()['features/base/settings'].userSelectedNotifications,
+                    ...enabledNotifications
+                }
+            }));
+        }
+    };
+}
+
+/**
+ * Toggles the visibility of the audio settings.
+ *
+ * @returns {void}
+ */
+export function toggleAudioSettings() {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const value = getState()['features/settings'].audioSettingsVisible;
+
+        dispatch(setAudioSettingsVisibility(!value));
+    };
+}
+
+/**
+ * Toggles the visibility of the video settings.
+ *
+ * @returns {void}
+ */
+export function toggleVideoSettings() {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const value = getState()['features/settings'].videoSettingsVisible;
+
+        dispatch(setVideoSettingsVisibility(!value));
+    };
+}
+
+/**
+ * Submits the settings from the "Shortcuts" tab of the settings dialog.
+ *
+ * @param {Object} newState - The new settings.
+ * @returns {Function}
+ */
+export function submitShortcutsTab(newState: any) {
+    return (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const currentState = getShortcutsTabProps(getState());
+
+        if (newState.keyboardShortcutsEnabled !== currentState.keyboardShortcutsEnabled) {
+            if (newState.keyboardShortcutsEnabled) {
+                dispatch(enableKeyboardShortcuts());
+            } else {
+                dispatch(disableKeyboardShortcuts());
+            }
+        }
+
+        if (currentState.showCtrlAltReactionShortcuts
+                && newState.ctrlAltReactionShortcutsEnabled !== currentState.ctrlAltReactionShortcutsEnabled) {
+            dispatch(setCtrlAltReactionShortcutsEnabled(newState.ctrlAltReactionShortcutsEnabled));
+        }
+    };
+}
+
+/**
+ * Submits the settings from the "Virtual Background" tab of the settings dialog.
+ *
+ * @param {Object} newState - The new settings.
+ * @param {boolean} isCancel - Whether the change represents a cancel.
+ * @returns {Function}
+ */
+export function submitVirtualBackgroundTab(newState: any, isCancel = false) {
+    return async (dispatch: IStore['dispatch'], getState: IStore['getState']) => {
+        const state = getState();
+        const track = getLocalVideoTrack(state['features/base/tracks'])?.jitsiTrack;
+        const { localFlipX } = state['features/base/settings'];
+
+        if (newState.options?.selectedThumbnail) {
+            await dispatch(toggleBackgroundEffect(newState.options, track));
+
+            if (!isCancel) {
+                // Set x scale to default value.
+                dispatch(updateSettings({
+                    localFlipX
+                }));
+
+                virtualBackgroundLogger.info(`Virtual background type: '${
+                    typeof newState.options.backgroundType === 'undefined'
+                        ? 'none' : newState.options.backgroundType}' applied!`);
+            }
+        }
+    };
+}
+
+/**
+ * Sets the audio preview track.
+ *
+ * @param {any} track - The track to set.
+ * @returns {{
+ *     type: SET_PREVIEW_AUDIO_TRACK,
+ *     track: any
+ * }}
+ */
+export function setPreviewAudioTrack(track: any) {
+    return {
+        type: SET_PREVIEW_AUDIO_TRACK,
+        track
+    };
+}
+
+/**
+ * Sets the audio settings.
+ *
+ * @param {IAudioSettings} settings - The settings to set.
+ * @returns {{
+ *     type: SET_AUDIO_SETTINGS,
+ *     settings: IAudioSettings
+ * }}
+ */
+export function setAudioSettings(settings: IAudioSettings) {
+    return {
+        type: SET_AUDIO_SETTINGS,
+        settings
+    };
+}
