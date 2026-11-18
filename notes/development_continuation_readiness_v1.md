@@ -1,0 +1,13 @@
+# Reuse decision for the public open-source development pilot
+
+The user has confirmed that no organizational sandbox is available. Further deployment planning uses public open-source applications with synthetic isolated data.
+
+The retained 21-points ordinary controls from run 44105779135 supply a usable native update reference. The offline assessment verifies both evidence files against their previously published SHA-256 hashes. Both producers returned 201 and both native updates returned 200. The complete captured native JSON update bodies agree across the two controls and equal the eight-field projected starting record with firstName changed to Edited. The final projected readbacks agree with those bodies. Actor projections also agree. This is JSON-value equivalence, not wire-byte or full-state equivalence.
+
+These results support reusing the captured serializer output in development of a competent API comparator. They do not supply the comparator's outcome: both historical continuations used the browser. Do not report either as API/API, add variants to the closed nine-case schedule, or repeat those controls merely to obtain a positive result.
+
+The current harness projects readbacks to id, login, firstName, lastName, email, activated, langKey and authorities. It therefore cannot establish that other persisted fields match. Its runtime wrapper starts each application independently and does not checkpoint and restore application, Elasticsearch and browser state. The retained application log also records asynchronous creation-email processing. That observation requires accounting for background activity; it does not show an externally delivered message or a bug. Full-state equivalence must not be inferred from matching projected records or coincident IDs.
+
+Decision: retain this application as an exposed development reference, but do not dispatch another experiment under the workflow-first draft yet. The next implementation gate is a concrete state-equivalence procedure and one separately registered ordinary API-continuation control using the complete captured native payload. Relevant state must be justified from the workflow; irrelevant randomized metadata need not be byte-identical if its exclusion is supported. A fresh-instance replay alone cannot establish this. No independent evaluation frame, additional application request, defect or Q1-readiness claim is added by this assessment.
+
+Reproduce with `python3 scripts/extension/audit_development_continuation_readiness_v1.py --verify`. The assessment checks retained observations; its explicit unqualified gates describe what these two controls do not measure.
