@@ -500,6 +500,47 @@ class OrdinaryCoordinator:
             write_private(self.directory/'final-stop-and-rate-budget.json',report)
             write_private(self.directory/'final-stop-lifecycle.json',self.lifecycle.events)
 
+    def verify_write_transport(self):
+        if self.phase!='ordinary_fixture_stopped_rate_budget_verified':raise RuntimeError('Require stopped fixture and verified process request budgets')
+        self.phase='write_transport_in_progress';report={'status':self.phase,'runtime_qualified':False}
+        try:
+            identity=self.lifecycle._inspect('stopped')
+            app,=json.loads(lifecycle_command(['docker','inspect',APP]))
+            if app['Id']!=identity['container_ids'][0]:raise RuntimeError('Stopped application identity changed')
+            env=dict(value.split('=',1) for value in app['Config']['Env'] if '=' in value)
+            environment={key:env.get(key) for key in ['CORS_ORIGINS','PUBLIC_SCHEME','RATE_LIMIT','RATE_LIMIT_PERIOD']}
+            calibration_path=Path(self.provision['transport_calibration_path'])
+            if calibration_path.is_symlink() or calibration_path.stat().st_size>1048576:raise ValueError('Bounded original calibration required')
+            raw=calibration_path.read_bytes()
+            if hashlib.sha256(raw).hexdigest()!=self.provision['transport_calibration_sha256']:raise ValueError('Pinned calibration artifact changed')
+            bundle={'calibration':json.loads(raw),'environment':environment,'rateBudgets':self.request_budgets,
+                    'comparisons':self.request_comparisons}
+            for name,relative in [('producerNative','native/worker/results/native-create.json'),('producerApi','api-create/worker/result.json'),('continuationApi','api-continuation/worker/result.json')]:
+                path=self.directory/relative
+                if path.is_symlink() or path.stat().st_size>16777216:raise ValueError('Bounded original write evidence required')
+                bundle[name]=json.loads(path.read_text())
+            raw=json.dumps(bundle).encode()
+            if len(raw)>33554432:raise ValueError('Transport bundle size bound')
+            source=self.directory/'write-transport-input.json';output=self.directory/'write-transport-result.json'
+            fd=os.open(source,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+            with os.fdopen(fd,'wb') as stream:stream.write(raw)
+            command=[self.node_binary,str(Path(__file__).with_name('verify_seatsurfing_write_transport_file_v1.mjs')),str(source),str(output)]
+            try:result=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=20)
+            except subprocess.TimeoutExpired as error:
+                (self.directory/'write-transport.stdout').write_bytes(error.stdout or b'');(self.directory/'write-transport.stderr').write_bytes(error.stderr or b'');raise
+            (self.directory/'write-transport.stdout').write_bytes(result.stdout);(self.directory/'write-transport.stderr').write_bytes(result.stderr)
+            if result.returncode or result.stdout or result.stderr:raise RuntimeError('Write transport verification unavailable')
+            if output.is_symlink() or output.stat().st_size>33554432:raise ValueError('Transport result size bound')
+            verified=json.loads(output.read_text())
+            if verified.get('status')!='write_transport_evidence_verified' or verified.get('inputSha256')!=hashlib.sha256(raw).hexdigest():raise ValueError('Transport result binding mismatch')
+            if verified['result'].get('status')!='observed_write_transport_checks_pass':raise ValueError('Write transport checks incomplete')
+            self.transport_result=verified;self.phase='ordinary_write_transport_verified_parent_gates_pending'
+            report.update(status=self.phase,calibration_sha256=self.provision['transport_calibration_sha256'])
+            return verified
+        except Exception as error:
+            self.phase='failed';report.update(status='write_transport_unavailable',error_type=type(error).__name__);raise
+        finally:write_private(self.directory/'write-transport-stage.json',report)
+
 
 def verify_api_actor_response(loaded, continuity):
     if loaded.get('acquisition')!='independent_api_gets' or loaded.get('outcome')!='source_inputs_loaded':

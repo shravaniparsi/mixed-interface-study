@@ -379,4 +379,35 @@ class FinalRateBudget(unittest.TestCase):
                 with self.assertRaises(RuntimeError):stage.stop_and_check_request_budgets()
 
 
+
+
+class TransportGateIntegration(unittest.TestCase):
+    def test_calibration_and_verifier_input_hashes_are_required(self):
+        import subprocess
+        from unittest.mock import Mock
+        for changed in [None,'calibration','result']:
+            with self.subTest(changed=changed):
+                helper=ProducerStage();self.addCleanup(helper.doCleanups)
+                stage,_=helper.run_stage();stage.phase='ordinary_fixture_stopped_rate_budget_verified'
+                stage.lifecycle._inspect=Mock(return_value={'container_ids':['app','pg','browser']})
+                calibration=stage.directory/'calibration.json';calibration.write_text('{"synthetic":true}')
+                stage.provision.update(transport_calibration_path=str(calibration),transport_calibration_sha256=hashlib.sha256(calibration.read_bytes()).hexdigest())
+                if changed=='calibration':calibration.write_text('{}')
+                stage.request_budgets={};stage.request_comparisons={}
+                for relative in ['native/worker/results/native-create.json','api-create/worker/result.json','api-continuation/worker/result.json']:
+                    path=stage.directory/relative;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('{}')
+                app={'Id':'app','Config':{'Env':['CORS_ORIGINS=','PUBLIC_SCHEME=http','RATE_LIMIT=250','RATE_LIMIT_PERIOD=1-M']}}
+                def execute(argv,**kwargs):
+                    digest=hashlib.sha256(Path(argv[-2]).read_bytes()).hexdigest()
+                    Path(argv[-1]).write_text(json.dumps({'status':'write_transport_evidence_verified','inputSha256':'wrong' if changed=='result' else digest,'result':{'status':'observed_write_transport_checks_pass'}}))
+                    return subprocess.CompletedProcess(argv,0,b'',b'')
+                with patch.object(module,'lifecycle_command',return_value=json.dumps([app]).encode()),patch.object(module.subprocess,'run',side_effect=execute) as run:
+                    if changed:
+                        with self.assertRaises(ValueError):stage.verify_write_transport()
+                    else:stage.verify_write_transport()
+                self.assertEqual(run.call_count,0 if changed=='calibration' else 1)
+                self.assertEqual(stage.phase,'failed' if changed else 'ordinary_write_transport_verified_parent_gates_pending')
+                with self.assertRaises(RuntimeError):stage.verify_write_transport()
+
+
 if __name__=='__main__':unittest.main()

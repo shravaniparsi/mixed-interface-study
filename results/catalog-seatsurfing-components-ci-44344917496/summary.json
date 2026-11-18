@@ -1,0 +1,12 @@
+{
+  "run_id": 44344917496,
+  "head_prefix": "e318b61",
+  "conclusion": "failure",
+  "failed_test": "BridgeTest.test_original_deadline_does_not_allow_resend",
+  "observed_failure": "Second observation raised ValueError because the first call had already exhausted the original deadline and marked the bridge failed",
+  "cause": "Synthetic test assumed its initial 20 ms command deadline survived until the first observation; that is scheduler-dependent",
+  "correction": "Mock the test monotonic clock and initial observation timeout; separately advance beyond the original deadline and verify no resend",
+  "production_deadline_changed": false,
+  "application_runtime_attempt": false,
+  "raw_logs_published": false
+}

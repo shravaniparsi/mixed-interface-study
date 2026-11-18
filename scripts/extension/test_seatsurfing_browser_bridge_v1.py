@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from seatsurfing_browser_bridge_v1 import BrowserBridge
 
 WORKER = r'''
@@ -63,8 +64,16 @@ class BridgeTest(unittest.TestCase):
             self.bridge.read_artifact({'artifact':{'file':path.name,'sha256':hashlib.sha256(raw).hexdigest()}},'one')
 
     def test_original_deadline_does_not_allow_resend(self):
-        with self.assertRaises(TimeoutError): self.bridge.send({'requestId':'one','delay':0.12},command_seconds=0.02,observe_seconds=0.03)
-        with self.assertRaises(TimeoutError): self.bridge.observe_pending(1)
+        # Fix the observation clock: a busy CI runner can consume the entire
+        # 20 ms deadline before send() reaches its first observe_pending call.
+        # This tests the two distinct states without a scheduler-dependent race.
+        with patch('seatsurfing_browser_bridge_v1.time.monotonic',return_value=100), patch.object(self.bridge,'read_message',side_effect=TimeoutError('synthetic observation timeout')):
+            with self.assertRaises(TimeoutError): self.bridge.send({'requestId':'one'},command_seconds=0.02,observe_seconds=0.01)
+        self.assertFalse(self.bridge.failed)
+        with patch('seatsurfing_browser_bridge_v1.time.monotonic',return_value=101):
+            with self.assertRaises(TimeoutError): self.bridge.observe_pending(1)
+        self.assertTrue(self.bridge.failed)
+        self.assertEqual(self.bridge.used_ids,{'one'})
         with self.assertRaises(ValueError): self.bridge.send({'requestId':'two'})
 
 
