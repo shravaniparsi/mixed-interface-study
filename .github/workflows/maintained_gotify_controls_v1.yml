@@ -42,18 +42,19 @@ jobs:
           trap 'rm -rf "$DOCKER_CONFIG"' EXIT
           printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
           unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
-          for image in node:24 gotify/build:1.27.2-linux-amd64 debian:sid-slim; do
+          for image in node@sha256:9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496 gotify/build@sha256:cc760c755d7305f52598ba7cb9cd769745246730f845c4eb8477dff8bc69cb5d debian@sha256:07a3205e8583fdff12d2b05bd030f50437e9fd340ee616df0c05dc77af75767b; do
             timeout --signal=TERM --kill-after=15 120 docker pull --platform linux/amd64 "$image" >> "$RUNNER_TEMP/evidence/base-pulls.log" 2>&1
           done
           python3 - <<'PY'
           import json,os,subprocess
           from pathlib import Path
           result={}
-          for tag in ['node:24','gotify/build:1.27.2-linux-amd64','debian:sid-slim']:
-              info=json.loads(subprocess.check_output(['docker','image','inspect',tag]))[0]
+          frozen={'node:24': 'node@sha256:9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496', 'gotify/build:1.27.2-linux-amd64': 'gotify/build@sha256:cc760c755d7305f52598ba7cb9cd769745246730f845c4eb8477dff8bc69cb5d', 'debian:sid-slim': 'debian@sha256:07a3205e8583fdff12d2b05bd030f50437e9fd340ee616df0c05dc77af75767b'}
+          for tag,digest in frozen.items():
+              info=json.loads(subprocess.check_output(['docker','image','inspect',digest]))[0]
               repository=tag.rsplit(':',1)[0]
               matching=[d for d in info['RepoDigests'] if d.startswith(repository+'@sha256:')]
-              assert len(matching)==1 and info['Architecture']=='amd64' and info['Os']=='linux'
+              assert matching==[digest] and info['Architecture']=='amd64' and info['Os']=='linux'
               result[tag]={'digest':matching[0],'image_id':info['Id'],'inspection':info}
           (Path(os.environ['RUNNER_TEMP'])/'evidence/gotify-base-images.json').write_text(json.dumps(result,indent=2)+'\n')
           PY

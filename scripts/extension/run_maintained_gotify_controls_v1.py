@@ -46,7 +46,8 @@ def main():
 
     def start(data):
         data.mkdir(exist_ok=True)
-        args = ['docker', 'run', '-d', '--name', NAME, '--network', NET, '--ip', '172.30.79.2',
+        args = ['docker', 'run', '-d', '--user', str(os.getuid()) + ':' + str(os.getgid()),
+                '--name', NAME, '--network', NET, '--ip', '172.30.79.2',
                 '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
                 '--tmpfs', '/tmp:rw,nosuid,nodev', '-v', str(data) + ':/app/data']
         for value in ['GOTIFY_DATABASE_DIALECT=sqlite3', 'GOTIFY_DATABASE_CONNECTION=data/gotify.db',
