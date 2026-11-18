@@ -1,0 +1,139 @@
+{
+  "kind": "maintained_packaged_bounded_workflow_disposition",
+  "repository": "uselotus/lotus",
+  "commit": "9c4fe5daa746b0136a1ea0aed54930e37289ab78",
+  "status": "no_eligible_workflow_established_in_reviewed_bindings",
+  "view_prefix_entries": 20,
+  "dependency_files_used": 7,
+  "dependency_file_limit": 24,
+  "review_scope": "Selection-relevant native controls, producer bodies, mapped API wrappers and named detail bindings; not a full code audit or proof of whole-project absence.",
+  "rows": [
+    {
+      "index": 146,
+      "path": "frontend/src/components/Customers/CreateCustomerForm.tsx",
+      "status": "ineligible_shared_text_count",
+      "reason": "Customer native create includes email/name/customer identity; mapped edit forwards name but not email. Identity, nested addresses and enum fields excluded."
+    },
+    {
+      "index": 147,
+      "path": "frontend/src/components/Metrics/CreateMetricForm.tsx",
+      "status": "native_edit_not_established",
+      "reason": "Metric detail supports archive and readonly display; mapped API has create/get/delete/status archive, no text edit binding."
+    },
+    {
+      "index": 148,
+      "path": "frontend/src/components/Plans/CreatePlan/ChargesAndFeatures.tsx",
+      "status": "nested_parent_form",
+      "reason": "Charges/features step delegates nested components, recurring charges and feature selections to the parent plan payload."
+    },
+    {
+      "index": 149,
+      "path": "frontend/src/components/Plans/CreatePlan/PlanInformation.tsx",
+      "status": "ineligible_native_create_payload",
+      "reason": "Visible name/description controls; mapped CreatePlan serializes plan_name, enum duration and nested initial_version, not description as a second top-level text property."
+    },
+    {
+      "index": 150,
+      "path": "frontend/src/components/Plans/CreatePlan/VersionInformation.tsx",
+      "status": "nested_parent_form",
+      "reason": "Version step supplies nested initial_version fields; localized_name is one free-text value alongside enum/numeric/relationship controls."
+    },
+    {
+      "index": 151,
+      "path": "frontend/src/components/Plans/FeatureForm.tsx",
+      "status": "native_edit_not_established",
+      "reason": "FeatureForm creates feature_name/feature_description or selects existing features; mapped Features API has create/get, no text-edit binding."
+    },
+    {
+      "index": 152,
+      "path": "frontend/src/components/Plans/PlanDetails/AddCurrencyModal.tsx",
+      "status": "ineligible_enum_operation",
+      "reason": "Adds an enum currency version, not two text properties."
+    },
+    {
+      "index": 153,
+      "path": "frontend/src/components/Plans/PlanDetails/DeleteVersionModal.tsx",
+      "status": "ineligible_delete_operation",
+      "reason": "Deletion confirmation, no create/edit pair."
+    },
+    {
+      "index": 154,
+      "path": "frontend/src/components/Plans/RecurringChargeForm.tsx",
+      "status": "ineligible_shared_text_count",
+      "reason": "Recurring charge callback has one name text plus amount and enum timing/behavior; parent stores nested recurring charges."
+    },
+    {
+      "index": 155,
+      "path": "frontend/src/components/Plans/TargetCustomerForm.tsx",
+      "status": "ineligible_relationship_operation",
+      "reason": "Selects an existing customer relationship."
+    },
+    {
+      "index": 156,
+      "path": "frontend/src/components/Plans/UsageComponentForm.tsx",
+      "status": "nested_parent_form",
+      "reason": "Component callback contains metric selection, tiers and interval/prepaid values; parent serializes nested components, not a standalone two-text resource."
+    },
+    {
+      "index": 157,
+      "path": "frontend/src/components/Plans/VersionActiveForm.tsx",
+      "status": "ineligible_enum_operation",
+      "reason": "Version activation and migration options are Boolean/enum operations."
+    },
+    {
+      "index": 158,
+      "path": "frontend/src/components/Registration/CreateOrganization.tsx",
+      "status": "ineligible_shared_text_count",
+      "reason": "Organization form has organization_name and enum industry, not two text properties."
+    },
+    {
+      "index": 159,
+      "path": "frontend/src/components/Settings/settings/tabs/CreatePricingUnitTab.tsx",
+      "status": "native_edit_not_established",
+      "reason": "Pricing unit creation has code/name/symbol; mapped PricingUnits wrapper only creates/lists, no native edit binding established."
+    },
+    {
+      "index": 160,
+      "path": "frontend/src/pages/CreateAddOns.tsx",
+      "status": "native_edit_not_established",
+      "reason": "Add-on creation has addon_name/addon_description; inspected native details display both without edit controls, and mapped AddOn API lacks text-update operation."
+    },
+    {
+      "index": 161,
+      "path": "frontend/src/pages/CreateBacktest.tsx",
+      "status": "ineligible_shared_text_count",
+      "reason": "Backtest payload has one backtest_name text, generated dates, fixed KPI and nested substitutions."
+    },
+    {
+      "index": 162,
+      "path": "frontend/src/pages/CreateBalanceAdjustment.tsx",
+      "status": "ineligible_shared_text_count",
+      "reason": "Credit creation has one description text alongside amount/date/currency/relationship values."
+    },
+    {
+      "index": 163,
+      "path": "frontend/src/pages/CreatePlan.tsx",
+      "status": "ineligible_native_create_payload",
+      "reason": "CreatePlan sends plan_name, enum plan_duration, nested initial_version and optional external identity links; no second independent top-level text."
+    },
+    {
+      "index": 164,
+      "path": "frontend/src/pages/EditPlan.tsx",
+      "status": "native_edit_pair_not_established",
+      "reason": "Reviewed handlers create plan versions/custom/currency/backtest configurations; no same-resource two-text continuation established for native CreatePlan payload."
+    },
+    {
+      "index": 165,
+      "path": "frontend/src/pages/EditPlanLoader.tsx",
+      "status": "parent_loader",
+      "reason": "Loads plan/version and delegates to EditPlan; no independent mutation form."
+    }
+  ],
+  "unresolved": [
+    "Missing native edit bindings for feature/pricing-unit/add-on candidates do not prove global absence.",
+    "No runtime or source/package identity qualification performed."
+  ],
+  "ordinary_jobs_used": 0,
+  "scientific_cases_executed": 0,
+  "execution_authorized": false
+}
