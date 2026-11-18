@@ -9,20 +9,26 @@
     "web/app/(app)/(auth)/(components)/login-form.tsx",
     "web/app/(app)/(auth)/(components)/register-form.tsx",
     "web/lib/turnstile.ts",
-    "api/src/common/turnstile.service.ts"
+    "api/src/common/turnstile.service.ts",
+    "web/app/api/auth/[...nextauth]/route.ts",
+    "web/lib/auth.ts",
+    "api/src/auth/auth.controller.ts",
+    "api/src/auth/auth.service.ts"
   ],
   "evidence": [
     "Both forms require a nonempty Turnstile token before submission.",
     "The hook obtains tokens through the externally loaded Cloudflare widget; missing site key reports an error.",
     "The backend service requires a configured secret and calls Cloudflare siteverify; no bypass is implemented in this service.",
-    "The environment example test key does not create an offline hook path."
+    "The environment example test key does not create an offline hook path.",
+    "Complete NextAuth provider array has email-password login/register and Google ID-token login only.",
+    "Backend login/register unconditionally await Turnstile verification; Google login requests external tokeninfo before account processing."
   ],
   "limits": [
-    "The backend service call sites and alternative authentication routes were not inspected.",
-    "No application was run and no external service was contacted.",
-    "Remaining view-prefix dispositions and webhook API/parent bindings are incomplete."
+    "Exact imported HTTP client and endpoint configuration remain unreviewed.",
+    "Remaining view-prefix dispositions remain incomplete; no whole-project absence claim.",
+    "No application was run or external authentication service contacted."
   ],
-  "dependency_files_used": 2,
+  "dependency_files_used": 6,
   "dependency_file_limit": 24,
   "ordinary_jobs_used": 0,
   "scientific_cases_executed": 0,
