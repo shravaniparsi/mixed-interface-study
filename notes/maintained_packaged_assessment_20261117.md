@@ -1,0 +1,11 @@
+# Bounded package documentation assessment
+
+All 27 pinned files across the 12 non-quarantined repositories were reviewed. The manifest records each project's interface evidence, package evidence, unresolved dependencies and incidental known-behavior exposure. All 13 original rows remain accounted for; Vikunja remains quarantined. Hashes were rechecked against the collection manifest.
+
+The screen establishes documented deployment options, not runnable binaries or equivalent native/API workflows. Gotify, AdventureLog and Traduora explicitly describe UI and API capabilities alongside container distribution. Checkcle and TaskTrove describe simple containers but their selected documentation does not establish the needed REST resource binding. Meteroid requires explicit OSS image selection because the default edition differs from this source repository. Prest includes a Studio frontend and cannot be dismissed as API-only. Maxun, Textbee, Vexa, Lotus and ByteChef have resource, service, edition or workflow-mapping questions recorded per row. These observations do not select or exclude a scientific cohort.
+
+Known unsupported Vexa endpoints, Traduora's historical admin-password issue, Prest's documented behavioral changes and ByteChef's in-development capabilities are exposed information. They cannot later be presented as independently discovered defects. Traduora's creator/ownership and ByteChef's Piper ancestry were recorded. A case-insensitive textual check of both existing reference indexes found no matches for anthonynsimon, runabol, piper, traduora or bytechef; this does not establish family independence.
+
+Next work requires a prospectively published bounded dependency and workflow-mapping schedule, applied uniformly to the fixed frame. It must identify an actual shared local resource and immutable package/source relationship before ordinary UI-to-UI, API-to-UI and API-to-API controls. No application was launched and no scientific variation case was executed in this screen. The original studies remain closed and Q1 evidence gates remain unmet.
+
+Infrastructure status checked during this assessment: both Docker Hub secret names exist (values were not accessed). Unit checks run 44222497443 passed at source collection commit 6be38653ebe064430064eb0df17387883d64b0d4. This is repository verification, not application qualification.
