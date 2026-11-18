@@ -1,0 +1,11 @@
+# Checkpoint v2 closed at dependency installation
+
+Run44254146242 at b9777b9d78a788ce0dcd004645ba6e923da76cd2 failed before application retrieval/startup or any native observation. The browser setup step ran from06:49:31 to06:54:36UTC and exited124 under its fixed300-second timeout. Its retained log reports32.1MB of Ubuntu dependencies fetched in4min30s at119kB/s; package configuration was still completing near the deadline. This supports a setup-timeout classification, not an application, restore or observation-equivalence failure. The corrected authority/font observers were not exercised.
+
+The original artifact ZIP digest was verified against GitHub metadata before extraction. No checkpoint-measurement.json exists because orchestration never started; absence must not be replaced with zero outcomes or a fabricated measurement. The job metadata identifies browser installation as the failed step and later application steps as skipped. The failed-step log is retained. Source CI44254115647 passed.
+
+GitHub reports338000ms run duration for this job and112000ms for source CI, both Ubuntu total_ms0. Together with v1's two runs, the retained timing count is now755. Timing reports do not establish an invoice, storage charges or total project spending. No paid model or runner was used in these registered schedules.
+
+V2 is closed with no retry, no higher timeout and zero independent cases. The next engineering action is to qualify reproducible browser dependency provisioning before another application experiment. A prebuilt pinned browser environment or separately prepared dependency artifact would need identity/compatibility checks and its own bounded registration; neither is qualified here. Do not redispatch v2 just because the dependency mirror may be faster later. The application artifact was unexpired at the preflight check, but availability must be checked again before any subsequent registered execution.
+
+Current result: one ordinary create/readback observed in v1, zero checkpoints and zero restorations across v1/v2. State equivalence, native/API continuation comparison and independent scientific evaluation remain incomplete. These setup failures add no evidence of natural incompatibilities, superiority or Q1 readiness.
