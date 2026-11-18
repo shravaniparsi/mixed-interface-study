@@ -1,0 +1,47 @@
+name: Reserved Kanban original image preflight v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  images:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Authenticate and inspect original images once
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          export DOCKER_CONFIG="$RUNNER_TEMP/study-docker-auth"
+          mkdir -p "$DOCKER_CONFIG" "$RUNNER_TEMP/image-evidence"
+          chmod 700 "$DOCKER_CONFIG"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+          unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
+          python3 - <<'PY'
+          import json,os,subprocess,time
+          from pathlib import Path
+          out=Path(os.environ['RUNNER_TEMP'])/'image-evidence'
+          images=['maven:3.6.1-jdk-8-slim','openjdk:8-alpine','node:12.7-alpine','nginx:1.17.1-alpine','postgres:9.6-alpine'];rows=[]
+          for index,tag in enumerate(images,1):
+              start=time.monotonic()
+              with (out/f'pull-{index}.log').open('w') as log:
+                  proc=subprocess.run(['timeout','180','docker','pull',tag],stdout=log,stderr=subprocess.STDOUT)
+              row={'tag':tag,'exit_code':proc.returncode,'elapsed_seconds':time.monotonic()-start}
+              if proc.returncode==0:
+                  info=json.loads(subprocess.check_output(['docker','image','inspect',tag]))[0]
+                  row.update(image_id=info['Id'],repo_digests=info['RepoDigests'],architecture=info['Architecture'],os=info['Os'])
+              rows.append(row)
+              (out/'measurement.json').write_text(json.dumps({'dockerhub_login_succeeded':True,'rows':rows,'application_executed':False,'independent_evaluation_cases':0},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: reserved-kanban-images-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/image-evidence/*
+          retention-days: 7
+          if-no-files-found: warn

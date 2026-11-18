@@ -1,0 +1,7 @@
+# Original Kanban container prerequisites, one bounded preflight
+
+The production configuration resolves /api through original nginx proxies. Before building the pinned Kanban source, inspect availability of the five exact tags declared by its Dockerfiles/compose: maven:3.6.1-jdk-8-slim, openjdk:8-alpine, node:12.7-alpine, nginx:1.17.1-alpine, postgres:9.6-alpine. Maven and OpenJDK are separate build/runtime stages. Record pulled image IDs and RepoDigests; a mutable tag is not an immutable experimental identity.
+
+One free ubuntu-24.04 job, 30-minute job deadline, 180 seconds per pull, no retry or fallback tag. Docker Hub login uses repository secrets with password-stdin and a temporary Docker config outside the artifact directory, removed after the pulls. Never archive credentials. No source build, package lifecycle script, application, database or scientific case executes. This is the first infrastructure preflight, not qualification of a scientific workflow. Count any required correction against the one infrastructure correction allowed by the study; do not loop through alternative images.
+
+Capture exit codes, pull logs and image identities for all five tags regardless of earlier failure. Successful login does not imply image availability. Failed/deleted legacy tags are infrastructure findings, not application incompatibility. All reserved projects and their admission checks remain in scope.

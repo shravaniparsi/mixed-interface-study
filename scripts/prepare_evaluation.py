@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/reserved-continuation-dependency-collection-v3.json',
+    'protocol/reserved-kanban-image-preflight-v1.md',
+    '.github/workflows/reserved_kanban_images_v1.yml',
     'manifests/reserved-continuation-dependency-schedule-v3.json',
     'scripts/extension/collect_reserved_continuation_dependencies_v3.py',
     'manifests/reserved-continuation-dependency-collection-v2.json',
