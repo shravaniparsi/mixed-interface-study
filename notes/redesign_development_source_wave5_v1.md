@@ -1,0 +1,11 @@
+# Guardrail preliminary mapping
+
+All 14 scheduled files were acquired at published freeze 75c1cb98f82592350779f1bb27a2b755f87725c7 and verified offline. The latter MCP files were acquired as a declared dependency batch; their workflow eligibility was not adjudicated while guardrails remain unresolved. No code, inference or MCP connection was executed.
+
+GuardrailEditor enables description and user_path in edit mode while name and type are disabled. The frontend hydrates the form from persisted Definition views, builds the original payload and calls PUT /admin/guardrails for creation and editing. The handler uses a named guardrail service and reads back a view. This is concrete support for a shared API/native lifecycle, but complete persistence, compatible subtype and semantic independence remain to be qualified. Names are identity, not an editable target.
+
+The original UI also renders type-specific config through SchemaFields. All eligible fields must be enumerated before the first four JSON pointers can be fixed; description/user_path must not be chosen merely because they look easy. Complete source-aware replay must include form hydration, schema controls, submit checks and serialization. An unsupported dependency is unknown, not a baseline error. Source inspection already reveals UI normalization and server normalization; those exposures are development only and do not justify adding variants beyond omission/null.
+
+The next source wave maps the original built-in catalog, registered type manifests, validation helpers, editor shell, service/store and build entry points. Within this operation, enumerate original built-in phase-capable types and inspect in UTF-8 manifest-name order for local eligibility; exclude types requiring paid/external inference or other prohibited effects. This subtype-order rule is fixed before acquiring the manifest implementations. Preserve all exclusions and unresolved earlier types. Acquired filenames and the UI fallback system_prompt have already been seen; this is not source-blind selection.
+
+No project is source-qualified and no scientific case has been added. Wave 6 remains subject to cumulative source limits and a published exact schedule. Runtime preparation and execution still require a concrete recipe and effort/run limits.

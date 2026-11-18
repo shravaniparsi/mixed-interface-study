@@ -1,0 +1,896 @@
+// Pure MCP-servers page logic. Everything here is side-effect free so the
+// node:test suite can exercise it directly.
+
+import * as m from "../../lib/paraglide/messages.js";
+import { filterFields, normalizeQuery } from "../../lib/utils/textMatch.js";
+
+// Tool filter modes. "exclude" stores disallowed_tools: every tool is exposed
+// except the listed ones, so tools the server adds later appear automatically.
+// "allow" stores allowed_tools: only the listed tools are exposed, so new
+// tools stay hidden until selected.
+export const MCP_TOOL_MODE_EXCLUDE = "exclude";
+export const MCP_TOOL_MODE_ALLOW = "allow";
+
+export function defaultMcpServerForm() {
+  return {
+    name: "",
+    slug: "",
+    url: "",
+    transport: "http",
+    description: "",
+    enabled: true,
+    headers: [],
+    tool_mode: MCP_TOOL_MODE_EXCLUDE,
+    tool_names: [],
+    user_paths: "",
+    disallowed_user_paths: "",
+    tool_timeout_seconds: "",
+  };
+}
+
+export function defaultMcpCatalog() {
+  return {
+    server: "",
+    status: "",
+    instructions: "",
+    tools: [],
+    excluded_tools: [],
+    prompts: [],
+    resources: [],
+    templates: [],
+  };
+}
+
+// A freshly saved server is returned before its first dial finishes, so the
+// list arrives as "connecting" and only the gateway's background connect
+// settles it. Re-poll until nothing is pending; without this the row reads
+// "connecting" until the operator reloads the page.
+export const MCP_SERVERS_POLL_MS = 3000;
+
+// A failing poll retries: the row it is waiting on would otherwise stay
+// "connecting" forever after one blip, which is the bug the loop exists to
+// fix. The budget is what stops a properly down gateway being polled for as
+// long as the page stays open.
+export const MCP_SERVERS_POLL_MAX_FAILURES = 3;
+
+export function mcpServersNeedPolling(servers) {
+  const list = Array.isArray(servers) ? servers : [];
+  return list.some((server) => mcpServerStatus(server) === "connecting");
+}
+
+export function mcpPollShouldRetry(consecutiveFailures) {
+  return Number(consecutiveFailures || 0) < MCP_SERVERS_POLL_MAX_FAILURES;
+}
+
+export function mcpServerSlug(server) {
+  return String((server && (server.slug || server.name)) || "").trim();
+}
+
+export function mcpServerStatus(server) {
+  return String((server && server.status) || "").trim() || "connecting";
+}
+
+export function mcpServerStatusLabel(server) {
+  const labels = {
+    connected: m.mcp_status_connected,
+    degraded: m.mcp_status_degraded,
+    connecting: m.mcp_status_connecting,
+    disabled: m.mcp_status_disabled,
+  };
+  const status = mcpServerStatus(server);
+  return labels[status]?.() || status;
+}
+
+export function mcpServerStatusClass(server) {
+  switch (mcpServerStatus(server)) {
+    case "connected":
+      return "status-success";
+    case "degraded":
+      return String((server && server.last_error) || "").trim()
+        ? "status-error"
+        : "status-warning";
+    case "connecting":
+      return "status-neutral";
+    default:
+      // "disabled" and anything unexpected render gray.
+      return "status-unknown";
+  }
+}
+
+// formatTimestamp is injected so this module stays free of store imports.
+export function mcpServerStatusTitle(server, formatTimestamp) {
+  const status = mcpServerStatus(server);
+  const lastError = String((server && server.last_error) || "").trim();
+  if (lastError && status !== "connected") {
+    return lastError;
+  }
+  if (status === "connected" && server && server.connected_at) {
+    const format =
+      typeof formatTimestamp === "function" ? formatTimestamp : String;
+    return m.mcp_connected_since({ date: format(server.connected_at) });
+  }
+  return "";
+}
+
+export function mcpServerEndpointLabel(server) {
+  if (String((server && server.transport) || "") === "stdio") {
+    return m.mcp_local_command();
+  }
+  return String((server && server.url) || "").trim() || "—";
+}
+
+export function mcpServerSubCountsLabel(server) {
+  const prompts = Number((server && server.prompt_count) || 0);
+  const resources = Number((server && server.resource_count) || 0);
+  return m.mcp_sub_counts({ prompts, resources });
+}
+
+export function deriveMcpServerSlug(name) {
+  const normalized = String(name || "")
+    .normalize("NFKD")
+    .toLowerCase();
+  const slug = normalized
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64)
+    .replace(/-+$/g, "");
+  if (slug) {
+    return slug;
+  }
+  let hash = 2166136261;
+  for (const character of normalized) {
+    hash = Math.imul((hash ^ character.codePointAt(0)) >>> 0, 16777619) >>> 0;
+  }
+  return "mcp-" + hash.toString(16).padStart(8, "0");
+}
+
+import { splitCommaList } from "../../lib/utils/format.js";
+
+export { splitCommaList };
+
+export function normalizeMcpUserPaths(value) {
+  return String(value || "")
+    .split("\n")
+    .map((item) => item.trim())
+    .filter((item) => item);
+}
+
+export function mcpHeadersToRows(headers) {
+  if (!headers || typeof headers !== "object" || Array.isArray(headers)) {
+    return [];
+  }
+  return Object.keys(headers)
+    .sort()
+    .map((name) => ({ name, value: String(headers[name] || "") }));
+}
+
+export function mcpHeaderRowsToObject(rows) {
+  const headers = {};
+  (Array.isArray(rows) ? rows : []).forEach((row) => {
+    const name = String((row && row.name) || "").trim();
+    if (!name) {
+      return;
+    }
+    headers[name] = String((row && row.value) || "");
+  });
+  return headers;
+}
+
+export function filterMcpServers(servers, filter) {
+  return filterFields(servers, filter, (server) => [
+    server.name,
+    server.slug,
+    server.url,
+    server.transport,
+    server.description,
+    server.status,
+  ]);
+}
+
+// mcpServerFormFromServer prefills the editor form for an existing row.
+// Masked secret header values ("***") flow through unchanged so an untouched
+// save round-trips them and the backend preserves the stored secret.
+export function mcpServerFormFromServer(server) {
+  return {
+    name: String(server.name || "").trim(),
+    slug: mcpServerSlug(server),
+    url: String(server.url || "").trim(),
+    transport: server.transport === "sse" ? "sse" : "http",
+    description: String(server.description || "").trim(),
+    enabled: server.enabled !== false,
+    headers: mcpHeadersToRows(server.headers),
+    ...mcpToolFilterFromServer(server),
+    user_paths: (Array.isArray(server.user_paths) ? server.user_paths : []).join(
+      "\n",
+    ),
+    disallowed_user_paths: (Array.isArray(server.disallowed_user_paths)
+      ? server.disallowed_user_paths
+      : []
+    ).join("\n"),
+    tool_timeout_seconds: server.tool_timeout_seconds
+      ? String(server.tool_timeout_seconds)
+      : "",
+  };
+}
+
+// buildMcpServerPayload validates the editor form and produces the PUT
+// /admin/mcp-servers payload. Returns { error } on validation failure or
+// { payload } when the form is valid.
+export function buildMcpServerPayload(form, mode, servers, virtualServers = []) {
+  const name = String(form.name || "").trim();
+  const slug = String(form.slug || deriveMcpServerSlug(name))
+    .trim()
+    .toLowerCase();
+  const url = String(form.url || "").trim();
+  const transport = form.transport === "sse" ? "sse" : "http";
+  if (!name) {
+    return { error: m.mcp_name_required() };
+  }
+  if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(slug)) {
+    return {
+      error:
+        m.mcp_slug_invalid(),
+    };
+  }
+  if (
+    mode === "create" &&
+    (servers || []).some((server) => mcpServerSlug(server) === slug)
+  ) {
+    return { error: m.mcp_slug_in_use({ slug }) };
+  }
+  if (mode === "create" && (virtualServers || []).some((virtual) => virtual?.name === slug)) {
+    return { error: m.mcp_slug_used_by_virtual({ slug }) };
+  }
+  if (!url) {
+    return { error: m.mcp_url_required() };
+  }
+  const toolNames = uniqueToolNames(form.tool_names);
+  const allowMode = form.tool_mode === MCP_TOOL_MODE_ALLOW;
+  if (allowMode && toolNames.length === 0) {
+    // An empty allowed_tools list means "no restriction" on the gateway, the
+    // opposite of what an operator who unchecked everything expects.
+    return { error: m.mcp_tools_allow_empty() };
+  }
+  let toolTimeoutSeconds;
+  const rawTimeout = String(form.tool_timeout_seconds || "").trim();
+  if (rawTimeout !== "") {
+    const parsed = Number(rawTimeout);
+    if (!Number.isSafeInteger(parsed) || parsed < 0) {
+      return {
+        error: m.mcp_timeout_invalid(),
+      };
+    }
+    toolTimeoutSeconds = parsed;
+  }
+  return {
+    payload: {
+      name,
+      slug,
+      url,
+      transport,
+      headers: mcpHeaderRowsToObject(form.headers),
+      description: String(form.description || "").trim(),
+      enabled: Boolean(form.enabled),
+      allowed_tools: allowMode ? toolNames : [],
+      disallowed_tools: allowMode ? [] : toolNames,
+      user_paths: normalizeMcpUserPaths(form.user_paths),
+      disallowed_user_paths: normalizeMcpUserPaths(form.disallowed_user_paths),
+      tool_timeout_seconds: toolTimeoutSeconds,
+    },
+  };
+}
+
+export function normalizeMcpCatalog(name, payload) {
+  const source =
+    payload && typeof payload === "object" && !Array.isArray(payload)
+      ? payload
+      : {};
+  const list = (value) =>
+    (Array.isArray(value) ? value : []).filter(
+      (item) => item && typeof item === "object",
+    );
+  return {
+    server: String(source.server || name || "").trim(),
+    status: String(source.status || "").trim(),
+    instructions: String(source.instructions || "").trim(),
+    tools: list(source.tools),
+    excluded_tools: list(source.excluded_tools),
+    prompts: list(source.prompts),
+    resources: list(source.resources),
+    templates: list(source.templates),
+  };
+}
+
+// mcpNamespacedName is the aggregated /mcp endpoint form of one tool or
+// prompt name; the catalog reports the upstream originals.
+function mcpNamespacedName(catalog, name) {
+  return String((catalog && catalog.server) || "") + "_" + String(name || "");
+}
+
+export function mcpCatalogSections(catalog) {
+  const source = catalog || defaultMcpCatalog();
+  const describe = (name, description) => {
+    const label = String(name || "").trim();
+    const copy = String(description || "").trim();
+    if (label && copy) {
+      return label + " — " + copy;
+    }
+    return copy || label;
+  };
+  const feature = (kind) => (item) => ({
+    key: kind + ":" + String(item.name || ""),
+    name: String(item.name || ""),
+    aggregated: mcpNamespacedName(source, item.name),
+    description: String(item.description || "").trim(),
+    readOnly: item.read_only === true,
+    destructive: item.destructive === true,
+  });
+  const sections = [
+    { key: "tools", title: m.mcp_catalog_tools(), items: (source.tools || []).map(feature("tool")) },
+    {
+      key: "excluded_tools",
+      title: m.mcp_catalog_excluded_tools(),
+      hint: m.mcp_catalog_excluded_tools_hint(),
+      excluded: true,
+      items: (source.excluded_tools || []).map((item) => ({
+        ...feature("excluded")(item),
+        aggregated: "",
+      })),
+    },
+    {
+      key: "prompts",
+      title: m.mcp_catalog_prompts(),
+      items: (source.prompts || []).map(feature("prompt")),
+    },
+    {
+      key: "resources",
+      title: m.mcp_catalog_resources(),
+      items: (source.resources || []).map((item) => ({
+        key: "resource:" + String(item.uri || ""),
+        name: String(item.uri || ""),
+        aggregated: "",
+        description: describe(item.name, item.description),
+      })),
+    },
+    {
+      key: "templates",
+      title: m.mcp_catalog_templates(),
+      items: (source.templates || []).map((item) => ({
+        key: "template:" + String(item.uri_template || ""),
+        name: String(item.uri_template || ""),
+        aggregated: "",
+        description: describe(item.name, item.description),
+      })),
+    },
+  ];
+  return sections.filter((section) => section.items.length > 0);
+}
+
+export function mcpCatalogIsEmpty(catalog) {
+  return mcpCatalogSections(catalog).length === 0;
+}
+
+// --- all-tools catalog -------------------------------------------------------
+
+// mcpToolCatalogMembers resolves the catalog scope to the server slugs it
+// covers: null for every server (the aggregated /mcp endpoint), or one
+// virtual server's members. An unknown virtual server covers nothing.
+export function mcpToolCatalogMembers(virtualServers, scope) {
+  const name = String(scope || "");
+  if (!name) {
+    return null;
+  }
+  const virtual = (Array.isArray(virtualServers) ? virtualServers : []).find(
+    (item) => item?.name === name,
+  );
+  return virtual ? [...(virtual.servers || [])] : [];
+}
+
+// mcpToolCatalogServedScope keeps a virtual-server scope only while that
+// virtual server is still served, falling back to every server ("").
+export function mcpToolCatalogServedScope(virtualServers, scope) {
+  const name = String(scope || "");
+  return mcpServedVirtualServers(virtualServers).some((item) => item.name === name) ? name : "";
+}
+
+function mcpToolCatalogEntriesInScope(entries, members) {
+  const scope = Array.isArray(members) ? new Set(members) : null;
+  return (Array.isArray(entries) ? entries : []).filter(
+    (entry) => entry?.server && (!scope || scope.has(String(entry.server))),
+  );
+}
+
+// mcpToolCatalogOwners maps each /mcp tool name in scope to the server that
+// serves it. Two servers can produce the same name (server "a" with tool
+// "b_read" and server "a_b" with tool "read"); the gateway registers servers
+// in slug byte order and keeps the first, so the same rule picks the owner.
+function mcpToolCatalogOwners(inScope) {
+  const owners = new Map();
+  [...inScope]
+    .filter((entry) => entry.catalog)
+    .map((entry) => String(entry.server))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .forEach((server) => {
+      const entry = inScope.find((item) => String(item.server) === server);
+      (entry.catalog.tools || []).forEach((item) => {
+        const name = String(item?.name || "");
+        const aggregated = mcpNamespacedName({ server }, name);
+        if (name && !owners.has(aggregated)) {
+          owners.set(aggregated, server);
+        }
+      });
+    });
+  return owners;
+}
+
+// mcpToolCatalogRows flattens per-server catalogs into one list of tools
+// named as clients call them ({slug}_{name}), sorted by server and name.
+// members (see mcpToolCatalogMembers) limits the servers; showExcluded adds
+// the tools the servers' filters hide; query narrows by name, server, or
+// description. A tool whose /mcp name another server already serves is
+// marked shadowedBy that server and sorted after the reachable tools.
+export function mcpToolCatalogRows(entries, { members = null, showExcluded = false, query = "" } = {}) {
+  const inScope = mcpToolCatalogEntriesInScope(entries, members);
+  const owners = mcpToolCatalogOwners(inScope);
+  const rows = [];
+  inScope.forEach((entry) => {
+    const server = String(entry.server);
+    if (!entry.catalog) {
+      return;
+    }
+    // Names stay as the upstream reports them, since clients call them so.
+    // A repeated name keeps its first entry, as the gateway registers it.
+    const seen = new Set();
+    const add = (excluded) => (item) => {
+      const name = String(item?.name || "");
+      if (!name || seen.has(name)) {
+        return;
+      }
+      seen.add(name);
+      const aggregated = excluded ? "" : mcpNamespacedName({ server }, name);
+      const owner = aggregated ? owners.get(aggregated) : server;
+      rows.push({
+        key: server + ":" + name,
+        server,
+        name,
+        aggregated,
+        description: String(item.description || "").trim(),
+        readOnly: item.read_only === true,
+        destructive: item.destructive === true,
+        excluded,
+        shadowedBy: owner && owner !== server ? owner : "",
+      });
+    };
+    (entry.catalog.tools || []).forEach(add(false));
+    if (showExcluded) {
+      (entry.catalog.excluded_tools || []).forEach(add(true));
+    }
+  });
+  const filtered = filterFields(rows, query, (row) => [
+    row.aggregated,
+    row.name,
+    row.server,
+    row.description,
+  ]);
+  const rank = (row) => (row.excluded ? 2 : row.shadowedBy ? 1 : 0);
+  return filtered.sort(
+    (a, b) =>
+      rank(a) - rank(b) ||
+      a.server.localeCompare(b.server) ||
+      a.name.localeCompare(b.name),
+  );
+}
+
+// mcpToolCatalogSummary counts the distinct tools clients can call and the
+// servers in scope, before any search, so the header reads the same while
+// the operator types.
+export function mcpToolCatalogSummary(entries, members = null) {
+  const inScope = mcpToolCatalogEntriesInScope(entries, members);
+  return { tools: mcpToolCatalogOwners(inScope).size, servers: inScope.length };
+}
+
+// mcpToolCatalogIssues lists the servers in scope whose tools may be missing
+// from the combined list: the catalog failed to load, or the server is not
+// connected (a degraded server keeps its last catalog, so it is listed too).
+// A failed catalog load reads as an error whatever the server status says.
+export function mcpToolCatalogIssues(entries, members = null) {
+  return mcpToolCatalogEntriesInScope(entries, members)
+    .filter((entry) => entry.error || mcpServerStatus(entry) !== "connected")
+    .map((entry) => ({
+      server: entry.server,
+      status: mcpServerStatus(entry),
+      error: String(entry.error || entry.last_error || "").trim(),
+      statusClass: entry.error ? "status-error" : mcpServerStatusClass(entry),
+    }));
+}
+
+// mcpToolCatalogExport is the request and file name of the tool catalog
+// download: GET /admin/mcp-servers/catalog as "csv" or "json", for every
+// server or, with a scope, the members of that virtual server.
+export function mcpToolCatalogExport(format, scope) {
+  const extension = format === "json" ? "json" : "csv";
+  const virtual = String(scope || "");
+  return {
+    path:
+      "/admin/mcp-servers/catalog?format=" +
+      extension +
+      (virtual ? "&virtual_server=" + encodeURIComponent(virtual) : ""),
+    filename:
+      "gomodel-mcp-tools" +
+      (virtual ? "-" + virtual.replace(/[^\w.+-]/g, "-") : "") +
+      "." +
+      extension,
+  };
+}
+
+// --- tool picker -----------------------------------------------------------
+
+function uniqueToolNames(names) {
+  const seen = new Set();
+  const result = [];
+  (Array.isArray(names) ? names : []).forEach((value) => {
+    const name = String(value || "").trim();
+    if (name && !seen.has(name)) {
+      seen.add(name);
+      result.push(name);
+    }
+  });
+  return result;
+}
+
+// mcpToolFilterFromServer maps the stored allow/deny lists onto one editor
+// mode. Config accepts both lists at once (deny applies after allow); the
+// allow mode with allowed − disallowed exposes exactly the same tools.
+export function mcpToolFilterFromServer(server) {
+  const allowed = uniqueToolNames(server && server.allowed_tools);
+  const disallowed = uniqueToolNames(server && server.disallowed_tools);
+  if (allowed.length > 0) {
+    return {
+      tool_mode: MCP_TOOL_MODE_ALLOW,
+      tool_names: allowed.filter((name) => !disallowed.includes(name)),
+    };
+  }
+  return { tool_mode: MCP_TOOL_MODE_EXCLUDE, tool_names: disallowed };
+}
+
+// mcpDiscoveredTools merges the exposed and excluded catalog lists into one
+// name-sorted list: the full set the upstream reports, whatever the filters.
+export function mcpDiscoveredTools(catalog) {
+  const source = catalog || {};
+  const byName = new Map();
+  [...(source.tools || []), ...(source.excluded_tools || [])].forEach((item) => {
+    const name = String((item && item.name) || "").trim();
+    if (name && !byName.has(name)) {
+      byName.set(name, {
+        name,
+        description: String(item.description || "").trim(),
+        readOnly: item.read_only === true,
+        destructive: item.destructive === true,
+      });
+    }
+  });
+  return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function mcpToolExposed(form, name) {
+  const listed = (form.tool_names || []).includes(name);
+  return form.tool_mode === MCP_TOOL_MODE_ALLOW ? listed : !listed;
+}
+
+// setMcpToolsExposed returns the tool_names list after exposing or hiding
+// every given tool in the form's current mode.
+export function setMcpToolsExposed(form, names, exposed) {
+  const targets = uniqueToolNames(names);
+  const listed = form.tool_mode === MCP_TOOL_MODE_ALLOW ? exposed : !exposed;
+  const current = uniqueToolNames(form.tool_names);
+  if (listed) {
+    return uniqueToolNames([...current, ...targets]);
+  }
+  return current.filter((name) => !targets.includes(name));
+}
+
+// mcpToolModeSwitchable reports whether the mode can flip without changing
+// what is exposed. Converting between an allowlist and a denylist needs the
+// full tool set; without it, an allowlist would become an empty denylist,
+// which exposes every tool. An empty list is safe to flip either way.
+export function mcpToolModeSwitchable(form, discovered) {
+  return (discovered || []).length > 0 || uniqueToolNames(form.tool_names).length === 0;
+}
+
+// switchMcpToolMode flips the filter mode while keeping every discovered
+// tool's exposure unchanged; only the treatment of future tools changes.
+// Names the server does not report are meaningful only in the old mode.
+// When the flip is not safe (see mcpToolModeSwitchable) the form is kept.
+export function switchMcpToolMode(form, mode, discovered) {
+  const next = mode === MCP_TOOL_MODE_ALLOW ? MCP_TOOL_MODE_ALLOW : MCP_TOOL_MODE_EXCLUDE;
+  if (next === form.tool_mode || !mcpToolModeSwitchable(form, discovered)) {
+    return { tool_mode: form.tool_mode, tool_names: uniqueToolNames(form.tool_names) };
+  }
+  const names = (discovered || []).map((tool) => tool.name);
+  const exposed = names.filter((name) => mcpToolExposed(form, name));
+  return {
+    tool_mode: next,
+    tool_names:
+      next === MCP_TOOL_MODE_ALLOW
+        ? exposed
+        : names.filter((name) => !exposed.includes(name)),
+  };
+}
+
+// mcpToolPickerRows lists every discovered tool with its exposure in the
+// form, followed by listed names the server does not report (typos, removed
+// tools, or names added before the server connected). query narrows by name
+// or description.
+export function mcpToolPickerRows(form, discovered, query) {
+  const needle = normalizeQuery(query);
+  const known = new Set((discovered || []).map((tool) => tool.name));
+  const rows = (discovered || []).map((tool) => ({
+    ...tool,
+    exposed: mcpToolExposed(form, tool.name),
+    missing: false,
+  }));
+  uniqueToolNames(form.tool_names).forEach((name) => {
+    if (!known.has(name)) {
+      rows.push({
+        name,
+        description: "",
+        readOnly: false,
+        destructive: false,
+        exposed: form.tool_mode === MCP_TOOL_MODE_ALLOW,
+        missing: true,
+      });
+    }
+  });
+  if (!needle) {
+    return rows;
+  }
+  return filterFields(rows, needle, (row) => [row.name, row.description]);
+}
+
+// mcpToolSelectionSummary counts discovered tools only: a listed name the
+// server does not report is neither exposed nor hidden today.
+export function mcpToolSelectionSummary(form, discovered) {
+  const total = (discovered || []).length;
+  const exposed = (discovered || []).filter((tool) =>
+    mcpToolExposed(form, tool.name),
+  ).length;
+  return { exposed, total };
+}
+
+// Tool discovery modes (mcp.tool_discovery / MCP_TOOL_DISCOVERY). "off" lists
+// every tool; "search" lists only search_tools and call_tool. Clients override
+// the gateway default per session with MCP_TOOL_DISCOVERY_HEADER.
+export const MCP_TOOL_DISCOVERY_OFF = "off";
+export const MCP_TOOL_DISCOVERY_SEARCH = "search";
+export const MCP_TOOL_DISCOVERY_HEADER = "X-MCP-Tool-Discovery";
+
+// Placeholder for the client's GoModel API key; the dashboard never embeds a
+// real key in a copyable snippet.
+export const MCP_API_KEY_PLACEHOLDER = "YOUR_GOMODEL_API_KEY";
+
+export function normalizeMcpToolDiscovery(value) {
+  return String(value || "").trim().toLowerCase() === MCP_TOOL_DISCOVERY_SEARCH
+    ? MCP_TOOL_DISCOVERY_SEARCH
+    : MCP_TOOL_DISCOVERY_OFF;
+}
+
+// mcpGatewayEndpoint is the aggregated /mcp URL clients connect to, under
+// the dashboard's base path when the gateway is mounted on a sub-path.
+export function mcpGatewayEndpoint(origin, basePath) {
+  const base = !basePath || basePath === "/" ? "" : String(basePath).replace(/\/+$/, "");
+  return `${String(origin || "").replace(/\/+$/, "")}${base}/mcp`;
+}
+
+// mcpEndpointIsInsecure reports a plain-HTTP endpoint on a non-loopback host,
+// where clients would send their API key unencrypted. Loopback HTTP stays
+// quiet so local development is not nagged.
+export function mcpEndpointIsInsecure(endpoint) {
+  let url;
+  try {
+    url = new URL(endpoint);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "http:") return false;
+  const host = url.hostname.replace(/^\[|\]$/g, "");
+  return !(host === "localhost" || host.endsWith(".localhost") || host === "::1" || host.startsWith("127."));
+}
+
+// mcpVirtualServerEndpoint is a virtual server's /mcp/{name} URL.
+export function mcpVirtualServerEndpoint(gatewayEndpoint, name) {
+  return `${gatewayEndpoint}/${encodeURIComponent(name)}`;
+}
+
+// mcpServedVirtualServers keeps the virtual servers clients can connect to:
+// one whose name a real server holds is not served.
+export function mcpServedVirtualServers(virtualServers) {
+  return (Array.isArray(virtualServers) ? virtualServers : []).filter(
+    (virtual) => virtual?.name && !virtual.conflict,
+  );
+}
+
+// mcpClientConfig renders the mcpServers JSON most MCP clients accept. The
+// discovery header is added only when the chosen mode differs from the
+// endpoint's default, so the snippet stays minimal. A virtual server gets its
+// own entry name, so several can sit side by side in one client config.
+export function mcpClientConfig(endpoint, mode, defaultMode, virtualName = "") {
+  const headers = { Authorization: `Bearer ${MCP_API_KEY_PLACEHOLDER}` };
+  const chosen = normalizeMcpToolDiscovery(mode);
+  if (chosen !== normalizeMcpToolDiscovery(defaultMode)) {
+    headers[MCP_TOOL_DISCOVERY_HEADER] = chosen;
+  }
+  const entry = virtualName ? `gomodel-${virtualName}` : "gomodel";
+  const config = { mcpServers: { [entry]: { type: "http", url: endpoint, headers } } };
+  return JSON.stringify(config, null, 2);
+}
+
+// --- virtual server editor ------------------------------------------------
+
+export function defaultMcpVirtualServerForm() {
+  return { name: "", description: "", servers: [], tool_discovery: "" };
+}
+
+export function mcpVirtualServerFormFromVirtual(virtual) {
+  return {
+    name: String(virtual?.name || ""),
+    description: String(virtual?.description || ""),
+    servers: [...(virtual?.servers || [])],
+    // The stored setting, not the effective mode: "" keeps following the
+    // gateway default.
+    tool_discovery: String(virtual?.configured_tool_discovery || ""),
+  };
+}
+
+// mcpVirtualMemberOptions lists every server as a pickable member, plus any
+// selected member that no longer matches a server, so the editor can show
+// and remove it.
+export function mcpVirtualMemberOptions(servers, selected) {
+  const options = (servers || []).map((server) => ({
+    slug: mcpServerSlug(server),
+    name: String(server?.name || mcpServerSlug(server)),
+    missing: false,
+  }));
+  const known = new Set(options.map((option) => option.slug));
+  for (const slug of selected || []) {
+    if (!known.has(slug)) {
+      options.push({ slug, name: slug, missing: true });
+    }
+  }
+  return options;
+}
+
+export function toggleMcpVirtualMember(selected, slug) {
+  const current = selected || [];
+  return current.includes(slug) ? current.filter((item) => item !== slug) : [...current, slug];
+}
+
+// buildMcpVirtualServerPayload validates the editor form the way the gateway
+// will, so the common mistakes are caught before the request.
+export function buildMcpVirtualServerPayload(form, mode, virtualServers, servers) {
+  const name = String(form?.name || "").trim().toLowerCase();
+  if (!name) {
+    return { error: m.mcp_virtual_name_required() };
+  }
+  if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) {
+    return { error: m.mcp_virtual_name_invalid() };
+  }
+  if (mode === "create") {
+    if ((virtualServers || []).some((virtual) => virtual?.name === name)) {
+      return { error: m.mcp_virtual_name_in_use({ name }) };
+    }
+    if ((servers || []).some((server) => mcpServerSlug(server) === name)) {
+      return { error: m.mcp_virtual_name_used_by_server({ name }) };
+    }
+  }
+  const members = [...new Set((form?.servers || []).map((slug) => String(slug).trim()).filter(Boolean))];
+  if (members.length === 0) {
+    return { error: m.mcp_virtual_servers_required() };
+  }
+  const discovery = String(form?.tool_discovery || "");
+  return {
+    payload: {
+      name,
+      description: String(form?.description || "").trim(),
+      servers: members,
+      tool_discovery:
+        discovery === MCP_TOOL_DISCOVERY_OFF || discovery === MCP_TOOL_DISCOVERY_SEARCH ? discovery : "",
+    },
+  };
+}
+
+// --- OAuth sign-in -----------------------------------------------------------
+
+// MCP_OAUTH_CALLBACK_PATH is where authorization servers send the browser
+// back after a sign-in (mcpgateway.OAuthCallbackPath).
+export const MCP_OAUTH_CALLBACK_PATH = "/admin/mcp-oauth/callback";
+
+// mcpServerCanSignIn reports whether the server speaks HTTP, the only
+// transports the MCP authorization spec covers.
+export function mcpServerCanSignIn(server) {
+  const transport = String((server && server.transport) || "http");
+  return transport === "http" || transport === "sse";
+}
+
+// mcpServerOAuthState is the sign-in state shown on a row: the gateway's
+// oauth.status ("signed_in", "expired", "error"), "required" when the
+// server answered 401 and nobody signed in, else "".
+export function mcpServerOAuthState(server) {
+  const status = String((server && server.oauth && server.oauth.status) || "");
+  if (status) {
+    return status;
+  }
+  return server && server.auth_required ? "required" : "";
+}
+
+export function mcpServerOAuthLabel(state) {
+  const labels = {
+    signed_in: m.mcp_oauth_signed_in,
+    expired: m.mcp_oauth_expired,
+    error: m.mcp_oauth_error,
+    required: m.mcp_oauth_required,
+  };
+  return labels[state]?.() || "";
+}
+
+export function mcpServerOAuthClass(state) {
+  return state === "signed_in" ? "status-success" : state ? "status-warning" : "";
+}
+
+// mcpOAuthRedirectURI builds the callback URL as this browser reaches the
+// gateway: the page origin plus the base-path-prefixed callback path.
+export function mcpOAuthRedirectURI(origin, prefixPath = (path) => path) {
+  return String(origin || "").replace(/\/+$/, "") + prefixPath(MCP_OAUTH_CALLBACK_PATH);
+}
+
+// buildMcpOAuthStartPayload maps the sign-in form onto the start request.
+// The client fields are only sent when the operator filled them in.
+export function buildMcpOAuthStartPayload(form, redirectURI) {
+  const payload = { redirect_uri: redirectURI };
+  const clientID = String((form && form.client_id) || "").trim();
+  if (clientID) {
+    payload.client_id = clientID;
+    const secret = String((form && form.client_secret) || "").trim();
+    if (secret) {
+      payload.client_secret = secret;
+    }
+  }
+  return payload;
+}
+
+// parseMcpOAuthOutcome reads the ?mcp_oauth=...&server=... the callback
+// redirects to. It returns null when the page was not opened that way.
+export function parseMcpOAuthOutcome(search) {
+  const params = new URLSearchParams(search || "");
+  const outcome = params.get("mcp_oauth");
+  if (!outcome) {
+    return null;
+  }
+  return { outcome, server: params.get("server") || "" };
+}
+
+// MCP_OAUTH_OUTCOMES maps the callback outcome to the flash it shows. The
+// outcome only picks a message: the sign-in itself already happened on the
+// gateway, and the server list is re-read either way.
+const MCP_OAUTH_FAILED = { kind: "error", text: (name) => m.mcp_oauth_failed_flash({ name }) };
+const MCP_OAUTH_OUTCOMES = new Map([
+  ["signed_in", { kind: "success", text: (name) => m.mcp_oauth_signed_in_flash({ name }) }],
+  ["expired", { kind: "error", text: () => m.mcp_oauth_expired_flash() }],
+  ["error", MCP_OAUTH_FAILED],
+]);
+
+// mcpOAuthOutcomeMessage returns the flash { kind, text } for a parsed
+// callback outcome; unknown outcomes read as a failure.
+export function mcpOAuthOutcomeMessage(result) {
+  const entry = MCP_OAUTH_OUTCOMES.get(String(result?.outcome || "")) ?? MCP_OAUTH_FAILED;
+  return { kind: entry.kind, text: entry.text(String(result?.server || "")) };
+}
+
+// stripMcpOAuthParams removes the callback outcome from a URL so a reload
+// does not repeat the message.
+export function stripMcpOAuthParams(href) {
+  const url = new URL(href);
+  url.searchParams.delete("mcp_oauth");
+  url.searchParams.delete("server");
+  return url.pathname + url.search + url.hash;
+}

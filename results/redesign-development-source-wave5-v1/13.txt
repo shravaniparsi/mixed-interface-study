@@ -1,0 +1,1016 @@
+// MCP Servers page state: fetch/save/delete/reconnect/catalog flows on top
+// of the shared admin API client. Pure helpers live in ./mcp-servers.js so
+// tests can exercise them without Svelte.
+
+import { errorPayloadMessage, getJSON } from "$lib/api/client.js";
+import { loadAdminList, sendAdminMutation } from "$lib/api/adminCrud.js";
+import { flash } from "$lib/stores/flash.svelte.js";
+import { runtimeConfig } from "$lib/stores/runtimeConfig.svelte.js";
+import { gomodelPath } from "$lib/api/paths.js";
+import * as m from "$lib/paraglide/messages.js";
+import { tick } from "svelte";
+import {
+  buildMcpOAuthStartPayload,
+  buildMcpServerPayload,
+  buildMcpVirtualServerPayload,
+  defaultMcpVirtualServerForm,
+  mcpVirtualServerFormFromVirtual,
+  toggleMcpVirtualMember,
+  defaultMcpCatalog,
+  defaultMcpServerForm,
+  deriveMcpServerSlug,
+  filterMcpServers,
+  mcpDiscoveredTools,
+  mcpOAuthOutcomeMessage,
+  mcpOAuthRedirectURI,
+  mcpServerFormFromServer,
+  parseMcpOAuthOutcome,
+  stripMcpOAuthParams,
+  mcpPollShouldRetry,
+  mcpServerSlug,
+  mcpServersNeedPolling,
+  mcpServerStatus,
+  mcpToolCatalogServedScope,
+  normalizeMcpCatalog,
+  setMcpToolsExposed,
+  switchMcpToolMode,
+  MCP_SERVERS_POLL_MS,
+  MCP_TOOL_MODE_ALLOW,
+} from "./mcp-servers.js";
+import {
+  MCP_AUTH_OAUTH,
+  MCP_AUTH_TOKEN,
+  mcpConnectionHeaders,
+  mcpHasAuthorizationHeader,
+  MCP_PRESET_CUSTOM,
+  mcpFreeSlug,
+  mcpPresetById,
+  mcpURLHostName,
+} from "./mcpPresets.js";
+
+class McpServersState {
+  servers = $state([]);
+  // Virtual servers, each served at /mcp/{name}. Config-declared ones are
+  // read-only (managed); the rest are edited here.
+  virtualServers = $state([]);
+  // Set when the virtual-server list failed to load, so the section shows the
+  // failure instead of an empty list.
+  virtualError = $state("");
+  virtualFormOpen = $state(false);
+  virtualFormMode = $state("create");
+  virtualForm = $state(defaultMcpVirtualServerForm());
+  virtualFormSubmitting = $state(false);
+  virtualFormError = $state("");
+  deletingVirtualName = $state("");
+  available = $state(true);
+  loading = $state(false);
+  // Load and in-form errors only; row-action feedback goes through the
+  // flash store.
+  error = $state("");
+  filter = $state("");
+
+  formOpen = $state(false);
+  formSubmitting = $state(false);
+  formMode = $state("create");
+  slugEdited = $state(false);
+  advancedOpen = $state(false);
+  form = $state(defaultMcpServerForm());
+  // Adding a server starts with the server choice: a preset id or
+  // MCP_PRESET_CUSTOM, "" until one is picked. A preset keeps the editor to a
+  // name and a connection method (sign-in, token, or none) with everything
+  // else under Advanced. nameEdited stops the name following the choice (or a
+  // custom server's URL) once the operator typed one.
+  formKind = $state("");
+  formAuth = $state("");
+  formToken = $state("");
+  nameEdited = $state(false);
+  formPreset = $derived(mcpPresetById(this.formKind));
+
+  // Editor tool picker: every tool the server reports, exposed or not. A new
+  // server, or one that never listed, has none yet.
+  editorTools = $state({ loading: false, error: "", tools: [] });
+  toolQuery = $state("");
+  toolDraft = $state("");
+  // Bumped per editor catalog load, so a response for an editor session that
+  // was closed and reopened (same slug) cannot overwrite the newer one.
+  #toolLoadSeq = 0;
+
+  deletingName = $state("");
+  reconnectingName = $state("");
+
+  // OAuth sign-in dialog. clientRequired is set when the authorization
+  // server has no dynamic client registration, so the client fields open.
+  oauthOpen = $state(false);
+  oauthServer = $state(null);
+  oauthForm = $state({ client_id: "", client_secret: "" });
+  oauthSubmitting = $state(false);
+  oauthError = $state("");
+  oauthClientRequired = $state(false);
+  signingOutName = $state("");
+
+  catalogOpen = $state(false);
+  catalogLoading = $state(false);
+  catalogError = $state("");
+  catalog = $state(defaultMcpCatalog());
+
+  // All-tools view: every server's catalog, fetched together. Each entry is
+  // { server, status, last_error, catalog, error }.
+  toolCatalogOpen = $state(false);
+  toolCatalogLoading = $state(false);
+  toolCatalogEntries = $state([]);
+  toolCatalogQuery = $state("");
+  // "" is the aggregated /mcp endpoint; otherwise a virtual server's name.
+  toolCatalogScope = $state("");
+  toolCatalogShowExcluded = $state(false);
+  // Bumped per open and close, so a load for a view that was closed or
+  // reopened cannot overwrite the current one.
+  #toolCatalogSeq = 0;
+
+  filtered = $derived(filterMcpServers(this.servers, this.filter));
+
+  #pollTimer = null;
+  // stopPolling starts a new generation. A list request already in flight
+  // then belongs to the previous one: clearing the timer cannot cancel it, so
+  // the generation is what keeps its response from scheduling a fresh timer
+  // after the page is gone.
+  #pollGeneration = 0;
+  #pollFailures = 0;
+  // Row actions and the poll timer can both have a list request in flight.
+  // loadAdminList only reports "stale" when the API key changed, so the
+  // newest request wins here: an older response must not restore the list a
+  // delete just removed, or replace the timer the newer one scheduled.
+  #listSeq = 0;
+  #virtualSeq = 0;
+  // Bumped whenever the virtual-server editor opens or closes, so a save
+  // that finishes after the operator moved on cannot close or overwrite the
+  // editor they are using now.
+  #virtualFormSeq = 0;
+
+  // --- server list -------------------------------------------------------
+
+  // background=true is the poll loop re-fetching: it leaves the loading flag
+  // alone so the settled list never flickers back to the spinner.
+  async fetchServers({ background = false } = {}) {
+    // Both captured before the first await, so a cleanup or a newer request
+    // during any suspension of this one — not just the list call — retires it.
+    const generation = this.#pollGeneration;
+    const seq = ++this.#listSeq;
+    // Wait for the shared runtime-config request before deciding whether the
+    // MCP admin API is available.
+    await runtimeConfig.ensureLoaded();
+    if (generation !== this.#pollGeneration) {
+      return;
+    }
+    if (!runtimeConfig.mcpVisible()) {
+      this.stopPolling();
+      this.available = false;
+      this.servers = [];
+      this.#clearVirtualServers();
+      this.error = "";
+      this.loading = false;
+      return;
+    }
+
+    this.#clearPoll();
+    if (!background) {
+      this.loading = true;
+      this.#pollFailures = 0;
+    }
+    this.error = "";
+    try {
+      const outcome = await loadAdminList("/admin/mcp-servers", {
+        label: "mcp servers",
+        errorFallback: m.mcp_load_failed(),
+        unavailableStatuses: [503, 404],
+      });
+      if (outcome.status === "stale" || seq !== this.#listSeq) {
+        return;
+      }
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        this.servers = [];
+        this.#clearVirtualServers();
+        return;
+      }
+      if (outcome.status === "error") {
+        // A gateway response proves the endpoint exists; a network failure
+        // (result === null) leaves the availability flag as-is.
+        if (outcome.result) {
+          this.available = true;
+        }
+        // A failed background poll keeps the list it already has: a blip
+        // while waiting for a dial must not blank the table or replace it
+        // with an error the operator never asked for. It retries, since the
+        // pending row is exactly what the loop is waiting on, until the
+        // failure budget runs out.
+        if (background) {
+          this.#pollFailures += 1;
+          if (mcpPollShouldRetry(this.#pollFailures)) {
+            this.#schedulePoll(generation);
+          }
+          return;
+        }
+        this.servers = [];
+        this.#clearVirtualServers();
+        this.error = outcome.error;
+        return;
+      }
+      this.available = true;
+      this.servers = outcome.items;
+      this.#pollFailures = 0;
+      this.#schedulePoll(generation);
+      // A list response can land after the page was left; it must not start
+      // a request the cleanup can no longer retire.
+      if (!background && generation === this.#pollGeneration) {
+        void this.fetchVirtualServers();
+      }
+    } finally {
+      if (!background && seq === this.#listSeq) {
+        this.loading = false;
+      }
+    }
+  }
+
+  // Virtual servers load with the list and after their own edits; they skip
+  // the connect poll. A failed load keeps the last known list and reports the
+  // failure, so it never reads as "no virtual servers".
+  async fetchVirtualServers() {
+    const seq = ++this.#virtualSeq;
+    const outcome = await loadAdminList("/admin/mcp-virtual-servers", {
+      label: "mcp virtual servers",
+      errorFallback: m.mcp_virtual_load_failed(),
+      unavailableStatuses: [503, 404],
+    });
+    if (outcome.status === "stale" || seq !== this.#virtualSeq) {
+      return;
+    }
+    if (outcome.status === "error") {
+      this.virtualError = outcome.error || m.mcp_virtual_load_failed();
+      return;
+    }
+    this.virtualError = "";
+    this.virtualServers = outcome.status === "ok" ? outcome.items : [];
+    this.toolCatalogScope = mcpToolCatalogServedScope(this.virtualServers, this.toolCatalogScope);
+  }
+
+  // Clearing also retires a virtual-list request in flight, so its response
+  // cannot bring the list back.
+  #clearVirtualServers() {
+    this.#virtualSeq += 1;
+    this.virtualServers = [];
+    this.virtualError = "";
+    this.toolCatalogScope = "";
+  }
+
+  // --- connect poll ------------------------------------------------------
+
+  #schedulePoll(generation) {
+    // The generation check comes first: a response from a stopped loop must
+    // not clear a timer a newer load already scheduled.
+    if (generation !== this.#pollGeneration) {
+      return;
+    }
+    this.#clearPoll();
+    if (!mcpServersNeedPolling(this.servers)) {
+      return;
+    }
+    this.#pollTimer = setTimeout(() => {
+      this.#pollTimer = null;
+      void this.fetchServers({ background: true });
+    }, MCP_SERVERS_POLL_MS);
+  }
+
+  #clearPoll() {
+    if (this.#pollTimer) {
+      clearTimeout(this.#pollTimer);
+      this.#pollTimer = null;
+    }
+  }
+
+  // stopPolling is called when the page is left, so neither a timer nor an
+  // in-flight request outlives it.
+  stopPolling() {
+    this.#pollGeneration += 1;
+    this.#virtualSeq += 1;
+    this.#pollFailures = 0;
+    this.#clearPoll();
+  }
+
+  // --- editor form -------------------------------------------------------
+
+  openCreate() {
+    this.formMode = "create";
+    this.slugEdited = false;
+    this.advancedOpen = false;
+    this.error = "";
+    this.form = defaultMcpServerForm();
+    this.#resetPreset();
+    this.#resetEditorTools();
+    this.formOpen = true;
+  }
+
+  // chooseServerKind switches the create form between presets and a custom
+  // server. Fields the operator did not touch follow the choice; the token
+  // and every header row are dropped on a change, since headers usually
+  // carry credentials and one service's key must never go to another.
+  chooseServerKind(kind) {
+    const previous = this.formPreset;
+    const previousKind = this.formKind;
+    const preset = mcpPresetById(kind);
+    this.formKind = preset ? preset.id : kind === MCP_PRESET_CUSTOM ? kind : "";
+    this.formAuth = preset ? preset.auth[0] : "";
+    this.formToken = "";
+    this.error = "";
+    if (this.formKind !== previousKind) {
+      this.form.headers = [];
+    }
+    if (preset) {
+      this.form.url = preset.url;
+      this.form.transport = preset.transport || "http";
+    } else if (previous && this.form.url === previous.url) {
+      this.form.url = "";
+      this.form.transport = "http";
+    }
+    if (!this.nameEdited) {
+      this.form.name = preset ? preset.name : mcpURLHostName(this.form.url);
+    }
+    this.syncSlugFromName();
+  }
+
+  // syncNameFromURL names a custom server after its URL host until the
+  // operator types a name.
+  syncNameFromURL() {
+    if (this.formMode === "create" && !this.formPreset && !this.nameEdited) {
+      this.form.name = mcpURLHostName(this.form.url);
+      this.syncSlugFromName();
+    }
+  }
+
+  markNameEdited() {
+    this.nameEdited = true;
+    this.syncSlugFromName();
+  }
+
+  #resetPreset() {
+    this.formKind = "";
+    this.formAuth = "";
+    this.formToken = "";
+    this.nameEdited = false;
+  }
+
+  openEdit(server) {
+    if (!server || server.managed) {
+      return;
+    }
+    this.formMode = "edit";
+    this.slugEdited = true;
+    this.advancedOpen = false;
+    this.error = "";
+    this.form = mcpServerFormFromServer(server);
+    this.#resetPreset();
+    this.#resetEditorTools();
+    this.formOpen = true;
+    void this.#loadEditorTools(server);
+  }
+
+  closeForm() {
+    this.formOpen = false;
+    this.formMode = "create";
+    this.slugEdited = false;
+    this.advancedOpen = false;
+    this.error = "";
+    this.form = defaultMcpServerForm();
+    this.#resetPreset();
+    this.#resetEditorTools();
+  }
+
+  #resetEditorTools() {
+    this.#toolLoadSeq += 1;
+    this.editorTools = { loading: false, error: "", tools: [] };
+    this.toolQuery = "";
+    this.toolDraft = "";
+  }
+
+  async #loadEditorTools(server) {
+    const seq = ++this.#toolLoadSeq;
+    this.editorTools = { ...this.editorTools, loading: true, error: "" };
+    const loaded = await this.#fetchCatalog(server);
+    // The editor may have closed, reopened, or moved to another server.
+    if (seq !== this.#toolLoadSeq) {
+      return;
+    }
+    if (loaded.stale) {
+      this.editorTools = { ...this.editorTools, loading: false };
+      return;
+    }
+    this.editorTools = {
+      loading: false,
+      error: loaded.error || "",
+      tools: loaded.error ? [] : mcpDiscoveredTools(loaded.catalog),
+    };
+  }
+
+  setToolsExposed(names, exposed) {
+    this.form.tool_names = setMcpToolsExposed(this.form, names, exposed);
+  }
+
+  switchToolMode(mode) {
+    const next = switchMcpToolMode(this.form, mode, this.editorTools.tools);
+    this.form.tool_mode = next.tool_mode;
+    this.form.tool_names = next.tool_names;
+  }
+
+  addToolDraft() {
+    const name = this.toolDraft.trim();
+    if (!name) {
+      return;
+    }
+    // Adding a name lists it in the current mode: excluded or allowed.
+    this.setToolsExposed([name], this.form.tool_mode === MCP_TOOL_MODE_ALLOW);
+    this.toolDraft = "";
+  }
+
+  removeToolName(name) {
+    this.form.tool_names = (this.form.tool_names || []).filter((item) => item !== name);
+  }
+
+  // A preset server's slug skips taken ones, so a second Linear becomes
+  // linear-2 instead of an error the preset form keeps out of sight.
+  syncSlugFromName() {
+    if (this.formMode !== "create" || this.slugEdited) {
+      return;
+    }
+    const slug = this.form.name.trim() ? deriveMcpServerSlug(this.form.name) : "";
+    this.form.slug =
+      slug && this.formPreset ? mcpFreeSlug(slug, this.servers, this.virtualServers) : slug;
+  }
+
+  markSlugEdited() {
+    if (this.formMode === "create") {
+      this.slugEdited = true;
+    }
+  }
+
+  addHeader() {
+    this.form.headers.push({ name: "", value: "" });
+  }
+
+  removeHeader(index) {
+    this.form.headers.splice(index, 1);
+  }
+
+  async submitForm() {
+    if (this.formMode === "create" && !this.formKind) {
+      this.error = m.mcp_preset_server_required();
+      return;
+    }
+    const preset = this.formPreset;
+    const auth = preset ? this.formAuth : "";
+    const form = preset
+      ? { ...this.form, headers: mcpConnectionHeaders(this.form.headers, auth, this.formToken) }
+      : this.form;
+    if (auth === MCP_AUTH_TOKEN && !mcpHasAuthorizationHeader(form.headers)) {
+      this.error = m.mcp_preset_token_required();
+      return;
+    }
+    const built = buildMcpServerPayload(form, this.formMode, this.servers, this.virtualServers);
+    if (built.error) {
+      this.error = built.error;
+      return;
+    }
+
+    this.error = "";
+    this.formSubmitting = true;
+
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/mcp-servers",
+        "PUT",
+        built.payload,
+        {
+          label: "save mcp server",
+          errorFallback: m.mcp_save_failed(),
+          unavailableMessage: m.mcp_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") {
+        return;
+      }
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        this.error = outcome.error;
+        return;
+      }
+      if (outcome.status === "error") {
+        this.error = outcome.error;
+        return;
+      }
+
+      flash.success(m.mcp_saved({ name: built.payload.name }));
+      this.closeForm();
+      void this.fetchServers();
+      if (auth === MCP_AUTH_OAUTH) {
+        this.#signInAfterSave(built.payload, preset);
+      }
+    } finally {
+      this.formSubmitting = false;
+    }
+  }
+
+  // --- virtual server editor ----------------------------------------------
+
+  openVirtualCreate() {
+    this.#virtualFormSeq += 1;
+    this.virtualFormMode = "create";
+    this.virtualFormError = "";
+    this.virtualForm = defaultMcpVirtualServerForm();
+    this.virtualFormOpen = true;
+  }
+
+  openVirtualEdit(virtual) {
+    if (!virtual || virtual.managed) {
+      return;
+    }
+    this.#virtualFormSeq += 1;
+    this.virtualFormMode = "edit";
+    this.virtualFormError = "";
+    this.virtualForm = mcpVirtualServerFormFromVirtual(virtual);
+    this.virtualFormOpen = true;
+  }
+
+  closeVirtualForm() {
+    this.#virtualFormSeq += 1;
+    this.virtualFormOpen = false;
+    this.virtualFormMode = "create";
+    this.virtualFormError = "";
+    this.virtualForm = defaultMcpVirtualServerForm();
+  }
+
+  toggleVirtualMember(slug) {
+    this.virtualForm.servers = toggleMcpVirtualMember(this.virtualForm.servers, slug);
+  }
+
+  async submitVirtualForm() {
+    const built = buildMcpVirtualServerPayload(
+      this.virtualForm,
+      this.virtualFormMode,
+      this.virtualServers,
+      this.servers,
+    );
+    if (built.error) {
+      this.virtualFormError = built.error;
+      return;
+    }
+    this.virtualFormError = "";
+    this.virtualFormSubmitting = true;
+    const formSeq = this.#virtualFormSeq;
+    try {
+      const outcome = await sendAdminMutation("/admin/mcp-virtual-servers", "PUT", built.payload, {
+        label: "save mcp virtual server",
+        errorFallback: m.mcp_virtual_save_failed(),
+        unavailableMessage: m.mcp_unavailable(),
+      });
+      if (outcome.status === "stale") {
+        return;
+      }
+      // The editor that submitted may be gone: report the outcome without
+      // touching the one open now.
+      const sameEditor = formSeq === this.#virtualFormSeq;
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        if (sameEditor) {
+          this.virtualFormError = outcome.error;
+        } else {
+          flash.error(outcome.error);
+        }
+        return;
+      }
+      if (outcome.status === "error") {
+        if (sameEditor) {
+          this.virtualFormError = outcome.error;
+        } else {
+          flash.error(outcome.error);
+        }
+        return;
+      }
+      flash.success(m.mcp_virtual_saved({ name: built.payload.name }));
+      if (sameEditor) {
+        this.closeVirtualForm();
+      }
+      void this.fetchVirtualServers();
+    } finally {
+      this.virtualFormSubmitting = false;
+    }
+  }
+
+  async deleteVirtualServer(virtual) {
+    const name = String(virtual?.name || "");
+    if (!name || this.deletingVirtualName || virtual.managed) {
+      return;
+    }
+    if (!confirm(m.mcp_virtual_delete_confirm({ name }))) {
+      return;
+    }
+    this.deletingVirtualName = name;
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/mcp-virtual-servers/" + encodeURIComponent(name),
+        "DELETE",
+        undefined,
+        {
+          label: "delete mcp virtual server",
+          errorFallback: m.mcp_virtual_delete_failed(),
+          unavailableMessage: m.mcp_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") {
+        return;
+      }
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        flash.error(outcome.error);
+        return;
+      }
+      if (outcome.status === "error") {
+        flash.error(outcome.error);
+        return;
+      }
+      flash.success(m.mcp_virtual_deleted({ name }));
+      if (this.virtualFormOpen && this.virtualForm.name === name) {
+        this.closeVirtualForm();
+      }
+      void this.fetchVirtualServers();
+    } finally {
+      this.deletingVirtualName = "";
+    }
+  }
+
+  // --- row actions -------------------------------------------------------
+
+  async deleteServer(server) {
+    const name = String((server && server.name) || "").trim();
+    const slug = mcpServerSlug(server);
+    if (!slug || this.deletingName || (server && server.managed)) {
+      return;
+    }
+    if (
+      !confirm(
+        m.mcp_delete_confirm({ name }),
+      )
+    ) {
+      return;
+    }
+
+    this.deletingName = slug;
+
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/mcp-servers/" + encodeURIComponent(slug),
+        "DELETE",
+        undefined,
+        {
+          label: "delete mcp server",
+          errorFallback: m.mcp_delete_failed(),
+          unavailableMessage: m.mcp_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") {
+        return;
+      }
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        flash.error(outcome.error);
+        return;
+      }
+      if (outcome.status === "error") {
+        flash.error(outcome.error);
+        return;
+      }
+
+      flash.success(m.mcp_deleted({ name }));
+      if (this.formOpen && this.form.slug === slug) {
+        this.closeForm();
+      }
+      void this.fetchServers();
+    } finally {
+      this.deletingName = "";
+    }
+  }
+
+  // --- OAuth sign-in -----------------------------------------------------
+
+  // #signInAfterSave continues a preset save straight into the sign-in. A
+  // server that needs an operator-registered OAuth client stops at the
+  // dialog with the client fields open; the rest go to the sign-in page.
+  #signInAfterSave(payload, preset) {
+    this.openSignIn({
+      name: payload.name,
+      slug: payload.slug,
+      url: payload.url,
+      transport: payload.transport,
+    });
+    if (preset.oauthClient === "manual") {
+      this.oauthClientRequired = true;
+      return;
+    }
+    void this.submitSignIn();
+  }
+
+  oauthRedirectURI() {
+    return mcpOAuthRedirectURI(window.location.origin, gomodelPath);
+  }
+
+  openSignIn(server) {
+    this.oauthServer = server;
+    this.oauthForm = { client_id: "", client_secret: "" };
+    this.oauthError = "";
+    this.oauthClientRequired = false;
+    this.oauthOpen = true;
+  }
+
+  closeSignIn() {
+    this.oauthOpen = false;
+    this.oauthServer = null;
+    this.oauthError = "";
+  }
+
+  // submitSignIn starts discovery on the gateway and sends the browser to
+  // the authorization server, which returns it to the callback.
+  async submitSignIn() {
+    const slug = mcpServerSlug(this.oauthServer);
+    if (!slug || this.oauthSubmitting) {
+      return;
+    }
+    this.oauthSubmitting = true;
+    this.oauthError = "";
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/mcp-servers/" + encodeURIComponent(slug) + "/oauth/start",
+        "POST",
+        buildMcpOAuthStartPayload(this.oauthForm, this.oauthRedirectURI()),
+        {
+          label: "start mcp sign-in",
+          errorFallback: m.mcp_oauth_start_failed(),
+          unavailableMessage: m.mcp_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") {
+        return;
+      }
+      if (outcome.status !== "ok") {
+        this.oauthError = outcome.error;
+        if (outcome.result?.data?.error?.code === "oauth_client_required") {
+          this.oauthClientRequired = true;
+        }
+        return;
+      }
+      const url = outcome.result.data && outcome.result.data.authorization_url;
+      if (!url) {
+        this.oauthError = m.mcp_oauth_start_failed();
+        return;
+      }
+      if (!this.oauthOpen) {
+        return;
+      }
+      // Close the dialog first, so its unsaved-changes guard is gone before
+      // the browser leaves for the sign-in page.
+      this.closeSignIn();
+      await tick();
+      window.location.assign(url);
+    } finally {
+      this.oauthSubmitting = false;
+    }
+  }
+
+  async signOut(server) {
+    const name = String((server && server.name) || "").trim();
+    const slug = mcpServerSlug(server);
+    if (!slug || this.signingOutName) {
+      return;
+    }
+    if (!confirm(m.mcp_oauth_sign_out_confirm({ name }))) {
+      return;
+    }
+    this.signingOutName = slug;
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/mcp-servers/" + encodeURIComponent(slug) + "/oauth",
+        "DELETE",
+        undefined,
+        {
+          label: "sign out of mcp server",
+          errorFallback: m.mcp_oauth_sign_out_failed(),
+          unavailableMessage: m.mcp_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") {
+        return;
+      }
+      if (outcome.status !== "ok") {
+        flash.error(outcome.error);
+        return;
+      }
+      flash.success(m.mcp_oauth_signed_out({ name }));
+      void this.fetchServers();
+    } finally {
+      this.signingOutName = "";
+    }
+  }
+
+  // showOAuthOutcome flashes the result the sign-in callback redirected
+  // back with, then drops it from the address bar. Failure details are on
+  // the server's row, never in the URL.
+  showOAuthOutcome() {
+    const result = parseMcpOAuthOutcome(window.location.search);
+    if (!result) {
+      return;
+    }
+    history.replaceState(history.state, "", stripMcpOAuthParams(window.location.href));
+    const message = mcpOAuthOutcomeMessage(result);
+    flash[message.kind](message.text);
+  }
+
+  async reconnectServer(server) {
+    const name = String((server && server.name) || "").trim();
+    const slug = mcpServerSlug(server);
+    if (!slug || this.reconnectingName) {
+      return;
+    }
+
+    this.reconnectingName = slug;
+
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/mcp-servers/" + encodeURIComponent(slug) + "/reconnect",
+        "POST",
+        undefined,
+        {
+          label: "reconnect mcp server",
+          errorFallback: m.mcp_reconnect_failed(),
+          unavailableMessage: m.mcp_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") {
+        return;
+      }
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        flash.error(outcome.error);
+        return;
+      }
+      if (outcome.status === "error") {
+        flash.error(outcome.error);
+        return;
+      }
+
+      const refreshed = outcome.result.data;
+      const status = mcpServerStatus(refreshed);
+      if (status === "connected") {
+        flash.success(m.mcp_reconnected({ name }));
+      } else if (status === "disabled") {
+        flash.success(m.mcp_reconnect_disabled({ name }));
+      } else {
+        flash.error(m.mcp_reconnect_status({ name, status }));
+      }
+      if (refreshed && refreshed.name) {
+        this.servers = (this.servers || []).map((item) =>
+          mcpServerSlug(item) === mcpServerSlug(refreshed) ? refreshed : item,
+        );
+      } else {
+        void this.fetchServers();
+      }
+    } finally {
+      this.reconnectingName = "";
+    }
+  }
+
+  // --- catalog inspector -------------------------------------------------
+  // Hand-rolled on purpose: a single-resource GET whose 404 means "this
+  // server does not exist" (with its own message), not "feature disabled",
+  // so it does not map onto the shared list/mutation ladder.
+
+  async openCatalog(server) {
+    const slug = mcpServerSlug(server);
+    if (!slug) {
+      return;
+    }
+
+    this.catalogOpen = true;
+    this.catalogLoading = true;
+    this.catalogError = "";
+    this.catalog = {
+      ...defaultMcpCatalog(),
+      server: slug,
+      status: mcpServerStatus(server),
+    };
+
+    const loaded = await this.#fetchCatalog(server);
+    this.catalogLoading = false;
+    if (loaded.stale) {
+      return;
+    }
+    if (loaded.error) {
+      this.catalogError = loaded.error;
+      return;
+    }
+    this.catalog = loaded.catalog;
+  }
+
+  // chooseToolsFromCatalog jumps from the read-only inspector to the editor's
+  // tool picker for the same server.
+  chooseToolsFromCatalog() {
+    const server = (this.servers || []).find(
+      (item) => mcpServerSlug(item) === this.catalog.server,
+    );
+    if (!server || server.managed) {
+      return;
+    }
+    this.closeCatalog();
+    this.openEdit(server);
+  }
+
+  // #fetchCatalog resolves to { catalog }, { error }, or { stale }.
+  async #fetchCatalog(server) {
+    const name = String((server && server.name) || "").trim();
+    const slug = mcpServerSlug(server);
+    try {
+      const result = await getJSON(
+        "/admin/mcp-servers/" + encodeURIComponent(slug) + "/catalog",
+        { label: "mcp server catalog" },
+      );
+      if (result.stale) {
+        return { stale: true };
+      }
+      if (result.status === 503) {
+        this.available = false;
+        return { error: m.mcp_unavailable() };
+      }
+      if (result.status === 404) {
+        return { error: m.mcp_not_found({ name }) };
+      }
+      if (!result.ok) {
+        return {
+          error:
+            result.status === 401
+              ? m.common_authentication_required()
+              : errorPayloadMessage(result.data, m.mcp_catalog_load_failed()),
+        };
+      }
+      return { catalog: normalizeMcpCatalog(slug, result.data) };
+    } catch (e) {
+      console.error("Failed to load MCP server catalog:", e);
+      return { error: m.mcp_catalog_load_failed() };
+    }
+  }
+
+  // openToolCatalog loads every server's catalog in parallel for the
+  // combined view, reusing the per-server endpoint. One failing server is
+  // reported in its entry and does not hide the others.
+  async openToolCatalog() {
+    const seq = ++this.#toolCatalogSeq;
+    const servers = [...(this.servers || [])];
+    this.toolCatalogOpen = true;
+    this.toolCatalogLoading = true;
+    this.toolCatalogEntries = [];
+    this.toolCatalogQuery = "";
+    this.toolCatalogScope = "";
+    this.toolCatalogShowExcluded = false;
+
+    const loaded = await Promise.all(servers.map((server) => this.#fetchCatalog(server)));
+    if (seq !== this.#toolCatalogSeq) {
+      return;
+    }
+    // The API key changed mid-load: these catalogs belong to the old key.
+    if (loaded.some((item) => item.stale)) {
+      this.closeToolCatalog();
+      return;
+    }
+    this.toolCatalogEntries = servers.map((server, index) => ({
+      server: mcpServerSlug(server),
+      status: loaded[index].catalog?.status || mcpServerStatus(server),
+      last_error: String(server.last_error || ""),
+      catalog: loaded[index].catalog || null,
+      error: loaded[index].error || "",
+    }));
+    this.toolCatalogLoading = false;
+  }
+
+  closeToolCatalog() {
+    this.#toolCatalogSeq += 1;
+    this.toolCatalogOpen = false;
+    this.toolCatalogLoading = false;
+    this.toolCatalogEntries = [];
+    this.toolCatalogQuery = "";
+    this.toolCatalogScope = "";
+    this.toolCatalogShowExcluded = false;
+  }
+
+  closeCatalog() {
+    this.catalogOpen = false;
+    this.catalogLoading = false;
+    this.catalogError = "";
+    this.catalog = defaultMcpCatalog();
+  }
+}
+
+export const mcpServers = new McpServersState();

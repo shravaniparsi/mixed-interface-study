@@ -1,0 +1,283 @@
+// Guardrails page state: definitions list + schema-driven editor form.
+// Handles the /admin/guardrails endpoints, 503 "feature unavailable"
+// responses, and the notice/error flow. The request guard ladder
+// (stale → unavailable → error) lives in $lib/api/adminCrud.js.
+
+import { loadAdminList, sendAdminMutation } from "$lib/api/adminCrud.js";
+import { flash } from "$lib/stores/flash.svelte.js";
+import * as m from "$lib/paraglide/messages.js";
+import {
+  buildGuardrailPayload,
+  defaultGuardrailConfig,
+  defaultGuardrailForm,
+  defaultGuardrailType,
+  filterGuardrails,
+  guardrailEditForm,
+  guardrailPhases,
+  guardrailTypeFields,
+  guardrailTypeLabel,
+  normalizeGuardrailConfig,
+  parseGuardrailTimeoutMs,
+  resolvedGuardrailType,
+} from "./guardrails-logic.js";
+
+class GuardrailsStore {
+  guardrails = $state([]);
+  types = $state([]);
+  available = $state(true);
+  loading = $state(false);
+  typesLoading = $state(false);
+  // Load and in-form errors only; mutation feedback goes through the
+  // flash store. The type catalog has its own so a later successful
+  // guardrails load cannot clear a type-load failure.
+  error = $state("");
+  typesError = $state("");
+  filter = $state("");
+  formOpen = $state(false);
+  formSubmitting = $state(false);
+  deletingName = $state("");
+  formMode = $state("create");
+  formOriginalName = $state("");
+  // onSaved(name) runs after a successful save when another editor (the
+  // workflow editor) opened this form and wants the result. Plain field,
+  // not state: it never renders. Cleared when the form closes.
+  onSaved = null;
+  form = $state({
+    name: "",
+    type: "",
+    description: "",
+    user_path: "",
+    config: {},
+    fail_mode: "",
+    timeout_ms: "",
+  });
+
+  get filtered() {
+    return filterGuardrails(this.guardrails, this.filter);
+  }
+
+  typeLabel(type) {
+    return guardrailTypeLabel(this.types, type);
+  }
+
+  typeFields(type) {
+    return guardrailTypeFields(this.types, type);
+  }
+
+  phases(guardrail) {
+    return guardrailPhases(this.types, guardrail);
+  }
+
+  // setConfig replaces the schema-driven config (SchemaFields emits a new
+  // object per edit).
+  setConfig(config) {
+    this.form = { ...this.form, config };
+  }
+
+  openCreate() {
+    this.formMode = "create";
+    this.formOriginalName = "";
+    this.error = "";
+    this.form = defaultGuardrailForm(this.types, defaultGuardrailType(this.types));
+    this.formOpen = true;
+  }
+
+  openEdit(guardrail) {
+    this.formMode = "edit";
+    this.formOriginalName = String((guardrail && guardrail.name) || "").trim();
+    this.error = "";
+    this.form = guardrailEditForm(this.types, guardrail);
+    this.formOpen = true;
+  }
+
+  closeForm() {
+    this.formOpen = false;
+    this.formMode = "create";
+    this.formOriginalName = "";
+    this.onSaved = null;
+    this.error = "";
+    this.form = defaultGuardrailForm(this.types, defaultGuardrailType(this.types));
+  }
+
+  // changeType resolves the selected type and resets the config to that
+  // type's defaults.
+  changeType(type) {
+    const resolvedType = resolvedGuardrailType(this.types, type);
+    this.form = {
+      ...this.form,
+      type: resolvedType,
+      config: defaultGuardrailConfig(this.types, resolvedType),
+    };
+  }
+
+  async fetchTypes() {
+    this.typesLoading = true;
+    try {
+      const outcome = await loadAdminList("/admin/guardrails/types", {
+        label: "guardrail types",
+      });
+      if (outcome.status === "stale") return;
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        this.types = [];
+        this.typesError = "";
+        return;
+      }
+      // Only a real gateway response proves the feature is back — a thrown
+      // request (offline, DNS) must not undo an earlier 503 unavailable.
+      if (outcome.result) {
+        this.available = true;
+      }
+      if (outcome.status === "error") {
+        // Keep the types already loaded: with an empty list every stored
+        // definition would look unknown and the editor would retype it.
+        this.typesError = outcome.error;
+        return;
+      }
+      this.typesError = "";
+      this.types = outcome.items;
+      // A definition being edited keeps its stored type whatever the
+      // catalog now says; the type select is disabled in that mode.
+      const resolvedType =
+        this.formMode === "edit"
+          ? this.form.type
+          : resolvedGuardrailType(this.types, this.form.type);
+      this.form = {
+        ...this.form,
+        type: resolvedType,
+        config: normalizeGuardrailConfig(
+          this.types,
+          this.form.config,
+          resolvedType,
+        ),
+      };
+    } finally {
+      this.typesLoading = false;
+    }
+  }
+
+  async fetchGuardrails() {
+    this.loading = true;
+    this.error = "";
+    try {
+      const outcome = await loadAdminList("/admin/guardrails", {
+        label: "guardrails",
+      });
+      if (outcome.status === "stale") return;
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        this.guardrails = [];
+        return;
+      }
+      // Same offline guard as fetchTypes: only trust an answered request.
+      if (outcome.result) {
+        this.available = true;
+      }
+      this.guardrails = outcome.items;
+      this.error = outcome.error;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async fetchPage() {
+    await Promise.all([this.fetchTypes(), this.fetchGuardrails()]);
+  }
+
+  async submitForm() {
+    const name = String(this.form.name || "").trim();
+    const type = String(this.form.type || "").trim();
+    if (!name) {
+      this.error = m.guardrails_name_required();
+      return;
+    }
+    if (!type) {
+      this.error = m.guardrails_type_required();
+      return;
+    }
+    if (Number.isNaN(parseGuardrailTimeoutMs(this.form.timeout_ms))) {
+      this.error = m.guardrails_timeout_invalid();
+      return;
+    }
+
+    this.error = "";
+    this.formSubmitting = true;
+
+    const payload = buildGuardrailPayload(this.form);
+
+    try {
+      const outcome = await sendAdminMutation("/admin/guardrails", "PUT", payload, {
+        label: "save guardrail",
+        errorFallback: m.guardrails_save_failed(),
+        unavailableMessage: m.guardrails_unavailable(),
+      });
+      if (outcome.status === "stale") return;
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        this.error = outcome.error;
+        return;
+      }
+      if (outcome.status === "error") {
+        this.error = outcome.error;
+        return;
+      }
+
+      flash.success(m.guardrails_saved({ name }));
+      const onSaved = this.onSaved;
+      this.closeForm();
+      void this.fetchGuardrails();
+      onSaved?.(name);
+    } finally {
+      this.formSubmitting = false;
+    }
+  }
+
+  async deleteGuardrail(guardrail) {
+    const name = String((guardrail && guardrail.name) || "").trim();
+    if (!name || this.deletingName) {
+      return;
+    }
+    if (
+      !window.confirm(
+        m.guardrails_delete_confirm({ name }),
+      )
+    ) {
+      return;
+    }
+
+    this.deletingName = name;
+
+    try {
+      const outcome = await sendAdminMutation(
+        "/admin/guardrails",
+        "DELETE",
+        { name },
+        {
+          label: "delete guardrail",
+          errorFallback: m.guardrails_delete_failed(),
+          unavailableMessage: m.guardrails_unavailable(),
+        },
+      );
+      if (outcome.status === "stale") return;
+      if (outcome.status === "unavailable") {
+        this.available = false;
+        flash.error(outcome.error);
+        return;
+      }
+      if (outcome.status === "error") {
+        flash.error(outcome.error);
+        return;
+      }
+
+      flash.success(m.guardrails_deleted({ name }));
+      if (this.formOpen && this.formOriginalName === name) {
+        this.closeForm();
+      }
+      void this.fetchGuardrails();
+    } finally {
+      this.deletingName = "";
+    }
+  }
+}
+
+export const guardrailsStore = new GuardrailsStore();

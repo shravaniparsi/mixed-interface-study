@@ -1,0 +1,330 @@
+{
+  "source": "2.txt",
+  "source_blob": "b8bae501aaf379bf5baab113584f95bcbe63e8a3",
+  "scope": "Registered admin non-GET routes only, not exhaustive application functionality",
+  "rows": [
+    {
+      "method": "POST",
+      "path": "/admin/auth-keys",
+      "handler": "CreateAuthKey",
+      "candidate_create_operation": true,
+      "status": "bounded_source_ineligible_two_editable_text_properties",
+      "basis": "Original native creation supports name/description/user_path, but mapped native existing-record updates expose name plus arrays and access flags. No second independent editable scalar text property established. Import is distinct, not an alias; both produce AuthKey records under the same mapped editor."
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/auth-keys/:id/allowed-models",
+      "handler": "UpdateAuthKeyAllowedModels",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/auth-keys/:id/dashboard-access",
+      "handler": "UpdateAuthKeyDashboardAccess",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/auth-keys/:id/deactivate",
+      "handler": "DeactivateAuthKey",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/auth-keys/:id/labels",
+      "handler": "UpdateAuthKeyLabels",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/auth-keys/:id/name",
+      "handler": "UpdateAuthKeyName",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/auth-keys/:id/passthrough-access",
+      "handler": "UpdateAuthKeyPassthroughAccess",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/auth-keys/import",
+      "handler": "ImportAuthKey",
+      "candidate_create_operation": true,
+      "status": "bounded_source_ineligible_two_editable_text_properties",
+      "basis": "Original native creation supports name/description/user_path, but mapped native existing-record updates expose name plus arrays and access flags. No second independent editable scalar text property established. Import is distinct, not an alias; both produce AuthKey records under the same mapped editor."
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/budgets",
+      "handler": "DeleteBudget",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/budgets",
+      "handler": "UpsertBudget",
+      "candidate_create_operation": true,
+      "status": "bounded_source_ineligible_two_editable_text_properties",
+      "basis": "BudgetEditor disables scope, subject and period during editing. Remaining amount is numeric, per_child is boolean and cost_basis is one enum; no pair of editable scalar text properties. Original handler and frontend both use PUT /admin/budgets."
+    },
+    {
+      "method": "POST",
+      "path": "/admin/budgets/reset",
+      "handler": "ResetBudgets",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/budgets/reset-one",
+      "handler": "ResetBudget",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/budgets/settings",
+      "handler": "UpdateBudgetSettings",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/guardrails",
+      "handler": "DeleteGuardrail",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/guardrails",
+      "handler": "UpsertGuardrail",
+      "candidate_create_operation": true,
+      "status": "pending_dependencies_after_native_text_field_mapping",
+      "basis": "Original GuardrailEditor exposes description and user_path in edit mode. Original create/edit use PUT /admin/guardrails and named persisted Definition. Plugin type, complete baseline, executable, state restoration, independence and compatibility evidence remain unresolved."
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/mcp-servers",
+      "handler": "UpsertMCPServer",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/mcp-servers/:name",
+      "handler": "DeleteMCPServer",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/mcp-servers/:name/oauth",
+      "handler": "SignOutMCPServerOAuth",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/mcp-servers/:name/oauth/start",
+      "handler": "StartMCPServerOAuth",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/mcp-servers/:name/reconnect",
+      "handler": "ReconnectMCPServer",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/mcp-virtual-servers",
+      "handler": "UpsertMCPVirtualServer",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/mcp-virtual-servers/:name",
+      "handler": "DeleteMCPVirtualServer",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/model-pricing-overrides",
+      "handler": "DeleteModelPricingOverride",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/model-pricing-overrides",
+      "handler": "UpsertModelPricingOverride",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/provider-credentials",
+      "handler": "UpsertProviderCredential",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/provider-credentials/:name",
+      "handler": "DeleteProviderCredential",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/rate-limits",
+      "handler": "DeleteRateLimit",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/rate-limits",
+      "handler": "UpsertRateLimit",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/rate-limits/reset",
+      "handler": "ResetRateLimits",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/rate-limits/reset-one",
+      "handler": "ResetRateLimit",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/runtime/refresh",
+      "handler": "RefreshRuntime",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/runtime/settings/:key",
+      "handler": "UpdateRuntimeSetting",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/tagging/settings",
+      "handler": "UpdateTaggingSettings",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/usage/recalculate-pricing",
+      "handler": "RecalculateUsagePricing",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/users",
+      "handler": "DeleteUser",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/users",
+      "handler": "UpsertUser",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/virtual-models",
+      "handler": "DeleteVirtualModel",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/virtual-models",
+      "handler": "UpsertVirtualModel",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/workflows",
+      "handler": "CreateWorkflow",
+      "candidate_create_operation": true,
+      "status": "pending_source_mapping",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/workflows/:id/deactivate",
+      "handler": "DeactivateWorkflow",
+      "candidate_create_operation": false,
+      "status": "not_create_operation_by_original_route_handler",
+      "basis": "Original RegisterRoutes handler identity; behavior not yet verified"
+    }
+  ],
+  "candidate_count": 12,
+  "evidence_wave": "redesign-development-source-wave5-v1",
+  "next_candidate": "/admin/guardrails"
+}
