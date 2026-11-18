@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/maintained-packaged-dependency-collection-v17.json',
+    'manifests/maintained-packaged-textbee-auth-feasibility-v1.json',
     'manifests/maintained-packaged-dependencies-v17.json',
     'manifests/maintained-packaged-dependency-collection-v16.json',
     'scripts/extension/build_maintained_traduora_v1.py',
