@@ -1,0 +1,53 @@
+name: Authored continuation checkpoint v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published full commit binding the fixture
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: authored-continuation-checkpoint-v1
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Verify published inputs
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import json,hashlib,pathlib; x=json.load(open("manifests/continuation-authored-checkpoint-v1.json")); [(None if hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h else (_ for _ in ()).throw(ValueError(p))) for p,h in x["sha256"].items()]'
+      - name: Install locked browser tools on runner only
+        run: |
+          mkdir -p "$RUNNER_TEMP/fixture-tools" "$RUNNER_TEMP/fixture-evidence"
+          cp development/continuation-fixture-v1/package*.json "$RUNNER_TEMP/fixture-tools/"
+          npm ci --prefix "$RUNNER_TEMP/fixture-tools" --ignore-scripts --no-audit --no-fund
+          "$RUNNER_TEMP/fixture-tools/node_modules/.bin/playwright" install --with-deps chromium
+          node --version > "$RUNNER_TEMP/fixture-evidence/node-version.txt"
+          python3 --version > "$RUNNER_TEMP/fixture-evidence/python-version.txt"
+          git rev-parse HEAD > "$RUNNER_TEMP/fixture-evidence/freeze.txt"
+      - name: Execute the eight authored branches once
+        env:
+          PLAYWRIGHT_MODULE_PATH: ${{ runner.temp }}/fixture-tools/node_modules/playwright
+          FIXTURE_OUTPUT: ${{ runner.temp }}/fixture-evidence
+        run: timeout --signal=TERM --kill-after=10s 180s node development/continuation-checkpoint-v1/run.mjs
+      - name: Retain synthetic evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: authored-continuation-checkpoint-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/fixture-evidence/
+          retention-days: 7
+          if-no-files-found: warn
