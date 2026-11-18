@@ -1,0 +1,445 @@
+{
+  "status": "literal_schedule_only_not_execution_authorization",
+  "development_only": true,
+  "scientific_cases_executed": 0,
+  "source_sha256": {
+    "development/redesign-gomodel-ordinary-v2/input.json": "aa7e873a20810c0df5f24851f4f290ef3dcaa47d5a187e6182f6bb0c930fc7e7",
+    "results/redesign-gomodel-ordinary-v2/checkpoint-form.json": "779bde7f7c90ec4aa5d7b61f0fe9ef1a5ca628c100328f512fe6bcaccebd7599"
+  },
+  "inventory": [
+    {
+      "control_id": "guardrail-name",
+      "json_pointer": null,
+      "eligible": false,
+      "reason": "disabled identity/type or non-text control",
+      "ordinary_value": "study-api-ordinary"
+    },
+    {
+      "control_id": "guardrail-type",
+      "json_pointer": null,
+      "eligible": false,
+      "reason": "disabled identity/type or non-text control",
+      "ordinary_value": "header_edit"
+    },
+    {
+      "control_id": "guardrail-description",
+      "json_pointer": "/description",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "Ordinary local configuration"
+    },
+    {
+      "control_id": "guardrail-user-path",
+      "json_pointer": "/user_path",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "/study/local"
+    },
+    {
+      "control_id": "guardrail-field-request_set",
+      "json_pointer": "/config/request_set",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "X-Study-Request: original"
+    },
+    {
+      "control_id": "guardrail-field-request_remove",
+      "json_pointer": "/config/request_remove",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "X-Study-Remove"
+    },
+    {
+      "control_id": "guardrail-field-response_set",
+      "json_pointer": "/config/response_set",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "X-Study-Response: original"
+    },
+    {
+      "control_id": "guardrail-field-response_add",
+      "json_pointer": "/config/response_add",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "X-Study-Additional: original"
+    },
+    {
+      "control_id": "guardrail-field-response_remove",
+      "json_pointer": "/config/response_remove",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "X-Study-Remove-Response"
+    },
+    {
+      "control_id": "guardrail-field-upstream_set",
+      "json_pointer": "/config/upstream_set",
+      "eligible": true,
+      "reason": "independent editable scalar text",
+      "ordinary_value": "X-Study-Upstream: original"
+    },
+    {
+      "control_id": "guardrail-fail-mode",
+      "json_pointer": null,
+      "eligible": false,
+      "reason": "disabled identity/type or non-text control",
+      "ordinary_value": ""
+    },
+    {
+      "control_id": "guardrail-timeout-ms",
+      "json_pointer": null,
+      "eligible": false,
+      "reason": "disabled identity/type or non-text control",
+      "ordinary_value": ""
+    }
+  ],
+  "ordered_eligible": [
+    "/config/request_remove",
+    "/config/request_set",
+    "/config/response_add",
+    "/config/response_remove",
+    "/config/response_set",
+    "/config/upstream_set",
+    "/description",
+    "/user_path"
+  ],
+  "selected_targets": [
+    "/config/request_remove",
+    "/config/request_set",
+    "/config/response_add",
+    "/config/response_remove"
+  ],
+  "producers": [
+    {
+      "id": "ordinary",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-request_remove-omission",
+      "target": "/config/request_remove",
+      "variant": "omission",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-request_remove-null",
+      "target": "/config/request_remove",
+      "variant": "null",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "request_remove": null,
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-request_set-omission",
+      "target": "/config/request_set",
+      "variant": "omission",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-request_set-null",
+      "target": "/config/request_set",
+      "variant": "null",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": null,
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-response_add-omission",
+      "target": "/config/response_add",
+      "variant": "omission",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-response_add-null",
+      "target": "/config/response_add",
+      "variant": "null",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_add": null,
+          "response_remove": "X-Study-Remove-Response",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-response_remove-omission",
+      "target": "/config/response_remove",
+      "variant": "omission",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    },
+    {
+      "id": "config-response_remove-null",
+      "target": "/config/response_remove",
+      "variant": "null",
+      "body": {
+        "type": "header_edit",
+        "description": "Ordinary local configuration",
+        "user_path": "/study/local",
+        "config": {
+          "request_set": "X-Study-Request: original",
+          "request_remove": "X-Study-Remove",
+          "response_set": "X-Study-Response: original",
+          "response_add": "X-Study-Additional: original",
+          "response_remove": null,
+          "upstream_set": "X-Study-Upstream: original"
+        },
+        "name": "study-api-scheduled"
+      }
+    }
+  ],
+  "branch_pairs": [
+    {
+      "producer_id": "config-request_remove-omission",
+      "target": "/config/request_remove",
+      "repair_control": "guardrail-field-request_remove",
+      "repair_value": "X-Study-Remove",
+      "unrelated_pointer": "/config/request_set",
+      "unrelated_control": "guardrail-field-request_set",
+      "unrelated_value": "X-Study-Request: edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-request_remove-null",
+      "target": "/config/request_remove",
+      "repair_control": "guardrail-field-request_remove",
+      "repair_value": "X-Study-Remove",
+      "unrelated_pointer": "/config/request_set",
+      "unrelated_control": "guardrail-field-request_set",
+      "unrelated_value": "X-Study-Request: edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "ordinary",
+      "target": "/config/request_remove",
+      "repair_control": "guardrail-field-request_remove",
+      "repair_value": "X-Study-Remove",
+      "unrelated_pointer": "/config/request_set",
+      "unrelated_control": "guardrail-field-request_set",
+      "unrelated_value": "X-Study-Request: edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-request_set-omission",
+      "target": "/config/request_set",
+      "repair_control": "guardrail-field-request_set",
+      "repair_value": "X-Study-Request: original",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-request_set-null",
+      "target": "/config/request_set",
+      "repair_control": "guardrail-field-request_set",
+      "repair_value": "X-Study-Request: original",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "ordinary",
+      "target": "/config/request_set",
+      "repair_control": "guardrail-field-request_set",
+      "repair_value": "X-Study-Request: original",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-response_add-omission",
+      "target": "/config/response_add",
+      "repair_control": "guardrail-field-response_add",
+      "repair_value": "X-Study-Additional: original",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-response_add-null",
+      "target": "/config/response_add",
+      "repair_control": "guardrail-field-response_add",
+      "repair_value": "X-Study-Additional: original",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "ordinary",
+      "target": "/config/response_add",
+      "repair_control": "guardrail-field-response_add",
+      "repair_value": "X-Study-Additional: original",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-response_remove-omission",
+      "target": "/config/response_remove",
+      "repair_control": "guardrail-field-response_remove",
+      "repair_value": "X-Study-Remove-Response",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "config-response_remove-null",
+      "target": "/config/response_remove",
+      "repair_control": "guardrail-field-response_remove",
+      "repair_value": "X-Study-Remove-Response",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    },
+    {
+      "producer_id": "ordinary",
+      "target": "/config/response_remove",
+      "repair_control": "guardrail-field-response_remove",
+      "repair_value": "X-Study-Remove-Response",
+      "unrelated_pointer": "/config/request_remove",
+      "unrelated_control": "guardrail-field-request_remove",
+      "unrelated_value": "X-Study-Remove-Edited",
+      "branch_order": [
+        "sham",
+        "repair"
+      ]
+    }
+  ],
+  "counts": {
+    "projects": 1,
+    "workflows": 1,
+    "producer_payloads": 9,
+    "altered_payloads": 8,
+    "branch_pairs_if_all_accepted": 12,
+    "branches_if_all_accepted": 24
+  },
+  "scope": "Correlated development observations; neither independent defects nor evaluation samples."
+}
