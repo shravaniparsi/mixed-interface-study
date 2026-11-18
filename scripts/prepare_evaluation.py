@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-nginx-source-build-preparation-v1.md',
+    'scripts/extension/prepare_nginx_source_build_v1.py',
+    'tests/test_nginx_source_build_recipe_v1.py',
+    'protocol/catalog-nginx-s6-release-metadata-v1.md',
+    'scripts/extension/collect_nginx_s6_release_metadata_v1.py',
     'results/catalog-source-wave22-v1/collection.json',
     'results/catalog-nginx-build-base-metadata-v1/collection.json',
     'notes/catalog_nginx_isolation_build_bases_v1.md',

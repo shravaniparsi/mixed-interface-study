@@ -1,0 +1,11 @@
+# Original Nginx Proxy Manager source-build preparation
+
+This stage generates reviewable build files only. It does not authorize source checkout/archive acquisition, dependency installation, a Docker build or an application job. The separately instantiated qualification recipe and original two-job/30-minute bounds still apply.
+
+Use the frozen application revision 20016b9d91d49c9133f1b4d26ab5a289c72ec1db, acquired production Dockerfile and original s6 installer, recorded linux/amd64 base manifests and declared s6 release archive SHA256 identities. Verify retained source hashes before deriving files. Fail if either archive identity is unavailable. No latest-tag fallback.
+
+The generator makes exactly four packaging changes: pin the original BASE_IMAGE default; pin the original testca FROM stage; insert SHA256 verification before extracting the same two original supervisor archives; require the original backend yarn.lock through --frozen-lockfile. Keep original application COPY paths and all other Dockerfile operations. Emit the checked installer and generated Dockerfile with hashes. Validate unchanged template markers and reject malformed digests rather than guessing a changed contract.
+
+The future build must check out the full frozen source, verify its commit/tree and all acquired blob identities, prepare frontend/dist using the original pinned builder and original locale-compile/build commands with a frozen dependency lock, and supply the full BUILD_COMMIT. This plan does not execute unrelated upstream tests or consume their outcomes. Record all build commands, original and generated file hashes, installed package versions/lock equality, resulting image/config identity and frontend/backend artifact inventories. Pinning two base images is not a claim of bit-reproducibility: apt packages and every downloaded dependency also need recorded identities. A successful build alone is not native qualification or scientific evidence.
+
+Do not run the mismatched published application image, weaken original validation, patch native controls, or create an alternate workflow. The concrete isolated runtime and warm/restored ordinary controls must be published before consuming a qualification attempt.
