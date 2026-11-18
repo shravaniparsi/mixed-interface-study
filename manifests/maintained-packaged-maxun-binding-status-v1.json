@@ -1,0 +1,52 @@
+{
+  "kind": "maintained_packaged_binding_status",
+  "repository": "getmaxun/maxun",
+  "commit": "81ad253702820e336eb1abfafff1d224dbada0bb",
+  "status": "mapping_incomplete",
+  "workflow_selected": false,
+  "candidate": "crawl robot metadata create/edit",
+  "dependency_files_used": 22,
+  "dependency_file_limit": 24,
+  "confirmed_source_bindings": {
+    "create": "POST /storage/recordings/crawl",
+    "update": "PUT /storage/recordings/{recording_meta.id}",
+    "native_edit": "RecordingsTable Options > Edit -> /robots/{id}/edit",
+    "actor": "POST /auth/register or native POST /auth/login; token cookie and localStorage user",
+    "request_property_mapping": {
+      "name": "name -> recording_meta.name",
+      "url": "targetUrl -> recording_meta.url and workflow URL entries"
+    },
+    "persistence": "PostgreSQL Robot JSONB, PostgreSQL sessions, configured MinIO volume; worker-state scope unresolved",
+    "post_save_callback": "Recordings passes empty handleStart callback to RobotEditPage",
+    "telemetry_capture_switch": "MAXUN_TELEMETRY != true disables reviewed capture implementation"
+  },
+  "build": {
+    "recipes": [
+      "Dockerfile.backend",
+      "Dockerfile.frontend"
+    ],
+    "manifests": [
+      "package.backend.json",
+      "package.frontend.json"
+    ],
+    "source_build_executed": false,
+    "original_install": "npm install --legacy-peer-deps; frontend recipe includes its own fallback retry",
+    "dependency_reproducibility": "Range dependencies and install without copied lockfile; future actual build dependency resolution and image digests must be archived."
+  },
+  "original_schema": {
+    "status": "exact_route_coverage_unverified",
+    "source": "server/src/swagger/config.ts",
+    "scope": "Swagger scans server/src/api/*.js or *.ts; storage handler is server/src/routes/storage.ts. Do not assume public API documentation covers private storage routes.",
+    "frontend_derived_substitute_allowed": false
+  },
+  "pending": [
+    "Finish earliest-workflow ordering and select before outcomes",
+    "Complete source/family exposure audit",
+    "Qualify full runtime persistence and isolated deployment under ordinary-job bounds",
+    "Freeze exact bodies, native selectors, package identity and state reset",
+    "Pass UI-to-UI, API-to-UI and API-to-API ordinary controls before variants"
+  ],
+  "ordinary_jobs_used": 0,
+  "scientific_cases_executed": 0,
+  "execution_authorized": false
+}
