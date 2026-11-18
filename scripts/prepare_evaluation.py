@@ -28,6 +28,14 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'scripts/extension/inspect_gotify_package_metadata_v1.py',
+    'manifests/maintained-gotify-package-metadata-v1.json',
+    'notes/maintained_gotify_package_metadata_20261117.md',
+    'manifests/maintained-packaged-dependencies-v7.json',
+    'results/maintained-gotify-package-metadata-v1/tag-anonymous.json',
+    'results/maintained-gotify-package-metadata-v1/tag-authenticated.json',
+    'results/maintained-gotify-package-metadata-v1/platform-manifest.json',
+    'results/maintained-gotify-package-metadata-v1/image-config.json',
     'protocol/maintained-gotify-package-metadata-v1.md',
     'manifests/maintained-packaged-gotify-workflow-v1.json',
     'manifests/maintained-packaged-dependency-collection-v6.json',
