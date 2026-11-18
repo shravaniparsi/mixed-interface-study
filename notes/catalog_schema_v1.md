@@ -1,0 +1,9 @@
+# Catalog schema findings
+
+Four registered documents (18,257 decoded bytes) and one separately registered template (2,988 bytes) were acquired and Git-blob verified at the pinned catalog revision. None was executed. The first four documents did not provide the entry schema; the explicitly disclosed one-request follow-up retrieved the linked addition template. No software entry or application source was fetched in either stage.
+
+The template supplies name, website_url, source_code_url, description, licenses, platforms, tags and optional depends_3rdparty, demo_url, related_software_url and icon_url. It does not guarantee a browser form, mutation API, local authentication or a particular deployment. Docker is an explicit platform value in its example. The catalog's curation excludes some unmaintained/nonworking software and requires established releases and installation instructions, creating survivor and contributor-selection biases. Lint configuration permits some maintenance exemptions and uses strict 186-day warning/365-day error thresholds; these do not establish every entry's current status.
+
+The lint files expose 14 maintenance-exempt repository identities; CONTRIBUTING also mentions redash and catalog/tool repositories. These are metadata exposure, not observations of experiment outcomes. The next overlap screen includes all GitHub repository references in these documents. The hypothetical template software URLs are not real experimental observations. No application licensing or population eligibility is inferred merely from the catalog name.
+
+The fixed next-stage registration is protocol/catalog-population-selection-v1.md. It selects at most twelve owner groups from a complete pinned metadata population, retains exclusions, and forbids replacements after later failures. Neither this note nor that metadata stage authorizes application-source inspection or runtime experiments yet.
