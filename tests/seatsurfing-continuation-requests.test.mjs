@@ -43,3 +43,32 @@ test('unsettled or failed native observation fails', () => {
   const value = fixture(); value.native.network.pendingCaptures = 1; assert.throws(() => compareContinuationRequests(value));
   const failed = fixture(); failed.native.network.events.push({ kind: 'capture_failure' }); assert.throws(() => compareContinuationRequests(failed));
 });
+
+test('offline files compare both native branches and bind exact artifact hashes', async () => {
+  const { mkdtemp, writeFile, readFile, rm, stat } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { spawnSync } = await import('node:child_process');
+  const { createHash } = await import('node:crypto');
+  const directory = await mkdtemp(join(tmpdir(), 'seatsurfing-request-files-'));
+  try {
+    for (const mismatch of [false, true]) {
+      const x = fixture(true);
+      const native = structuredClone(x.native);
+      if (mismatch) native.network.events.find(e => e.kind === 'request').body = '{}';
+      const objects = { warm: x.native, native, api: { status: 'api_operation_observed', operation: 'ordinary_continue', result: x.api }, storage: { cookies: [], origins: [{ origin: 'http://127.0.0.1:8080', localStorage: [{ name: 'accessToken', value: 'token' }] }] } };
+      const paths = [], hashes = {};
+      for (const [name, object] of Object.entries(objects)) {
+        const path = join(directory, name + '-' + mismatch + '.json'), raw = JSON.stringify(object);
+        await writeFile(path, raw, { mode: 0o600 }); paths.push(path); hashes[name] = createHash('sha256').update(raw).digest('hex');
+      }
+      const output = join(directory, 'result-' + mismatch + '.json');
+      const run = spawnSync(process.execPath, [new URL('../scripts/extension/compare_seatsurfing_request_files_v1.mjs', import.meta.url).pathname, ...paths, output], { timeout: 20000 });
+      assert.equal(run.status, mismatch ? 1 : 0); assert.equal(run.stdout.length + run.stderr.length, 0);
+      const result = JSON.parse(await readFile(output, 'utf8'));
+      assert.deepEqual(result.inputHashes, hashes); assert.equal(result.runtimeQualified, false);
+      assert.equal(result.status, mismatch ? 'request_comparison_unavailable' : 'both_native_write_plans_match_independent_api');
+      assert.equal((await stat(output)).mode & 0o777, 0o600);
+    }
+  } finally { await rm(directory, { recursive: true }); }
+});

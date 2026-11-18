@@ -313,4 +313,33 @@ class RestoredApiEdit(unittest.TestCase):
         with self.assertRaises(RuntimeError):stage.restored_api_edit()
 
 
+
+
+class RetainedRequestIntegration(unittest.TestCase):
+    def test_hash_binding_and_artifact_mutation_rejection(self):
+        import subprocess
+        for changed in [None,'artifact','result_hash']:
+            with self.subTest(changed=changed):
+                helper=ProducerStage();self.addCleanup(helper.doCleanups)
+                stage,_=helper.run_stage();stage.phase='restored_api_edit_paused'
+                stage.warm_result={'native':{'fixture':'warm'}};stage.native_result={'native':{'fixture':'restored'}};stage.api_result={'api':{'fixture':'api'}}
+                paths={'warm':stage.directory/'native/worker/results/edit-result.json','native':stage.directory/'restored-native/worker/results/edit-result.json','api':stage.directory/'api-continuation/worker/result.json','storage':stage.warm['storage']}
+                objects={'warm':stage.warm_result['native'],'native':stage.native_result['native'],'api':{'result':stage.api_result['api']},'storage':{'fixture':'storage'}}
+                for name,path in paths.items():path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(objects[name]))
+                stage.warm['capture']['storageSha256']=hashlib.sha256(paths['storage'].read_bytes()).hexdigest()
+                if changed=='artifact':paths['warm'].write_text('{}')
+                def execute(argv,**kwargs):
+                    hashes={name:hashlib.sha256(path.read_bytes()).hexdigest() for name,path in paths.items()}
+                    if changed=='result_hash':hashes['warm']='wrong'
+                    Path(argv[-1]).write_text(json.dumps({'status':'both_native_write_plans_match_independent_api','inputHashes':hashes}))
+                    return subprocess.CompletedProcess(argv,0,b'',b'')
+                with patch.object(module.subprocess,'run',side_effect=execute) as run:
+                    if changed:
+                        with self.assertRaises(ValueError):stage.compare_retained_requests()
+                    else:stage.compare_retained_requests()
+                self.assertEqual(run.call_count,0 if changed=='artifact' else 1)
+                self.assertEqual(stage.phase,'failed' if changed else 'ordinary_comparisons_complete_transport_unqualified')
+                with self.assertRaises(RuntimeError):stage.compare_retained_requests()
+
+
 if __name__=='__main__':unittest.main()

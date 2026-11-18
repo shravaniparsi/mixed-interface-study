@@ -411,6 +411,50 @@ class OrdinaryCoordinator:
             write_private(self.directory/'restored-api-edit-stage.json',report)
             write_private(self.directory/'restored-api-edit-lifecycle.json',self.lifecycle.events)
 
+    def compare_retained_requests(self):
+        if self.phase!='restored_api_edit_paused':raise RuntimeError('Require all three completed ordinary branches')
+        self.phase='request_comparison_in_progress'
+        report={'status':self.phase,'runtime_qualified':False}
+        try:
+            paths={'warm':self.directory/'native/worker/results/edit-result.json',
+                   'native':self.directory/'restored-native/worker/results/edit-result.json',
+                   'api':self.directory/'api-continuation/worker/result.json',
+                   'storage':self.warm['storage']}
+            hashes={}
+            for name,path in paths.items():
+                limit=1048576 if name=='storage' else 16777216 if name=='api' else 33554432
+                if path.is_symlink() or not path.is_file() or path.stat().st_size>limit:raise ValueError('Bounded original request artifacts required')
+                hashes[name]=hashlib.sha256(path.read_bytes()).hexdigest()
+            if hashes['storage']!=self.warm['capture']['storageSha256']:raise ValueError('Original checkpoint storage changed')
+            for name,expected in [('warm',self.warm_result['native']),('native',self.native_result['native'])]:
+                if json.loads(paths[name].read_text())!=expected:raise ValueError('Native artifact differs from observed branch result')
+            api_file=json.loads(paths['api'].read_text())
+            if api_file.get('result')!=self.api_result['api']:raise ValueError('API artifact differs from observed continuation')
+            output=self.directory/'complete-request-comparisons.json'
+            command=[self.node_binary,str(Path(__file__).with_name('compare_seatsurfing_request_files_v1.mjs')),
+                *[str(paths[name]) for name in ['warm','native','api','storage']],str(output)]
+            try:result=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=20)
+            except subprocess.TimeoutExpired as error:
+                (self.directory/'request-comparison.stdout').write_bytes(error.stdout or b'')
+                (self.directory/'request-comparison.stderr').write_bytes(error.stderr or b'')
+                raise
+            (self.directory/'request-comparison.stdout').write_bytes(result.stdout)
+            (self.directory/'request-comparison.stderr').write_bytes(result.stderr)
+            if result.returncode or result.stdout or result.stderr:raise RuntimeError('Offline complete request comparison failed')
+            if output.is_symlink() or output.stat().st_size>33554432:raise ValueError('Request comparison output bound')
+            compared=json.loads(output.read_text())
+            if compared.get('status')!='both_native_write_plans_match_independent_api' or compared.get('inputHashes')!=hashes:
+                raise ValueError('Request comparison does not bind actual retained inputs')
+            self.request_comparisons=compared
+            self.phase='ordinary_comparisons_complete_transport_unqualified'
+            report.update(status=self.phase,comparison_sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
+                          transport_qualification_pending=True)
+            return compared
+        except Exception as error:
+            self.phase='failed';report.update(status='request_comparison_unavailable',error_type=type(error).__name__)
+            raise
+        finally:write_private(self.directory/'request-comparison-stage.json',report)
+
 
 def verify_api_actor_response(loaded, continuity):
     if loaded.get('acquisition')!='independent_api_gets' or loaded.get('outcome')!='source_inputs_loaded':
