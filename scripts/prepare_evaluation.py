@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-entry-template-v1.md',
     'protocol/catalog-schema-inspection-v1.md',
     'manifests/catalog-schema-schedule-v1.json',
     'scripts/extension/collect_catalog_schema_v1.py',
