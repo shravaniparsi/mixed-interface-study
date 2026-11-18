@@ -1,0 +1,107 @@
+{
+  "status": "qualified_for_observed_keyword_subset",
+  "source_sha256": "0c6c716af3498ca26b06a03e1a96dff79ec98c56d2e2da2e79ff6bf191533b6c",
+  "version": "4.26.0",
+  "dialect": "Swagger 2 observed Draft4-compatible subset",
+  "body_reference": "#/definitions/ApplicationParams",
+  "schema": {
+    "description": "Params allowed to create or update Applications.",
+    "type": "object",
+    "title": "Application Params Model",
+    "required": [
+      "name"
+    ],
+    "properties": {
+      "defaultPriority": {
+        "description": "The default priority of messages sent by this application. Defaults to 0.",
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "DefaultPriority",
+        "example": 5
+      },
+      "description": {
+        "description": "The description of the application.",
+        "type": "string",
+        "x-go-name": "Description",
+        "example": "Backup server for the interwebs"
+      },
+      "name": {
+        "description": "The application name. This is how the application should be displayed to the user.",
+        "type": "string",
+        "x-go-name": "Name",
+        "example": "Backup Server"
+      },
+      "sortKey": {
+        "description": "The sortKey for the application. Uses fractional indexing.",
+        "type": "string",
+        "x-go-name": "SortKey",
+        "example": "a1"
+      }
+    },
+    "x-go-package": "github.com/gotify/server/v3/api"
+  },
+  "calibration": [
+    {
+      "input": {
+        "text": ""
+      },
+      "expected": true,
+      "observed": true
+    },
+    {
+      "input": {},
+      "expected": false,
+      "observed": false
+    },
+    {
+      "input": {
+        "text": null
+      },
+      "expected": false,
+      "observed": false
+    },
+    {
+      "input": {
+        "text": "x",
+        "count": true
+      },
+      "expected": false,
+      "observed": false
+    },
+    {
+      "input": {
+        "text": "x",
+        "count": 0
+      },
+      "expected": true,
+      "observed": true
+    },
+    {
+      "input": {
+        "text": "x",
+        "count": 9223372036854775808
+      },
+      "expected": false,
+      "observed": false
+    },
+    {
+      "input": {
+        "text": "x",
+        "count": -9223372036854775808
+      },
+      "expected": true,
+      "observed": true
+    },
+    {
+      "input": {
+        "text": "x",
+        "extra": "allowed"
+      },
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "ordinary_valid": true,
+  "scientific_variants_evaluated": 0,
+  "limitations": "Not a general Swagger 2 validator; unknown validation keywords or reference shapes fail closed."
+}
