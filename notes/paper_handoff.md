@@ -1,3 +1,9 @@
+## Current status after reserved-frame and infrastructure-extension closure
+
+This entry supersedes the current-status implications of the historical entries below; their exposure timestamps and decisions remain retained. Reserved sources have now been inspected under published bounds. The nine-project/eight-family frame closed with zero qualified native/API workflows and zero scientific variation cases. The separately registered two-project infrastructure extension completed: API-only ordinary controls passed in both, but native controls failed, so no variant execution followed. Do not describe reserved sources as still sealed or pool extension controls into independent scientific cases.
+
+Full CI44220795499 passed at4ab4f0f05e39ea2e81da1fbb418b90dd9a587891 after repairing a stale filename-list test. The695-run accounting inventory reports zero Ubuntu billable milliseconds, with explicit limits; total dollar expenditure is unverified. Fresh-context source verification confirms narrow APICARV/APIDocX pairings and rejects a universal novelty claim. See manifests/goal-evidence-gates-20261117.json and notes/continuation_prior_art_verification_20261117.md. The Q1 objective remains incomplete. No experiment is active or newly scheduled by this handoff. Existing studies and retry allowances remain closed.
+
 # Current paper handoff
 
 Start with notes/project_truth.md, notes/result_summary.md and notes/benchmark_cohort_contribution_assessment_20261116.md. The current frozen cohort snapshot is manifests/benchmark-progress-v6.json. The public repository contains raw benchmark artifacts, scorers, source hashes and a GitHub-reported billable-time audit. All registered application schedules are terminal; no experiment needs restarting.

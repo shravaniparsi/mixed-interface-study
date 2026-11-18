@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'notes/continuation_prior_art_verification_20261117.md',
+    'manifests/goal-evidence-gates-20261117.json',
     'manifests/repository-run-timing-20261117.json',
     'results/repository-run-timing-20261117/42350924553.json',
     'results/repository-run-timing-20261117/42350925611.json',
