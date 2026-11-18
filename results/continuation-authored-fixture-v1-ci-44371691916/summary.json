@@ -1,0 +1,514 @@
+{
+  "scope": "authored fixture qualification only",
+  "scientific_cases": 0,
+  "cases": [
+    {
+      "id": "native_ordinary",
+      "expected": "continued",
+      "observed": "continued",
+      "observation": {
+        "input_title": "Title",
+        "native_posts": 1,
+        "invalid_events": 0,
+        "producer_status": 303,
+        "created": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "before": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "valid": true,
+        "submit_status": 200,
+        "after": {
+          "id": 1,
+          "title": "Title",
+          "description": "Edited description",
+          "version": 2
+        }
+      },
+      "trace": [
+        {
+          "method": "GET",
+          "path": "/new",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/native/create",
+          "body": "title=Title&description=Initial+description&version=0",
+          "status": 303
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/native/save",
+          "body": "title=Title&description=Edited+description&version=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "api_ordinary",
+      "expected": "continued",
+      "observed": "continued",
+      "observation": {
+        "input_title": "Title",
+        "native_posts": 1,
+        "invalid_events": 0,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "before": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "valid": true,
+        "submit_status": 200,
+        "after": {
+          "id": 1,
+          "title": "Title",
+          "description": "Edited description",
+          "version": 2
+        }
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":\"Title\",\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/native/save",
+          "body": "title=Title&description=Edited+description&version=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "backend_rejection",
+      "expected": "producer_rejected",
+      "observed": "producer_rejected",
+      "observation": {
+        "input_title": null,
+        "native_posts": 0,
+        "invalid_events": 0,
+        "producer_status": 422,
+        "created": null
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":null,\"description\":\"Initial description\"}",
+          "status": 422
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "normalized_input",
+      "expected": "normalized_then_continued",
+      "observed": "normalized_then_continued",
+      "observation": {
+        "input_title": null,
+        "native_posts": 1,
+        "invalid_events": 0,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": "Default title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "before": {
+          "id": 1,
+          "title": "Default title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "valid": true,
+        "submit_status": 200,
+        "after": {
+          "id": 1,
+          "title": "Default title",
+          "description": "Edited description",
+          "version": 2
+        }
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":null,\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/native/save",
+          "body": "title=Default+title&description=Edited+description&version=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "native_blocking",
+      "expected": "native_validation_blocked",
+      "observed": "native_validation_blocked",
+      "observation": {
+        "input_title": null,
+        "native_posts": 0,
+        "invalid_events": 1,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": null,
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "before": {
+          "id": 1,
+          "title": null,
+          "description": "Initial description",
+          "version": 1
+        },
+        "valid": false,
+        "after": {
+          "id": 1,
+          "title": null,
+          "description": "Initial description",
+          "version": 1
+        }
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":null,\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "authorization_failure",
+      "expected": "authorization_failure",
+      "observed": "authorization_failure",
+      "observation": {
+        "input_title": "Title",
+        "native_posts": 0,
+        "invalid_events": 0,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 401
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":\"Title\",\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 401
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "stale_state",
+      "expected": "stale_state_conflict",
+      "observed": "stale_state_conflict",
+      "observation": {
+        "input_title": "Title",
+        "native_posts": 1,
+        "invalid_events": 0,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "before": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "concurrent_write": {
+          "version_increment": 1
+        },
+        "valid": true,
+        "submit_status": 409,
+        "after": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 2
+        }
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":\"Title\",\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/native/save",
+          "body": "title=Title&description=Edited+description&version=1",
+          "status": 409
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "extra_write",
+      "expected": "unexpected_state_change",
+      "observed": "unexpected_state_change",
+      "observation": {
+        "input_title": "Title",
+        "native_posts": 1,
+        "invalid_events": 0,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "before": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "valid": true,
+        "submit_status": 200,
+        "after": {
+          "id": 1,
+          "title": "Unexpected title",
+          "description": "Edited description",
+          "version": 2
+        }
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":\"Title\",\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/native/save",
+          "body": "title=Title&description=Edited+description&version=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 200
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "id": "missing_observation",
+      "expected": "observation_unavailable",
+      "observed": "observation_unavailable",
+      "observation": {
+        "input_title": "Title",
+        "native_posts": 1,
+        "invalid_events": 0,
+        "producer_status": 201,
+        "created": {
+          "id": 1,
+          "title": "Title",
+          "description": "Initial description",
+          "version": 1
+        },
+        "page_status": 200,
+        "valid": true,
+        "submit_status": 200
+      },
+      "trace": [
+        {
+          "method": "POST",
+          "path": "/api/create",
+          "body": "{\"title\":\"Title\",\"description\":\"Initial description\"}",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/edit/1",
+          "body": "",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 503
+        },
+        {
+          "method": "POST",
+          "path": "/native/save",
+          "body": "title=Title&description=Edited+description&version=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/read",
+          "body": "",
+          "status": 503
+        }
+      ],
+      "matches_expected": true
+    }
+  ],
+  "status": "qualified_authored_fixture",
+  "browser_version": "151.0.7922.34",
+  "node_version": "v20.20.2"
+}
