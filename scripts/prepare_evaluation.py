@@ -28,6 +28,7 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/maintained-packaged-dependencies-v10.json',
     'manifests/maintained-checkcle-package-metadata-v1.json',
     'notes/maintained_checkcle_package_metadata_20261117.md',
     'results/maintained-checkcle-package-metadata-v1/image-config-redirect-1.json',
