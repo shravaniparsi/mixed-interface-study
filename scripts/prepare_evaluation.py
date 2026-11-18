@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/reserved-celerio-build-v1.md',
+    '.github/workflows/reserved_celerio_build_v1.yml',
+    'scripts/extension/build_reserved_celerio_v1.py',
     'manifests/reserved-continuation-dependency-collection-v4.json',
     'notes/reserved_celerio_runtime_review_20261117.md',
     'notes/reserved_kanban_controls_20261117.md',

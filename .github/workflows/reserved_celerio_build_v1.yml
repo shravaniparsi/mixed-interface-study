@@ -1,0 +1,48 @@
+name: Reserved Celerio original source build v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: jaxio/celerio-angular-quickstart
+          ref: ef5e6457d73e02ad74d72c86fac8b787d2beece9
+          path: subject
+          persist-credentials: false
+      - name: Pull fixed images then remove authentication
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/evidence" "$RUNNER_TEMP/binaries"
+          export DOCKER_CONFIG="$RUNNER_TEMP/study-docker-auth"
+          mkdir -m 700 "$DOCKER_CONFIG"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+          unset DOCKERHUB_TOKEN DOCKERHUB_USERNAME
+          for image in maven@sha256:f7ffbcfeae6e5d56019afeb8c4b288afe73d25b4a0b0b2954fe5866143c1dda0 node@sha256:300e3d2c19067c1aec9d9b2bd3acbd43d53797a5836d70a23e437a5634bcd33a; do
+            timeout 180 docker pull "$image" >> "$RUNNER_TEMP/evidence/image-pulls.log" 2>&1
+          done
+      - name: Build original backend and frontend once
+        run: python3 scripts/extension/build_reserved_celerio_v1.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: reserved-celerio-build-evidence-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence/*
+          retention-days: 7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: ${{ always() }}
+        with:
+          name: reserved-celerio-build-binaries-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/binaries/*
+          retention-days: 7
+          if-no-files-found: warn
