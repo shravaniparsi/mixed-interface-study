@@ -28,6 +28,8 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/browser-image-metadata-v1.md',
+    'scripts/extension/collect_browser_image_metadata_v1.py',
     'manifests/development-checkpoint-v2.json',
     'notes/development_checkpoint_v2.md',
     'results/development-checkpoint-v2-ci-44254146242/archive-verification.json',
