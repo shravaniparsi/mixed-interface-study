@@ -1,0 +1,123 @@
+name: Catalog Mathesar ordinary qualification v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: mathesar-foundation/mathesar
+          ref: 3833c3ae5714f164dd6870f4d28865e78d60a4cc
+          path: _upstream/mathesar
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Verify original checkout and initialize evidence
+        run: |
+          mkdir -p "$RUNNER_TEMP/mathesar-evidence" "$RUNNER_TEMP/mathesar-tools"
+          node --test scripts/extension/test_mathesar_network_monitor_v2.mjs > "$RUNNER_TEMP/mathesar-evidence/monitor-unit-tests.tap"
+          python3 scripts/extension/verify_mathesar_checkout_v2.py --source _upstream/mathesar --report "$RUNNER_TEMP/mathesar-evidence/checkout.json"
+          cp _upstream/mathesar/mathesar_ui/package-lock.json "$RUNNER_TEMP/mathesar-evidence/original-frontend-package-lock.json"
+          cp scripts/ci/package.json "$RUNNER_TEMP/mathesar-tools/package.json"
+          cp results/development-admin-control-v2-api-ci-44105779135/node-tools-package-lock.json "$RUNNER_TEMP/mathesar-tools/package-lock.json"
+      - name: Authenticate Docker Hub pulls
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          test -n "$DOCKERHUB_USERNAME" && test -n "$DOCKERHUB_TOKEN"
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - name: Provision pinned runtime and browser tools
+        timeout-minutes: 6
+        run: |
+          evidence="$RUNNER_TEMP/mathesar-evidence"
+          timeout 90 npm ci --prefix "$RUNNER_TEMP/mathesar-tools" --ignore-scripts --no-audit --no-fund > "$evidence/browser-npm-ci.log" 2>&1
+          cp "$RUNNER_TEMP/mathesar-tools/package-lock.json" "$evidence/browser-package-lock.json"
+          images=(
+            python@sha256:cf063ce98ede9b3e88127463b3fa6d1c46d0f85a548345b148e50eaaad36ef86
+            postgres@sha256:99d1a998c76487d3abb48b141505bda5dcf8089c0c4cd7be40f75de314fa32f0
+            mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac
+          )
+          for index in 0 1 2; do
+            timeout 90 docker pull --platform linux/amd64 "${images[$index]}" > "$evidence/image-$index-pull.log" 2>&1
+            docker image inspect "${images[$index]}" > "$evidence/image-$index-inspect.json"
+          done
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'mathesar-evidence'
+          expected=['sha256:fe7476d53d1226869cb4375bafeff56932c34713cf6048b6325b1c5248b2d648','sha256:431b070f8300b219ab7e6597e7ebb158df31767739896f53a936cfc749d8437a','sha256:fee853fafa59550d162cef52bca02d907694b44ebf6ef9fb075bcc0c65d8dedb']
+          for i,digest in enumerate(expected):
+              image=json.loads((root/f'image-{i}-inspect.json').read_text())[0]
+              assert image['Id']==digest and image['Architecture']=='amd64' and image['Os']=='linux'
+          PY
+      - name: Build unchanged original minimal target
+        run: |
+          evidence="$RUNNER_TEMP/mathesar-evidence"
+          set +e
+          timeout 720 docker build --platform linux/amd64 --progress plain --target minimal --build-arg PYTHON_VERSION=3.14-bookworm@sha256:cf063ce98ede9b3e88127463b3fa6d1c46d0f85a548345b148e50eaaad36ef86 --iidfile "$evidence/application-image-id.txt" -t study-mathesar:qualification-v2 _upstream/mathesar > "$evidence/original-build.log" 2>&1
+          build_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$build_exit" > "$evidence/build-exit.json"
+          test "$build_exit" -eq 0
+          docker image inspect study-mathesar:qualification-v2 > "$evidence/application-image-inspect.json"
+          docker history --no-trunc study-mathesar:qualification-v2 > "$evidence/application-image-history.txt"
+          docker run --rm --network none study-mathesar:qualification-v2 python -m pip freeze --all > "$evidence/application-pip-freeze.txt"
+          docker run --rm --network none study-mathesar:qualification-v2 python --version > "$evidence/application-python-version.txt"
+          python3 scripts/extension/verify_mathesar_checkout_v2.py --source _upstream/mathesar --report "$evidence/checkout-after-build.json"
+      - name: Run fresh warm and matched restored ordinary controls
+        run: |
+          set +e
+          timeout 640 python3 scripts/extension/qualify_mathesar_ordinary_v2.py --out "$RUNNER_TEMP/mathesar-evidence" --node "$(command -v node)" --tools "$RUNNER_TEMP/mathesar-tools"
+          runtime_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$runtime_exit" > "$RUNNER_TEMP/mathesar-evidence/runtime-exit.json"
+          exit "$runtime_exit"
+      - name: Verify retained ordinary evidence
+        run: python3 scripts/extension/verify_mathesar_ordinary_v2.py "$RUNNER_TEMP/mathesar-evidence"
+      - name: Preserve qualified executable for bounded follow-on experiments
+        run: |
+          timeout 180 bash -o pipefail -c 'docker save study-mathesar:qualification-v2 | gzip -1 > "$RUNNER_TEMP/mathesar-qualified-image.tar.gz"'
+          python3 - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP']);p=root/'mathesar-qualified-image.tar.gz';h=hashlib.sha256()
+          with p.open('rb') as stream:
+              for block in iter(lambda:stream.read(1024*1024),b''):h.update(block)
+          (root/'mathesar-evidence/qualified-image-archive.json').write_text(json.dumps({'bytes':p.stat().st_size,'sha256':h.hexdigest(),'application_image_id':(root/'mathesar-evidence/application-image-id.txt').read_text().strip()})+'\n')
+          PY
+      - name: Retain qualified executable
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: catalog-mathesar-qualified-image-v2-${{ github.run_id }}
+          path: ${{ runner.temp }}/mathesar-qualified-image.tar.gz
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+      - name: Cleanup isolated services
+        if: ${{ always() }}
+        run: |
+          docker rm -f -v study-mathesar-browser study-mathesar study-mathesar-postgres || true
+          docker logout || true
+      - name: Retain public qualification evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: catalog-mathesar-ordinary-v2-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/mathesar-evidence/*
+            !${{ runner.temp }}/mathesar-evidence/private/**
+          retention-days: 1
+          if-no-files-found: warn

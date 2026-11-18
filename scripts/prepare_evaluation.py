@@ -28,6 +28,15 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-mathesar-qualification-v2.md',
+    'manifests/catalog-qualification-progress-v9.json',
+    '.github/workflows/catalog_mathesar_ordinary_v2.yml',
+    'scripts/extension/mathesar_network_monitor_v2.mjs',
+    'scripts/extension/test_mathesar_network_monitor_v2.mjs',
+    'scripts/extension/run_mathesar_browser_phase_v2.mjs',
+    'scripts/extension/qualify_mathesar_ordinary_v2.py',
+    'scripts/extension/verify_mathesar_checkout_v2.py',
+    'scripts/extension/verify_mathesar_ordinary_v2.py',
     'notes/catalog_mathesar_first_qualification_v1.md',
     'manifests/catalog-qualification-progress-v8.json',
     'results/catalog-source-wave7-v1/1.json',
