@@ -1,0 +1,671 @@
+"""Viseron init file."""
+
+from __future__ import annotations
+
+import concurrent.futures
+import datetime
+import json
+import logging
+import multiprocessing.process
+import os
+import threading
+import time
+import tracemalloc
+from functools import partial
+from timeit import default_timer as timer
+from typing import TYPE_CHECKING, Any, Literal, overload
+
+import voluptuous as vol
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.base import Job, SchedulerNotRunningError
+from jinja2 import BaseLoader, StrictUndefined
+from jinja2.sandbox import SandboxedEnvironment
+
+from viseron.components import (
+    Component,
+    CriticalComponentsConfigStore,
+    activate_safe_mode,
+    get_component,
+    setup_component,
+    setup_components,
+)
+from viseron.components.data_stream import (
+    COMPONENT as DATA_STREAM_COMPONENT,
+    DataStream,
+)
+from viseron.components.nvr.const import (
+    COMPONENT as NVR_COMPONENT,
+    DOMAIN as NVR_DOMAIN,
+)
+from viseron.components.storage.const import COMPONENT as STORAGE_COMPONENT
+from viseron.config import load_config
+from viseron.const import (
+    ENV_LOG_FD,
+    ENV_PROFILE_MEMORY,
+    FAILED,
+    LOADED,
+    LOADING,
+    VISERON_SIGNAL_LAST_WRITE,
+    VISERON_SIGNAL_SHUTDOWN,
+    VISERON_SIGNAL_STOPPING,
+)
+from viseron.domain_registry import DomainRegistry
+from viseron.domains import setup_domains
+from viseron.domains.camera.const import DOMAIN as CAMERA_DOMAIN
+from viseron.event_writer import EventWriter
+from viseron.events import Event, EventData
+from viseron.exceptions import DataStreamNotLoaded
+from viseron.helpers import (
+    check_fd_usage,
+    memory_usage_profiler,
+    utcnow,
+)
+from viseron.helpers.json import JSONEncoder
+from viseron.states import States, validate_entity_ownership
+from viseron.viseron_types import Domain, SupportedDomains, ViseronData
+from viseron.watchdog.process_watchdog import ProcessWatchDog
+from viseron.watchdog.subprocess_watchdog import SubprocessWatchDog
+from viseron.watchdog.thread_watchdog import ThreadWatchDog
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+    from queue import Queue
+
+    from tornado.ioloop import IOLoop
+    from tornado.queues import Queue as TornadoQueue
+
+    from viseron.components.nvr.nvr import NVR
+    from viseron.components.storage import Storage
+    from viseron.domains.camera import AbstractCamera
+    from viseron.domains.face_recognition import AbstractFaceRecognition
+    from viseron.domains.image_classification import AbstractImageClassification
+    from viseron.domains.license_plate_recognition import (
+        AbstractLicensePlateRecognition,
+    )
+    from viseron.domains.motion_detector import AbstractMotionDetector
+    from viseron.domains.nvr import AbstractNVR
+    from viseron.domains.object_detector import AbstractObjectDetector
+    from viseron.helpers.entity import Entity
+
+VISERON_SIGNALS = {
+    VISERON_SIGNAL_SHUTDOWN: "viseron/signal/shutdown",
+    VISERON_SIGNAL_LAST_WRITE: "viseron/signal/last_write",
+    VISERON_SIGNAL_STOPPING: "viseron/signal/stopping",
+}
+
+SIGNAL_SCHEMA = vol.Schema(
+    vol.In(
+        VISERON_SIGNALS.keys(),
+    )
+)
+
+LOGGER = logging.getLogger(f"{__name__}.core")
+
+
+def setup_viseron(vis: Viseron) -> None:
+    """Set up and run Viseron."""
+    start = timer()
+    viseron_version = os.getenv("VISERON_VERSION")
+    LOGGER.info("-------------------------------------------")
+    LOGGER.info(f"Initializing Viseron {viseron_version or ''}")
+
+    try:
+        config = load_config()
+    except Exception as error:  # pylint: disable=broad-except
+        LOGGER.error(
+            f"Failed to load config.yaml, activating safe mode: {error}",
+            exc_info=error,
+        )
+        activate_safe_mode(vis)
+    else:
+        vis.set_config(config)
+        setup_components(vis, config)
+
+    vis.storage = vis.data[STORAGE_COMPONENT]
+    vis.start_event_writer()
+
+    registry = vis.domain_registry
+    camera_ids = registry.get_identifiers(CAMERA_DOMAIN)
+    nvr_ids = registry.get_identifiers(NVR_DOMAIN)
+
+    if NVR_COMPONENT in vis.data[LOADED]:
+        for camera in camera_ids:
+            if camera not in nvr_ids:
+                LOGGER.warning(
+                    f"Camera with identifier {camera} is not enabled under component "
+                    "nvr. This camera will not be processed"
+                )
+    else:
+        nvr_config: dict = {}
+        nvr_config["nvr"] = {}
+        if camera_ids:
+            for camera_to_setup in camera_ids:
+                LOGGER.warning(
+                    "Manually setting up component nvr with "
+                    f"identifier {camera_to_setup}. "
+                    "Consider adding it your config.yaml instead"
+                )
+                nvr_config["nvr"][camera_to_setup] = {}
+            setup_component(vis, get_component(vis, NVR_COMPONENT, nvr_config))
+
+    setup_domains(vis)
+    vis.setup()
+
+    if vis.safe_mode:
+        LOGGER.warning("Viseron is running in safe mode")
+    else:
+        vis.critical_components_config_store.save(config)
+
+    vis.initialized_event.set()
+    LOGGER.info("Viseron initialized in %.1f seconds", timer() - start)
+
+
+class Viseron:
+    """Viseron."""
+
+    def __init__(self, *, start_background_scheduler: bool = True) -> None:
+        self.logger = LOGGER
+        self.states = States(self)
+
+        self.setup_threads: list[threading.Thread] = []
+
+        self.data: ViseronData = {}
+        self.data[LOADING] = {}
+        self.data[LOADED] = {}
+        self.data[FAILED] = {}
+
+        self._domain_registry = DomainRegistry(self)
+
+        self._thread_watchdog: ThreadWatchDog | None = None
+        self._subprocess_watchdog: SubprocessWatchDog | None = None
+        self._process_watchdog: ProcessWatchDog | None = None
+
+        self._dispatched_events: set[str] = set()
+
+        self.background_scheduler = BackgroundScheduler(timezone="UTC", daemon=True)
+        if start_background_scheduler:
+            self.background_scheduler.start()
+            self._thread_watchdog = ThreadWatchDog(self.background_scheduler)
+            self._subprocess_watchdog = SubprocessWatchDog(self.background_scheduler)
+            self._process_watchdog = ProcessWatchDog(self.background_scheduler)
+
+        self.storage: Storage | None = None
+        self._event_writer: EventWriter | None = None
+        self.jinja_env = SandboxedEnvironment(
+            loader=BaseLoader(), undefined=StrictUndefined, autoescape=True
+        )
+
+        self.critical_components_config_store = CriticalComponentsConfigStore(self)
+        self.safe_mode = False
+        self.exit_code = 0
+        self.shutdown_stage: Literal["shutdown", "last_write", "stopping"] | None = None
+        self.initialized_event = threading.Event()
+        self.shutdown_event = threading.Event()
+
+        # Store the current config for diffing during reload
+        self._config: dict[str, Any] = {}
+        self.reload_lock = threading.Lock()
+
+    @property
+    def config(self) -> dict[str, Any]:
+        """Return the current configuration."""
+        return self._config
+
+    def set_config(self, config: dict[str, Any]) -> None:
+        """Set the current configuration."""
+        self._config = config
+
+    @property
+    def version(self) -> str:
+        """Return the version of Viseron."""
+        return os.getenv("VISERON_VERSION", "unknown")
+
+    @property
+    def git_commit(self) -> str:
+        """Return the git commit of Viseron."""
+        git_commit = os.getenv("VISERON_GIT_COMMIT")
+        if git_commit:
+            return git_commit[:7]
+        return "unknown"
+
+    @property
+    def dispatched_events(self) -> list[str]:
+        """Return the list of dispatched events."""
+        return list(self._dispatched_events)
+
+    @property
+    def domain_registry(self) -> DomainRegistry:
+        """Return the domain registry."""
+        return self._domain_registry
+
+    def register_signal_handler(
+        self, viseron_signal: str, callback: Callable
+    ) -> Callable[[], None]:
+        """Register a callback which gets called on signals emitted by Viseron.
+
+        Signals currently available:
+            - shutdown = Emitted when shutdown has been requested
+        """
+        if DATA_STREAM_COMPONENT not in self.data:
+            LOGGER.error(
+                f"Failed to register signal handler for {viseron_signal}: "
+                f"{DATA_STREAM_COMPONENT} is not loaded"
+            )
+            raise DataStreamNotLoaded
+
+        try:
+            SIGNAL_SCHEMA(viseron_signal)
+        except vol.Invalid as err:
+            LOGGER.error(
+                f"Failed to register signal handler for {viseron_signal}: {err}"
+            )
+            raise ValueError(f"Invalid signal {viseron_signal}") from err
+
+        data_stream: DataStream = self.data[DATA_STREAM_COMPONENT]
+        topic = VISERON_SIGNALS[viseron_signal]
+        uuid = data_stream.subscribe_data(topic, callback, stage=viseron_signal)
+
+        def unsubscribe() -> None:
+            data_stream.unsubscribe_data(topic, uuid)
+
+        return unsubscribe
+
+    def listen_event(
+        self,
+        event: str,
+        callback: Callable | Queue | TornadoQueue,
+        ioloop: IOLoop | None = None,
+    ) -> Callable[[], None]:
+        """Register a listener to an event."""
+        if DATA_STREAM_COMPONENT not in self.data:
+            LOGGER.error(
+                f"Failed to register event listener for {event}: "
+                f"{DATA_STREAM_COMPONENT} is not loaded"
+            )
+            raise DataStreamNotLoaded
+
+        data_stream = self.data[DATA_STREAM_COMPONENT]
+        topic = f"event/{event}"
+        uuid = data_stream.subscribe_data(topic, callback, ioloop=ioloop)
+
+        def unsubscribe() -> None:
+            data_stream.unsubscribe_data(topic, uuid)
+
+        return unsubscribe
+
+    def start_event_writer(self) -> None:
+        """Start persisting dispatched events once storage is available."""
+        if self._event_writer is not None or self.storage is None:
+            return
+
+        self._event_writer = EventWriter(self.storage)
+        self.register_signal_handler(VISERON_SIGNAL_LAST_WRITE, self._event_writer.stop)
+
+    def _insert_event(self, event: Event[EventData]) -> None:
+        """Queue an event for persistence.
+
+        Serialize on the dispatching thread so the stored payload
+        reflects the event as it was dispatched, but the database round trip is
+        handed to the event writer.
+        """
+        if self._event_writer is None:
+            return
+
+        event_data_json = "{}"
+        if event.data and event.data.json_serializable:
+            try:
+                event_data_json = partial(json.dumps, cls=JSONEncoder, allow_nan=False)(
+                    event.data
+                )
+            except (TypeError, ValueError, json.JSONDecodeError) as error:
+                LOGGER.warning(f"Failed to decode event {event.name} to JSON: {error}")
+                return
+
+        self._event_writer.enqueue(
+            event.name,
+            event_data_json,
+            datetime.datetime.fromtimestamp(event.timestamp, tz=datetime.timezone.utc),
+        )
+
+    def dispatch_event(
+        self, event: str, data: EventData, *, store: bool = True
+    ) -> None:
+        """Dispatch an event."""
+        _event: Event[EventData] = Event(event, data, utcnow().timestamp())
+        if store:
+            self._insert_event(_event)
+        self.data[DATA_STREAM_COMPONENT].publish_data(f"event/{event}", data=_event)
+
+        self._dispatched_events.add(event)
+
+    @overload
+    def register_domain(
+        self, domain: Literal["camera"], identifier: str, instance: AbstractCamera
+    ) -> None: ...
+
+    @overload
+    def register_domain(
+        self,
+        domain: Literal["face_recognition"],
+        identifier: str,
+        instance: AbstractFaceRecognition,
+    ) -> None: ...
+
+    @overload
+    def register_domain(
+        self,
+        domain: Literal["image_classification"],
+        identifier: str,
+        instance: AbstractImageClassification,
+    ) -> None: ...
+
+    @overload
+    def register_domain(
+        self,
+        domain: Literal["license_plate_recognition"],
+        identifier: str,
+        instance: AbstractLicensePlateRecognition,
+    ) -> None: ...
+
+    @overload
+    def register_domain(
+        self,
+        domain: Literal["motion_detector"],
+        identifier: str,
+        instance: AbstractMotionDetector,
+    ) -> None: ...
+
+    @overload
+    def register_domain(
+        self,
+        domain: Literal["object_detector"],
+        identifier: str,
+        instance: AbstractObjectDetector,
+    ) -> None: ...
+
+    @overload
+    def register_domain(
+        self,
+        domain: Literal["nvr"],
+        identifier: str,
+        instance: AbstractNVR,
+    ) -> None: ...
+
+    def register_domain(
+        self, domain: SupportedDomains, identifier: str, instance
+    ) -> None:
+        """Register a domain with a specific identifier.
+
+        Sets the instance on an existing domain entry in the registry.
+        The domain should already be registered via Component.add_domain_to_setup.
+        """
+        LOGGER.debug(
+            f"Registering domain {domain} with identifier {identifier}, {instance}"
+        )
+        self._domain_registry.set_instance(domain, identifier, instance)
+
+    def unregister_domain(self, domain: SupportedDomains, identifier: str) -> None:
+        """Unregister a domain with a specific identifier.
+
+        Note: This only clears the instance. Full unregistration happens
+        via the domain registry during unload.
+        """
+        LOGGER.debug(f"Unregistering domain {domain} with identifier {identifier}")
+        self._domain_registry.unregister(domain, identifier)
+
+    @overload
+    def get_registered_domain(
+        self, domain: Literal["camera", Domain.CAMERA], identifier: str
+    ) -> AbstractCamera: ...
+
+    @overload
+    def get_registered_domain(
+        self,
+        domain: Literal["face_recognition", Domain.FACE_RECOGNITION],
+        identifier: str,
+    ) -> AbstractFaceRecognition: ...
+
+    @overload
+    def get_registered_domain(
+        self,
+        domain: Literal["image_classification", Domain.IMAGE_CLASSIFICATION],
+        identifier: str,
+    ) -> AbstractImageClassification: ...
+
+    @overload
+    def get_registered_domain(
+        self,
+        domain: Literal["license_plate_recognition", Domain.LICENSE_PLATE_RECOGNITION],
+        identifier: str,
+    ) -> AbstractLicensePlateRecognition: ...
+
+    @overload
+    def get_registered_domain(
+        self,
+        domain: Literal["motion_detector", Domain.MOTION_DETECTOR],
+        identifier: str,
+    ) -> AbstractMotionDetector: ...
+
+    @overload
+    def get_registered_domain(
+        self,
+        domain: Literal["object_detector", Domain.OBJECT_DETECTOR],
+        identifier: str,
+    ) -> AbstractObjectDetector: ...
+
+    @overload
+    def get_registered_domain(
+        self, domain: Literal["nvr", Domain.NVR], identifier: str
+    ) -> NVR: ...
+
+    def get_registered_domain(self, domain: SupportedDomains | Domain, identifier: str):
+        """Return a registered domain with a specific identifier."""
+        domain_str: str = domain.value if isinstance(domain, Domain) else domain
+        return self._domain_registry.get_instance(domain_str, identifier)
+
+    @overload
+    def get_registered_identifiers(
+        self, domain: Literal["camera"]
+    ) -> dict[str, AbstractCamera]: ...
+
+    @overload
+    def get_registered_identifiers(
+        self, domain: Literal["face_recognition"]
+    ) -> dict[str, AbstractFaceRecognition]: ...
+
+    @overload
+    def get_registered_identifiers(
+        self, domain: Literal["image_classification"]
+    ) -> dict[str, AbstractImageClassification]: ...
+
+    @overload
+    def get_registered_identifiers(
+        self, domain: Literal["motion_detector"]
+    ) -> dict[str, AbstractMotionDetector]: ...
+
+    @overload
+    def get_registered_identifiers(
+        self, domain: Literal["object_detector"]
+    ) -> dict[str, AbstractObjectDetector]: ...
+
+    @overload
+    def get_registered_identifiers(self, domain: Literal["nvr"]) -> dict[str, NVR]: ...
+
+    def get_registered_identifiers(self, domain: SupportedDomains):
+        """Return a dict of all registered identifiers and instances for a domain."""
+        return self._domain_registry.get_all_instances(domain)
+
+    def shutdown(self) -> None:
+        """Shut down Viseron."""
+        start = timer()
+        LOGGER.info("Initiating shutdown")
+        self.shutdown_event.set()
+        self.domain_registry.cancel_all_retries()
+        if not self.initialized_event.is_set():
+            LOGGER.debug("Waiting for Viseron to be initialized before shutdown")
+            self.initialized_event.wait()
+            LOGGER.debug("Viseron initialized, continuing shutdown")
+
+        data_stream = self.data[DATA_STREAM_COMPONENT]
+
+        if (
+            self._thread_watchdog
+            and self._subprocess_watchdog
+            and self._process_watchdog
+        ):
+            self._thread_watchdog.stop()
+            self._subprocess_watchdog.stop()
+            self._process_watchdog.stop()
+
+        try:
+            self.background_scheduler.remove_all_jobs()
+            self.background_scheduler.shutdown(wait=False)
+        except SchedulerNotRunningError as err:
+            LOGGER.warning(f"Failed to shutdown scheduler: {err}")
+
+        wait_for_threads_and_processes_to_exit(
+            self, data_stream, VISERON_SIGNAL_SHUTDOWN
+        )
+        wait_for_threads_and_processes_to_exit(
+            self, data_stream, VISERON_SIGNAL_LAST_WRITE
+        )
+        wait_for_threads_and_processes_to_exit(
+            self, data_stream, VISERON_SIGNAL_STOPPING
+        )
+
+        if data_stream:
+            data_stream.remove_all_subscriptions()
+            data_stream.stop()
+            data_stream.join()
+
+        LOGGER.info("Shutdown complete in %.1f seconds", timer() - start)
+
+    @overload
+    def add_entity(self, component: str, entity: Entity) -> Entity: ...
+
+    @overload
+    def add_entity(
+        self,
+        component: str,
+        entity: Entity,
+        domain: SupportedDomains,
+        identifier: str,
+    ) -> Entity: ...
+
+    def add_entity(
+        self,
+        component: str,
+        entity: Entity,
+        domain: SupportedDomains | None = None,
+        identifier: str | None = None,
+    ) -> Entity:
+        """Add entity to states registry."""
+        validate_entity_ownership(domain, identifier)
+
+        component_instance = self.data[LOADED].get(component, None)
+        if not component_instance:
+            component_instance = self.data[LOADING][component]
+        if domain is not None and identifier is not None:
+            return self.states.add_entity(
+                component_instance, entity, domain, identifier
+            )
+        return self.states.add_entity(component_instance, entity)
+
+    def add_entities(self, component: str, entities: list[Entity]) -> None:
+        """Add entities to states registry."""
+        for entity in entities:
+            self.add_entity(component, entity)
+
+    def get_entities(self) -> dict[str, Entity]:
+        """Return all registered entities."""
+        return self.states.get_entities()
+
+    def get_setup_status(self) -> dict[str, Any]:
+        """Return combined setup status for all components and domains."""
+        components: list[dict[str, Any]] = []
+        for store_key in (LOADING, LOADED, FAILED):
+            for component in self.data[store_key].values():
+                if isinstance(component, Component):
+                    components.append(component.as_status_dict())  # noqa: PERF401
+
+        return {"components": components}
+
+    def schedule_periodic_update(self, entity: Entity, update_interval: int) -> Job:
+        """Schedule entity update at a fixed interval."""
+        return self.background_scheduler.add_job(
+            entity.update, "interval", seconds=update_interval
+        )
+
+    def setup(self) -> None:
+        """Set up Viseron."""
+        if os.getenv(ENV_PROFILE_MEMORY) == "true":
+            tracemalloc.start()
+            self.background_scheduler.add_job(
+                memory_usage_profiler, "interval", seconds=5, args=[LOGGER]
+            )
+
+        if os.getenv(ENV_LOG_FD) == "true":
+            self.background_scheduler.add_job(
+                check_fd_usage, "interval", seconds=5, args=[LOGGER]
+            )
+
+
+def wait_for_threads_and_processes_to_exit(
+    vis: Viseron,
+    data_stream: DataStream,
+    stage: Literal["shutdown", "last_write", "stopping"],
+) -> None:
+    """Wait for all threads and processes to exit."""
+    LOGGER.debug(f"Sending signal for stage {stage}")
+    vis.shutdown_stage = stage
+    data_stream.publish_data(VISERON_SIGNALS[stage])
+    time.sleep(0.1)  # Wait for signal to be processed
+    LOGGER.debug(f"Waiting for threads and processes to exit in stage {stage}")
+
+    def join(
+        thread_or_process: threading.Thread
+        | multiprocessing.Process
+        | multiprocessing.process.BaseProcess,
+    ) -> None:
+        start_time = time.time()
+        LOGGER.debug(f"Waiting for {thread_or_process.name} to exit")
+        try:
+            thread_or_process.join(timeout=5)
+        except RuntimeError:
+            LOGGER.debug(f"Failed to join {thread_or_process.name}")
+            time.sleep(0.1)
+            thread_or_process.join(timeout=5)
+        LOGGER.debug(
+            f"Finished waiting for {thread_or_process.name} "
+            f"after {time.time() - start_time:.2f}s"
+        )
+
+        time.sleep(0.1)  # Wait for process to exit properly
+        if thread_or_process.is_alive():
+            LOGGER.error(f"{thread_or_process.name} did not exit in time")
+            if isinstance(thread_or_process, multiprocessing.Process):
+                LOGGER.error(f"Forcefully kill {thread_or_process.name}")
+                thread_or_process.kill()
+
+    threads_and_processes: list[
+        threading.Thread | multiprocessing.Process | multiprocessing.process.BaseProcess
+    ] = [
+        thread
+        for thread in threading.enumerate()
+        if not thread.daemon
+        and thread != threading.current_thread()
+        and "MainThread" not in thread.name
+    ]
+    threads_and_processes += multiprocessing.active_children()
+
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=100, thread_name_prefix="wait_for_threads_and_processes_to_exit"
+    ) as executor:
+        thread_or_process_future = {
+            executor.submit(join, thread_or_process): thread_or_process
+            for thread_or_process in threads_and_processes
+            if getattr(thread_or_process, "__stage__", stage) == stage
+        }
+        for future in concurrent.futures.as_completed(thread_or_process_future):
+            future.result()
+    LOGGER.debug(f"All threads and processes exited in stage {stage}")

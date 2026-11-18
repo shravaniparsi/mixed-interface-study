@@ -1,0 +1,146 @@
+parameters:
+  - name: noCache
+    displayName: "Build without cache"
+    type: boolean
+    default: false
+  - name: skipSmokeTests
+    displayName: "Skip container smoke tests"
+    type: boolean
+    default: false
+
+trigger:
+  branches:
+    include:
+      - dev
+  tags:
+    include:
+      - "*"
+  paths:
+    include:
+      - viseron/*
+      - rootfs/*
+    exclude:
+      - requirements.txt
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+resources:
+  pipelines:
+    - pipeline: viseronFFmpeg
+      source: "Viseron FFmpeg"
+      trigger:
+        branches:
+          - dev
+    - pipeline: viseronOpenCV
+      source: "Viseron OpenCV"
+      trigger:
+        branches:
+          - dev
+    - pipeline: viseronWheels
+      source: "Viseron Wheels"
+      trigger:
+        branches:
+          - dev
+    - pipeline: viseronBase
+      source: "Viseron Base"
+      trigger:
+        branches:
+          - dev
+
+stages:
+  - stage: Build
+    jobs:
+      - template: templates/build.yaml
+        parameters:
+          image: viseron
+          release: true
+          pushToGhcr: true
+          noCache: ${{ parameters.noCache }}
+      - template: templates/build.yaml
+        parameters:
+          image: viseron-tests
+          architectures:
+            - amd64
+          release: false
+          noCache: ${{ parameters.noCache }}
+
+  - stage: Test
+    dependsOn: Build
+    condition: and(succeeded('Build'), eq('${{ parameters.skipSmokeTests }}', false))
+    jobs:
+      - template: templates/smoke_test_stage.yaml
+        parameters:
+          image: viseron
+
+  - stage: Publish
+    dependsOn:
+      - Build
+      - Test
+    condition: and(succeeded('Build'), in(dependencies.Test.result, 'Succeeded', 'SucceededWithIssues', 'Skipped'))
+    jobs:
+      - job: "ReleaseViseron"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - template: templates/release_version.yaml
+            parameters:
+              release: true
+          - task: Docker@2
+            displayName: Login to Docker Hub
+            inputs:
+              command: login
+              containerRegistry: "Docker Hub"
+          - task: Docker@2
+            displayName: Login to GHCR
+            inputs:
+              command: login
+              containerRegistry: "GHCR"
+
+          - template: templates/cleanup.yaml
+
+          - script: |
+              set -e
+              export DOCKER_CLI_EXPERIMENTAL=enabled
+
+              function create_manifest() {
+                local release_version=$1
+
+                docker buildx imagetools create \
+                  --debug \
+                  --tag roflcoopter/viseron:${release_version} \
+                  roflcoopter/viseron:${release_version}-amd64 \
+                  roflcoopter/viseron:${release_version}-aarch64
+
+                docker buildx imagetools inspect roflcoopter/viseron:${release_version}
+
+                docker buildx imagetools create \
+                  --debug \
+                  --tag ghcr.io/roflcoopter/viseron:${release_version} \
+                  ghcr.io/roflcoopter/viseron:${release_version}-amd64 \
+                  ghcr.io/roflcoopter/viseron:${release_version}-aarch64
+
+                docker buildx imagetools inspect ghcr.io/roflcoopter/viseron:${release_version}
+              }
+
+              # Create version tag
+              echo "Creating and pushing multi-arch manifest for $(viseronVersion)"
+              create_manifest $(viseronVersion)
+              if [ $(latestRelease) = true ] ; then
+                echo "Tagging as latest"
+                create_manifest "latest"
+              fi
+            displayName: "Create multi-arch image"
+          - task: Docker@2
+            displayName: Logoff Docker Hub
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: "Docker Hub"
+          - task: Docker@2
+            displayName: Logoff GHCR
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: "GHCR"

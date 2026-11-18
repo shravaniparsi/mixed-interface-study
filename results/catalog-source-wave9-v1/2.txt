@@ -1,0 +1,753 @@
+services:
+  ################ amd64 #######################################¤
+  amd64-ffmpeg:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64/Dockerfile.ffmpeg
+      args: &ffmpeg_args
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+        AOM_VERSION: "$AOM_VERSION"
+        FDKAAC_VERSION: "$FDKAAC_VERSION"
+        FONTCONFIG_VERSION: "$FONTCONFIG_VERSION"
+        FREETYPE_VERSION: "$FREETYPE_VERSION"
+        FRIBIDI_VERSION: "$FRIBIDI_VERSION"
+        HARFBUZZ_VERSION: "$HARFBUZZ_VERSION"
+        KVAZAAR_VERSION: "$KVAZAAR_VERSION"
+        LAME_VERSION: "$LAME_VERSION"
+        LIBASS_VERSION: "$LIBASS_VERSION"
+        LIBPTHREAD_STUBS_VERSION: "$LIBPTHREAD_STUBS_VERSION"
+        LIBVIDSTAB_VERSION: "$LIBVIDSTAB_VERSION"
+        OGG_VERSION: "$OGG_VERSION"
+        OPENCOREAMR_VERSION: "$OPENCOREAMR_VERSION"
+        OPUS_VERSION: "$OPUS_VERSION"
+        OPENJPEG_VERSION: "$OPENJPEG_VERSION"
+        THEORA_VERSION: "$THEORA_VERSION"
+        VORBIS_VERSION: "$VORBIS_VERSION"
+        VPX_VERSION: "$VPX_VERSION"
+        WEBP_VERSION: "$WEBP_VERSION"
+        X264_VERSION: "$X264_VERSION"
+        X265_VERSION: "$X265_VERSION"
+        XAU_VERSION: "$XAU_VERSION"
+        XORG_MACROS_VERSION: "$XORG_MACROS_VERSION"
+        XPROTO_VERSION: "$XPROTO_VERSION"
+        XVID_VERSION: "$XVID_VERSION"
+        LIBXML2_VERSION: "$LIBXML2_VERSION"
+        LIBZMQ_VERSION: "$LIBZMQ_VERSION"
+        LIBPNG_VERSION: "$LIBPNG_VERSION"
+        SVTAV1_VERSION: "$SVTAV1_VERSION"
+        LIBSRT_VERSION: "$LIBSRT_VERSION"
+        LIBVMAF_VERSION: "$LIBVMAF_VERSION"
+        LIBARIBB24_VERSION: "$LIBARIBB24_VERSION"
+        ZIMG_VERSION: "$ZIMG_VERSION"
+        WHISPER_VERSION: "$WHISPER_VERSION"
+        FREETYPE_SHA256SUM: "$FREETYPE_SHA256SUM"
+        FRIBIDI_SHA256SUM: "$FRIBIDI_SHA256SUM"
+        LIBASS_SHA256SUM: "$LIBASS_SHA256SUM"
+        LIBVIDSTAB_SHA256SUM: "$LIBVIDSTAB_SHA256SUM"
+        OGG_SHA256SUM: "$OGG_SHA256SUM"
+        OPUS_SHA256SUM: "$OPUS_SHA256SUM"
+        THEORA_SHA256SUM: "$THEORA_SHA256SUM"
+        VORBIS_SHA256SUM: "$VORBIS_SHA256SUM"
+        XVID_SHA256SUM: "$XVID_SHA256SUM"
+        LIBXML2_SHA256SUM: "$LIBXML2_SHA256SUM"
+        LIBZMQ_SHA256SUM: "$LIBZMQ_SHA256SUM"
+      cache_from:
+        - roflcoopter/amd64-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+
+  amd64-opencv:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64/Dockerfile.opencv
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        MAKEFLAGS: "$MAKEFLAGS"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        OPENVINO_VERSION: "$OPENVINO_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+      cache_from:
+        - roflcoopter/amd64-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+
+  amd64-dlib:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64/Dockerfile.dlib
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        DLIB_VERSION: "$DLIB_VERSION"
+      cache_from:
+        - roflcoopter/amd64-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+
+  amd64-hailo:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.hailo
+      args:
+        BUILD_FROM: ubuntu:$UBUNTU_VERSION
+        MAKEFLAGS: "$MAKEFLAGS"
+        HAILO_VERSION: "$HAILO_VERSION"
+      cache_from:
+        - roflcoopter/amd64-hailo:$HAILO_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-hailo:$HAILO_VERSION-$UBUNTU_VERSION
+
+  amd64-gpac:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.gpac
+      args:
+        BUILD_FROM: ubuntu:$UBUNTU_VERSION
+        MAKEFLAGS: "$MAKEFLAGS"
+        GPAC_VERSION: "$GPAC_VERSION"
+      cache_from:
+        - roflcoopter/amd64-gpac:$GPAC_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-gpac:$GPAC_VERSION-$UBUNTU_VERSION
+
+  amd64-wheels:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.wheels
+      args:
+        ARCH: amd64
+        BUILD_FROM: ubuntu:$UBUNTU_VERSION
+        DLIB_VERSION: "$DLIB_VERSION"
+        EXTRA_PIP_ARGS: --extra-index-url https://download.pytorch.org/whl/cpu
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/amd64-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+
+  amd64-base:
+    build:
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        OPENVINO_VERSION: "$OPENVINO_VERSION"
+        OPENCL_VERSION: "$OPENCL_VERSION"
+        GMMLIB_VERSION: "$GMMLIB_VERSION"
+        IGC_VERSION: "$IGC_VERSION"
+        LEVEL_ZERO_GPU: "$LEVEL_ZERO_GPU"
+        OPENCL_SHA256_FILENAME: "$OPENCL_SHA256_FILENAME"
+      context: ..
+      dockerfile: ./docker/amd64/Dockerfile.base
+      cache_from:
+        - roflcoopter/amd64-base:$BASE_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-base:$BASE_VERSION-$UBUNTU_VERSION
+
+  amd64-viseron:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+      args:
+        ARCH: amd64
+        BASE_VERSION: "$BASE_VERSION"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+        WHEELS_VERSION: "$WHEELS_VERSION"
+        S6_OVERLAY_ARCH: amd64
+        S6_OVERLAY_VERSION: "$S6_OVERLAY_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        NODE_VERSION: "$NODE_VERSION"
+        GPAC_IMAGE: roflcoopter/amd64-gpac:${GPAC_VERSION}-${UBUNTU_VERSION}
+        HAILO_IMAGE: roflcoopter/amd64-hailo:${HAILO_VERSION}-${UBUNTU_VERSION}
+        GO2RTC_VERSION: "$GO2RTC_VERSION"
+      cache_from:
+        - roflcoopter/amd64-viseron:dev
+    image: roflcoopter/amd64-viseron:dev
+
+  amd64-viseron-tests: &amd64-viseron-tests
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.tests
+      args:
+        ARCH: amd64
+        VISERON_VERSION: dev
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        WHEELS_VERSION: "$WHEELS_VERSION"
+      cache_from:
+        - roflcoopter/amd64-viseron-tests:dev
+    image: roflcoopter/amd64-viseron-tests:dev
+    container_name: amd64-viseron-tests
+    environment:
+      - PGID=1000
+      - PUID=1000
+    command: >
+      bash -c "
+        chown -R abc:abc /src &&
+        su abc -c '
+          cd /src &&
+          pytest --cov=viseron/ --cov-report term-missing -s -n auto tests &&
+          coverage xml
+        '
+      "
+  amd64-viseron-tox:
+    <<: *amd64-viseron-tests
+    image: roflcoopter/amd64-viseron-tox:dev
+    container_name: amd64-viseron-tox
+
+  amd64-viseron-vulture:
+    <<: *amd64-viseron-tests
+    image: roflcoopter/amd64-viseron-vulture:dev
+    container_name: amd64-viseron-vulture
+    entrypoint: ""
+    command: >
+      bash -c "vulture viseron/"
+    user: 1000:1000
+
+  amd64-azure-agent:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.azure
+      args:
+        TARGETARCH: "amd64"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/amd64-azure-agent:latest
+    image: roflcoopter/amd64-azure-agent:latest
+
+  ################ amd64 CUDA ###################################
+  amd64-cuda-ffmpeg:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64-cuda/Dockerfile.ffmpeg
+      args:
+        <<: *ffmpeg_args
+        CUDA_VERSION: "$CUDA_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        VIDEO_CODEC_SDK_VERSION: "$VIDEO_CODEC_SDK_VERSION"
+      cache_from:
+        - roflcoopter/amd64-cuda-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-cuda-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+
+  amd64-cuda-opencv:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64-cuda/Dockerfile.opencv
+      args:
+        CUDA_VERSION: "$CUDA_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        MAKEFLAGS: "$MAKEFLAGS"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        OPENVINO_VERSION: "$OPENVINO_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+      cache_from:
+        - roflcoopter/amd64-cuda-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-cuda-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+
+  amd64-cuda-dlib:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64-cuda/Dockerfile.dlib
+      args:
+        CUDA_VERSION: "$CUDA_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        MAKEFLAGS: "$MAKEFLAGS"
+        DLIB_VERSION: "$DLIB_VERSION"
+      cache_from:
+        - roflcoopter/amd64-cuda-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-cuda-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+
+  amd64-cuda-darknet:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64-cuda/Dockerfile.darknet
+      args:
+        ARCH: amd64-cuda
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        OPENVINO_VERSION: "$OPENVINO_VERSION"
+        CUDA_VERSION: "$CUDA_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        MAKEFLAGS: "$MAKEFLAGS"
+        DARKNET_COMMIT: "$DARKNET_COMMIT"
+      cache_from:
+        - roflcoopter/amd64-cuda-darknet:$DARKNET_COMMIT-$UBUNTU_VERSION
+    image: roflcoopter/amd64-cuda-darknet:$DARKNET_COMMIT-$UBUNTU_VERSION
+
+  amd64-cuda-wheels:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.wheels
+      args:
+        ARCH: amd64-cuda
+        BUILD_FROM: ubuntu:$UBUNTU_VERSION
+        DLIB_VERSION: "$DLIB_VERSION"
+        FAST_ALPR_EXTRA: onnx-gpu
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/amd64-cuda-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-cuda-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+
+  amd64-cuda-base:
+    build:
+      context: ..
+      dockerfile: ./docker/amd64-cuda/Dockerfile.base
+      args:
+        CUDA_VERSION: "$CUDA_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        UBUNTU_VERSION_NUMBER: "$UBUNTU_VERSION_NUMBER"
+        DARKNET_COMMIT: "$DARKNET_COMMIT"
+        OPENVINO_VERSION: "$OPENVINO_VERSION"
+        OPENCL_VERSION: "$OPENCL_VERSION"
+        GMMLIB_VERSION: "$GMMLIB_VERSION"
+        IGC_VERSION: "$IGC_VERSION"
+        LEVEL_ZERO_GPU: "$LEVEL_ZERO_GPU"
+        OPENCL_SHA256_FILENAME: "$OPENCL_SHA256_FILENAME"
+      cache_from:
+        - roflcoopter/amd64-cuda-base:$BASE_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/amd64-cuda-base:$BASE_VERSION-$UBUNTU_VERSION
+
+  amd64-cuda-viseron:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+      args:
+        ARCH: amd64-cuda
+        BASE_VERSION: "$BASE_VERSION"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+        WHEELS_VERSION: "$WHEELS_VERSION"
+        S6_OVERLAY_ARCH: amd64
+        S6_OVERLAY_VERSION: "$S6_OVERLAY_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        NODE_VERSION: "$NODE_VERSION"
+        GPAC_IMAGE: roflcoopter/amd64-gpac:${GPAC_VERSION}-${UBUNTU_VERSION}
+        HAILO_IMAGE: roflcoopter/amd64-hailo:${HAILO_VERSION}-${UBUNTU_VERSION}
+        GO2RTC_VERSION: "$GO2RTC_VERSION"
+      cache_from:
+        - roflcoopter/amd64-cuda-viseron:dev
+    image: roflcoopter/amd64-cuda-viseron:dev
+
+  ################ RPi3 #######################################¤¤
+  rpi3-ffmpeg:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/rpi3/Dockerfile.ffmpeg
+      args:
+        <<: *ffmpeg_args
+        CMAKE_VERSION: "$CMAKE_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+
+  rpi3-opencv:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/rpi3/Dockerfile.opencv
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+
+  rpi3-dlib:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/rpi3/Dockerfile.dlib
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        DLIB_VERSION: "$DLIB_VERSION"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+
+  # Sklearn does not have a prebuilt wheel for armv7l, and it takes forever to
+  # build from source. So we build it once and use it as a base for the other images
+  # No CI for this image, built locally and pushed to docker hub
+  rpi3-sklearn:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/rpi3/Dockerfile.sklearn
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+        SKLEARN_VERSION: "$SKLEARN_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+      cache_from:
+        - roflcoopter/rpi3-sklearn:$SKLEARN_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-sklearn:$SKLEARN_VERSION-$UBUNTU_VERSION
+
+  rpi3-gpac:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.gpac
+      args:
+        BUILD_FROM: balenalib/raspberrypi3-ubuntu:$UBUNTU_VERSION-build
+        MAKEFLAGS: "$MAKEFLAGS"
+        GPAC_VERSION: "$GPAC_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-gpac:$GPAC_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-gpac:$GPAC_VERSION-$UBUNTU_VERSION
+
+  rpi3-wheels:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.wheels
+      args:
+        ARCH: rpi3
+        BUILD_FROM: roflcoopter/rpi3-sklearn:$SKLEARN_VERSION-$UBUNTU_VERSION
+        DLIB_VERSION: "$DLIB_VERSION"
+        EXTRA_PIP_ARGS: --extra-index-url https://www.piwheels.org/simple
+        CMAKE_VERSION: "$CMAKE_VERSION"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+
+  rpi3-base:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/rpi3/Dockerfile.base
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-base:$BASE_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-base:$BASE_VERSION-$UBUNTU_VERSION
+
+  rpi3-viseron:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+      args:
+        ARCH: rpi3
+        BASE_VERSION: "$BASE_VERSION"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+        WHEELS_VERSION: "$WHEELS_VERSION"
+        S6_OVERLAY_ARCH: armhf
+        S6_OVERLAY_VERSION: "$S6_OVERLAY_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        NODE_VERSION: "$NODE_VERSION"
+        GPAC_IMAGE: roflcoopter/rpi3-gpac:${GPAC_VERSION}-${UBUNTU_VERSION}
+        GO2RTC_VERSION: "$GO2RTC_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-viseron:dev
+    image: roflcoopter/rpi3-viseron:dev
+
+  rpi3-cmake:
+    platform: linux/arm/v7
+    build:
+      context: ..
+      dockerfile: ./docker/rpi3/Dockerfile.cmake
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+      cache_from:
+        - roflcoopter/rpi3-cmake:$CMAKE_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/rpi3-cmake:$CMAKE_VERSION-$UBUNTU_VERSION
+
+  ################ aarch64 #######################################
+  aarch64-ffmpeg:
+    build:
+      context: ..
+      dockerfile: ./docker/aarch64/Dockerfile.ffmpeg
+      args:
+        <<: *ffmpeg_args
+      cache_from:
+        - roflcoopter/aarch64-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-ffmpeg:$FFMPEG_VERSION-$UBUNTU_VERSION
+
+  aarch64-opencv:
+    build:
+      context: ..
+      dockerfile: ./docker/aarch64/Dockerfile.opencv
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-opencv:$OPENCV_VERSION-$UBUNTU_VERSION
+
+  aarch64-dlib:
+    build:
+      context: ..
+      dockerfile: ./docker/aarch64/Dockerfile.dlib
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        DLIB_VERSION: "$DLIB_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-dlib:$DLIB_VERSION-$UBUNTU_VERSION
+
+  aarch64-hailo:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.hailo
+      args:
+        BUILD_FROM: ubuntu:$UBUNTU_VERSION
+        MAKEFLAGS: "$MAKEFLAGS"
+        HAILO_VERSION: "$HAILO_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-hailo:$HAILO_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-hailo:$HAILO_VERSION-$UBUNTU_VERSION
+
+  aarch64-gpac:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.gpac
+      args:
+        BUILD_FROM: balenalib/aarch64-ubuntu:$UBUNTU_VERSION-build
+        MAKEFLAGS: "$MAKEFLAGS"
+        GPAC_VERSION: "$GPAC_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-gpac:$GPAC_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-gpac:$GPAC_VERSION-$UBUNTU_VERSION
+
+  aarch64-wheels:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.wheels
+      args:
+        ARCH: aarch64
+        BUILD_FROM: balenalib/aarch64-ubuntu:$UBUNTU_VERSION-build
+        DLIB_VERSION: "$DLIB_VERSION"
+        EXTRA_PIP_ARGS: --extra-index-url https://download.pytorch.org/whl/cpu
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-wheels:$WHEELS_VERSION-$UBUNTU_VERSION
+
+  aarch64-base:
+    build:
+      context: ..
+      dockerfile: ./docker/aarch64/Dockerfile.base
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-base:$BASE_VERSION-$UBUNTU_VERSION
+    image: roflcoopter/aarch64-base:$BASE_VERSION-$UBUNTU_VERSION
+
+  aarch64-viseron:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+      args:
+        ARCH: aarch64
+        BASE_VERSION: "$BASE_VERSION"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$FFMPEG_VERSION"
+        WHEELS_VERSION: "$WHEELS_VERSION"
+        S6_OVERLAY_ARCH: aarch64
+        S6_OVERLAY_VERSION: "$S6_OVERLAY_VERSION"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+        NODE_VERSION: "$NODE_VERSION"
+        GPAC_IMAGE: roflcoopter/aarch64-gpac:${GPAC_VERSION}-${UBUNTU_VERSION}
+        HAILO_IMAGE: roflcoopter/aarch64-hailo:${HAILO_VERSION}-${UBUNTU_VERSION}
+        GO2RTC_VERSION: "$GO2RTC_VERSION"
+      cache_from:
+        - roflcoopter/aarch64-viseron:dev
+    image: roflcoopter/aarch64-viseron:dev
+
+  ################ Jetson Nano #######################################
+  jetson-nano-cmake:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.cmake
+      args:
+        UBUNTU_VERSION: "$JETSON_NANO_UBUNTU_VERSION"
+        MAKEFLAGS: "$MAKEFLAGS"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-cmake:$CMAKE_VERSION-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-cmake:$CMAKE_VERSION-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-python:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.python
+      args:
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        PYTHON_VERSION: "$PYTHON_VERSION"
+        PYTHON_GPG_KEY: "$PYTHON_GPG_KEY"
+        PYTHON_PIP_VERSION: "$PYTHON_PIP_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-python:$PYTHON_VERSION
+    image: roflcoopter/jetson-nano-python:$PYTHON_VERSION
+  jetson-nano-python-3.9.19:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.python
+      args:
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        PYTHON_VERSION: 3.9.19
+        PYTHON_GPG_KEY: "E3FF2839C048B25C084DEBE9B26995E310250568"
+        PYTHON_PIP_VERSION: "$PYTHON_PIP_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-python:3.9.19
+    image: roflcoopter/jetson-nano-python:3.9.19
+
+  jetson-nano-ffmpeg:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.ffmpeg
+      target: skip-ffmpeg
+      args:
+        <<: *ffmpeg_args
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        FFMPEG_VERSION: "$JETSON_NANO_FFMPEG_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-ffmpeg:$JETSON_NANO_FFMPEG_VERSION-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-ffmpeg:$JETSON_NANO_FFMPEG_VERSION-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-opencv:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.opencv
+      args:
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        JETPACK_VERSION_MAJOR: $JETPACK_VERSION_MAJOR
+        JETPACK_VERSION_MINOR: $JETPACK_VERSION_MINOR
+        SOC: t210
+        PYTHON_VERSION: "$PYTHON_VERSION"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        MAKEFLAGS: "-j7"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-opencv:$OPENCV_VERSION-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-opencv:$OPENCV_VERSION-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-dlib:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.dlib
+      args:
+        PYTHON_VERSION: "$PYTHON_VERSION"
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        JETPACK_VERSION_MAJOR: $JETPACK_VERSION_MAJOR
+        JETPACK_VERSION_MINOR: $JETPACK_VERSION_MINOR
+        SOC: t210
+        MAKEFLAGS: "$MAKEFLAGS"
+        CMAKE_VERSION: "$CMAKE_VERSION"
+        DLIB_VERSION: "$DLIB_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-dlib:$DLIB_VERSION-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-dlib:$DLIB_VERSION-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-darknet:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.darknet
+      args:
+        PYTHON_VERSION: "$PYTHON_VERSION"
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        JETPACK_VERSION_MAJOR: $JETPACK_VERSION_MAJOR
+        JETPACK_VERSION_MINOR: $JETPACK_VERSION_MINOR
+        SOC: t210
+        MAKEFLAGS: "$MAKEFLAGS"
+        DARKNET_COMMIT: "$DARKNET_COMMIT"
+      cache_from:
+        - roflcoopter/jetson-nano-darknet:$DARKNET_COMMIT-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-darknet:$DARKNET_COMMIT-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-wheels:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.wheels
+      args:
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        PYTHON_VERSION: $PYTHON_VERSION
+        DLIB_VERSION: "$DLIB_VERSION"
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        ARCH: jetson-nano
+        OPENCV_VERSION: "$OPENCV_VERSION"
+      cache_from:
+        - roflcoopter/jetson-nano-wheels:$WHEELS_VERSION-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-wheels:$WHEELS_VERSION-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-base:
+    build:
+      context: ..
+      dockerfile: ./docker/jetson-nano/Dockerfile.base
+      args:
+        PYTHON_VERSION: "$PYTHON_VERSION"
+        DARKNET_COMMIT: "$DARKNET_COMMIT"
+        UBUNTU_VERSION: $JETSON_NANO_UBUNTU_VERSION
+        JETPACK_VERSION: "$JETPACK_VERSION_MAJOR.$JETPACK_VERSION_MINOR.$JETPACK_VERSION_PATCH"
+        JETPACK_VERSION_MAJOR: $JETPACK_VERSION_MAJOR
+        JETPACK_VERSION_MINOR: $JETPACK_VERSION_MINOR
+        SOC: t210
+        JETSON_NANO_FFMPEG_APT_VERSION: $JETSON_NANO_FFMPEG_APT_VERSION
+      cache_from:
+        - roflcoopter/jetson-nano-base:$BASE_VERSION-$JETSON_NANO_UBUNTU_VERSION
+    image: roflcoopter/jetson-nano-base:$BASE_VERSION-$JETSON_NANO_UBUNTU_VERSION
+
+  jetson-nano-viseron:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+      args:
+        ARCH: jetson-nano
+        BASE_VERSION: "$BASE_VERSION"
+        OPENCV_VERSION: "$OPENCV_VERSION"
+        FFMPEG_VERSION: "$JETSON_NANO_FFMPEG_VERSION"
+        WHEELS_VERSION: "$WHEELS_VERSION"
+        S6_OVERLAY_ARCH: aarch64
+        S6_OVERLAY_VERSION: "$S6_OVERLAY_VERSION"
+        UBUNTU_VERSION: "$JETSON_NANO_UBUNTU_VERSION"
+        NODE_VERSION: "$NODE_VERSION"
+        GPAC_IMAGE: roflcoopter/aarch64-gpac:${GPAC_VERSION}-${UBUNTU_VERSION}
+        GO2RTC_VERSION: "$GO2RTC_VERSION"
+        OPENBLAS_APT_PACKAGE: "libopenblas-base"
+      cache_from:
+        - roflcoopter/jetson-nano-viseron:dev
+    image: roflcoopter/jetson-nano-viseron:dev
+
+  ################ RaspberryPi 5 #####################################
+  rpi5-azure-agent:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.azure
+      args:
+        TARGETARCH: "arm64"
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/rpi5-azure-agent:latest
+    image: roflcoopter/rpi5-azure-agent:latest
+
+  ################### Other ##########################################
+  models:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.models
+      args:
+        UBUNTU_VERSION: "$UBUNTU_VERSION"
+      cache_from:
+        - roflcoopter/viseron-models:latest
+    image: roflcoopter/viseron-models:latest

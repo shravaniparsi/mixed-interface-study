@@ -1,0 +1,114 @@
+"""Webserver constants."""
+
+from datetime import timedelta
+from typing import Final
+
+from viseron.const import CONFIG_DIR
+
+COMPONENT: Final = "webserver"
+
+WEBSERVER_STORAGE_KEY = "webserver"
+AUTH_STORAGE_KEY = "auth"
+ONBOARDING_STORAGE_KEY = "onboarding"
+
+ACCESS_TOKEN_EXPIRATION = timedelta(minutes=30)
+MAX_FILE_SEARCH_TRIES = 10
+
+DOWNLOAD_PATH = "/tmp/downloads"
+
+TIMELAPSE_DEFAULT_MAX_FRAMES = 1800
+TIMELAPSE_MAX_FRAMES = 20000
+TIMELAPSE_MAX_RENDER_FRAMES = 18000
+TIMELAPSE_RENDER_WIDTHS = (640, 854, 1280, 1920, 2560, 3840)
+TIMELAPSE_STREAM_MAX_WIDTH = 1280
+TIMELAPSE_MAX_STREAM_DIMENSION = 4096
+PUBLIC_IMAGES_PATH = f"{CONFIG_DIR}/public_images"
+
+# Config constants
+DEFAULT_DEBUG = False
+DEFAULT_PUBLIC_URL_EXPIRY_HOURS = 24
+DEFAULT_PUBLIC_URL_MAX_DOWNLOADS = 0
+
+DESC_COMPONENT = "Webserver configuration."
+
+DESC_PORT = "Port to run the webserver on."
+DESC_DEBUG = (
+    "Enable debug mode for the webserver. <b>WARNING: Dont have this enabled in"
+    " production as it weakens security.</b>"
+)
+DESC_PUBLIC_BASE_URL = (
+    "Public base URL for Viseron (e.g., https://viseron.example.com). "
+    "Used for generating public links accessible from outside your network."
+)
+DESC_PUBLIC_URL_EXPIRY_HOURS = (
+    "Number of hours before public image URLs expire (default: 24, max: 744 = 31 days)."
+)
+DESC_PUBLIC_URL_MAX_DOWNLOADS = (
+    "Maximum number of times a public image URL can be downloaded before it is"
+    " automatically deleted. Set to 0 for unlimited downloads (default: 0 = unlimited)."
+)
+DESC_SUBPATH = (
+    "Subpath where the webserver is served from when behind a reverse proxy "
+    "(e.g. '/viseron')."
+)
+
+# Auth config constants
+CONFIG_RATE_LIMIT_LOGIN = "login"
+CONFIG_RATE_LIMIT_TOKEN = "token"  # noqa: S105
+CONFIG_RATE_LIMIT_ONBOARDING = "onboarding"
+
+DEFAULT_RATE_LIMIT_WINDOW_SECONDS: Final = 60.0
+DEFAULT_RATE_LIMIT_LOGIN_MAX_ATTEMPTS: Final = 10
+DEFAULT_RATE_LIMIT_TOKEN_MAX_ATTEMPTS: Final = 30
+DEFAULT_RATE_LIMIT_ONBOARDING_MAX_ATTEMPTS: Final = 5
+
+DESC_AUTH = "Authentication configuration."
+DESC_SESSION_EXPIRY = (
+    "Session expiry time. After this time the user will be logged out. By default the"
+    " sessions are infinite."
+)
+DESC_DAYS = "Days to expire session."
+DESC_HOURS = "Hours to expire session."
+DESC_MINUTES = "Minutes to expire session."
+DESC_RATE_LIMITS = (
+    "Per-IP rate limits applied to authentication endpoints. Tune these if you have"
+    " many legitimate clients behind a single IP, or lower them to harden against"
+    " brute force."
+)
+DESC_RATE_LIMIT_LOGIN = "Rate limit for the login endpoint (POST /api/v1/auth/login)."
+DESC_RATE_LIMIT_TOKEN = (
+    "Rate limit for the token endpoint (POST /api/v1/auth/token), "  # noqa: S105
+    "used to refresh access tokens."
+)
+DESC_RATE_LIMIT_ONBOARDING = (
+    "Rate limit for the initial onboarding endpoint (POST /api/v1/onboarding)."
+)
+DESC_MAX_ATTEMPTS = "Maximum number of attempts allowed within the window."
+DESC_WINDOW_SECONDS = "Length of the sliding window in seconds."
+
+# Websocket constants
+TYPE_RESULT = "result"
+TYPE_SUBSCRIPTION_RESULT = "subscription_result"
+TYPE_AUTH_OK = "auth_ok"
+TYPE_AUTH_REQUIRED = "auth_required"
+TYPE_AUTH_NOT_REQUIRED = "auth_not_required"
+TYPE_AUTH_FAILED = "auth_failed"
+
+
+# Websocket error codes
+WS_ERROR_INVALID_JSON = "invalid_json"
+WS_ERROR_INVALID_FORMAT = "invalid_format"
+WS_ERROR_UNKNOWN_COMMAND = "uknown_command"
+WS_ERROR_UNKNOWN_ERROR = "uknown_error"
+WS_ERROR_OLD_COMMAND_ID = "old_command_id"
+WS_ERROR_SAVE_CONFIG_FAILED = "save_config_failed"
+WS_ERROR_RELOAD_CONFIG_FAILED = "reload_config_failed"
+WS_ERROR_NOT_FOUND = "not_found"
+WS_ERROR_UNAUTHORIZED = "unauthorized"
+
+
+# Viseron data constants
+WEBSOCKET_COMMANDS: Final = "websocket_commands"
+WEBSOCKET_CONNECTIONS: Final = "websocket_connections"
+DOWNLOAD_TOKENS: Final = "download_tokens"
+PUBLIC_IMAGE_TOKENS: Final = "public_image_tokens"

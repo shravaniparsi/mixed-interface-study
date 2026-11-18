@@ -1,0 +1,74 @@
+#!/usr/bin/with-contenv bash
+
+source /helpers/logger.sh
+
+mkdir -p /var/run/environment
+
+# Set Viseron config directory
+log_info "************* Setting Viseron config dir *****************"
+printf '%s' "$VISERON_CONFIG_DIR" > /var/run/environment/VISERON_CONFIG_DIR
+log_info "Viseron config dir: $VISERON_CONFIG_DIR"
+log_info "*********************** Done *****************************"
+
+log_info "****** Checking for hardware acceleration platforms ******"
+# Check for OpenCL
+OUTPUT=$(clinfo 2>&1)
+if [[ $OUTPUT =~ ("Number of platforms"[ \t]+[1-9]) ]]; then
+    export VISERON_OPENCL_SUPPORTED=true
+    printf "true" > /var/run/environment/VISERON_OPENCL_SUPPORTED
+    log_info "OpenCL is available!"
+else
+    export VISERON_OPENCL_SUPPORTED=false
+    printf "false" > /var/run/environment/VISERON_OPENCL_SUPPORTED
+    log_warning "OpenCL cannot be used"
+fi
+
+# Check for VA-API
+OUTPUT=$(vainfo 2>&1)
+if [[ $OUTPUT =~ ("VAProfileH264") ]]; then
+    export VISERON_VAAPI_SUPPORTED=true
+    printf "true" > /var/run/environment/VISERON_VAAPI_SUPPORTED
+    log_info "VA-API is available!"
+else
+    export VISERON_VAAPI_SUPPORTED=false
+    printf "false" > /var/run/environment/VISERON_VAAPI_SUPPORTED
+    log_warning "VA-API cannot be used"
+fi
+
+# Check for CUDA
+OUTPUT=$(python3 -c "import cv2; print(cv2.cuda.setDevice(0))" > /dev/null 2>&1)
+if [[ $? -eq 0 ]] ; then
+    export VISERON_CUDA_SUPPORTED=true
+    printf "true" > /var/run/environment/VISERON_CUDA_SUPPORTED
+    log_info "CUDA is available!"
+else
+    export VISERON_CUDA_SUPPORTED=false
+    printf "false" > /var/run/environment/VISERON_CUDA_SUPPORTED
+    log_warning "CUDA cannot be used"
+fi
+
+# Used by dconf cache in GStreamer
+export XDG_RUNTIME_DIR=/home/abc
+printf "/home/abc" > /var/run/environment/XDG_RUNTIME_DIR
+
+# Set XDG_CURRENT_DESKTOP to avoid GStreamer hanging
+# Context: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3487
+export XDG_CURRENT_DESKTOP=ubuntu:GNOME
+printf "ubuntu:GNOME" > /var/run/environment/XDG_CURRENT_DESKTOP
+
+
+# Set HOME to /home/abc
+export HOME=/home/abc
+printf "/home/abc" > /var/run/environment/HOME
+
+# Find latest version of postgresql
+export PG_VERSION=$(psql --version | awk '{print $3}' | awk -F'.' '{print $1}')
+export PG_BIN="/usr/lib/postgresql/$PG_VERSION/bin"
+export PGDATA=${VISERON_PGDATA_DIR:-$VISERON_CONFIG_DIR/postgresql}
+printf '%s' "$PG_VERSION" > /var/run/environment/PG_VERSION
+printf '%s' "$PG_BIN" > /var/run/environment/PG_BIN
+printf '%s' "$PGDATA" > /var/run/environment/PGDATA
+log_info "PostgreSQL major version: $PG_VERSION"
+log_info "PostgreSQL bin: $PG_BIN"
+log_info "PostgreSQL data dir: $PGDATA"
+log_info "*********************** Done *****************************"
