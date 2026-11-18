@@ -317,3 +317,11 @@ Wave 25 was collected once after published freeze 945f7a98ee8c4c8515fd8b1ce7207c
 Swagger config scans ../api/*.js or *.ts, while the reviewed native storage handlers are under routes/storage.ts. Exact schema coverage for the selected candidate is unverified; public API-key documentation must not silently stand in for a cookie-authenticated storage request schema. No frontend-derived replacement schema is allowed. This is a source-coverage limitation, not an API validation defect.
 
 The structured Maxun binding-status record now separates established source bindings from remaining selection, ancestry, deployment, snapshot and ordinary-control requirements. Source allowance is 22/24, ordinary jobs used zero, scientific cases zero. This record does not admit the workflow or authorize execution.
+
+## Maxun source workflow selection and final bounded dependencies
+
+Manual recording setup was read through its complete handler: it initializes sessionStorage and opens a separate recording-setup tab, without a source-established two-text persistence pair in the reviewed bindings. Earlier UrlForm/ProxyForm/KeyValueForm dispositions remain binding. Among the established robot JSON metadata pairs at RobotCreate, the crawl route precedes llm/scrape/search; document creation requires an excluded upload. Crawl metadata is now selected before any ordinary or scientific execution, using name and url, with explicit url-to-targetUrl correspondence. It must never be replaced after qualification failure. This is source selection, not family independence or runtime admission.
+
+The fixed five logical inputs are unchanged, omit-name, null-name, omit-url, null-url; each continuation changes the other property. Native serializers retain workflow and other ordinary editor context. Snapshot qualification must include linked workflow URL entries rather than checking only the two display strings. No extra cases are added from source-observed validation behavior.
+
+Wave 26 registers the explicit BrowserPool constructor and task-runner startup imports, the final two available Maxun dependency files (24 total after collection). The frame snapshot now has three source-selected but runtime-unqualified projects, two incomplete mappings and still zero qualified workflows or scientific cases.
