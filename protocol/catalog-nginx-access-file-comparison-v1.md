@@ -1,0 +1,13 @@
+# Ordinary access-file comparison rule
+
+This rule is specified before Nginx Proxy Manager runtime outcomes. It covers only the frozen ordinary one-item access list and does not authorize dispatch or establish complete state equivalence. Timestamp, audit, actor, root-layer and other filesystem checks remain required separately.
+
+Original internal/access-list.js rebuilds /data/access/{list.id}, then invokes openssl passwd -apr1 with each stored password and writes one username:hash line. Original utils.execFile trims the command output before the single newline is appended. A regenerated salt may change bytes without changing the authenticated credential. Do not ignore the file or normalize arbitrary hash text.
+
+Extract the target list's username and password directly from the private typed original-driver access_list_auth table snapshot. Require exactly one matching row, valid stored text, a nonempty line-safe username and a nonempty password supported by the verifier's stdin interface. No producer fixture or masked API password may replace the stored password. Before comparing files, require both branch snapshots to contain exactly the same target username/password pair.
+
+Require each file to contain exactly that username, one eight-character-salt APR1 hash with a 22-character digest, and one final newline. Reject extra rows, blank lines, trailing content or another encoding. Invoke the verified application image's own OpenSSL with the extracted salt and persisted password to derive the expected hash; require exact equality for each branch. Preserve raw file SHA256, byte count and complete private source data. The returned success concerns credential content only. Exact paths, ownership, modes and operation-bounded modification times remain separate mandatory checks. No exception applies to other access files or other paths.
+
+The comparison helper takes a derive_hash callback. Production orchestration must bind it to the original built image's OpenSSL in a network-disabled helper and retain its binary/package identity and command result. Local tests use local OpenSSL with synthetic credentials only; this does not qualify the pinned application implementation. A command error or unsupported representation is instrument/qualification unavailability, not a detected application defect and not permission to remove a scheduled case.
+
+Six local tests passed: two different salts for the same stored credential; rejection of a wrong password hash, different persisted passwords, extra/incorrect/malformed lines, duplicate auth rows and a null stored password. These are predicate tests, not scientific cases or live application controls.
