@@ -349,3 +349,11 @@ Already collected RobotEditPage was reread at robot-state effects, crawl-config 
 The accompanying exact JSON-state comparator retains all keys, IDs, timestamps and array order; object member order alone is irrelevant. It does not choose the snapshot projection. Runtime controls must still demonstrate complete persisted target/relationship coverage and exact native/API submitted-body parity; unit tests are not evidence of application behavior.
 
 Five synthetic local checks passed. The initial URL test incorrectly expected a scheme prefix for localhost:port, while the copied source normalization preserves strings matching a scheme-like colon. The assertion fixture was corrected to an explicit HTTP URL; normalization code was not altered and no extra scientific case was added. No application requests, Docker builds or variants were executed.
+
+## Prepared Maxun stopped-volume snapshot component
+
+The new snapshot component requires both PostgreSQL and MinIO containers to be stopped with clean exit state before capture. It exports complete configured data directories as tar streams, retaining immutable archive hashes and inventories of file contents, modes, ownership and timestamps. Restoration copies with archive ownership preserved into separately created destination volumes, then re-exports and compares the full inventory, detecting missing or leftover files. It rejects links, special entries, unsafe/duplicate member paths and empty archives rather than silently dropping them. Failed partial archives and previous destinations cannot be overwritten. Shared command deadlines remain mandatory.
+
+This is only the persistence-volume component. Browser cookies/localStorage, application writable-layer changes, queue quiescence, complete logical readback and pre-edit equality remain separate harness requirements. A verified volume copy is explicitly not runtime qualification. No Docker operation or source application has run; Docker copy semantics and real PostgreSQL restart integrity still require the registered ordinary controls.
+
+Five synthetic archive tests passed, covering contents/metadata changes, ordering versus extra entries, unsafe paths, links/duplicate names and empty archives. These tests are not scientific observations. The prior serializer CI run was still in progress at the beginning of this step and was not restarted.
