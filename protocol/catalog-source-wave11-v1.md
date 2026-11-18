@@ -1,0 +1,5 @@
+# Source wave 11: Meme Search tag form transport
+
+Acquire exactly the nine listed original JavaScript, Rails configuration and tag/layout templates at the already frozen Meme Search revision. Resolve whether the native form supplies a complete JSON update under continuation-request-matching-policy-v2.md, including any global or local submission override. HTML response negotiation alone is not a reason to exclude a programmatic JSON producer. Do not invent a JSON serializer, rewrite the native form, relax request matching or infer an unreviewed controller's behavior.
+
+Count all ten prior source waves against the existing 256 unique blobs/8 MiB per-project cap. Existing 256 KiB file, 512 KiB envelope and 30-second request limits apply, with no retry or duplicate paths. Publish before acquisition. No runtime, packages, image pulls, schema mutation cases or closed-project reruns are authorized. Mathesar and Viseron remain closed. This wave does not replace a cohort member or change workflow ordering.
