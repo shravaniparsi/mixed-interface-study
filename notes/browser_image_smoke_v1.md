@@ -1,0 +1,7 @@
+# Immutable browser environment qualified
+
+Run44255481530 at e3fe1ed801c0c21f8fb0c1cb6a9e3076b4433311 passed. The official image's inspected config ID matches the registered metadata. The mounted Node executable reported20.20.2; Playwright reported1.62.1. The Chromium executable SHA-256 exactly matches admin-control-v2 and its runtime version is151.0.7922.34. The npm lock is byte-identical to the retained control lock. The container used network mode none and reported only loopback interfaces. A single synthetic form submission posted the expected fields. This is an environment smoke, not application validation or an independent case.
+
+The artifact ZIP digest matched GitHub metadata before extraction. Source CI44255456697 also passed. Service timing reports48000ms run duration for the smoke and94000ms for source checks, with Ubuntu total_ms0 for both. These add two terminal timing observations, bringing the retained count to757. They are not a monetary invoice or a full project spending account.
+
+The smoke avoids per-experiment apt installation and preserves the exact browser binary, but it changes the OS dependency environment to an immutable image. Sharing the research application's isolated network namespace still requires integration qualification. That next bounded integration is registered separately in development-checkpoint-v3.md. No checkpoint has yet been created or restored.
