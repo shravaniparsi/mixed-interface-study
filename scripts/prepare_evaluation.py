@@ -28,6 +28,13 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'manifests/maintained-checkcle-package-metadata-v1.json',
+    'notes/maintained_checkcle_package_metadata_20261117.md',
+    'results/maintained-checkcle-package-metadata-v1/image-config-redirect-1.json',
+    'results/maintained-checkcle-package-metadata-v1/image-config.json',
+    'results/maintained-checkcle-package-metadata-v1/platform-manifest.json',
+    'results/maintained-checkcle-package-metadata-v1/tag-anonymous.json',
+    'results/maintained-checkcle-package-metadata-v1/tag-authenticated.json',
     'protocol/maintained-checkcle-package-metadata-v1.md',
     'scripts/extension/inspect_checkcle_package_metadata_v1.py',
     'manifests/maintained-packaged-dependency-collection-v9.json',
