@@ -146,7 +146,7 @@ def main():
         run(name + '-copy', ['docker', 'cp', name + ':' + source, str(destination)], 60)
 
     try:
-        prepared = ROOT / 'results/catalog-seatsurfing-source-build-preparation-v2'
+        prepared = ROOT / 'results/catalog-seatsurfing-source-build-preparation-v3'
         recipe = json.loads((prepared / 'manifest.json').read_text())
         assert recipe['application_revision'] == REVISION
         assert digest(prepared / 'Dockerfile') == recipe['generated_dockerfile_sha256']
@@ -155,7 +155,7 @@ def main():
         assert tree_response['truncated'] is False
         assert all(row['type'] != 'commit' for row in tree_response['tree']), 'Submodules require separately registered identities'
         rows = recipe['source_files_to_verify_at_runtime']
-        assert len(rows) == 46
+        assert len(rows) == 53
         run('git-init', ['git', 'init', str(checkout)], 20)
         run('git-fetch', ['git', '-C', str(checkout), 'fetch', '--depth=1', '--no-tags',
                          'https://github.com/seatsurfing/seatsurfing.git', REVISION], 120)

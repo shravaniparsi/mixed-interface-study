@@ -1,0 +1,250 @@
+import { Entity } from "./Entity";
+import Ajax from "../util/Ajax";
+import Organization from "./Organization";
+import { BuddyBooking } from "./Buddy";
+import { PermissionMap } from "./Permission";
+
+export default class User extends Entity {
+  // How the account authenticates. Access is granted by assigned roles.
+  static AccountTypePerson: number = 0;
+  static AccountTypeServiceAccountRO: number = 1;
+  static AccountTypeServiceAccountRW: number = 2;
+
+  static AuthMethodPassword: string = "password";
+  static AuthMethodProvider: string = "provider";
+  static AuthMethodInvitation: string = "invitation";
+
+  id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  organizationId: string;
+  organization: Organization;
+  authProviderId: string;
+  requirePassword: boolean;
+  passwordPending: boolean;
+  accountType: number;
+  /** IDs of the roles assigned to this user. */
+  roleIds: string[];
+  password: string;
+  sendInvitation: boolean;
+  firstBooking: BuddyBooking | null;
+  totpEnabled: boolean;
+  hasPasskeys: boolean;
+  lastActivity: Date | null;
+  /**
+   * Whether the requesting user may modify this account. Only reported when
+   * loading a single user; false if the account holds access beyond the
+   * requester's own.
+   */
+  canManage: boolean;
+
+  constructor() {
+    super();
+    this.id = "";
+    this.email = "";
+    this.firstname = "";
+    this.lastname = "";
+    this.organizationId = "";
+    this.organization = new Organization();
+    this.authProviderId = "";
+    this.requirePassword = false;
+    this.passwordPending = false;
+    this.accountType = User.AccountTypePerson;
+    this.roleIds = [];
+    this.password = "";
+    this.sendInvitation = false;
+    this.firstBooking = null;
+    this.totpEnabled = false;
+    this.hasPasskeys = false;
+    this.lastActivity = null;
+    this.canManage = true;
+  }
+
+  serialize(): Object {
+    return Object.assign(super.serialize(), {
+      email: this.email,
+      firstname: this.firstname,
+      lastname: this.lastname,
+      accountType: this.accountType,
+      password: this.password,
+      sendInvitation: this.sendInvitation,
+      authProviderId: this.authProviderId,
+      organizationId: this.organizationId,
+    });
+  }
+
+  deserialize(input: any): void {
+    super.deserialize(input);
+    this.email = input.email;
+    this.firstname = input.firstname;
+    this.lastname = input.lastname;
+    this.organizationId = input.organizationId;
+    if (input.organization) {
+      this.organization.deserialize(input.organization);
+    }
+    if (input.authProviderId) {
+      this.authProviderId = input.authProviderId;
+    }
+    if (input.requirePassword) {
+      this.requirePassword = input.requirePassword;
+    }
+    if (input.passwordPending !== undefined) {
+      this.passwordPending = input.passwordPending;
+    }
+    this.accountType = input.accountType ?? User.AccountTypePerson;
+    this.roleIds = input.roleIds ?? [];
+    this.totpEnabled = input.totpEnabled;
+    this.hasPasskeys = input.hasPasskeys ?? false;
+    this.lastActivity = input.lastActivity
+      ? new Date(input.lastActivity)
+      : null;
+    this.canManage = input.canManage ?? true;
+  }
+
+  getBackendUrl(): string {
+    return "/user/";
+  }
+
+  async save(): Promise<User> {
+    return Ajax.saveEntity(this, this.getBackendUrl()).then(() => this);
+  }
+
+  async delete(): Promise<void> {
+    return Ajax.delete(this.getBackendUrl() + this.id).then(() => undefined);
+  }
+
+  async setPassword(password: string): Promise<void> {
+    let payload = { password: password };
+    return Ajax.putData(
+      this.getBackendUrl() + this.id + "/password",
+      payload,
+    ).then(() => undefined);
+  }
+
+  static async getCount(): Promise<number> {
+    return Ajax.get("/user/count").then((result) => {
+      return result.json.count;
+    });
+  }
+
+  static async getSelf(): Promise<UserSelf> {
+    return Ajax.get("/user/me").then((result) => {
+      let e: UserSelf = new UserSelf();
+      e.deserialize(result.json);
+      return e;
+    });
+  }
+
+  static async get(id: string): Promise<User> {
+    return Ajax.get("/user/" + id).then((result) => {
+      let e: User = new User();
+      e.deserialize(result.json);
+      return e;
+    });
+  }
+
+  static async list(params?: { search: string | null }): Promise<User[]> {
+    return Ajax.get(
+      "/user/" +
+        (params && params.search
+          ? "?q=" + encodeURIComponent(params.search)
+          : ""),
+    ).then((result) => {
+      let list: User[] = [];
+      (result.json as []).forEach((item) => {
+        let e: User = new User();
+        e.deserialize(item);
+        list.push(e);
+      });
+      return list;
+    });
+  }
+
+  static async getByEmail(email: string): Promise<User> {
+    return Ajax.get("/user/byEmail/" + email).then((result) => {
+      let e: User = new User();
+      e.deserialize(result.json);
+      return e;
+    });
+  }
+
+  static async generateTotp(): Promise<TotpGenerateResponse> {
+    return Ajax.get("/user/totp/generate").then((result) => {
+      let e: TotpGenerateResponse = new TotpGenerateResponse();
+      e.qrCode = result.json.image;
+      e.stateId = result.json.stateId;
+      return e;
+    });
+  }
+
+  static async validateTotp(stateId: string, code: string): Promise<void> {
+    let payload = {
+      code: code,
+      stateId: stateId,
+    };
+    return Ajax.postData("/user/totp/validate", payload).then(() => undefined);
+  }
+
+  static async getTotpSecret(stateId: string): Promise<string> {
+    return Ajax.get("/user/totp/" + stateId + "/secret").then(
+      (result) => result.json.secret,
+    );
+  }
+
+  static async disableTotp(): Promise<void> {
+    return Ajax.postData("/user/totp/disable", null).then(() => undefined);
+  }
+
+  static async adminResetPasskeys(userId: string): Promise<void> {
+    return Ajax.delete("/user/" + userId + "/passkeys").then(() => undefined);
+  }
+
+  static async adminResetTotp(userId: string): Promise<void> {
+    return Ajax.delete("/user/" + userId + "/totp").then(() => undefined);
+  }
+
+  static async getApiTokenStatus(userId: string): Promise<boolean> {
+    return Ajax.get("/user/" + userId + "/api-token").then(
+      (result) => result.json.configured as boolean,
+    );
+  }
+
+  static async generateApiToken(userId: string): Promise<string> {
+    return Ajax.postData("/user/" + userId + "/api-token", null).then(
+      (result) => result.json.token as string,
+    );
+  }
+
+  static async revokeApiToken(userId: string): Promise<void> {
+    return Ajax.delete("/user/" + userId + "/api-token").then(() => undefined);
+  }
+}
+
+export class UserSelf extends User {
+  isPrimaryDomain: boolean;
+  /** The signed-in user's resolved access, keyed by permission name. */
+  permissions: PermissionMap;
+
+  constructor() {
+    super();
+    this.isPrimaryDomain = false;
+    this.permissions = {};
+  }
+
+  deserialize(input: any): void {
+    super.deserialize(input);
+    this.isPrimaryDomain = input.isPrimaryDomain ?? false;
+    this.permissions = input.permissions ?? {};
+  }
+}
+
+export class TotpGenerateResponse {
+  qrCode: string;
+  stateId: string;
+
+  constructor() {
+    this.qrCode = "";
+    this.stateId = "";
+  }
+}
