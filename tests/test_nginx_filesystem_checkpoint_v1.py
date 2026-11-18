@@ -56,6 +56,11 @@ class CheckpointTests(unittest.TestCase):
         m.capture(self.state, self.checkpoint)
         with self.assertRaises(ValueError): m.capture(self.state, self.checkpoint)
 
+    def test_extended_attribute_rejected_without_checkpoint_creation(self):
+        os.setxattr(self.state / 'key', 'user.study_fixture', b'present')
+        with self.assertRaises(ValueError): m.capture(self.state, self.checkpoint)
+        self.assertFalse(self.checkpoint.exists())
+
     def test_special_file_and_hardlink_rejected(self):
         os.link(self.state / 'key', self.state / 'hardlink')
         with self.assertRaises(ValueError): m.inventory(self.state)
