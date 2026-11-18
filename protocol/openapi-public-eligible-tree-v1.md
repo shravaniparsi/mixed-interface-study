@@ -1,0 +1,7 @@
+# Two-candidate tree metadata feasibility
+
+Only Bichon and Faster Chat currently have documentary support for public open-source licensing plus an embedded browser/server deployment. Fetch one recursive tree at each exact tree SHA in openapi-public-eligible-tree-schedule-v1.json, in retained rank order, after publishing this schedule. This is metadata feasibility, not selection of a more favorable scientific cohort. All seven original metadata rows and their dispositions remain visible. No replacement of held/excluded candidates.
+
+One request per tree, 45 seconds, 8 MiB maximum plus one detection byte; sequential, no retry. Preserve truncation/oversize/failure as incomplete. No subtree follow-up or candidate source retrieval under this phase. Retain raw responses and SHA256. Do not execute anything. Subsequent path scheduling must use the offline queue and an explicitly published mapping protocol before any source contents are read.
+
+Purpose: determine whether original deployment/init/schema and native-route structures are identifiable, not search for constraint mismatches or known faults. File names alone do not establish workflow eligibility. Two successful candidates could support engineering calibration but do not meet the previous four-family descriptive threshold or complete the Q1 objective. No threshold reduction, historical pooling or new query is implied. Existing $100 ceiling applies.
