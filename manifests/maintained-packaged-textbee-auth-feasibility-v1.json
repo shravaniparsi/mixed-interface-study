@@ -2,8 +2,8 @@
   "kind": "maintained_packaged_native_auth_feasibility",
   "repository": "textbee/textbee",
   "commit": "a7fe0e70d2eb7f7d1235a1199eb6f58aa3ad9657",
-  "scope": "Inspected native email/password login and registration path only; not a whole-project workflow disposition.",
-  "status": "inspected_native_auth_requires_external_service",
+  "scope": "Configured native dashboard authentication at the fixed source revision; not a claim that all APIs require external services.",
+  "status": "configured_native_auth_requires_external_service",
   "source_schedule_freeze": "ed4aeb868832475bd86879752086b791d4d6d868",
   "sources": [
     "web/app/(app)/(auth)/(components)/login-form.tsx",
@@ -13,7 +13,9 @@
     "web/app/api/auth/[...nextauth]/route.ts",
     "web/lib/auth.ts",
     "api/src/auth/auth.controller.ts",
-    "api/src/auth/auth.service.ts"
+    "api/src/auth/auth.service.ts",
+    "web/config/api.ts",
+    "web/lib/httpServerClient.ts"
   ],
   "evidence": [
     "Both forms require a nonempty Turnstile token before submission.",
@@ -21,14 +23,16 @@
     "The backend service requires a configured secret and calls Cloudflare siteverify; no bypass is implemented in this service.",
     "The environment example test key does not create an offline hook path.",
     "Complete NextAuth provider array has email-password login/register and Google ID-token login only.",
-    "Backend login/register unconditionally await Turnstile verification; Google login requests external tokeninfo before account processing."
+    "Backend login/register unconditionally await Turnstile verification; Google login requests external tokeninfo before account processing.",
+    "Provider endpoints resolve to /auth/login, /auth/register and /auth/google-login; the Axios server client forwards to the backend and adds an existing session bearer token without a local authentication fallback."
   ],
   "limits": [
-    "Exact imported HTTP client and endpoint configuration remain unreviewed.",
-    "Remaining view-prefix dispositions remain incomplete; no whole-project absence claim.",
-    "No application was run or external authentication service contacted."
+    "No application was run; no observed login failure or compatibility outcome.",
+    "API-key authentication is not an ordinary native NextAuth login provider.",
+    "Remaining resource-specific prefix/API mapping is not exhaustive; the shared native-auth prerequisite prevents qualification before resource selection.",
+    "No claim that workflows are absent or that alternative deployments cannot be configured."
   ],
-  "dependency_files_used": 6,
+  "dependency_files_used": 8,
   "dependency_file_limit": 24,
   "ordinary_jobs_used": 0,
   "scientific_cases_executed": 0,
