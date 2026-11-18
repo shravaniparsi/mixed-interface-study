@@ -27,3 +27,12 @@ test('missing diagnostic events cannot qualify declared requests', () => {
   const observer = observeSeatsurfingApiTransport(); const trace = observer.finish();
   assert.throws(() => bindApiTransport(trace, [{ method: 'GET', url: 'http://127.0.0.1:8080/user/me' }]), /Missing/);
 });
+
+test('receiver calibration covers GET POST PUT and UTF-8 body framing', async () => {
+  const { calibrateApiTransport } = await import('../scripts/extension/calibrate_seatsurfing_api_transport_v1.mjs');
+  const result = await calibrateApiTransport();
+  assert.equal(result.status, 'synthetic_receiver_transport_calibrated');
+  assert.deepEqual(result.received.map(row => row.method), ['GET', 'POST', 'PUT']);
+  assert.equal(result.received[2].body, '{"synthetic":"café"}');
+  assert.equal(result.applicationRequestsExecuted, 0); assert.equal(result.studyTransportQualified, false);
+});

@@ -38,7 +38,7 @@ def app_environment(database_password, admin_password, crypt_key):
         'STATIC_UI_PATH': '/app/ui', 'CACHE_TYPE': 'default', 'DEV': '0',
         'MOCK_SENDMAIL': '1', 'PLUGINS_CONFIG': '', 'FEATURE_FLAGS': '',
         'DISABLE_VERSION_CHECK': '1', 'DISABLE_ANONYMOUS_USAGE_STATS': '1',
-        'DISABLE_PASSWORD_LOGIN': '0', 'RATE_LIMIT': '250', 'RATE_LIMIT_PERIOD': '1-M',
+        'DISABLE_PASSWORD_LOGIN': '0', 'CORS_ORIGINS': '', 'RATE_LIMIT': '250', 'RATE_LIMIT_PERIOD': '1-M',
     }
 
 
@@ -127,7 +127,7 @@ def main():
 
     try:
         # Never remove/reuse pre-existing containers or volumes.
-        for index, name in enumerate([PG, APP, BROWSER, 'study-seatsurfing-tools-install']):
+        for index, name in enumerate([PG, APP, BROWSER, 'study-seatsurfing-tools-install', 'study-seatsurfing-transport-calibration']):
             code, _ = run('absent-container-' + str(index), ['docker', 'container', 'inspect', name], check=False)
             assert code != 0, 'Existing named container; no overwrite'
         code, _ = run('absent-volume', ['docker', 'volume', 'inspect', VOLUME], check=False)
@@ -137,6 +137,17 @@ def main():
             run(name + '-pull', ['docker', 'pull', '--platform', 'linux/amd64', reference], 180)
             info = inspect(name + '-image', reference)
             assert info['Id'] == expected and info['Architecture'] == 'amd64' and info['Os'] == 'linux'
+        _, calibration_path = run('transport-calibration', ['docker', 'run', '--rm',
+            '--name', 'study-seatsurfing-transport-calibration', '--label', LABEL,
+            '--network', 'none', '--read-only', '--user', f'{os.getuid()}:{os.getgid()}',
+            '--memory', '256m', '--cpus', '1', '-v', f'{ROOT}:/study:ro',
+            '--entrypoint', 'node', BROWSER_IMAGE_ID,
+            '/study/scripts/extension/calibrate_seatsurfing_api_transport_v1.mjs'], 30)
+        calibration = json.loads(calibration_path.read_text())
+        assert calibration['status'] == 'synthetic_receiver_transport_calibrated'
+        assert calibration['nodeVersion'] == 'v24.18.1' and calibration['applicationRequestsExecuted'] == 0
+        report['transport_calibration_sha256'] = digest(calibration_path)
+        report['transport_calibration_path'] = str(calibration_path)
         tools = private / 'node-tools'
         tools.mkdir()
         lock = json.loads(LOCK.read_text())
