@@ -28,6 +28,11 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/checkpoint-search-diagnostic-v1.md',
+    'scripts/extension/checkpoint_field_diff_v1.py',
+    'scripts/extension/test_checkpoint_field_diff_v1.py',
+    'scripts/extension/diagnose_checkpoint_search_v1.py',
+    '.github/workflows/checkpoint_search_diagnostic_v1.yml',
     'manifests/development-checkpoint-v3.json',
     'notes/development_checkpoint_v3.md',
     'results/development-checkpoint-v3-ci-44256101073/archive-verification.json',

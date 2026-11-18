@@ -1,0 +1,138 @@
+name: Checkpoint search representation diagnostic v1
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  startup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78
+        with:
+          distribution: temurin
+          java-version: '17.0.2+8'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Provision qualified browser image and exact npm lock
+        run: |
+          evidence_dir="$RUNNER_TEMP/checkpoint-search-v1-evidence"
+          tools_dir="$RUNNER_TEMP/checkpoint-search-v1-tools"
+          mkdir -p "$evidence_dir" "$tools_dir"
+          cp scripts/ci/package.json "$tools_dir/package.json"
+          cp results/development-admin-control-v2-api-ci-44105779135/node-tools-package-lock.json "$tools_dir/package-lock.json"
+          timeout 180 npm ci --prefix "$tools_dir" --ignore-scripts --no-audit --no-fund > "$evidence_dir/npm-ci.log" 2>&1
+          cp "$tools_dir/package-lock.json" "$evidence_dir/node-tools-package-lock.json"
+          timeout 600 docker pull --platform linux/amd64 mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac > "$evidence_dir/browser-image-pull.log" 2>&1
+          docker image inspect mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac > "$evidence_dir/browser-image-inspect.json"
+          python3 - <<'PYIMAGE'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'checkpoint-search-v1-evidence/browser-image-inspect.json').read_text())[0]
+          assert d['Id']=='sha256:fee853fafa59550d162cef52bca02d907694b44ebf6ef9fb075bcc0c65d8dedb'
+          assert d['Architecture']=='amd64' and d['Os']=='linux'
+          PYIMAGE
+      - name: Retrieve fixed build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/checkpoint-search-v1-evidence" "$RUNNER_TEMP/spec-binary"
+          gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14329468041/zip > "$RUNNER_TEMP/build.zip"
+          python3 - <<'PY'
+          import hashlib, os, pathlib, zipfile
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])
+          raw=(root/'build.zip').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='41c88020393302672e827018887395d8da3cd9a493f41f609d52e52cb09401cc'
+          with zipfile.ZipFile(root/'build.zip') as z:
+              item=z.getinfo('application.jar');assert item.file_size==108579734
+              jar=z.read(item)
+          assert hashlib.sha256(jar).hexdigest()=='1c7500685740eb01994aa13ea381f3eb9af2c65bfb92f2379e42bb909225c71b'
+          (root/'spec-binary/application.jar').write_bytes(jar)
+          PY
+      - name: Supply pinned-version Elasticsearch
+        run: |
+          evidence_dir="$RUNNER_TEMP/checkpoint-search-v1-evidence"
+          set +e
+          timeout 600 docker pull docker.elastic.co/elasticsearch/elasticsearch@sha256:b3fed35f7a43a3e16aa037bf9c8cb8139d1eec879ab5616f3c20746484de4010 > "$evidence_dir/elasticsearch-pull.log" 2>&1
+          pull_exit=$?
+          set -e
+          printf '{"pull_exit":%s}\n' "$pull_exit" > "$evidence_dir/elasticsearch-pull-exit.json"
+          test "$pull_exit" -eq 0
+          docker image inspect docker.elastic.co/elasticsearch/elasticsearch@sha256:b3fed35f7a43a3e16aa037bf9c8cb8139d1eec879ab5616f3c20746484de4010 > "$evidence_dir/elasticsearch-image.json"
+          image_id=$(docker image inspect --format '{{.Id}}' docker.elastic.co/elasticsearch/elasticsearch@sha256:b3fed35f7a43a3e16aa037bf9c8cb8139d1eec879ab5616f3c20746484de4010)
+          sysctl vm.max_map_count > "$evidence_dir/kernel-before.txt"
+          sudo sysctl -w vm.max_map_count=262144 > "$evidence_dir/kernel-after.txt"
+          mkdir -p "$RUNNER_TEMP/study-snapshots"
+          chmod 777 "$RUNNER_TEMP/study-snapshots"
+          docker run -d --name study-elasticsearch -v "$RUNNER_TEMP/study-snapshots:/study-snapshots" -e path.repo=/study-snapshots --network none --cap-add IPC_LOCK --ulimit memlock=-1:-1 --ulimit nofile=65536:65536 -e xpack.security.enabled=false -e discovery.type=single-node -e bootstrap.memory_lock=true -e 'ES_JAVA_OPTS=-Xms512m -Xmx512m' "$image_id"
+          docker inspect study-elasticsearch > "$evidence_dir/elasticsearch-container.json"
+          service_pid=$(docker inspect --format '{{.State.Pid}}' study-elasticsearch)
+          printf 'ELASTICSEARCH_PID=%s\n' "$service_pid" >> "$GITHUB_ENV"
+          ready=0
+          for attempt in $(seq 1 60); do
+            set +e
+            http_status=$(sudo nsenter -t "$service_pid" -n curl --noproxy '*' -sS --max-time 2 -o "$evidence_dir/elasticsearch-health-$attempt.json" -w '%{http_code}' http://127.0.0.1:9200/)
+            request_exit=$?
+            set -e
+            printf '%s %s %s\n' "$attempt" "$request_exit" "$http_status" >> "$evidence_dir/elasticsearch-readiness.txt"
+            if [ "$request_exit" -eq 0 ] && [ "$http_status" = 200 ]; then
+              python3 -c 'import json,sys; assert json.load(open(sys.argv[1]))["version"]["number"] == "7.17.4"' "$evidence_dir/elasticsearch-health-$attempt.json"
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          test "$ready" -eq 1
+      - name: Resolve runner hostname locally within isolated namespace
+        run: |
+          python3 - <<'PYHOST'
+          import socket
+          from pathlib import Path
+          name=socket.gethostname()
+          assert name and all(c.isalnum() or c in '.-' for c in name)
+          Path('/tmp/study-hostname-entry').write_text('127.0.0.1 '+name+'\n')
+          PYHOST
+          sudo tee -a /etc/hosts < /tmp/study-hostname-entry > /dev/null
+          sudo nsenter -t "$ELASTICSEARCH_PID" -n -- env RUNNER_TEMP="$RUNNER_TEMP" python3 - <<'PYHOST'
+          import socket,json,os
+          from pathlib import Path
+          name=socket.gethostname();address=socket.gethostbyname(name)
+          assert address=='127.0.0.1'
+          Path(os.environ['RUNNER_TEMP']+'/checkpoint-search-v1-evidence/hostname-resolution.json').write_text(json.dumps({'hostname':name,'address':address})+'\n')
+          PYHOST
+      - name: One seed and two checkpoint restorations in isolated namespace
+        run: |
+          set +e
+          sudo nsenter -t "$ELASTICSEARCH_PID" -n -- env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" BROWSER_NODE="$(command -v node)" BROWSER_TOOLS="$RUNNER_TEMP/checkpoint-search-v1-tools" BROWSER_EVIDENCE="$RUNNER_TEMP/checkpoint-search-v1-evidence" timeout 1500 python3 scripts/extension/diagnose_checkpoint_search_v1.py --node "$GITHUB_WORKSPACE/scripts/ci/checkpoint_browser_container_v1.sh" --java "$JAVA_HOME/bin/java" --jar "$RUNNER_TEMP/spec-binary/application.jar" --output "$RUNNER_TEMP/checkpoint-search-v1-evidence"
+          harness_exit=$?
+          set -e
+          printf '{"harness_exit":%s}\n' "$harness_exit" > "$RUNNER_TEMP/checkpoint-search-v1-evidence/harness-exit.json"
+          exit "$harness_exit"
+      - name: Preserve service state and clean up
+        if: ${{ always() }}
+        run: |
+          evidence_dir="$RUNNER_TEMP/checkpoint-search-v1-evidence"
+          mkdir -p "$evidence_dir"
+          docker logs study-elasticsearch > "$evidence_dir/elasticsearch.log" 2>&1 || true
+          docker inspect study-elasticsearch > "$evidence_dir/elasticsearch-final.json" 2>/dev/null || true
+          docker rm -f study-checkpoint-browser || true
+          docker rm -f study-elasticsearch || true
+      - name: Retain startup evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: development-checkpoint-search-v1-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/checkpoint-search-v1-evidence/*
+            !${{ runner.temp }}/checkpoint-search-v1-evidence/runtime/**
+            !${{ runner.temp }}/checkpoint-search-v1-evidence/checkpoint-private/**
+          retention-days: 1
+          if-no-files-found: warn
