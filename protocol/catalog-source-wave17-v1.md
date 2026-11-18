@@ -1,0 +1,3 @@
+# Source wave 17: OpenELIS bootstrap policy and facility record
+
+Acquire exactly six original files in the accompanying schedule at the frozen revision: LoginUserService, PasswordValidationFactory, its three named original password-policy implementations, and ThisLaboratoryServiceImpl. Resolve the default administrator identity, policy dispatch and the facility record operation already identified in startup. No application execution or scientific input. All existing source bounds, no retry or duplicate path, and publication-before-acquisition rules remain. The oversized seed remains unresolved, not split or acquired by another channel.
