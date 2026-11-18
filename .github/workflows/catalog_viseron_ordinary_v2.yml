@@ -1,0 +1,98 @@
+name: Catalog Viseron ordinary qualification v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '20.20.2'
+          package-manager-cache: false
+      - name: Initialize evidence and verify published artifacts
+        run: |
+          python3 scripts/prepare_evaluation.py --verify
+          mkdir -p "$RUNNER_TEMP/viseron-evidence" "$RUNNER_TEMP/viseron-tools"
+          git rev-parse HEAD > "$RUNNER_TEMP/viseron-evidence/study-head.txt"
+          cp scripts/ci/package.json "$RUNNER_TEMP/viseron-tools/package.json"
+          cp results/development-admin-control-v2-api-ci-44105779135/node-tools-package-lock.json "$RUNNER_TEMP/viseron-tools/package-lock.json"
+          python3 scripts/extension/test_viseron_filesystem_checkpoint_v1.py > "$RUNNER_TEMP/viseron-evidence/checkpoint-tests.log" 2>&1
+          python3 scripts/extension/test_viseron_state_comparison_v1.py > "$RUNNER_TEMP/viseron-evidence/state-comparison-tests.log" 2>&1
+          python3 scripts/extension/test_viseron_startup_diagnostics_v1.py > "$RUNNER_TEMP/viseron-evidence/startup-diagnostic-tests.log" 2>&1
+      - name: Authenticate Docker Hub pulls
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          test -n "$DOCKERHUB_USERNAME" && test -n "$DOCKERHUB_TOKEN"
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - name: Provision pinned images and browser tools
+        timeout-minutes: 7
+        run: |
+          evidence="$RUNNER_TEMP/viseron-evidence"
+          timeout 90 npm ci --prefix "$RUNNER_TEMP/viseron-tools" --ignore-scripts --no-audit --no-fund > "$evidence/browser-npm-ci.log" 2>&1
+          cp "$RUNNER_TEMP/viseron-tools/package-lock.json" "$evidence/browser-package-lock.json"
+          images=(
+            roflcoopter/amd64-viseron@sha256:91c9ffb15859ce05b62792acfacec61c6eaf0de14f9fbe88780c5a8aee2d9a43
+            mcr.microsoft.com/playwright@sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac
+          )
+          for index in 0 1; do
+            timeout 180 docker pull --platform linux/amd64 "${images[$index]}" > "$evidence/image-$index-pull.log" 2>&1
+            docker image inspect "${images[$index]}" > "$evidence/image-$index-inspect.json"
+          done
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'viseron-evidence'
+          expected=['sha256:e7b2904341af931c754f815f865c799b0a0ee0a86f5aeff091de57d063e417e7','sha256:fee853fafa59550d162cef52bca02d907694b44ebf6ef9fb075bcc0c65d8dedb']
+          for i,digest in enumerate(expected):
+              image=json.loads((root/f'image-{i}-inspect.json').read_text())[0]
+              assert image['Id']==digest and image['Architecture']=='amd64' and image['Os']=='linux'
+          PY
+      - name: Inspect original packaged source and schema
+        run: |
+          image=roflcoopter/amd64-viseron@sha256:91c9ffb15859ce05b62792acfacec61c6eaf0de14f9fbe88780c5a8aee2d9a43
+          evidence="$RUNNER_TEMP/viseron-evidence"
+          docker run --rm --network none --user "$(id -u):$(id -g)" -v "$PWD:$PWD:ro" -v "$evidence:$evidence" --entrypoint python3 "$image" "$PWD/scripts/extension/inspect_viseron_packaged_source_v1.py" --study "$PWD" --output "$evidence/packaged-source.json"
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          body=json.loads(Path('manifests/catalog-viseron-input-schedule-v1.json').read_text())['cases'][0]['producer_body']
+          (Path(os.environ['RUNNER_TEMP'])/'viseron-evidence/ordinary-schema-input.json').write_text(json.dumps(body))
+          PY
+          docker run --rm --network none --user "$(id -u):$(id -g)" -e PYTHONPATH=/src -v "$PWD:$PWD:ro" -v "$evidence:$evidence" --entrypoint python3 "$image" "$PWD/scripts/extension/evaluate_viseron_original_schema_v1.py" --request-file "$evidence/ordinary-schema-input.json" --output "$evidence/ordinary-schema.json"
+      - name: Run native warm and matched restored ordinary controls
+        run: |
+          set +e
+          timeout 1230 python3 scripts/extension/qualify_viseron_ordinary_v2.py --out "$RUNNER_TEMP/viseron-evidence" --node "$(command -v node)" --tools "$RUNNER_TEMP/viseron-tools"
+          runtime_exit=$?
+          set -e
+          printf '{"exit_code":%s}\n' "$runtime_exit" > "$RUNNER_TEMP/viseron-evidence/runtime-exit.json"
+          exit "$runtime_exit"
+      - name: Verify retained ordinary evidence
+        run: python3 scripts/extension/verify_viseron_ordinary_v1.py "$RUNNER_TEMP/viseron-evidence"
+      - name: Cleanup isolated services
+        if: ${{ always() }}
+        run: |
+          docker rm -f -v study-viseron-browser study-viseron study-viseron-postgres || true
+          docker volume rm study-viseron-config || true
+          docker logout || true
+      - name: Retain public qualification evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: catalog-viseron-ordinary-v2-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/viseron-evidence/*
+            !${{ runner.temp }}/viseron-evidence/private/**
+          retention-days: 1
+          if-no-files-found: warn
