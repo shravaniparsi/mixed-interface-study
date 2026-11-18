@@ -1,0 +1,3 @@
+# Source wave 24: empty runtime fixture and nginx state paths
+
+Acquire exactly six scheduled original files at the frozen Nginx Proxy Manager revision: certificate/proxy-host models, main/default nginx configuration, and original proxy/stream log includes. Inspect table identities, source startup/log/cache paths and configuration relevant to the isolated no-host/no-certificate fixture. Do not explore new workflows, fixes, issue discussions or upstream tests. Existing source limits, one request per file, no retries and publication before acquisition apply. This wave starts no application, dependency install, build, schema input or scientific case.

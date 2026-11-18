@@ -28,6 +28,9 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/catalog-source-wave24-v1.md',
+    'manifests/catalog-source-wave24-schedule-v1.json',
+    'scripts/extension/collect_catalog_source_wave24_v1.py',
     'protocol/catalog-nginx-browser-bridge-v1.md',
     'scripts/extension/nginx_browser_bridge_v1.py',
     'tests/test_nginx_browser_bridge_v1.py',
