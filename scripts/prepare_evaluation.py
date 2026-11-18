@@ -28,6 +28,10 @@ SOURCES = {
     "quartz_generated_v2": "manifests/quartz-job-generated-pool-v2.json",
 }
 ARTIFACTS = [
+    'protocol/development-checkpoint-v1.md',
+    'scripts/extension/observe_development_checkpoint_v1.mjs',
+    'scripts/extension/qualify_development_checkpoint_v1.py',
+    '.github/workflows/development_checkpoint_v1.yml',
     'manifests/development-state-scope-schedule-v1.json',
     'manifests/development-state-scope-v1.json',
     'notes/development_state_scope_v1.md',
