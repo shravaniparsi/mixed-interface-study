@@ -18,6 +18,7 @@ from nginx_startup_fixture_v1 import verify_startup_fixture, MARKERS
 from nginx_ordinary_database_comparison_v1 import compare_ordinary_databases, records, integer
 from nginx_ordinary_filesystem_delta_v1 import verify_ordinary_filesystem_delta
 from nginx_restart_state_comparison_v1 import compare_restart_state
+from nginx_root_layer_comparison_v1 import parse_diff, compare_root_layers
 
 
 def canonical_request(envelope):
@@ -144,9 +145,15 @@ class OrdinaryScenario:
             raise ValueError('Application changed during snapshot')
         self.save(f'{label}-runtime.json',runtime)
         self.save(f'{label}-container.json',after)
-        (self.evidence/f'{label}-container-diff.txt').write_bytes(self.docker(['diff',before['Id']]))
+        diff=self.docker(['diff',before['Id']])
+        paths=sorted(parse_diff(diff))
+        layer=json.loads(self.docker(['exec','-i',before['Id'],'python3',str(ROOT/'scripts/extension/nginx_root_layer_inventory_v1.py')],input=json.dumps(paths).encode(),bound=60))
+        if self.docker(['diff',before['Id']])!=diff:
+            raise ValueError('Docker root-layer diff changed during inventory')
+        (self.evidence/f'{label}-container-diff.txt').write_bytes(diff)
+        self.save(f'{label}-root-layer.json',layer)
         (self.evidence/f'{label}-access.bin').write_bytes(raw)
-        return dict(runtime=runtime,database=database,access=raw)
+        return dict(runtime=runtime,database=database,access=raw,root_layer=layer,diff=diff)
 
     def derive_hash(self,password,salt):
         return self.docker(['exec','-i',self.checkpoint.container,'openssl','passwd','-apr1','-salt',salt,'-stdin'],
@@ -185,6 +192,7 @@ class OrdinaryScenario:
         resumed=self.snapshot('warm-after-checkpoint',list_id)
         if resumed['database']!=warm['database'] or resumed['runtime']['inventories']!=warm['runtime']['inventories']:
             raise ValueError('Warm state changed across checkpoint')
+        self.save('warm-checkpoint-root-layer.json',compare_root_layers(warm['root_layer'],resumed['root_layer'],warm['diff'],resumed['diff'],'operation',dict(timezone='UTC',start_epoch_seconds=time.time(),end_epoch_seconds=time.time())))
         warm=resumed
         outcomes=[]
         for branch in ('warm-native','restored-native','restored-api'):
@@ -196,6 +204,7 @@ class OrdinaryScenario:
                 self.browser('restore_storage')
                 before=self.snapshot(f'{branch}-before',list_id)
                 self.save(f'{branch}-restart-comparison.json',compare_restart_state(warm['runtime'],before['runtime'],warm['database'],before['database'],startup['window']))
+                self.save(f'{branch}-restart-root-layer.json',compare_root_layers(warm['root_layer'],before['root_layer'],warm['diff'],before['diff'],'restart',startup['window']))
                 readback=self.browser('read',id=list_id)
                 if readback['json']!=readbacks[-1]['json']: raise ValueError('Restored original readback differs')
             start=time.time()
@@ -207,6 +216,7 @@ class OrdinaryScenario:
             after=self.snapshot(f'{branch}-after',list_id)
             window=dict(timezone='UTC',start_epoch_seconds=start,end_epoch_seconds=end)
             self.save(f'{branch}-operation-comparison.json',verify_ordinary_filesystem_delta(before['runtime'],after['runtime'],before['database'],after['database'],list_id,actor_id,edit,window,before['access'],after['access'],self.derive_hash))
+            self.save(f'{branch}-operation-root-layer.json',compare_root_layers(before['root_layer'],after['root_layer'],before['diff'],after['diff'],'operation',window))
             outcomes.append(dict(request=request,after=after,window=window))
             if len(outcomes)>1:
                 if request!=outcomes[0]['request']: raise ValueError('Complete native/API requests or authorization differ')

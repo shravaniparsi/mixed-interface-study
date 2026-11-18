@@ -55,7 +55,7 @@ class ScenarioTests(unittest.TestCase):
         db=fixture.OrdinaryDatabaseComparisonTests().fixture()[0]
         user=next(t for t in db['tables'] if t['name']=='user')
         user.update(fixture.table('user',[dict(id=1,email='study@example.invalid')]))
-        snapshot={'database':db,'runtime':{'inventories':{}},'access':b'private'}
+        snapshot={'database':db,'runtime':{'inventories':{}},'access':b'private','root_layer':{},'diff':b''}
         for fail in (False,True):
             with self.subTest(fail=fail),tempfile.TemporaryDirectory() as root:
                 checkpoint=Mock();scenario=m.OrdinaryScenario(checkpoint,Mock(),Path(root)/'private',time.monotonic()+60)
@@ -75,7 +75,7 @@ class ScenarioTests(unittest.TestCase):
                         return {'result':envelope} if operation=='api_update' else envelope
                     return {}
                 scenario.browser=Mock(side_effect=browser)
-                with patch.object(m,'verify_ordinary_fixture'),patch.object(m,'compare_restart_state'),patch.object(m,'verify_ordinary_filesystem_delta'),patch.object(m,'compare_ordinary_databases'):
+                with patch.object(m,'verify_ordinary_fixture'),patch.object(m,'compare_restart_state'),patch.object(m,'verify_ordinary_filesystem_delta'),patch.object(m,'compare_ordinary_databases'),patch.object(m,'compare_root_layers'):
                     if fail:
                         with self.assertRaises(RuntimeError):scenario.run('study@example.invalid','private',{}, {})
                         self.assertEqual(updates,['native_update']);checkpoint.stop_and_restore.assert_not_called()
