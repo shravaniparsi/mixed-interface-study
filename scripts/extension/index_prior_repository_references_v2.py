@@ -22,9 +22,10 @@ def main():
         metadata,path=item.split(b'\t',1);mode,kind,oid=metadata.decode().split()
         entries.append((path.decode(),mode,kind,oid))
     entries.sort(key=lambda r:r[0].encode())
-    ids='\n'.join(r[3] for r in entries)+'\n'
-    sizes=subprocess.check_output(['git','cat-file','--batch-check=%(objectname) %(objecttype) %(objectsize)'],input=ids.encode(),cwd=ROOT).decode().splitlines()
-    if len(sizes)!=len(entries):raise ValueError('Object metadata coverage mismatch')
+    # Enumerate only locally available objects; per-OID checks trigger lazy fetches.
+    available=subprocess.check_output(['git','cat-file','--batch-all-objects','--batch-check=%(objectname) %(objecttype) %(objectsize)'],cwd=ROOT).decode().splitlines()
+    object_info={line.split()[0]:line for line in available}
+    sizes=[object_info.get(r[3],r[3]+' missing') for r in entries]
     proc=subprocess.Popen(['git','cat-file','--batch'],cwd=ROOT,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
     rows=[];references={};used=0
     try:
