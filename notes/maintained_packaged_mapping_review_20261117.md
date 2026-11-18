@@ -419,3 +419,9 @@ QuickCommentDialog was read fully: it adds one content string to an existing tas
 ## TaskTrove core task binding
 
 Wave 27 was collected once after freeze 4bd3c6a1c21633a3f301ae3e1b1f9027caf6bedb and verified. The core module received import, create producer through section-update side effect and update wrapper reading, not full-file review. addTaskAtom forwards the supplied create object to createTaskMutationAtom, obtains result.taskIds[0], and may then update the parent project's sections. updateTaskAtom delegates to bulk updates using an array. These are application-level bindings, not yet the HTTP wire format. The section side effect must be retained if a workflow qualifies. Wave 28 registers the explicit mutation import; TaskTrove will use seven dependencies.
+
+## TaskTrove mutation producer and serializer exposure
+
+Wave 28 was collected once after published freeze a563be191a8d7204860edadf81026f65261db95a and verified. Task mutation imports, buildTaskCreatePayload, create mutation configuration/wrapper and update mutation configuration were read; recurrence and unrelated update internals received only partial excerpts and are not claimed fully reviewed. The producer builds a task object with client-generated UUID/time, title/description and fixed/default context, then invokes a shared createMutation factory with a serialization schema. Update delegates through createEntityMutation with an array serialization schema. Exact HTTP serialization remains unresolved because both factories are imports.
+
+Default-title and clearNullValues behavior and comments about update null handling are now prior source exposure, not runtime incompatibilities. No new null-related cases beyond the frozen general design are added. TaskTrove remains mapping_incomplete at seven dependencies, with zero application jobs or scientific cases. Shared factory bindings and ordinary native edit must be established before selection.
