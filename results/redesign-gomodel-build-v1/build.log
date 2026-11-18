@@ -1,0 +1,128 @@
+cd web/dashboard && npm ci --no-audit --no-fund --ignore-scripts && npm run build
+
+added 76 packages in 2s
+
+> gomodel-dashboard@0.0.0 build
+> vite build
+
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - `__dirname` (vite.config.js:20:26). Use `import.meta.dirname` instead
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+[36mvite v8.3.5 [32mbuilding client environment for production...[36m[39m
+[success] [1m[32m[paraglide-js] [39m[22mCompilation complete (message-modules)
+transforming...
+
+/admin/static/fonts/inter.css doesn't exist at build time, it will remain unchanged to be resolved at runtime
+✓ 4159 modules transformed.
+rendering chunks...
+computing gzip size...
+../../internal/admin/dashboard/static/dist/index.html                     0.68 kB │ gzip:   0.37 kB
+../../internal/admin/dashboard/static/dist/assets/index-BfaYE6ek.css    197.27 kB │ gzip:  30.55 kB
+../../internal/admin/dashboard/static/dist/assets/index-DFAZ4ev_.js   1,655.92 kB │ gzip: 475.73 kB
+
+[32m✓ built in 4.82s[39m
+[33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 1024 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[33m[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 4.4s of this 4.8s build (92%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin unplugin-paraglide-js buildStart (53%, 2.6s, 1 call)
+  - plugin vite:css transform (38%, 1.8s, 108 calls)
+  - plugin vite-plugin-svelte:compile transform (25%, 1.2s, 134 calls)
+These rows add up to more than the total. Callbacks can overlap, so the same time counts for more than one row.
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+[39m
+go build -trimpath -tags=grpcnotrace -ldflags '-X "github.com/enterpilot/gomodel/internal/version.Version=study-13bfff9c678d" -X "github.com/enterpilot/gomodel/internal/version.Commit=13bfff9c678dfbba25955f917a1ea233ae1e8630" -X "github.com/enterpilot/gomodel/internal/version.Date=2026-11-18T00:00:00Z"' -o bin/gomodel ./cmd/gomodel
+go: downloading github.com/goccy/go-json v0.12.0
+go: downloading github.com/joho/godotenv v1.5.1
+go: downloading github.com/lmittmann/tint v1.2.1
+go: downloading golang.org/x/term v0.48.0
+go: downloading github.com/labstack/echo/v5 v5.4.5
+go: downloading github.com/jackc/pgx/v5 v5.13.0
+go: downloading go.yaml.in/yaml/v3 v3.0.6
+go: downloading github.com/prometheus/client_golang v1.25.0
+go: downloading golang.org/x/sync v0.25.0
+go: downloading golang.org/x/text v0.44.0
+go: downloading github.com/google/uuid v1.6.0
+go: downloading github.com/aws/aws-sdk-go-v2 v1.48.0
+go: downloading github.com/aws/aws-sdk-go-v2/config v1.33.18
+go: downloading github.com/aws/aws-sdk-go-v2/service/bedrock v1.74.7
+go: downloading github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.63.13
+go: downloading github.com/aws/smithy-go v1.28.9
+go: downloading go.mongodb.org/mongo-driver/v2 v2.10.0
+go: downloading golang.org/x/sys v0.50.0
+go: downloading github.com/tidwall/gjson v1.20.2
+go: downloading golang.org/x/net v0.62.0
+go: downloading modernc.org/sqlite v1.62.0
+go: downloading github.com/beorn7/perks v1.0.1
+go: downloading github.com/cespare/xxhash/v2 v2.3.0
+go: downloading github.com/prometheus/client_model v0.6.3
+go: downloading github.com/prometheus/common v0.72.0
+go: downloading github.com/prometheus/procfs v0.22.0
+go: downloading google.golang.org/protobuf v1.36.12
+go: downloading golang.org/x/crypto v0.59.0
+go: downloading github.com/modelcontextprotocol/go-sdk v1.8.0
+go: downloading golang.org/x/oauth2 v0.38.0
+go: downloading github.com/klauspost/compress v1.20.4
+go: downloading github.com/labstack/echo-opentelemetry v0.0.4
+go: downloading go.opentelemetry.io/contrib/propagators/b3 v1.47.0
+go: downloading go.opentelemetry.io/contrib/propagators/jaeger v1.47.0
+go: downloading go.opentelemetry.io/contrib/propagators/ot v1.47.0
+go: downloading go.opentelemetry.io/otel v1.47.0
+go: downloading go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.47.0
+go: downloading go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.47.0
+go: downloading go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.47.0
+go: downloading go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.47.0
+go: downloading go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.47.0
+go: downloading go.opentelemetry.io/otel/metric v1.47.0
+go: downloading go.opentelemetry.io/otel/sdk/metric v1.47.0
+go: downloading go.opentelemetry.io/otel/sdk v1.47.0
+go: downloading go.opentelemetry.io/otel/trace v1.47.0
+go: downloading github.com/aws/aws-sdk-go-v2/credentials v1.21.0
+go: downloading github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.20.9
+go: downloading github.com/aws/aws-sdk-go-v2/service/signin v1.13.1
+go: downloading github.com/aws/aws-sdk-go-v2/service/sso v1.39.5
+go: downloading github.com/aws/aws-sdk-go-v2/service/ssooidc v1.44.5
+go: downloading github.com/aws/aws-sdk-go-v2/service/sts v1.52.0
+go: downloading github.com/aws/aws-sdk-go-v2/internal/configsources v1.5.12
+go: downloading github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.27
+go: downloading github.com/redis/go-redis/v9 v9.23.0
+go: downloading github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78
+go: downloading github.com/tidwall/match v1.2.0
+go: downloading github.com/tidwall/pretty v1.3.0
+go: downloading github.com/jackc/pgpassfile v1.0.0
+go: downloading github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761
+go: downloading github.com/jackc/puddle/v2 v2.2.3
+go: downloading github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
+go: downloading github.com/google/jsonschema-go v0.4.3
+go: downloading github.com/yosida95/uritemplate/v3 v3.0.2
+go: downloading golang.org/x/time v0.15.0
+go: downloading github.com/coder/websocket v1.8.15
+go: downloading go.uber.org/multierr v1.11.0
+go: downloading github.com/go-logr/logr v1.4.4
+go: downloading go.opentelemetry.io/otel/log v1.47.0
+go: downloading go.opentelemetry.io/proto/otlp v1.11.1
+go: downloading google.golang.org/genproto/googleapis/rpc v0.0.0-20260928230214-8a89bd6388cc
+go: downloading google.golang.org/grpc v1.84.0
+go: downloading github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.8.12
+go: downloading github.com/aws/aws-sdk-go-v2/internal/v4a v1.5.12
+go: downloading github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.25
+go: downloading github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.14.12
+go: downloading cloud.google.com/go/compute/metadata v0.9.0
+go: downloading github.com/xdg-go/scram v1.4.0
+go: downloading github.com/xdg-go/stringprep v1.0.4
+go: downloading github.com/segmentio/encoding v0.5.4
+go: downloading github.com/go-logr/stdr v1.2.2
+go: downloading go.opentelemetry.io/auto/sdk v1.2.1
+go: downloading github.com/cenkalti/backoff/v5 v5.0.3
+go: downloading github.com/grpc-ecosystem/grpc-gateway/v2 v2.31.0
+go: downloading modernc.org/libc v1.80.1
+go: downloading go.uber.org/atomic v1.12.0
+go: downloading google.golang.org/genproto/googleapis/api v0.0.0-20260928230214-8a89bd6388cc
+go: downloading github.com/segmentio/asm v1.2.1
+go: downloading modernc.org/memory v1.12.1
+go: downloading github.com/dustin/go-humanize v1.1.0
+go: downloading modernc.org/mathutil v1.7.1
+go: downloading github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec
