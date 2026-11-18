@@ -1,0 +1,7 @@
+# SeatSurfing native login component
+
+This component prepares an original-browser password login; it does not launch a browser or application. Use the native /ui/login/ form, its email/password fields and ordinary submit button, with a prospective local bootstrap actor and organization ID. Require initially absent access/refresh credentials; never inject or replace tokens. Observe exactly one POST /auth/login and the original four-key password payload (email, password, organizationId, empty code), then successful response, original localStorage updates and native navigation to the locations page. Alternate account/second-factor/password-reset states are unsupported for the prospective bootstrap actor and cause qualification failure, not automatic workaround.
+
+Use a shared 30-second observation budget for browser navigation/actions/waits; the enclosing worker must additionally enforce a process deadline for response decoding and other awaits. Observation expiration never authorizes resubmission. Every returned request/header/body/storage envelope is private fixture evidence and must use the existing sealed-artifact pattern. This does not prove role/identity, complete network settling, source provenance or ordinary-control equivalence. Those checks remain necessary in the actual qualification recipe.
+
+The component is source-derived from retained login, Ajax, RuntimeConfig and authentication handler files. A local syntax check is not a native test. No browser or API call is performed by merely importing this module.
