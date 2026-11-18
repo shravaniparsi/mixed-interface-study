@@ -161,11 +161,12 @@ async function execute(command) {
       assert.ok(edits.some(edit => JSON.stringify(edit) === JSON.stringify(command.edit)));
       assert.equal(Object.hasOwn(command, 'materialization'), false, 'Loader inputs must come from original observed editor requests');
       const plan = materializeSeatsurfingLocationUpdate({ ...opened.loader.materialization, edit: command.edit, browserTimezone: 'UTC' });
-      await tokenGuard();
+      await quiet(); await tokenGuard();
+      const afterRequestId = Math.max(0, ...observer.snapshot().events.filter(e => e.kind === 'request').map(e => e.id));
       const result = await nativeSeatsurfingScalarEdit(page, { baseUrl: origin, id: opened.readback.id, edit: command.edit, expectedJson: plan.main.json });
       await retain('native-edit.json', { plan, result });
-      await quiet(); await tokenGuard(); phase = 'edited';
-      return { plan, result, ancillaryEqualityEstablished: false, runtimeQualified: false };
+      const network = await quiet(); await tokenGuard(); phase = 'edited';
+      return { plan, result, network, afterRequestId, ancillaryEqualityEstablished: false, runtimeQualified: false };
     }
     default: throw new Error('Unregistered ordinary native-browser operation');
   }
