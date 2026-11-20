@@ -1,0 +1,11 @@
+# Flagsmith source prefix assessment (ongoing)
+
+Pinned application dba691d4f82f69deac6e023ec17275752a7018af; evaluation procedure frozen before acquisition. This is source qualification, not an application experiment. Wave 4 acquired four exact scheduled files and verified their blob identities. The source clock remains 2026-11-20T13:35:12.571351+00:00 through 15:35:12.571351+00:00.
+
+The earlier experimental flag route exposes GET/PATCH/PUT; segment overrides expose DELETE. Neither is a create producer (wave4/4.txt).
+
+POST /api/v1/auth/users/ is signup, not an authenticated administrator's user creation operation. Its actual custom_auth view explicitly skips authentication for create, then optionally authorises the newly created user on the response (wave4/1.txt, perform_authentication and create). CurrentUser restricts authenticated user access to the me action (wave4/2.txt). The original Django admin does have a native creator/editor, but the creator uses the authenticated administrator and offers email/password controls (wave3/6.txt); CustomUserAdminForm is a UserChangeForm with hidden username (wave4/3.txt). Pairing anonymous signup with administrator-native creation would violate the frozen same-actor/lifecycle gate. A signup-to-self-profile flow changes actor lifecycle. Exclude this operation under the existing gate; do not change permissions or use invented admin API. This does not claim user records are uneditable or defective.
+
+Remaining auth POST actions in the documented inventory are activation, password/email changes/resets or MFA activation/deactivation, not named-entity creators with independent editable text properties. Chargebee webhook is a billing integration. Cohort sync ingestion describes third-party Amplitude/Mixpanel integration or member-add/remove actions; exact original route mapping is scheduled next before closing that prefix. Environment creation is the next documented entity candidate, not yet selected. Root v1 routes also reveal admin/dashboard and audit routes earlier in lexical order; their route files are scheduled to avoid silently relying on an incomplete OpenAPI inventory. Later operations remain unassessed.
+
+No application executed; no scientific cases or defects inferred. No source-qualified evaluation slot consumed yet.
