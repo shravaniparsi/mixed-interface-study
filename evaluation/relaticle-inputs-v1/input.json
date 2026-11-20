@@ -1,0 +1,70 @@
+{
+  "project_sequence": 12,
+  "method": "POST",
+  "path": "/api/v1/notes",
+  "producers": [
+    {
+      "id": "ordinary",
+      "body": {
+        "title": "Study title",
+        "custom_fields": {
+          "body": "<p>Study body</p>"
+        }
+      }
+    },
+    {
+      "id": "custom_fields_body_omission",
+      "target": "/custom_fields/body",
+      "mode": "omission",
+      "body": {
+        "title": "Study title",
+        "custom_fields": {}
+      }
+    },
+    {
+      "id": "custom_fields_body_null",
+      "target": "/custom_fields/body",
+      "mode": "null",
+      "body": {
+        "title": "Study title",
+        "custom_fields": {
+          "body": null
+        }
+      }
+    },
+    {
+      "id": "title_omission",
+      "target": "/title",
+      "mode": "omission",
+      "body": {
+        "custom_fields": {
+          "body": "<p>Study body</p>"
+        }
+      }
+    },
+    {
+      "id": "title_null",
+      "target": "/title",
+      "mode": "null",
+      "body": {
+        "title": null,
+        "custom_fields": {
+          "body": "<p>Study body</p>"
+        }
+      }
+    }
+  ],
+  "replacement": {
+    "/title": "Study edited title",
+    "/custom_fields/body": "<p>Study edited body</p>"
+  },
+  "repair": {
+    "/title": "Study title",
+    "/custom_fields/body": "<p>Study body</p>"
+  },
+  "unrelated_pointer": {
+    "/custom_fields/body": "/title",
+    "/title": "/custom_fields/body"
+  },
+  "max_native_branches": 25
+}
