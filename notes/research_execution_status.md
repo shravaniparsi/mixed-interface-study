@@ -32,4 +32,4 @@ Maintain this document rather than creating a new narrative status file every tu
 
 Flagsmith build/closure receipt is verified and published. Candidate 10 is closed from source evidence without a build. Proceed to candidate 11 under the same checklist and limits. Current scientific conclusion: no independent evaluation result yet; Q1 readiness unproven.
 
-CI efficiency: unit.yml push filtering excludes only new source-wave artifacts/manifests, evaluation-status snapshots and these operational notes. The historical job does not consume these new files. Exact source evidence is verified with source_wave.py before publication. Collector, experimental code, workflow and all other paths continue to trigger unit CI; pull-request behavior is unchanged.
+CI efficiency attempt rejected by verification: run 44831256921 showed that the historical preparation snapshot binds unit.yml itself. The narrow evidence-only trigger filter was reverted to the exact original workflow; no historical snapshot or checks were weakened. Future CI changes must inspect that provenance dependency before editing. Source evidence remains locally verified before publication.
