@@ -1,0 +1,69 @@
+{
+  "project_sequence": 12,
+  "revision": "480c46e20b6c3d9c39c9254c1ef90369c0615986",
+  "status": "source_review_open_not_selected",
+  "endpoint_basis": "routes/api.php under default /api plus v1; configured API host is same alias family",
+  "operations": [
+    {
+      "path": "/api/v1/companies",
+      "method": "POST",
+      "assessment": "ineligible_fewer_than_two_default_scalar_text_properties",
+      "eligible": [
+        "/name"
+      ],
+      "excluded": {
+        "account_owner_id": "relationship",
+        "custom_fields.domains": "array with empty default",
+        "custom_fields.linkedin": "array even with maximum one item; empty default",
+        "custom_fields.icp": "boolean"
+      }
+    },
+    {
+      "path": "/api/v1/companies/query",
+      "method": "POST",
+      "assessment": "not_create_list_query"
+    },
+    {
+      "path": "/api/v1/companies/upsert",
+      "method": "POST",
+      "assessment": "same_company_property_gate_fails",
+      "match_fields": "lookup/discriminator values, not separate independently editable entity properties"
+    },
+    {
+      "path": "/api/v1/custom-fields",
+      "method": "GET",
+      "assessment": "not_create"
+    },
+    {
+      "path": "/api/v1/notes",
+      "method": "POST",
+      "assessment": "scalar_field_gate_met_runtime_design_unresolved",
+      "eligible_text_pointers": [
+        "/custom_fields/body",
+        "/title"
+      ],
+      "body_representation": "original default rich-editor HTML string in custom_field_values.text_value, not a JSON document/array or uploaded file",
+      "ordinary_structure_basis": "default workspace Body field; original linked relations initialize empty; no custom schema/field creation",
+      "native_controls": "NoteForm shared original CreateAction and EditAction; title TextInput and overridden original RichEditorComponent",
+      "same_actor_basis": "native user plus workspace-pinned Sanctum token; original middleware supplies same web guard user/current workspace to model creator hooks",
+      "state_effects": [
+        "notes row and timestamps",
+        "custom_field_values row including null handling",
+        "custom-field and note activity records",
+        "original relationships callback even with empty selection",
+        "session, token last-use, cache/rate-limit and actor state",
+        "media afterCommit cleanup path must be scoped with empty media"
+      ]
+    }
+  ],
+  "unresolved": [
+    "full exact audit creation/update fields and source/actor attribution",
+    "no-attachment afterCommit/media write proof",
+    "generated OpenAPI availability and scope",
+    "bootstrap source-supported non-demo user/workspace/token sequence",
+    "expiring rate-limit/cache and request-updated session/token checkpoint method",
+    "original source archive exclusion-aware build recipe"
+  ],
+  "application_executed": false,
+  "scientific_cases": 0
+}
