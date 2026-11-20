@@ -1,0 +1,565 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Casts\AsCanonicalEmail;
+use App\Contracts\Billing;
+use App\Data\NotificationPreferences;
+use App\Enums\EmailGrant;
+use App\Enums\Notifications\NotificationChannel;
+use App\Enums\Notifications\NotificationType;
+use App\Enums\WorkspaceCapability;
+use App\Enums\WorkspaceRole;
+use App\Jobs\PurgeUser;
+use App\Models\Concerns\HasProfilePhoto;
+use App\Models\Concerns\HasWorkspaces;
+use App\Models\Pivots\TaskAssignee;
+use App\Notifications\Auth\ResetPassword;
+use App\Notifications\Auth\VerifyEmail;
+use App\Observers\UserObserver;
+use App\Support\EmailAddress;
+use Carbon\CarbonImmutable;
+use Database\Factories\UserFactory;
+use DateTimeZone;
+use Exception;
+use Filament\Facades\Filament;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasDefaultTenant;
+use Filament\Models\Contracts\HasTenants;
+use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\Appends;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Contracts\PasskeyUser;
+use Laravel\Fortify\PasskeyAuthenticatable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\Jetstream;
+use Laravel\Passport\Client;
+use Laravel\Passport\Passport;
+use Laravel\Sanctum\HasApiTokens;
+
+/**
+ * @property string $name
+ * @property string $email
+ * @property string|null $timezone
+ * @property string|null $password
+ * @property string|null $profile_photo_path
+ * @property-read string $profile_photo_url
+ * @property CarbonImmutable|null $email_verified_at
+ * @property CarbonImmutable|null $email_sign_in_enabled_at
+ * @property CarbonImmutable|null $last_login_at
+ * @property CarbonImmutable|null $email_bounced_at
+ * @property string|null $mailcoach_subscriber_uuid
+ * @property string|null $subscriber_profile_hash
+ * @property string|null $rejected_subscriber_profile_hash
+ * @property string|null $remember_token
+ * @property CarbonImmutable|null $scheduled_deletion_at
+ * @property string|null $two_factor_recovery_codes
+ * @property string|null $two_factor_secret
+ * @property array<string, mixed>|null $ai_preferences
+ * @property array<string, mixed>|null $notification_preferences
+ * @property-read Workspace|null $currentWorkspace
+ * @property-read Membership|null $membership the `workspace_user` row, populated only when the user was
+ *     loaded through `Workspace::users()`; null on a user reached any other way
+ */
+#[Appends([
+    'profile_photo_url',
+])]
+#[Fillable([
+    'name',
+    'email',
+    'timezone',
+    'password',
+    'ai_preferences',
+    'notification_preferences',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+    'two_factor_recovery_codes',
+    'two_factor_secret',
+    'mailcoach_subscriber_uuid',
+    'subscriber_profile_hash',
+    'rejected_subscriber_profile_hash',
+])]
+#[ObservedBy(UserObserver::class)]
+final class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasTenants, MustVerifyEmail, PasskeyUser
+{
+    use HasApiTokens;
+
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
+
+    use HasProfilePhoto;
+    use HasUlids;
+    use HasWorkspaces;
+    use Notifiable;
+    use PasskeyAuthenticatable;
+    use TwoFactorAuthenticatable;
+
+    public const string PROFILE_PHOTO_DIRECTORY = 'profile-photos';
+
+    public const array PROFILE_PHOTO_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+    public const int SOCIAL_SIGNUP_WINDOW_SECONDS = 60;
+
+    private const int VERIFICATION_EMAIL_COOLDOWN_SECONDS = 60;
+
+    /** @var array<string, bool> */
+    private array $ownershipByWorkspaceId = [];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email' => AsCanonicalEmail::class,
+            'email_verified_at' => 'datetime',
+            'email_sign_in_enabled_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'email_bounced_at' => 'datetime',
+            'password' => 'hashed',
+            'ai_preferences' => 'array',
+            'notification_preferences' => 'array',
+            'scheduled_deletion_at' => 'datetime',
+        ];
+    }
+
+    public function notificationPreferences(): NotificationPreferences
+    {
+        return new NotificationPreferences($this->notification_preferences ?? []);
+    }
+
+    public function wantsNotification(NotificationType $type, NotificationChannel $channel): bool
+    {
+        return $this->notificationPreferences()->wants($type, $channel);
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        RateLimiter::attempt($this->verificationEmailCooldownKey(), 1, function (): void {
+            $notification = resolve(VerifyEmail::class);
+            $notification->url = Filament::getVerifyEmailUrl($this);
+
+            $this->notify($notification);
+        }, self::VERIFICATION_EMAIL_COOLDOWN_SECONDS);
+    }
+
+    public function verificationEmailCooldown(): int
+    {
+        return RateLimiter::availableIn($this->verificationEmailCooldownKey());
+    }
+
+    private function verificationEmailCooldownKey(): string
+    {
+        return 'verification-email:'.$this->getKey().':'.hash('sha256', $this->getEmailForVerification());
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $notification = resolve(ResetPassword::class, ['token' => $token]);
+        $notification->url = Filament::getResetPasswordUrl($token, $this);
+
+        $this->notify($notification);
+    }
+
+    /**
+     * The zone this user's calendar is expressed in. `timezone` is nullable: a user
+     * who never chose one and whose browser was never detected falls back to the app
+     * default, so every caller that turns a stored UTC value into a wall clock reads
+     * it from here rather than repeating the fallback.
+     */
+    public function effectiveTimezone(): string
+    {
+        return $this->timezone ?? (string) config('app.timezone');
+    }
+
+    /**
+     * @return HasMany<UserSocialAccount, $this>
+     */
+    public function socialAccounts(): HasMany
+    {
+        return $this->hasMany(UserSocialAccount::class);
+    }
+
+    public function availableSocialAccount(): ?UserSocialAccount
+    {
+        return $this->socialAccounts()->available()->first();
+    }
+
+    public function hasPassword(): bool
+    {
+        return $this->password !== null;
+    }
+
+    public function hasPasskey(): bool
+    {
+        return $this->passkeys()->exists();
+    }
+
+    public function isScheduledForDeletion(): bool
+    {
+        return $this->scheduled_deletion_at !== null;
+    }
+
+    public function isDeletionDue(): bool
+    {
+        return $this->scheduled_deletion_at?->lessThanOrEqualTo(now()) ?? false;
+    }
+
+    public function ensureCanBeDeleted(): void
+    {
+        $billing = resolve(Billing::class);
+
+        $managedWorkspaces = $this->ownedWorkspaces()
+            ->with('subscriptions')
+            ->get()
+            ->filter(fn (Workspace $workspace): bool => $billing->blocksDeletion($workspace))
+            ->pluck('name');
+
+        if ($managedWorkspaces->isNotEmpty()) {
+            throw ValidationException::withMessages([
+                'workspace' => [__('workspaces.validation.managed_plan_before_deleting_account', [
+                    'workspaces' => $managedWorkspaces->implode(', '),
+                ])],
+            ]);
+        }
+
+        $sharedWorkspaces = $this->ownedWorkspaces()
+            ->whereHas('users')
+            ->pluck('name');
+
+        if ($sharedWorkspaces->isEmpty()) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'workspace' => [__('workspaces.validation.remove_members_before_deleting', [
+                'workspaces' => $sharedWorkspaces->implode(', '),
+            ])],
+        ]);
+    }
+
+    public function queuePurge(): void
+    {
+        $this->ensureCanBeDeleted();
+
+        $this->forceFill(['scheduled_deletion_at' => now()])->save();
+
+        dispatch(new PurgeUser($this));
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @param  array<string>  $addresses
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function withEmailIn(Builder $query, array $addresses): Builder
+    {
+        return $query->whereIn('email', array_map(EmailAddress::canonicalize(...), $addresses));
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function unclaimed(Builder $query): Builder
+    {
+        return $query->whereNull('email_verified_at')
+            ->whereDoesntHave('ownedWorkspaces')
+            ->whereDoesntHave('workspaces')
+            ->whereDoesntHave('socialAccounts');
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function scheduledForDeletion(Builder $query): Builder
+    {
+        return $query->whereNotNull('scheduled_deletion_at');
+    }
+
+    /**
+     * Members of a workspace: the `workspace_user` pivot plus the owner, who has no
+     * pivot row: the same two sources App\Support\TenantFkValidator checks.
+     *
+     * Deliberately not `current_workspace_id`: that column is only a user's *active*
+     * workspace, so a member who is currently working in another one would drop
+     * out of member pickers and be rejected as a share target.
+     *
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function inWorkspace(Builder $query, string $workspaceId): Builder
+    {
+        return $query->where(function (Builder $members) use ($workspaceId): void {
+            $members
+                ->whereHas('workspaces', fn (Builder $workspaces): Builder => $workspaces->whereKey($workspaceId))
+                ->orWhereHas('ownedWorkspaces', fn (Builder $ownedWorkspaces): Builder => $ownedWorkspaces->whereKey($workspaceId));
+        });
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function expiredDeletion(Builder $query): Builder
+    {
+        return $query->whereNotNull('scheduled_deletion_at')
+            ->where('scheduled_deletion_at', '<=', now());
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function memberOf(Builder $query, Workspace $workspace): Builder
+    {
+        return $query->where(function (Builder $members) use ($workspace): void {
+            $members->whereKey($workspace->user_id)
+                ->orWhereHas('workspaces', fn (Builder $workspaces): Builder => $workspaces->whereKey($workspace->getKey()));
+        });
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function signedUpWith(Builder $query, ?string $provider = null): Builder
+    {
+        return $query->whereHas('socialAccounts', fn (Builder $accounts): Builder => $accounts
+            ->when($provider !== null, fn (Builder $matching): Builder => $matching->where('provider_name', $provider))
+            ->whereRaw('user_social_accounts.created_at <= users.created_at + make_interval(secs => ?)', [self::SOCIAL_SIGNUP_WINDOW_SECONDS]));
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    #[Scope]
+    protected function atLocalHour(Builder $query, int $hour): Builder
+    {
+        $timezones = array_values(array_filter(
+            DateTimeZone::listIdentifiers(),
+            fn (string $timezone): bool => (int) Date::now($timezone)->format('G') === $hour,
+        ));
+
+        return $query->where(function (Builder $local) use ($timezones): void {
+            $local->whereIn('timezone', $timezones);
+
+            if (in_array((string) config('app.timezone'), $timezones, true)) {
+                $local->orWhereNull('timezone');
+            }
+        });
+    }
+
+    /**
+     * @return BelongsToMany<Task, $this, TaskAssignee>
+     */
+    public function tasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class)->using(TaskAssignee::class);
+    }
+
+    /**
+     * @return HasMany<Opportunity, $this>
+     */
+    public function opportunities(): HasMany
+    {
+        return $this->hasMany(Opportunity::class, 'creator_id');
+    }
+
+    public function getDefaultTenant(Panel $panel): ?Model
+    {
+        return $this->currentWorkspace;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $panel->getId() === 'app';
+    }
+
+    /**
+     * Self-hosters who set REQUIRE_EMAIL_VERIFICATION=false treat every user as
+     * verified, so every framework, Filament, and policy check that reads
+     * hasVerifiedEmail() honors the flag uniformly through this single override.
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        if (! config('app.require_email_verification')) {
+            return true;
+        }
+
+        return parent::hasVerifiedEmail();
+    }
+
+    /**
+     * @return Collection<int, Workspace>
+     */
+    public function getTenants(Panel $panel): Collection
+    {
+        return $this->allWorkspaces();
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->belongsToWorkspace($tenant);
+    }
+
+    /**
+     * @return MorphMany<Client, $this>
+     */
+    public function oauthApps(): MorphMany
+    {
+        return $this->morphMany(Passport::clientModel(), 'owner');
+    }
+
+    /**
+     * @return MorphMany<Notification, $this>
+     */
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->latest();
+    }
+
+    public function getProviderName(): string
+    {
+        return 'users';
+    }
+
+    /**
+     * The ids of every workspace the user can reach, owned or joined.
+     *
+     * Authorization runs once per table row, so resolving a record's `workspace`
+     * relation inside a policy costs a query per row, and throws once a query
+     * hydrates more than one row, because that is when Eloquent arms its strict
+     * lazy-loading guard. Matching the record's foreign key against this set
+     * keeps authorization off the record's relations entirely.
+     *
+     * Both relations are the ones HasWorkspaces defines and that
+     * `allWorkspaces()` loads for the panel's tenant switcher, so inside a panel
+     * request this set costs nothing beyond what is already in memory.
+     *
+     * @return list<string>
+     */
+    public function accessibleWorkspaceIds(): array
+    {
+        $this->loadMissing(['ownedWorkspaces', 'workspaces']);
+
+        return array_map(
+            strval(...),
+            [...$this->ownedWorkspaces->modelKeys(), ...$this->workspaces->modelKeys()],
+        );
+    }
+
+    public function belongsToWorkspaceId(?string $workspaceId): bool
+    {
+        return $workspaceId !== null && in_array($workspaceId, $this->accessibleWorkspaceIds(), true);
+    }
+
+    /**
+     * @return array<int, WorkspaceCapability>
+     */
+    public function workspaceCapabilities(?string $workspaceId): array
+    {
+        if ($workspaceId === null) {
+            return [];
+        }
+
+        if ($this->isWorkspaceOwner($workspaceId)) {
+            return WorkspaceCapability::forOwner();
+        }
+
+        return $this->membershipRoleFor($workspaceId)?->capabilities() ?? [];
+    }
+
+    public function workspaceRoleLabel(?string $workspaceId): ?string
+    {
+        if ($workspaceId === null) {
+            return null;
+        }
+
+        if ($this->isWorkspaceOwner($workspaceId)) {
+            return __('workspaces.roles.owner.label');
+        }
+
+        return $this->membershipRoleFor($workspaceId)?->label();
+    }
+
+    // An unpinned token follows whichever workspace a request names, so only a
+    // pinned one is bounded by the holder's role there.
+    /** @return list<string> */
+    public function grantableTokenPermissions(?string $workspaceId): array
+    {
+        if ($workspaceId === null || $workspaceId === '') {
+            return array_values(Jetstream::$permissions);
+        }
+
+        $capabilities = $this->workspaceCapabilities($workspaceId);
+
+        return [
+            ...WorkspaceCapability::tokenPermissions($capabilities),
+            ...array_column(EmailGrant::grantableWith($capabilities), 'value'),
+        ];
+    }
+
+    public function hasWorkspaceCapability(?string $workspaceId, WorkspaceCapability $capability): bool
+    {
+        return in_array($capability, $this->workspaceCapabilities($workspaceId), true);
+    }
+
+    private function membershipRoleFor(string $workspaceId): ?WorkspaceRole
+    {
+        $this->loadMissing('workspaces');
+
+        $role = $this->workspaces
+            ->first(fn (Workspace $workspace): bool => $workspace->getKey() === $workspaceId)
+            ?->membership
+            ?->role;
+
+        return WorkspaceRole::tryFrom((string) $role);
+    }
+
+    // Memoised per request. The sysadmin panel can reassign an owner, which is safe only
+    // because no User instance lives in that request; a user-facing transfer must clear this.
+    private function isWorkspaceOwner(string $workspaceId): bool
+    {
+        return $this->ownershipByWorkspaceId[$workspaceId] ??= Workspace::query()
+            ->whereKey($workspaceId)
+            ->where($this->getForeignKey(), $this->getKey())
+            ->exists();
+    }
+}
