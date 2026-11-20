@@ -1,0 +1,1 @@
+Unused preparation draft. Created before closure but never prospectively published or executed as a scientific schedule. Flagsmith slot 1 is closed because its adapter preparation deadline expired. Retention does not authorize execution or a renewed clock.

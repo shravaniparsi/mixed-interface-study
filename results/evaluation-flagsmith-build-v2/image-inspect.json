@@ -1,0 +1,108 @@
+[
+    {
+        "Id": "sha256:f0f92d11f1d13ccaf8d2f5bd552d58701d0c832daf8e234db924f9e1452c6b3d",
+        "RepoTags": [
+            "evaluation-flagsmith:dba691d4f82f69deac6e023ec17275752a7018af"
+        ],
+        "RepoDigests": [],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-11-20T14:01:11.349625474Z",
+        "DockerVersion": "",
+        "Author": "github.com/chainguard-dev/apko",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "nobody",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "8000/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "ACCESS_LOG_LOCATION=/dev/null",
+                "PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus",
+                "DJANGO_SETTINGS_MODULE=app.settings.production",
+                "GUNICORN_WORKERS=3",
+                "GUNICORN_THREADS=2",
+                "APPLICATION_LOGGERS=api_usage,app_analytics,audit,code_references,common,core,dynamodb,edge_api,environments,features,import_export,integrations,mcp,oauth2_metadata,organisations,projects,segment_membership,segments,task_processor,trust_relationships,users,webhooks,workflows"
+            ],
+            "Cmd": [
+                "migrate-and-serve"
+            ],
+            "Healthcheck": {
+                "Test": [
+                    "CMD-SHELL",
+                    "flagsmith healthcheck tcp"
+                ],
+                "Interval": 2000000000,
+                "Timeout": 2000000000,
+                "StartPeriod": 20000000000,
+                "Retries": 3
+            },
+            "ArgsEscaped": true,
+            "Image": "",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": [
+                "flagsmith"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "dev.chainguard.image.title": "wolfi-base",
+                "dev.chainguard.package.main": "",
+                "org.opencontainers.image.authors": "Chainguard Team https://www.chainguard.dev/",
+                "org.opencontainers.image.created": "2026-11-19T07:28:49Z",
+                "org.opencontainers.image.source": "https://github.com/chainguard-images/images/tree/main/images/wolfi-base",
+                "org.opencontainers.image.title": "wolfi-base",
+                "org.opencontainers.image.url": "https://images.chainguard.dev/directory/image/wolfi-base/overview",
+                "org.opencontainers.image.vendor": "Chainguard"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 335833447,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/19f279010f1e922b82e00caad80ef1d451e6ae0999158c9b86002e2a5c24f876/diff:/var/lib/docker/overlay2/38e6211d5b2645b9fdf3b38f641161fdf1235361357488964f8253c31eca8ad7/diff:/var/lib/docker/overlay2/83e7a9f38b297a2c35c75096c9e00f008b2326771c7454063b421053eb1ed24f/diff:/var/lib/docker/overlay2/142f726dd74269d1329f6bdfbe0692fc6112d495c13d0edb4bee31b816430f59/diff:/var/lib/docker/overlay2/7020d802991568d41ab5242467c42984f9936725c96d39763ec43f57a0bcc26d/diff:/var/lib/docker/overlay2/0104da6e89e05b880e5130b1fd179cba47114c3052f772321010282fbd823aee/diff:/var/lib/docker/overlay2/04f11a78f29b9967c01b6d57be6445e1f0bd640c3cff3a96efd60f7f086dc7c8/diff:/var/lib/docker/overlay2/b382f3d5b04313977766f138701c2d92ab44a6ea4b218696fc00ca7ab66899a1/diff:/var/lib/docker/overlay2/dbf2142be76626b99a4f8598558338953b5c8e5e79d81512f25dfaf90a615090/diff:/var/lib/docker/overlay2/751f5e717cd6e432c15cec4beea9b63dd536688d36c8dc641483878bda117253/diff:/var/lib/docker/overlay2/d855b6faaee85c9e5474fbd265196aab607cbcc24dd358593fe1d41a46ea5488/diff:/var/lib/docker/overlay2/426bbc5b02df456cbf5707ac11a5ab85af4f2e97b0213cc2b39317b59c6d353e/diff:/var/lib/docker/overlay2/98729a8839485fc58b77dfabd4cf8d9671374c6c90c72ac0bc9ffad971c0c6d5/diff:/var/lib/docker/overlay2/345db717bcf978081795a4e1a6f07ff93790a031ddb77520f3393b83ffbd25c8/diff:/var/lib/docker/overlay2/b54ca90455f103814b0cfcfe96a1a540c9791e254fdbf671ad85d6b2543df782/diff:/var/lib/docker/overlay2/033990ddcf74c2f695302a6a7718b1bfc5698e2673b45dcd614ff1287dba3da3/diff:/var/lib/docker/overlay2/c381930f787d2712236eff5da2b5639de22e2ba4e2e49f4b08b6c21d19a28b88/diff:/var/lib/docker/overlay2/9c3afef972378536314353145e4b2af689a9d15bb26abf042eecaf033d0c2cf0/diff",
+                "MergedDir": "/var/lib/docker/overlay2/613dc6e658070a0c99e5d81490e7d3b90be5a1d30bac75705910411f869d6543/merged",
+                "UpperDir": "/var/lib/docker/overlay2/613dc6e658070a0c99e5d81490e7d3b90be5a1d30bac75705910411f869d6543/diff",
+                "WorkDir": "/var/lib/docker/overlay2/613dc6e658070a0c99e5d81490e7d3b90be5a1d30bac75705910411f869d6543/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:8413582468eb8c123bc331df291011fc0987cd258ada01aef14a8afa3f30d831",
+                "sha256:81ac36f4bee4102128a3f1f63d1a2a057922351d656f4a4fcdb1b92cd28a95f2",
+                "sha256:966b3c97a0506258779b9d0f271429eea02de730c5ce948ab59a157df572cf2b",
+                "sha256:6e407bcb887726ad7e338d379446cbf49f43f2fd46cfa16e15d9d792b459704b",
+                "sha256:24f670d1e337828fb932901ca6194de50c22b1327ee9a684bc1318e7bdbfd1f7",
+                "sha256:9a5af3c2653f7d6d3a12beb2f639b46246b03c9def6fbf03653bcdc2fbf769be",
+                "sha256:c77049249d91fe78f3e8aebf20efb151aa6ff5a0d3dd938af712a4aa6e8eee6c",
+                "sha256:9d1c9722a32dfefe8d5f2da19145bffb5ef101766874b306036cfcd2b2c5a162",
+                "sha256:2af97d351f066d95be4835564d4e9445047a023e1f572d129b8462635b998e05",
+                "sha256:b2fef7a0915305751dbde5c6c12939c144a02b70f506d12b174492160de4b65e",
+                "sha256:4bcd479ba22a620b40acfb7450a796229eada53d3cdffbf5717dac3253ac9e9d",
+                "sha256:4857fd6b3e8ab6023828bbdefea8e3f814c573e29fec1381541c04ff308c3244",
+                "sha256:30dd4387f231c8a629e7a4dd601f1f36f15de43bc6ab3ffd261428408a2ea096",
+                "sha256:3fd850b71702365fa3ab5bbe4c19f418f4accea1106f022a6f93729f187e18ba",
+                "sha256:9b18e0cde3c463e03a35a1fe09d1e267daafc551c30bcb1d5ee0643b44717160",
+                "sha256:e5e2391ff91946d303f293c631a98991ebb7cb64127a8649df56b1a7a37eb42d",
+                "sha256:9325c1b805ae545cf3630cb1567267cd8460036f221f073763f7f567cd756f2b",
+                "sha256:adfdc22b1192fdd78321e870adb649948bf749d526802338155eed0919833183",
+                "sha256:d21957c825302dccb289451fb2d81d2335fe3da6f0f008e327bc225691fb9c77"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "0001-01-01T00:00:00Z"
+        }
+    }
+]

@@ -1,0 +1,166 @@
+{
+  "revision": "dba691d4f82f69deac6e023ec17275752a7018af",
+  "stage": "complete",
+  "status": "build_succeeded",
+  "application_server_started": false,
+  "scientific_cases": 0,
+  "commands": [
+    {
+      "command": [
+        "curl",
+        "--fail",
+        "--location",
+        "--retry",
+        "0",
+        "--max-time",
+        "60",
+        "--max-filesize",
+        "67108864",
+        "--output",
+        "/home/runner/work/_temp/evaluation-flagsmith-build-v2/source.tar.gz",
+        "https://codeload.github.com/Flagsmith/flagsmith/tar.gz/dba691d4f82f69deac6e023ec17275752a7018af"
+      ],
+      "log": "archive-download.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.7670859109999988
+    },
+    {
+      "command": [
+        "docker",
+        "version"
+      ],
+      "log": "docker-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.11434928999999983
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "version"
+      ],
+      "log": "buildx-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.26424834100000183
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "create",
+        "--name",
+        "evaluation-flagsmith-v1",
+        "--driver",
+        "docker-container",
+        "--use"
+      ],
+      "log": "builder-create.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1642049159999992
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--builder",
+        "evaluation-flagsmith-v1",
+        "--target",
+        "oss-unified",
+        "--build-arg",
+        "CI_COMMIT_SHA=dba691d4f82f69deac6e023ec17275752a7018af",
+        "--tag",
+        "evaluation-flagsmith:dba691d4f82f69deac6e023ec17275752a7018af",
+        "--progress",
+        "plain",
+        "--provenance=false",
+        "--metadata-file",
+        "/home/runner/work/_temp/evaluation-flagsmith-build-v2/evidence/build-metadata.json",
+        "--load",
+        "."
+      ],
+      "log": "build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 87.953803847
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "evaluation-flagsmith:dba691d4f82f69deac6e023ec17275752a7018af"
+      ],
+      "log": "image-inspect.json",
+      "exit_code": 0,
+      "elapsed_seconds": 0.015777677000002654
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--entrypoint",
+        "python",
+        "evaluation-flagsmith:dba691d4f82f69deac6e023ec17275752a7018af",
+        "-c",
+        "import importlib.metadata,json,sys,pathlib; print(json.dumps({\"python\":sys.version,\"packages\":sorted([(d.metadata[\"Name\"],d.version) for d in importlib.metadata.distributions()]),\"revision\":pathlib.Path(\"/app/CI_COMMIT_SHA\").read_text().strip(),\"frontend_present\":pathlib.Path(\"/app/templates/index.html\").is_file()}))"
+      ],
+      "log": "runtime-packages.json",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2141118870000014
+    },
+    {
+      "command": [
+        "docker",
+        "save",
+        "--output",
+        "/home/runner/work/_temp/evaluation-flagsmith-build-v2/evidence/runtime-image.tar",
+        "evaluation-flagsmith:dba691d4f82f69deac6e023ec17275752a7018af"
+      ],
+      "log": "image-export.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.868670825999999
+    }
+  ],
+  "tree_sha256": "0e0fc501d96c0620877eb0b3d55b3cd1be9160df35500f62e96f95cfd6e0646d",
+  "archive_sha256": "cbb833de334044a0b1eb827fe00b1ad44f6645ab5153328b3eef8dc289e38efe",
+  "archive_bytes": 29079994,
+  "verified_files": 4328,
+  "verified_bytes": 46582486,
+  "build_input_sha256": {
+    "Dockerfile": "710dd47381983fbdc6cb4e2e07b30cc6074adada3ef894d9984138338d91f6e0",
+    "api/pyproject.toml": "44d436b15beecb5f6aa8d850b5ff74c930fc97369daba9de7282ba2f681830e5",
+    "api/uv.lock": "e1cdf48210eff46fb62f5c990ae885d3d7737a8d0a662ab5604d1677fa860a67",
+    "api/Makefile": "e9e8b52b7fab4256135299fdbd39689097be2ed5bcc1cc0e3e945b06efbaa607",
+    "frontend/package.json": "2090c61b88f5f6f05eaece46e6df53c99c47da828355aada8f8efee50eeecc87",
+    "frontend/package-lock.json": "6041937e8779636156b3e5c7b4b84cfd94a98c4ef99ca5bdd1a767eef0d54fe0",
+    "frontend/.npmrc": "2979a2fd7f3a9ec224b773ceba9ace9bb0fd2da24d367aff8dfc7fa9cddc1159"
+  },
+  "resolved_materials": [
+    {
+      "uri": "pkg:docker/cgr.dev/chainguard/wolfi-base@latest?platform=linux%2Famd64",
+      "digest": {
+        "sha256": "be019c1c74fe69204a42c4e10bc4d886a49bf5403ffa74374ef7baa408fc9a26"
+      }
+    },
+    {
+      "uri": "pkg:docker/ghcr.io/astral-sh/uv@latest?platform=linux%2Famd64",
+      "digest": {
+        "sha256": "d3b601f0c7b118bc1753febf7c41cc80981df678445e0254284eecf84db79a7d"
+      }
+    },
+    {
+      "uri": "pkg:docker/public.ecr.aws/docker/library/node@24-bookworm?platform=linux%2Famd64",
+      "digest": {
+        "sha256": "9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496"
+      }
+    }
+  ],
+  "runtime_image_id": "sha256:f0f92d11f1d13ccaf8d2f5bd552d58701d0c832daf8e234db924f9e1452c6b3d",
+  "runtime_image_bytes": 335833447,
+  "runtime_archive_sha256": "7a07fc24a3e21a7f8fcb2052c2ab7ba37a0c25117beccb8ba1c16c79bf7ad493",
+  "runtime_archive_bytes": 357911552,
+  "elapsed_seconds": 93.15853138
+}
