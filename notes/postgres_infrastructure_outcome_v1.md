@@ -1,0 +1,5 @@
+# Synthetic PostgreSQL infrastructure v1 outcome
+
+Run 44736817383 at freeze 836bf28f0477caed0eb56a5ec2b3b207ccfd8417 completed its synthetic execution step, which reported infrastructure_checks_passed, all three checks true and 17 commands. Artifact upload then failed with EACCES opening 01-postgres.json. The journal deliberately creates 0600 files; this run wrote them as root, while upload-artifact runs as the runner account. This is an evidenced publication-permission failure, unlike the earlier unavailable Zipline bootstrap diagnostic.
+
+GitHub reports zero artifacts. The workflow log, run metadata and timing are retained. The stdout summary is insufficient for independent verification of the row/sequence, expected-failure and shutdown receipts; infrastructure is not yet independently qualified. No application or scientific producer ran. The original attempt stays closed. A separately registered publication-only replay may retain the failure and test the missing ownership handoff without changing the database test or counting the replay as independent scientific evidence.
