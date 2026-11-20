@@ -1,0 +1,301 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Relaticle\CustomFields\Models\Concerns;
+
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
+use Relaticle\CustomFields\CustomFields;
+use Relaticle\CustomFields\Enums\CustomFieldsFeature;
+use Relaticle\CustomFields\Exceptions\UniqueCustomFieldValueTaken;
+use Relaticle\CustomFields\FeatureSystem\FeatureManager;
+use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldValue;
+use Relaticle\CustomFields\QueryBuilders\CustomFieldQueryBuilder;
+use Relaticle\CustomFields\Rules\UniqueCustomFieldValue;
+use Relaticle\CustomFields\Services\TenantContextService;
+use Relaticle\CustomFields\Services\ValueResolver\LookupPreloader;
+
+/**
+ * @see HasCustomFields
+ */
+trait UsesCustomFields
+{
+    public function __construct($attributes = [])
+    {
+        if (count($this->getFillable()) !== 0) {
+            $this->mergeFillable(['custom_fields']);
+        }
+
+        parent::__construct($attributes);
+
+        $this->handleCustomFields();
+    }
+
+    public function isFillable($key): bool
+    {
+        if ($key === 'custom_fields') {
+            return true;
+        }
+
+        return parent::isFillable($key);
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
+    protected function fillableFromArray(array $attributes): array
+    {
+        $fillable = parent::fillableFromArray($attributes);
+
+        if (array_key_exists('custom_fields', $attributes) && ! array_key_exists('custom_fields', $fillable)) {
+            $fillable['custom_fields'] = $attributes['custom_fields'];
+        }
+
+        return $fillable;
+    }
+
+    /**
+     * @var array<int, array<string, mixed>>
+     */
+    protected static array $tempCustomFields = [];
+
+    /**
+     * @var array<int, true>
+     */
+    protected static array $changedCustomFieldValues = [];
+
+    /**
+     * @var array<int, true>
+     */
+    protected static array $customFieldsSavedWithRecordWrite = [];
+
+    protected static function bootUsesCustomFields(): void
+    {
+        static::saving(function (Model $model): void {
+            $model->handleCustomFields();
+        });
+
+        static::saved(function (Model $model): void {
+            $model->saveCustomFieldsFromTemp();
+        });
+
+        static::deleting(function (Model $model): void {
+            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
+                return;
+            }
+
+            $model->customFieldValues()->delete();
+        });
+
+        // A trashed record gives up its unique values, so it may only come back while they are still free.
+        static::registerModelEvent('restoring', function (Model $model): void {
+            $taken = $model->takenUniqueCustomFieldValues()->first();
+
+            if ($taken !== null) {
+                throw new UniqueCustomFieldValueTaken($model, $taken['customField'], $taken['value']);
+            }
+        });
+    }
+
+    /**
+     * @return Collection<int, array{customField: CustomField, value: string}>
+     */
+    public function takenUniqueCustomFieldValues(): Collection
+    {
+        $tenantKey = (string) config('custom-fields.database.column_names.tenant_foreign_key');
+
+        return $this->customFieldValues()
+            ->with('customField')
+            ->get()
+            ->filter(fn (CustomFieldValue $value): bool => $value->customField?->active && $value->customField->settings->unique_per_entity_type)
+            ->flatMap(fn (CustomFieldValue $value): Collection => TenantContextService::withTenant(
+                $value->getAttribute($tenantKey),
+                fn (): Collection => collect($value->getValue())
+                    ->filter(fn (mixed $candidate): bool => is_scalar($candidate) && filled($candidate))
+                    ->reject(fn (mixed $candidate): bool => validator(
+                        ['value' => $candidate],
+                        ['value' => [new UniqueCustomFieldValue($value->customField, $this->getKey())]],
+                    )->passes())
+                    ->map(fn (mixed $candidate): array => ['customField' => $value->customField, 'value' => (string) $candidate])
+                    ->values(),
+            ))
+            ->values();
+    }
+
+    /**
+     * Handle the custom fields before saving the model.
+     */
+    protected function handleCustomFields(): void
+    {
+        if (isset($this->custom_fields) && is_array($this->custom_fields)) {
+            $objectId = spl_object_id($this);
+            self::$tempCustomFields[$objectId] = $this->custom_fields;
+            unset($this->custom_fields);
+
+            if (! $this->exists || $this->isDirty()) {
+                self::$customFieldsSavedWithRecordWrite[$objectId] = true;
+            }
+        }
+    }
+
+    /**
+     * Save custom fields from temporary storage after the model is created/updated.
+     */
+    protected function saveCustomFieldsFromTemp(): void
+    {
+        $objectId = spl_object_id($this);
+
+        if (isset(self::$tempCustomFields[$objectId]) && method_exists($this, 'saveCustomFields')) {
+            $customFields = self::$tempCustomFields[$objectId];
+            unset(self::$tempCustomFields[$objectId]);
+
+            try {
+                $this->saveCustomFields($customFields);
+            } finally {
+                unset(self::$customFieldsSavedWithRecordWrite[$objectId]);
+            }
+        }
+    }
+
+    /**
+     * @return CustomFieldQueryBuilder<CustomField>
+     */
+    public function customFields(): CustomFieldQueryBuilder
+    {
+        return CustomFields::newCustomFieldModel()->query()->forEntity($this::class);
+    }
+
+    /**
+     * @return MorphMany<CustomFieldValue>
+     */
+    public function customFieldValues(): MorphMany
+    {
+        return $this->morphMany(CustomFields::valueModel(), 'entity');
+    }
+
+    public function scopeWithCustomFieldValues(Builder $query): Builder
+    {
+        return $query
+            ->with('customFieldValues.customField.options')
+            ->afterQuery(function ($records): void {
+                if ($records instanceof EloquentCollection) {
+                    app(LookupPreloader::class)->preload($records);
+                }
+            });
+    }
+
+    public function getCustomFieldValue(CustomField $customField): mixed
+    {
+        $fieldValue = $this->customFieldValues
+            ->firstWhere('custom_field_id', $customField->getKey())
+            ?->getValue();
+
+        if (empty($fieldValue)) {
+            return $fieldValue;
+        }
+
+        if ($customField->settings?->encrypted) {
+            $fieldValue = Crypt::decryptString($fieldValue);
+        }
+
+        return $fieldValue instanceof Collection
+            ? $fieldValue->toArray()
+            : $fieldValue;
+    }
+
+    public function saveCustomFieldValue(CustomField $customField, mixed $value, ?Model $tenant = null): void
+    {
+        $data = ['custom_field_id' => $customField->getKey()];
+
+        if (FeatureManager::isEnabled(CustomFieldsFeature::SYSTEM_MULTI_TENANCY)) {
+            $data[config('custom-fields.database.column_names.tenant_foreign_key')] = $this->resolveTenantId($tenant, $customField);
+        }
+
+        $customFieldValue = $this->customFieldValues()->firstOrNew($data);
+
+        if ($customField->settings?->encrypted) {
+            $customFieldValue->mergeCasts([$customField->getValueColumn() => 'encrypted']);
+        }
+
+        $customFieldValue->setValue($value);
+        $customFieldValue->save();
+
+        if ($customFieldValue->wasChanged() || ($customFieldValue->wasRecentlyCreated && filled($value))) {
+            self::$changedCustomFieldValues[spl_object_id($this)] = true;
+        }
+    }
+
+    /**
+     * Resolve the tenant ID from available sources
+     */
+    protected function resolveTenantId(?Model $tenant, CustomField $customField): mixed
+    {
+        // First priority: Explicitly provided tenant
+        if ($tenant instanceof Model) {
+            return $tenant->getKey();
+        }
+
+        // Second priority: Current Filament tenant
+        $filamentTenant = Filament::getTenant();
+        if ($filamentTenant !== null) {
+            return $filamentTenant->getKey();
+        }
+
+        // Fallback: Use the tenant from the custom field
+        $tenantColumn = config('custom-fields.database.column_names.tenant_foreign_key');
+
+        return $customField->{$tenantColumn};
+    }
+
+    /**
+     * @param  array<string, mixed>  $customFields
+     */
+    public function saveCustomFields(array $customFields, ?Model $tenant = null): void
+    {
+        $objectId = spl_object_id($this);
+        unset(self::$changedCustomFieldValues[$objectId]);
+
+        $this->customFields()->each(function (CustomField $customField) use ($customFields, $tenant): void {
+            $value = $customFields[$customField->code] ?? null;
+            $this->saveCustomFieldValue($customField, $value, $tenant);
+        });
+
+        if (! isset(self::$changedCustomFieldValues[$objectId])) {
+            return;
+        }
+
+        unset(self::$changedCustomFieldValues[$objectId]);
+
+        if (isset(self::$customFieldsSavedWithRecordWrite[$objectId])) {
+            return;
+        }
+
+        $this->stampUpdatedAtForCustomFields();
+    }
+
+    protected function stampUpdatedAtForCustomFields(): void
+    {
+        $column = $this->getUpdatedAtColumn();
+
+        if (! $this->exists || ! $this->usesTimestamps() || $column === null) {
+            return;
+        }
+
+        $timestamp = $this->freshTimestamp();
+
+        // A query, not touch(): touch() saves every dirty attribute, and inside the saved hook the record is still dirty.
+        $this->setKeysForSaveQuery($this->newModelQuery())->toBase()->update([$column => $this->fromDateTime($timestamp)]);
+
+        $this->setAttribute($column, $timestamp);
+        $this->syncOriginalAttribute($column);
+    }
+}
