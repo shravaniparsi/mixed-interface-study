@@ -1,0 +1,5 @@
+# Closed selected-action rehearsal v1
+
+Run 44741216687 at freeze 0d33059cba9cbb6902b43162a9543b3517cd3de7 failed in native_create. Artifact 14631440708 (20853 bytes; SHA-256 025c9b343639b9e84b87c29f9b42b917b283e6f163c618e5d7db96692f82cafb) was retained and independently verified as failure evidence. The same-actor check passed; configure() found zero elements for one exact-label lookup and asserted 0==1. The assertion did not include which of the two labels failed. Raw HTML/screenshots were omitted by the credential-safe exporter, so exact DOM cause is unavailable. This does not establish an application validation defect, required-marker cause or rendering-race cause.
+
+No successful native creation, API producer, checkpoint or rehearsal branch occurred. All selected-action qualification remains unavailable, and scientific cases remain zero. Duration 126000 ms, zero billable Ubuntu milliseconds. This one-attempt allowance is closed. Original-schema/native-preflight and destination-preview state results remain qualified only in their earlier scopes.
