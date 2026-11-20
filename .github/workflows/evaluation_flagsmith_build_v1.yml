@@ -1,0 +1,41 @@
+name: Evaluation Flagsmith original OSS build v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published full commit for this single build attempt
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: evaluation-flagsmith-build-v1
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify freeze and initialize evidence
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import hashlib,json,pathlib; x=json.load(open("manifests/evaluation-flagsmith-build-v1.json")); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in x["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/evaluation-flagsmith-build-v1/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/evaluation-flagsmith-build-v1/evidence/freeze.txt"
+          date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/evaluation-flagsmith-build-v1/evidence/started.txt"
+      - name: Build original OSS image once
+        run: python3 evaluation/flagsmith-build-v1/build.py
+      - name: Retain original build evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: evaluation-flagsmith-build-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evaluation-flagsmith-build-v1/evidence/
+          retention-days: 14
+          compression-level: 1
+          if-no-files-found: warn
