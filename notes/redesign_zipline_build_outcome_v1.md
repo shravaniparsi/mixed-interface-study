@@ -1,0 +1,7 @@
+# Zipline original build outcome v1
+
+The single registered run 44729786431 at freeze 2941bcce188fc516cf7a0523f4e89795e79b6638 succeeded. Artifact 14624849143 has ZIP SHA-256 07da97081df579cf956e505c488615d54ada2bb1ab90cedd70390ab69d9eecce and is 159981865 bytes. Offline streaming verification checked all 64235 entries, including 55492 regular files (575487117 bytes) and 1589 relative symlinks. No runtime was extracted or executed locally. The original build collector reports all 737 tracked blobs unchanged after the original locked install and build; the offline verifier checks recorded provenance and output identities, not a second independent build.
+
+GitHub timing reports 136000 ms duration and zero billable Ubuntu milliseconds for this run. This is not a whole-project cost estimate. The artifact expires 2026-12-04T11:44:34Z. Large runtime bytes remain outside Git; small provenance, command logs, output identities and verification are retained in results/redesign-zipline-build-v1.
+
+This qualifies original-build feasibility only. Startup, actor identity, ordinary native/API operations, full-state checkpoint restoration, baseline behavior and scientific editability/repairability remain unqualified. No redesign scientific cases have been executed. Startup recipe must resolve original preload/entrypoint files absent from the frozen runtime package before application execution. The preparation cap is unchanged.
