@@ -1,0 +1,99 @@
+{
+  "status": "qualified",
+  "source": "original compiled route registration and installed validatorCompiler",
+  "handlers_invoked": false,
+  "live_altered_producers": 0,
+  "rows": [
+    {
+      "name": "ordinary_create",
+      "method": "POST",
+      "path": "/api/user/urls",
+      "httpPart": "body",
+      "input": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "destination",
+        "discordComponentEmbed": null
+      },
+      "accepted": true,
+      "value": {
+        "vanity": "research-api",
+        "destination": "https://example.com/api",
+        "enabled": true,
+        "discordPreviewMode": "destination",
+        "discordComponentEmbed": null
+      }
+    },
+    {
+      "name": "ordinary_headers",
+      "method": "POST",
+      "path": "/api/user/urls",
+      "httpPart": "headers",
+      "input": {},
+      "accepted": true,
+      "value": {}
+    },
+    {
+      "name": "ordinary_edit",
+      "method": "PATCH",
+      "path": "/api/user/urls/:id",
+      "httpPart": "body",
+      "input": {
+        "maxViews": null,
+        "destination": "https://example.com/edited"
+      },
+      "accepted": true,
+      "value": {
+        "maxViews": null,
+        "destination": "https://example.com/edited"
+      }
+    },
+    {
+      "name": "schema_only_null_destination",
+      "method": "POST",
+      "path": "/api/user/urls",
+      "httpPart": "body",
+      "input": {
+        "destination": null,
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "destination",
+        "discordComponentEmbed": null
+      },
+      "accepted": false,
+      "errors": [
+        {
+          "keyword": "invalid_type",
+          "instancePath": "/destination",
+          "schemaPath": "#/destination/invalid_type",
+          "message": "Invalid input: expected string, received null",
+          "params": {
+            "expected": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "schema_only_trim_vanity",
+      "method": "POST",
+      "path": "/api/user/urls",
+      "httpPart": "body",
+      "input": {
+        "destination": "https://example.com/api",
+        "vanity": "  schema-calibration  ",
+        "enabled": true,
+        "discordPreviewMode": "destination",
+        "discordComponentEmbed": null
+      },
+      "accepted": true,
+      "value": {
+        "vanity": "schema-calibration",
+        "destination": "https://example.com/api",
+        "enabled": true,
+        "discordPreviewMode": "destination",
+        "discordComponentEmbed": null
+      }
+    }
+  ]
+}
