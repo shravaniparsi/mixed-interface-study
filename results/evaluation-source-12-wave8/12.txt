@@ -1,0 +1,873 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Providers;
+
+use App\Console\Commands\MakeFilamentUserCommand;
+use App\Contracts\Billing;
+use App\Contracts\Entitlements;
+use App\Enums\CrmEntity;
+use App\Enums\EmailGrant;
+use App\Enums\Plan;
+use App\Filament\CustomFields\DateFieldType;
+use App\Filament\CustomFields\DateTimeFieldType;
+use App\Filament\CustomFields\DomainFieldType;
+use App\Filament\CustomFields\RichEditorFieldType;
+use App\Filament\Tables\ResizableColumns;
+use App\Http\Middleware\PreventRequestForgery;
+use App\Http\Middleware\ReadAcrossWorkspaces;
+use App\Http\Responses\LoginResponse;
+use App\Jobs\CompleteExport;
+use App\Livewire\FilamentNotifications;
+use App\Models\CustomField;
+use App\Models\CustomFieldOption;
+use App\Models\CustomFieldSection;
+use App\Models\CustomFieldValue;
+use App\Models\Export;
+use App\Models\Passport\AuthCode as McpAuthCode;
+use App\Models\PersonalAccessToken;
+use App\Models\User;
+use App\Models\Workspace;
+use App\Models\WorkspaceInvitation;
+use App\Notifications\Channels\InboxChannel;
+use App\Onboarding\ActivationSteps;
+use App\Onboarding\ContinueWithSetupChat;
+use App\Services\NoBilling;
+use App\Services\SelfHostedEntitlements;
+use App\Services\WorkspaceActivationFacts;
+use App\Support\ActivityLog\CurrentImport;
+use App\Support\ActivityLog\MergedActivityRenderer;
+use App\Support\ActivityLog\RequestActivityBatch;
+use App\Support\ActivityLog\StampsActivity;
+use App\Support\BrandColors;
+use App\Support\CurrentWorkspace;
+use App\Support\CustomFields\CustomFieldInput;
+use App\Support\CustomFields\CustomFieldSchemaCache;
+use App\Support\CustomFields\RecordNameResolver;
+use App\Support\CustomFields\RestoreConflictMessage;
+use App\Support\CustomFields\WorkspaceCustomFields;
+use App\Support\CustomFieldSettingsSchema;
+use App\Support\Http\RequestAbility;
+use App\Support\Impersonation\ImpersonationSessionHandler;
+use App\Support\Impersonation\Impersonator;
+use App\Support\Mail\ParksInactiveRecipientsTransport;
+use App\Support\Markdown\TableAwareLeagueDriver;
+use App\Support\Media\MediaLookup;
+use App\Support\Migrations\TenantMigration;
+use App\Support\PanelIcons;
+use App\Support\Passport\ClientRepository;
+use App\Support\Passport\WorkspaceBearerTokenResponse;
+use Carbon\CarbonImmutable;
+use Filament\Actions\Action;
+use Filament\Actions\Exports\ExportColumn;
+use Filament\Actions\Exports\Jobs\ExportCompletion;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Auth\Notifications\NoticeOfEmailChangeRequest;
+use Filament\Auth\Notifications\ResetPassword;
+use Filament\Auth\Notifications\VerifyEmail;
+use Filament\Auth\Notifications\VerifyEmailChange;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Toggle;
+use Filament\Livewire\Notifications;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Section;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Facades\FilamentColor;
+use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentTimezone;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Cache\RateLimiting\Unlimited;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\DevCommands;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery as BasePreventRequestForgery;
+use Illuminate\Http\Request;
+use Illuminate\Log\Context\Repository as ContextRepository;
+use Illuminate\Notifications\Channels\DatabaseChannel;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Context;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\ServiceProvider;
+use Knuckles\Scribe\Scribe;
+use Laravel\Cashier\Cashier;
+use Laravel\Passport\AccessToken as PassportAccessToken;
+use Laravel\Passport\ClientRepository as BaseClientRepository;
+use Laravel\Passport\Passport;
+use Laravel\Sanctum\Sanctum;
+use League\CommonMark\Extension\Table\TableExtension;
+use Livewire\Livewire;
+use Relaticle\ActivityLog\Facades\Timeline;
+use Relaticle\Chat\Support\ChatTelemetry;
+use Relaticle\CustomFields\CustomFields;
+use Relaticle\CustomFields\Facades\CustomFieldsType;
+use Relaticle\ImportWizard\Livewire\ImportWizard;
+use Relaticle\ImportWizard\Models\Import;
+use Relaticle\Ink\Filament\Resources\PostResource;
+use Relaticle\Ink\Ink;
+use Relaticle\Ink\Models\Category;
+use Relaticle\Ink\Models\Post;
+use Relaticle\SystemAdmin\Models\SystemAdministrator;
+use SocialiteProviders\Manager\SocialiteWasCalled;
+use SocialiteProviders\Microsoft\MicrosoftExtendSocialite;
+use Spatie\Activitylog\Support\PendingActivityLog;
+use Spatie\LaravelMarkdown\MarkdownRenderer;
+use Spatie\MailcoachMailer\Exceptions\InvalidMailerConfig;
+use Spatie\MailcoachMailer\MailcoachTransportFactory;
+use Spatie\Onboard\OnboardingSteps;
+use Symfony\Component\Mailer\Transport\Dsn;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+
+final class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        Date::use(CarbonImmutable::class);
+        $this->registerVendorOverrides();
+        $this->registerNotificationBindings();
+        $this->registerSelfHostedDefaults();
+
+        Cashier::useCustomerModel(Workspace::class);
+        Cashier::keepPastDueSubscriptionsActive();
+
+        // Cashier's own routes verify signatures only when a secret is set; the billing package registers a verified webhook.
+        Cashier::ignoreRoutes();
+
+        // One batch_uuid per request/job, lazily generated and forgotten between
+        // them. It is the key the activity timeline groups a single save's rows on.
+        $this->app->scoped(RequestActivityBatch::class);
+        $this->app->scoped(CurrentImport::class);
+        $this->app->scoped(CurrentWorkspace::class);
+
+        // Caches creation-source facts per workspace for the lifetime of a
+        // request/job, scoped so a queue worker resets it between jobs.
+        $this->app->scoped(WorkspaceActivationFacts::class);
+
+        $this->app->scoped(RecordNameResolver::class);
+        $this->app->scoped(MediaLookup::class);
+        $this->app->scoped(WorkspaceCustomFields::class);
+
+        // spatie/laravel-onboard binds OnboardingSteps as a SINGLETON, which
+        // makes every workspace share one OnboardingStep instance. Its complete()
+        // memoizes through once(), keyed on that shared object rather than the
+        // model, so the first workspace evaluated in a process poisons the answer for
+        // every later one, giving wrong onboarding state in any request or Horizon
+        // worker that touches two workspaces. Rebinding per resolve gives each
+        // lookup its own step objects, so once() memoizes within one lookup as
+        // intended. Registration lives here because a fresh registry starts empty.
+        $this->app->bind(function (): OnboardingSteps {
+            $steps = new OnboardingSteps;
+
+            ActivationSteps::registerOn($steps);
+
+            return $steps;
+        });
+
+        // Spatie's LeagueDriver never registers TableConverter, so <table>
+        // markup collapses to a run-on line in the markdown-response channel.
+        // Our provider registers after the package's, so this binding wins.
+        $this->app->singleton(
+            'markdown-response.driver.league',
+            fn (): TableAwareLeagueDriver => new TableAwareLeagueDriver(
+                config('markdown-response.driver_options.league.options', []),
+            ),
+        );
+
+        $this->registerPassport();
+
+        // The shared MarkdownRenderer always loads HeadingPermalinkExtension, which
+        // stamps a docs-site anchor onto every heading regardless of add_anchors_to_headings.
+        $this->app->when(CustomFieldInput::class)
+            ->needs(MarkdownRenderer::class)
+            ->give(fn (): MarkdownRenderer => new MarkdownRenderer(
+                commonmarkOptions: (array) config('markdown.commonmark_options'),
+                highlightCode: false,
+                cacheStoreName: false,
+                renderAnchors: false,
+                extensions: [TableExtension::class],
+            ));
+    }
+
+    private function registerVendorOverrides(): void
+    {
+        $this->app->bind(\Filament\Auth\Http\Responses\Contracts\LoginResponse::class, LoginResponse::class);
+        $this->app->bind(\Filament\Actions\Exports\Models\Export::class, Export::class);
+        $this->app->bind(BasePreventRequestForgery::class, PreventRequestForgery::class);
+    }
+
+    private function registerNotificationBindings(): void
+    {
+        $this->app->bind(VerifyEmail::class, \App\Notifications\Auth\VerifyEmail::class);
+        $this->app->bind(VerifyEmailChange::class, \App\Notifications\Auth\VerifyEmailChange::class);
+        $this->app->bind(ResetPassword::class, \App\Notifications\Auth\ResetPassword::class);
+        $this->app->bind(NoticeOfEmailChangeRequest::class, \App\Notifications\Auth\NoticeOfEmailChangeRequest::class);
+        $this->app->bind(DatabaseChannel::class, InboxChannel::class);
+        $this->app->bind(ExportCompletion::class, CompleteExport::class);
+    }
+
+    private function registerSelfHostedDefaults(): void
+    {
+        $this->app->bind(Entitlements::class, SelfHostedEntitlements::class);
+        $this->app->bind(Billing::class, NoBilling::class);
+    }
+
+    private function registerPassport(): void
+    {
+        // Passport self-binds this singleton, and every OAuth endpoint resolves the
+        // client it was handed through it.
+        $this->app->singleton(BaseClientRepository::class, ClientRepository::class);
+
+        // A device-approved token would skip ApproveAuthorizationController, which derives
+        // the email scopes from the user's role. Passport reads this when it boots.
+        Passport::$deviceCodeGrantEnabled = false;
+    }
+
+    private function registerParkingMailTransport(): void
+    {
+        $this->app->booted(fn () => Facades\Mail::extend('mailcoach', function (array $config): TransportInterface {
+            foreach (['domain', 'token'] as $key) {
+                throw_unless(array_key_exists($key, $config), InvalidMailerConfig::missingKey($key));
+                throw_if($config[$key] === null, InvalidMailerConfig::missingValue($key));
+            }
+
+            $inner = (new MailcoachTransportFactory)->create(new Dsn('mailcoach', $config['domain'], options: [
+                'token' => $config['token'],
+                'api_base_url' => $config['api_base_url'] ?? null,
+            ]));
+
+            return new ParksInactiveRecipientsTransport($inner);
+        }));
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        $this->registerParkingMailTransport();
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeFilamentUserCommand::class,
+            ]);
+        }
+
+        // Panels register their own palette on boot and override this, so it only
+        // takes effect where no panel is active: the invitation, join, and
+        // scheduled-deletion interstitials, which would otherwise render
+        // Filament's default amber instead of the brand color.
+        FilamentColor::register(['primary' => BrandColors::primary()]);
+        FilamentIcon::register(PanelIcons::aliases());
+
+        Event::listen(SocialiteWasCalled::class, MicrosoftExtendSocialite::class);
+
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        Passport::useAuthCodeModel(McpAuthCode::class);
+        Passport::useAuthorizationServerResponseType(new WorkspaceBearerTokenResponse);
+
+        $this->configureTokenScopes();
+
+        // Connectors are long-lived but must not be immortal: a user who revokes one from
+        // the Access Tokens page should not be outlived by a year-long bearer token.
+        Passport::tokensExpireIn(now()->addDays(30));
+        Passport::refreshTokensExpireIn(now()->addDays(90));
+
+        $this->configureConsentScreen();
+
+        $this->configurePolicies();
+        $this->configureSessions();
+        $this->configureModels();
+        $this->configureFilament();
+        $this->configureLivewire();
+        $this->configureMacros();
+        $this->configureRateLimiting();
+        $this->configureScribe();
+
+        $this->configureActivityLog();
+        $this->configureBlog();
+        $this->configureDevCommands();
+    }
+
+    private function configureConsentScreen(): void
+    {
+        Passport::authorizationView(function (array $parameters) {
+            $user = $parameters['user'] ?? null;
+
+            $workspaces = $user instanceof User ? $user->allWorkspaces() : collect();
+            $access = resolve(Entitlements::class);
+
+            // Re-read the workspaces with their subscriptions eager-loaded: allowsAccess() reaches
+            // for $workspace->subscription(), and allWorkspaces() hydrates more than one row, which
+            // is exactly when strict lazy loading throws.
+            /** @var list<string> $pausedWorkspaceIds */
+            $pausedWorkspaceIds = Workspace::query()
+                ->whereIn('id', $workspaces->pluck('id')->all())
+                ->with('subscriptions')
+                ->get()
+                ->filter(fn (Workspace $workspace): bool => ! $access->allowsAccess($workspace))
+                ->map(fn (Workspace $workspace): string => (string) $workspace->getKey())
+                ->values()
+                ->all();
+
+            $parameters['workspaces'] = $workspaces;
+            $parameters['pausedWorkspaceIds'] = $pausedWorkspaceIds;
+            $parameters['redirectHost'] = $this->consentRedirectHost($parameters);
+
+            // Never preselect a workspace the connector could not use. The user would
+            // approve a token that answers 402 on every call.
+            $currentWorkspaceId = $user?->currentWorkspace?->getKey();
+
+            $parameters['selectedWorkspaceId'] = is_string($currentWorkspaceId) && ! in_array($currentWorkspaceId, $pausedWorkspaceIds, true)
+                ? $currentWorkspaceId
+                : $workspaces->first(fn (Workspace $workspace): bool => ! in_array((string) $workspace->getKey(), $pausedWorkspaceIds, true))?->getKey();
+
+            $parameters['abilitiesByWorkspace'] = $user instanceof User
+                ? $workspaces->mapWithKeys(fn (Workspace $workspace): array => [
+                    (string) $workspace->getKey() => $user->grantableTokenPermissions((string) $workspace->getKey()),
+                ])->all()
+                : [];
+
+            return response()->view('mcp.authorize', $parameters);
+        });
+    }
+
+    private function configureTokenScopes(): void
+    {
+        // laravel/mcp appends `mcp:use` from a later booted callback, so setting the catalog here keeps it.
+        Passport::tokensCan([
+            'read' => 'Read your CRM records',
+            'create' => 'Create new CRM records',
+            'update' => 'Update existing CRM records',
+            'delete' => 'Delete CRM records',
+            ...EmailGrant::passportScopes(),
+        ]);
+    }
+
+    /**
+     * The blog admin lives in the sysadmin panel, which has no tenancy, so only a
+     * signed-in system administrator gets an edit link on a draft preview. Which
+     * panel and guard own the admin is ours to decide, not the package's.
+     */
+    private function configureBlog(): void
+    {
+        Ink::resolvePreviewEditUrlUsing(fn (Post $post): ?string => auth('sysadmin')->check()
+            ? PostResource::getUrl('edit', ['record' => $post], panel: 'sysadmin')
+            : null);
+
+        // MCP callers authenticate as sysadmin accounts, but posts belong to User
+        // authors. Match by email; no match is a loud tool error, never a fallback.
+        Ink::resolveAuthorUsing(function (Authenticatable $caller): ?User {
+            if ($caller instanceof User) {
+                return $caller;
+            }
+
+            if (! $caller instanceof Model) {
+                return null;
+            }
+
+            $email = $caller->getAttribute('email');
+
+            if (! is_string($email)) {
+                return null;
+            }
+
+            return User::query()->where('email', $email)->first();
+        });
+
+        // HasSEO creates a row per post but never removes it. A soft delete should
+        // keep it, because the post can come back, but a force delete from the panel
+        // would otherwise leave the seo row behind for good.
+        Post::forceDeleted(fn (Post $post) => $post->seo()->delete());
+    }
+
+    /**
+     * Stamp every activity row written during one request/job with that request's
+     * shared batch_uuid, and render a same-save group (native columns + custom
+     * fields) as a single merged timeline entry.
+     */
+    private function configureActivityLog(): void
+    {
+        // The facade resolves authentication before hostname-specific sessions are configured.
+        PendingActivityLog::beforeLogging(StampsActivity::apply(...));
+
+        Context::dehydrating(function (ContextRepository $context): void {
+            $administratorId = $this->app->make(Impersonator::class)->administratorId(request());
+
+            if ($administratorId !== null) {
+                $context->addHidden('impersonated_by', $administratorId);
+            }
+        });
+
+        Timeline::registerRenderer('merged-activity', MergedActivityRenderer::class);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    private function consentRedirectHost(array $parameters): ?string
+    {
+        $request = $parameters['request'] ?? null;
+        $redirectUri = $request instanceof Request ? $request->string('redirect_uri')->value() : '';
+
+        if ($redirectUri === '') {
+            $redirectUri = data_get($parameters, 'client.redirect_uris.0');
+        }
+
+        if (! is_string($redirectUri)) {
+            return null;
+        }
+
+        return parse_url($redirectUri, PHP_URL_HOST) ?: $redirectUri;
+    }
+
+    private function configurePolicies(): void
+    {
+        // The impersonation routes are plain web routes, so the panel-scoped policy
+        // discovery below never runs for them.
+        Gate::define('impersonate', fn (Authenticatable $account): bool => $account instanceof SystemAdministrator
+            && $account->role->canImpersonate());
+
+        Gate::guessPolicyNamesUsing(function (string $modelClass): ?string {
+            try {
+                $currentPanelId = Filament::getCurrentPanel()?->getId();
+
+                if ($currentPanelId === 'sysadmin') {
+                    $modelName = class_basename($modelClass);
+                    $systemAdminPolicy = "Relaticle\\SystemAdmin\\Policies\\{$modelName}Policy";
+
+                    // Return SystemAdmin policy if it exists
+                    if (class_exists($systemAdminPolicy)) {
+                        return $systemAdminPolicy;
+                    }
+                }
+            } catch (\Exception) {
+                // Fallback for non-Filament contexts
+            }
+
+            // Use Laravel's default policy discovery logic
+            return $this->getDefaultLaravelPolicyName($modelClass);
+        });
+    }
+
+    private function getDefaultLaravelPolicyName(string $modelClass): ?string
+    {
+        // Replicate Laravel's default policy discovery logic from Gate.php:723-736
+        $classDirname = str_replace('/', '\\', dirname(str_replace('\\', '/', $modelClass)));
+        $classDirnameSegments = explode('\\', $classDirname);
+
+        $candidates = collect();
+        // Generate all possible policy paths
+        $counter = count($classDirnameSegments);
+
+        // Generate all possible policy paths
+        for ($index = 0; $index < $counter; $index++) {
+            $classDirname = implode('\\', array_slice($classDirnameSegments, 0, $index));
+            $candidates->push($classDirname.'\\Policies\\'.class_basename($modelClass).'Policy');
+        }
+
+        // Add Models-specific paths if the model is in a Models directory
+        if (str_contains($classDirname, '\\Models\\')) {
+            $candidates = $candidates
+                ->concat([str_replace('\\Models\\', '\\Policies\\', $classDirname).'\\'.class_basename($modelClass).'Policy'])
+                ->concat([str_replace('\\Models\\', '\\Models\\Policies\\', $classDirname).'\\'.class_basename($modelClass).'Policy']);
+        }
+
+        // Return the first existing class, or fallback
+        $existingPolicy = $candidates->reverse()->first(fn (string $class): bool => class_exists($class));
+
+        return $existingPolicy ?: $classDirname.'\\Policies\\'.class_basename($modelClass).'Policy';
+    }
+
+    private function configureSessions(): void
+    {
+        Session::extend('database', fn (Application $app): ImpersonationSessionHandler => new ImpersonationSessionHandler(
+            DB::connection(Config::get('session.connection')),
+            Config::string('session.table'),
+            (int) Config::get('session.lifetime'),
+            $app,
+        ));
+    }
+
+    /**
+     * Configure custom Livewire components.
+     */
+    private function configureLivewire(): void
+    {
+        // Route the panel's notifications component to the subclass that
+        // tolerates junk in stale client payloads (Sentry #120218486). Both
+        // keys are needed: the raw FQCN entry canonicalizes class-based
+        // renders (and old snapshots naming the FQCN) onto the dotted name,
+        // and the dotted entry carries the mapping the resolver reads.
+        Livewire::component('filament.livewire.notifications', FilamentNotifications::class);
+        Livewire::component(Notifications::class, FilamentNotifications::class);
+
+        // Livewire matches persistent middleware by class, so the panel's alias alone skips update requests.
+        Livewire::addPersistentMiddleware(ReadAcrossWorkspaces::class);
+
+        ImportWizard::continueUrlUsing((new ContinueWithSetupChat)(...));
+    }
+
+    private function rateLimitTokenId(?object $token): ?string
+    {
+        return match (true) {
+            $token instanceof PersonalAccessToken => (string) $token->getKey(),
+            // getKey() would load the oauth_access_tokens row on every request and fail once it is purged.
+            $token instanceof PassportAccessToken => (string) $token->oauth_access_token_id,
+            default => null,
+        };
+    }
+
+    private function planThroughput(?Authenticatable $user): int
+    {
+        $plan = $user instanceof User ? $user->currentWorkspace?->plan : null;
+
+        return ($plan ?? Plan::default())->throughputMultiplier();
+    }
+
+    /** @return list<Limit> */
+    private function apiLimits(Request $request): array
+    {
+        /** @var User|null $user */
+        $user = $request->user();
+        $tokenId = $this->rateLimitTokenId($user?->currentAccessToken());
+        $workspaceId = $user?->currentWorkspace?->getKey();
+        $key = $tokenId ?: $request->ip();
+        $throughput = $this->planThroughput($user);
+
+        $limits = [
+            Limit::perMinute(600 * $throughput)->by('workspace:'.($workspaceId ?? $request->ip())),
+        ];
+
+        if (RequestAbility::isRead($request)) {
+            $limits[] = Limit::perMinute(300 * $throughput)->by("token:{$key}:read");
+        } else {
+            $limits[] = Limit::perMinute(60 * $throughput)->by("token:{$key}:write");
+        }
+
+        return $limits;
+    }
+
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', fn (Request $request): array => $this->apiLimits($request));
+
+        RateLimiter::for('mcp', function (Request $request): Limit {
+            $user = $request->user();
+
+            return Limit::perMinute(120 * $this->planThroughput($user))->by($user?->getAuthIdentifier() ?: $request->ip());
+        });
+
+        RateLimiter::for(
+            'mcp-oauth',
+            fn (Request $request) => Limit::perMinute(20)->by($request->ip()),
+        );
+
+        // Transcription reserves no credit, so the limiters are the only ceiling on
+        // provider spend. The per-minute and per-day buckets on the route are keyed
+        // per user and stay that way; this one is the ACCOUNT ceiling that was
+        // missing, because billing and credits are per workspace and an N-seat workspace
+        // otherwise multiplied the daily allowance by N with nothing to notice.
+        RateLimiter::for('transcribe-workspace-daily', function (Request $request): Limit {
+            /** @var User|null $user */
+            $user = $request->user();
+            $workspace = $user?->currentWorkspace;
+
+            return Limit::perMinutes(1440, 240)->by('transcribe-workspace:'.($workspace?->getKey() ?? $request->ip()));
+        });
+
+        RateLimiter::for('chat-send', fn (Request $request): Limit|Unlimited => $this->chatSendLimit($request));
+    }
+
+    private function chatSendLimit(Request $request): Limit|Unlimited
+    {
+        /** @var User|null $user */
+        $user = $request->user();
+        $workspace = $user?->currentWorkspace;
+
+        if ($workspace === null) {
+            return Limit::perMinute(Plan::default()->rateLimit())->by('chat-anon');
+        }
+
+        $limit = resolve(Entitlements::class)->chatRateLimit($workspace);
+
+        if ($limit <= 0) {
+            return Limit::none();
+        }
+
+        return Limit::perMinute($limit)
+            ->by($workspace->getKey())
+            ->response(function (Request $request, array $headers) use ($workspace) {
+                ChatTelemetry::rateLimited(
+                    workspaceId: (string) $workspace->getKey(),
+                    plan: $workspace->plan->value,
+                );
+
+                $seconds = (int) ($headers['Retry-After'] ?? 0);
+
+                return response()->json([
+                    'error' => 'rate_limited',
+                    'message' => "You're sending messages quickly. You can send again in {$seconds} seconds.",
+                    'retry_after_seconds' => $seconds,
+                    'plan' => $workspace->plan->value,
+                ], 429, $headers);
+            });
+    }
+
+    private function configureScribe(): void
+    {
+        if (! class_exists(Scribe::class)) {
+            return;
+        }
+
+        $makeScribeUser = function (): User {
+            $user = new User;
+            $user->forceFill(['id' => 'scribe-user-id', 'name' => 'Scribe User', 'email' => 'scribe@example.com']);
+
+            $workspace = new Workspace;
+            $workspace->forceFill(['id' => 'scribe-workspace-id', 'name' => 'Scribe Workspace', 'user_id' => $user->id, 'personal_workspace' => true]);
+            $workspace->setRelation('owner', $user);
+            $workspace->setRelation('users', $user->newCollection());
+
+            $user->forceFill(['current_workspace_id' => $workspace->id]);
+            $user->setRelation('currentWorkspace', $workspace);
+
+            return $user;
+        };
+
+        Scribe::bootstrap(function (): void {
+            config()->set('scribe.generating', true);
+        });
+
+        Scribe::instantiateFormRequestUsing(function (string $className) use ($makeScribeUser): FormRequest {
+            /** @var FormRequest $formRequest */
+            $formRequest = new $className;
+            $formRequest->setUserResolver(fn (): User => $makeScribeUser());
+
+            return $formRequest;
+        });
+
+    }
+
+    /**
+     * Configure the models for the application.
+     */
+    private function configureModels(): void
+    {
+        Model::unguard();
+        Model::preventLazyLoading(! $this->app->isProduction());
+
+        Relation::enforceMorphMap([
+            'workspace' => Workspace::class,
+            'user' => User::class,
+            ...CrmEntity::morphMap(),
+            'system_administrator' => SystemAdministrator::class,
+            'custom_field' => CustomField::class,
+            'custom_field_option' => CustomFieldOption::class,
+            'blog_post' => Post::class,
+            'blog_category' => Category::class,
+            'workspace_invitation' => WorkspaceInvitation::class,
+            'import' => Import::class,
+        ]);
+
+        // Use custom models for custom-fields package
+        CustomFields::useCustomFieldModel(CustomField::class);
+        CustomFields::useSectionModel(CustomFieldSection::class);
+        CustomFields::useOptionModel(CustomFieldOption::class);
+        CustomFields::useValueModel(CustomFieldValue::class);
+
+        // Replaces the package's definitions so custom-field dates read the same as the
+        // native columns beside them: `date-time` swaps the table column, which otherwise
+        // renders stored UTC to every viewer (App\Filament\CustomFields\DateTimeColumn),
+        // and both swap the infolist entry, which otherwise hardcodes `Y-m-d H:i:s` on
+        // record pages (App\Filament\CustomFields\DateTimeEntry).
+        //
+        // `date` gets the entry only. A bare date has no time of day, so converting one
+        // would move it a day for every viewer west of UTC.
+        CustomFieldsType::register([
+            'date-time' => DateTimeFieldType::class,
+            'date' => DateFieldType::class,
+            'rich-editor' => RichEditorFieldType::class,
+            'domain' => DomainFieldType::class,
+        ]);
+
+        $this->configureCustomFieldSchemaInvalidation();
+        $this->hideRetiredCustomFieldSettings();
+    }
+
+    private function hideRetiredCustomFieldSettings(): void
+    {
+        $retired = array_map(fn (string $key): string => 'settings.'.$key, CustomFieldSettingsSchema::RETIRED);
+
+        Toggle::configureUsing(fn (Toggle $toggle): Toggle => in_array($toggle->getName(), $retired, true) ? $toggle->hidden() : $toggle);
+    }
+
+    /**
+     * The AI list tools memoise which custom fields are filterable, per tenant and
+     * entity, for a minute. Hooking the model rather than the actions keeps the
+     * Filament management page, which writes definitions directly, from leaving
+     * the assistant insisting a field the user just added does not exist.
+     */
+    private function configureCustomFieldSchemaInvalidation(): void
+    {
+        $invalidate = static function (CustomField $field): void {
+            $tenantId = $field->getAttribute('tenant_id');
+            $entityType = $field->getAttribute('entity_type');
+
+            if ((is_string($tenantId) || is_int($tenantId)) && is_string($entityType)) {
+                CustomFieldSchemaCache::forget($tenantId, $entityType);
+                resolve(WorkspaceCustomFields::class)->forget($tenantId);
+            }
+        };
+
+        CustomField::saved($invalidate);
+        CustomField::deleted($invalidate);
+
+        // An option carries its own tenant_id, so clearing that tenant's five entity
+        // schemas beats one SELECT per option row: workspace creation seeds sixteen of
+        // them inside the registration transaction.
+        $invalidateOption = static function (CustomFieldOption $option): void {
+            $tenantId = $option->getAttribute('tenant_id');
+
+            if (is_string($tenantId) || is_int($tenantId)) {
+                CustomFieldSchemaCache::forgetTenant($tenantId);
+                resolve(WorkspaceCustomFields::class)->forget($tenantId);
+            }
+        };
+
+        CustomFieldOption::saved($invalidateOption);
+        CustomFieldOption::deleted($invalidateOption);
+    }
+
+    /**
+     * Configure Filament.
+     */
+    private function configureFilament(): void
+    {
+        ExportColumn::configureUsing(fn (ExportColumn $column): ExportColumn => $column->preventFormulaInjection());
+
+        Section::configureUsing(fn (Section $section): Section => $section->compact());
+
+        RestoreBulkAction::configureUsing(fn (RestoreBulkAction $action): RestoreBulkAction => $action->before(function (RestoreBulkAction $action, Collection $records): void {
+            $conflicts = $records
+                ->map(fn (Model $record): ?string => transform(
+                    resolve(RestoreConflictMessage::class)->for($record, $action->getRecordTitle(...)),
+                    fn (string $conflict): string => __('filament/panel.restore_blocked.bulk_line', ['record' => $action->getRecordTitle($record), 'conflict' => $conflict]),
+                ))
+                ->filter();
+
+            if ($conflicts->isEmpty()) {
+                return;
+            }
+
+            Notification::make()
+                ->warning()
+                ->title(trans_choice('filament/panel.restore_blocked.bulk_title', $conflicts->count(), ['count' => $conflicts->count()]))
+                ->body($conflicts->implode(' '))
+                ->send();
+        }));
+
+        $slideOverActions = ['create', 'edit', 'view'];
+
+        Action::configureUsing(function (Action $action) use ($slideOverActions): Action {
+            if (in_array($action->getName(), $slideOverActions)) {
+                return $action->slideOver();
+            }
+
+            return $action;
+        });
+
+        /**
+         * Datetimes are stored in UTC; every panel renders and accepts them in the
+         * signed-in account's chosen zone. Read by both table/infolist output and
+         * DateTimePicker input, so one closure keeps display and entry symmetrical.
+         *
+         * TimezoneManager is a single global slot, so this must stay the only writer.
+         * A second FilamentTimezone::set() anywhere would silently replace it, and
+         * which one survived would depend on service provider boot order. It lives
+         * here rather than in a panel provider for the same reason: the resolution
+         * spans every panel.
+         *
+         * The account is read through the current panel's own guard and by attribute
+         * rather than by class, so App\Models\User and SystemAdministrator are both
+         * served without this layer naming the sysadmin package. Returning null falls
+         * back to config('app.timezone'), which covers an unset zone, a zone that is
+         * no longer a valid identifier, an account type that has no zone at all, and
+         * any request outside a panel.
+         */
+        FilamentTimezone::set(function (): ?string {
+            if (Filament::getCurrentPanel() === null) {
+                return null;
+            }
+
+            $timezone = Filament::auth()->user()?->getAttribute('timezone');
+
+            if (! is_string($timezone)) {
+                return null;
+            }
+
+            return in_array($timezone, timezone_identifiers_list(), true) ? $timezone : null;
+        });
+
+        $this->registerPanelScripts();
+
+        // App assets are otherwise versioned with Filament's release, so an edit would keep its cached URL.
+        FilamentAsset::appVersion((string) filemtime(public_path('js/app/rich-editor-slash-menu.js')));
+    }
+
+    private function registerPanelScripts(): void
+    {
+        // The browser loads the published copy: run `php artisan filament:assets` after editing it.
+        FilamentAsset::register([
+            Js::make('rich-editor-slash-menu', resource_path('js/filament/rich-content-plugins/slash-menu.js'))
+                ->loadedOnRequest(),
+            Js::make('payload-guard', resource_path('js/filament/payload-guard.js')),
+            Js::make('linked-records-picker', resource_path('js/filament/linked-records-picker.js')),
+            Js::make('resizable-columns', resource_path('js/filament/resizable-columns.js')),
+            Js::make('board-stage-order', resource_path('js/filament/board-stage-order.js')),
+            Js::make('board-confetti', resource_path('js/filament/board-confetti.js')),
+            Js::make('filter-bar', resource_path('js/filament/filter-bar.js')),
+            Js::make('sheet-backdrop', resource_path('js/filament/sheet-backdrop.js')),
+        ]);
+
+        FilamentAsset::registerScriptData([
+            'payloadTooLarge' => __('filament/panel.payload_too_large'),
+            'boardStageOrderFailed' => __('filament/pages/boards.stage_order_failed'),
+            'resizeColumnLabel' => __('filament/panel.tables.resize_column'),
+            'resizeColumnHint' => __('filament/panel.tables.resize_column_hint'),
+            'defaultColumnWidth' => ResizableColumns::DEFAULT_COLUMN_WIDTH,
+            'checklistItemLabel' => __('filament/rich-editor.checklist.item'),
+            'checklistEmptyItemLabel' => __('filament/rich-editor.checklist.empty_item'),
+        ]);
+    }
+
+    private function configureMacros(): void
+    {
+        Blueprint::macro('teams', function (): void {
+            TenantMigration::addForeignKey($this);
+        });
+    }
+
+    private function configureDevCommands(): void
+    {
+        DevCommands::artisan(
+            'schedule:work',
+        );
+        DevCommands::except('reverb', 'queue');
+    }
+}
