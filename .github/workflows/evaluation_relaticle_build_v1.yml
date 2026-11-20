@@ -1,0 +1,51 @@
+name: Evaluation Relaticle original image v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published implementation freeze for this single build
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: evaluation-relaticle-build-v1
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.freeze }}
+          persist-credentials: false
+      - name: Verify prospective bindings and deadline
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import datetime,hashlib,json,pathlib; x=json.load(open("manifests/evaluation-relaticle-build-v1.json")); assert datetime.datetime.now(datetime.timezone.utc)<datetime.datetime.fromisoformat(x["adapter_deadline_utc"]); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in x["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/evaluation-relaticle-build-v1/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/evaluation-relaticle-build-v1/evidence/freeze.txt"
+      - name: Authenticate original registry pulls
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          test -n "$DOCKERHUB_USERNAME" && test -n "$DOCKERHUB_TOKEN"
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+      - name: Build exact original applications without starting them
+        run: python3 evaluation/relaticle-build-v1/build.py
+      - name: Retain original build receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: evaluation-relaticle-build-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evaluation-relaticle-build-v1/evidence/
+          retention-days: 7
+          compression-level: 1
+          if-no-files-found: warn
+      - name: Remove registry credentials
+        if: ${{ always() }}
+        run: docker logout > /dev/null 2>&1 || true
