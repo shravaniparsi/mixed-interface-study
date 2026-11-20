@@ -1,0 +1,5999 @@
+{
+  "kind": "original_advertised_post_inventory_not_eligibility_selection",
+  "source_sha256": "2da6a93ec9d467ddef1f6cc3b6939d89e3c73ba557f49528c4569b6e76b8a8e8",
+  "openapi": "3.1.0",
+  "paths": 350,
+  "rows": [
+    {
+      "path": "/api/v1/analytics/flags/",
+      "method": "POST",
+      "operation_id": "api_v1_analytics_flags_create",
+      "description": "Class to handle flag analytics events",
+      "request_body": null,
+      "responses": {
+        "201": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/analytics/telemetry/",
+      "method": "POST",
+      "operation_id": "api_v1_analytics_telemetry_create",
+      "description": "Class to handle telemetry events from self hosted APIs so we can aggregate and track\nself hosted installation data",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Telemetry"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Telemetry"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Telemetry"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Telemetry"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/login/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_login_create",
+      "description": "Class to handle throttling for login requests",
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomTokenCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomTokenCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomTokenCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomTokenCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/login/code/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_login_code_create",
+      "description": "Override class to add throttling",
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomTokenCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomTokenCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomTokenCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomTokenCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/logout/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_logout_create",
+      "description": "Use this endpoint to logout user (remove user authentication token).",
+      "request_body": null,
+      "responses": {
+        "204": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/oauth/github/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_oauth_github_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubLogin"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubLogin"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubLogin"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthToken"
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/oauth/google/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_oauth_google_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GoogleLogin"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GoogleLogin"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GoogleLogin"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthToken"
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/oidc/token/",
+      "method": "POST",
+      "operation_id": "oidc_token_exchange",
+      "description": "Exchange an OIDC token issued by a trusted identity provider for a short-lived Flagsmith access token.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TokenExchangeRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/TokenExchangeRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/TokenExchangeRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenExchangeResponse"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Request body is invalid."
+        },
+        "401": {
+          "description": "Token validation failed, or no trust relationship matches the token."
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/saml/attribute-mapping/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_saml_attribute_mapping_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlAttributeMapping"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlAttributeMapping"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlAttributeMapping"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlAttributeMapping"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/saml/configuration/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_saml_configuration_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/saml/login/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_saml_login_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlLogin"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlLogin"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SamlLogin"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlUserToken"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/saml/{name}/request/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_saml_request_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlRequest"
+              }
+            },
+            "text/html": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlRequest"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/saml/{name}/response/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_saml_response_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomUserCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomUserCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomUserCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomUserCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/activation/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_activation_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Activation"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Activation"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Activation"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Activation"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/resend_activation/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_resend_activation_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailReset"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/reset_email/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_reset_email_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailReset"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/reset_email_confirm/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_reset_email_confirm_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UsernameResetConfirm"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UsernameResetConfirm"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UsernameResetConfirm"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsernameResetConfirm"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/reset_password/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_reset_password_create",
+      "description": "Request a password reset email",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SendEmailReset"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailReset"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/reset_password_confirm/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_reset_password_confirm_create",
+      "description": "Update the user password from a password reset URL",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PasswordResetConfirmRetype"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/PasswordResetConfirmRetype"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/PasswordResetConfirmRetype"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetConfirmRetype"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/set_email/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_set_email_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SetUsername"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SetUsername"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SetUsername"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetUsername"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/users/set_password/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_users_set_password_create",
+      "description": "Update the user password",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SetPasswordRetype"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SetPasswordRetype"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SetPasswordRetype"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPasswordRetype"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/{method}/activate/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_activate_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/{method}/activate/confirm/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_activate_confirm_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/auth/{method}/deactivate/",
+      "method": "POST",
+      "operation_id": "api_v1_auth_deactivate_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cb-webhook/",
+      "method": "POST",
+      "operation_id": "api_v1_cb_webhook_create",
+      "description": "Endpoint to handle webhooks from chargebee.\n\nPayment failure and payment succeeded webhooks are filtered out and processed\nto determine which of our subscriptions are in a dunning state.\n\nThe remaining webhooks are processed if they have subscription data:\n\n - If subscription is active, check to see if plan has changed and update if so. Always update cancellation date to\n   None to ensure that if a subscription is reactivated, it is updated on our end.\n\n - If subscription is cancelled or not renewing, update subscription on our end to include cancellation date and\n   send alert to admin users.",
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cohort-sync/amplitude/lists/",
+      "method": "POST",
+      "operation_id": "api_v1_cohort_sync_amplitude_lists_create",
+      "description": "Called by Amplitude once per cohort sync setup; creates the backing cohort and returns its identifier as the list ID.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AmplitudeList"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/AmplitudeList"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/AmplitudeList"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AmplitudeListResponse"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cohort-sync/amplitude/lists/{id}/add/",
+      "method": "POST",
+      "operation_id": "api_v1_cohort_sync_amplitude_lists_add_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncMembers"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncMembers"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncMembers"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cohort-sync/amplitude/lists/{id}/remove/",
+      "method": "POST",
+      "operation_id": "api_v1_cohort_sync_amplitude_lists_remove_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncMembers"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncMembers"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncMembers"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cohort-sync/mixpanel/webhook/",
+      "method": "POST",
+      "operation_id": "api_v1_cohort_sync_mixpanel_webhook_create",
+      "description": "Called by Mixpanel every sync cycle with the cohort's full membership (`members`) or the changes since the last sync (`add_members`/`remove_members`).",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MixpanelWebhook"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MixpanelWebhook"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MixpanelWebhook"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MixpanelWebhookResponse"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MixpanelWebhookFailureResponse"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MixpanelWebhookFailureResponse"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cohort-sync/webhook/cohorts/{id}/members/add/",
+      "method": "POST",
+      "operation_id": "api_v1_cohort_sync_webhook_cohorts_members_add_create",
+      "description": "Add members to a CSV cohort. Accepted deltas are applied to identity data asynchronously. Re-adding a member is a no-op, so retries are safe.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookSyncMembers"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookSyncMembers"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookSyncMembers"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/cohort-sync/webhook/cohorts/{id}/members/remove/",
+      "method": "POST",
+      "operation_id": "api_v1_cohort_sync_webhook_cohorts_members_remove_create",
+      "description": "Remove members from a CSV cohort. Accepted deltas are applied to identity data asynchronously. Removing a non-member is a no-op, so retries are safe.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookSyncMembers"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookSyncMembers"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookSyncMembers"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateEnvironment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateEnvironment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateEnvironment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnvironment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{api_key}/clone/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_clone_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CloneEnvironment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CloneEnvironment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CloneEnvironment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneEnvironment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{api_key}/delete-traits/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_delete_traits_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteAllTraitKeys"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteAllTraitKeys"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteAllTraitKeys"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAllTraitKeys"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{api_key}/disable-v2-versioning/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_disable_v2_versioning_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "202": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{api_key}/enable-v2-versioning/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_enable_v2_versioning_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "202": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/api-keys/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_api_keys_create",
+      "description": "Manage server-side SDK keys for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentAPIKey"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentAPIKey"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentAPIKey"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnvironmentAPIKey"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/cohorts/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_cohorts_create",
+      "description": "Create a cohort and the managed segment that targets it.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Cohort"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Cohort"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Cohort"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cohort"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/cohorts/sync-keys/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_cohorts_sync_keys_create",
+      "description": "Create a cohort sync key. The response is the only time the plaintext key is available.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncKey"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncKey"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortSyncKey"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CohortSyncKey"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/cohorts/{cohort_id}/sync-csv/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_cohorts_sync_csv_create",
+      "description": "Replace the cohort's members with the identifiers found in the uploaded CSV file and trigger a sync to identity data. `identifier_column` is the 0-based index of the column holding the identifiers; `has_header` skips the first row when true.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CohortCsvSync"
+            }
+          }
+        }
+      },
+      "responses": {
+        "202": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CohortCsvSyncResult"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        },
+        "413": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/create-change-request/",
+      "method": "POST",
+      "operation_id": "create_environment_feature_change_request",
+      "description": "Creates a new change request for feature flag modifications in an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ChangeRequestCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ChangeRequestCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ChangeRequestCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRequestCreate"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/edge-identities/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_edge_identities_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentity"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentity"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentity"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EdgeIdentity"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/edge-identities/{edge_identity_identity_uuid}/edge-featurestates/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_edge_identities_edge_featurestates_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentityFeatureState"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentityFeatureState"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentityFeatureState"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EdgeIdentityFeatureState"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/edge-identities/{edge_identity_identity_uuid}/edge-featurestates/clone-from-given-identity/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_edge_identities_edge_featurestates_clone_from_given_identity_create",
+      "description": "Clone feature states from a given source identity.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentitySourceIdentityRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentitySourceIdentityRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/EdgeIdentitySourceIdentityRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/IdentityAllFeatureStates"
+                }
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiment-metrics/",
+      "method": "POST",
+      "operation_id": "create_metric",
+      "description": "(Beta) Creates a metric with name, description, aggregation type, expected direction, and event definition.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Metric"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Metric"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Metric"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Metric"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/",
+      "method": "POST",
+      "operation_id": "create_experiment",
+      "description": "(Beta) Creates an experiment for a multivariate feature. Metrics can be attached inline. Only one active experiment per feature is allowed.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Experiment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_experiments_metrics_create",
+      "description": "Manage metrics for an experiment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentMetric"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentMetric"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentMetric"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentMetric"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/complete/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_experiments_complete_create",
+      "description": "Manage experiments for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentList"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/exposures/refresh/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_experiments_exposures_refresh_create",
+      "description": "Manage experiments for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Experiment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/pause/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_experiments_pause_create",
+      "description": "Manage experiments for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentList"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/results/refresh/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_experiments_results_refresh_create",
+      "description": "Manage experiments for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Experiment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Experiment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/start/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_experiments_start_create",
+      "description": "Manage experiments for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ExperimentList"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentList"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/features/{feature_id}/dependencies/{prerequisite_feature_id}/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_features_dependencies_create",
+      "description": "Make the feature depend on the prerequisite feature being enabled.",
+      "request_body": null,
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DependencyEdge"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DependencyRefusedDetail"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/APIErrorDetail"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/features/{feature_pk}/create-segment-override/",
+      "method": "POST",
+      "operation_id": "create_segment_override",
+      "description": "Creates a segment override for a feature in an environment in a single call, setting both the segment binding and its value. Applies to environments without v2 feature versioning (use_v2_feature_versioning: false).",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomCreateSegmentOverrideFeatureState"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomCreateSegmentOverrideFeatureState"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomCreateSegmentOverrideFeatureState"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomCreateSegmentOverrideFeatureState"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/featurestates/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_featurestates_create",
+      "description": "DEPRECATED: please use `/features/featurestates/` instead.\nOverride create method to add environment and identity (if present) from URL parameters.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/identities/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_identities_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Identity"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Identity"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Identity"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Identity"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/identities/{identity_pk}/featurestates/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_identities_featurestates_create",
+      "description": "DEPRECATED: please use `/features/featurestates/` instead.\nOverride create method to add environment and identity (if present) from URL parameters.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureStateSerializerBasic"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/identities/{identity_pk}/featurestates/clone-from-given-identity/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_identities_featurestates_clone_from_given_identity_create",
+      "description": "Clone feature states from a given source identity.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdentitySourceIdentityRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/IdentitySourceIdentityRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/IdentitySourceIdentityRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaginatedIdentityAllFeatureStatesList"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/identities/{identity_pk}/traits/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_identities_traits_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Trait"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Trait"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Trait"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Trait"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/amplitude/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_amplitude_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AmplitudeConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/AmplitudeConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/AmplitudeConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AmplitudeConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/dynatrace/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_dynatrace_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DynatraceConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/DynatraceConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/DynatraceConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DynatraceConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/grafana/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_grafana_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/heap/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_heap_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HeapConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/HeapConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/HeapConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HeapConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/mixpanel/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_mixpanel_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MixpanelConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MixpanelConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MixpanelConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MixpanelConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/rudderstack/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_rudderstack_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RudderstackConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/RudderstackConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/RudderstackConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RudderstackConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/segment/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_segment_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SegmentConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SegmentConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SegmentConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/sentry/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_sentry_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SentryChangeTrackingConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SentryChangeTrackingConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SentryChangeTrackingConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SentryChangeTrackingConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/slack/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_slack_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SlackEnvironment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SlackEnvironment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SlackEnvironment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlackEnvironment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/integrations/webhook/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_integrations_webhook_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/user-group-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_user_group_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupEnvironmentPermission"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupEnvironmentPermission"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupEnvironmentPermission"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupEnvironmentPermission"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/user-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_user_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserEnvironmentPermission"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserEnvironmentPermission"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserEnvironmentPermission"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateUserEnvironmentPermission"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/warehouse-connections/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_warehouse_connections_create",
+      "description": "Manage data warehouse connections for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarehouseConnection"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/warehouse-connections/test-warehouse-connection/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_warehouse_connections_test_warehouse_connection_config_create",
+      "description": "Manage data warehouse connections for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarehouseConnectionTestResult"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/warehouse-connections/{connection_id}/test-warehouse-connection/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_warehouse_connections_test_warehouse_connection_create",
+      "description": "Manage data warehouse connections for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WarehouseConnection"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarehouseConnection"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_api_key}/webhooks/",
+      "method": "POST",
+      "operation_id": "api_v1_environments_webhooks_create",
+      "description": "Manage webhooks for an environment.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Webhook"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Webhook"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Webhook"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Webhook"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_pk}/features/{feature_pk}/versions/",
+      "method": "POST",
+      "operation_id": "create_environment_feature_version",
+      "description": "Creates a new version for a feature flag in a specific environment. Applies to environments with v2 feature versioning (use_v2_feature_versioning: true).",
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentFeatureVersionCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentFeatureVersionCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentFeatureVersionCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnvironmentFeatureVersionCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_pk}/features/{feature_pk}/versions/{environment_feature_version_pk}/featurestates/",
+      "method": "POST",
+      "operation_id": "create_environment_feature_version_state",
+      "description": "Creates a new feature state for a specific version in an environment. Applies to environments with v2 feature versioning (use_v2_feature_versioning: true).",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomEnvironmentFeatureVersionFeatureState"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomEnvironmentFeatureVersionFeatureState"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CustomEnvironmentFeatureVersionFeatureState"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomEnvironmentFeatureVersionFeatureState"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/environments/{environment_pk}/features/{feature_pk}/versions/{id}/publish/",
+      "method": "POST",
+      "operation_id": "publish_environment_feature_version",
+      "description": "Publishes a feature version to make it live in the environment. Applies to environments with v2 feature versioning (use_v2_feature_versioning: true).",
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentFeatureVersionPublish"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentFeatureVersionPublish"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/EnvironmentFeatureVersionPublish"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnvironmentFeatureVersionPublish"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/events/",
+      "method": "POST",
+      "operation_id": "api_v1_events_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKExperimentationEventBatch"
+            }
+          }
+        }
+      },
+      "responses": {
+        "202": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SDKEventBatchResult"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SDKEventBatchResult"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                }
+              }
+            }
+          }
+        },
+        "413": {
+          "description": "",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/feature-health/{path}",
+      "method": "POST",
+      "operation_id": "api_v1_feature_health_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/create-feature-export/",
+      "method": "POST",
+      "operation_id": "api_v1_features_create_feature_export_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateFeatureExport"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateFeatureExport"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateFeatureExport"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureExport"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/feature-import/{environment_id}",
+      "method": "POST",
+      "operation_id": "api_v1_features_feature_import_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureImportUpload"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureImportUpload"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureImportUpload"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureImport"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/feature-segments/",
+      "method": "POST",
+      "operation_id": "api_v1_features_feature_segments_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureSegmentCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureSegmentCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureSegmentCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureSegmentCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/feature-segments/update-priorities/",
+      "method": "POST",
+      "operation_id": "api_v1_features_feature_segments_update_priorities_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FeatureSegmentChangePriorities"
+              }
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FeatureSegmentChangePriorities"
+              }
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FeatureSegmentChangePriorities"
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaginatedFeatureSegmentListList"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/featurestates/",
+      "method": "POST",
+      "operation_id": "api_v1_features_featurestates_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WritableNestedFeatureState"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/WritableNestedFeatureState"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/WritableNestedFeatureState"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WritableNestedFeatureState"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/workflows/change-requests/{id}/approve/",
+      "method": "POST",
+      "operation_id": "api_v1_features_workflows_change_requests_approve_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRequestRetrieve"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/features/workflows/change-requests/{id}/commit/",
+      "method": "POST",
+      "operation_id": "api_v1_features_workflows_change_requests_commit_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRequestRetrieve"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/github-webhook/",
+      "method": "POST",
+      "operation_id": "api_v1_github_webhook_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/gitlab-webhook/{webhook_uuid}/",
+      "method": "POST",
+      "operation_id": "api_v1_gitlab_webhook_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/identities/",
+      "method": "POST",
+      "operation_id": "sdk_v1_post_identities",
+      "description": "Identify a user, set their traits, and retrieve their flags.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/V1IdentitiesRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/V1IdentitiesRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/V1IdentitiesRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/V1IdentitiesResponse"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/metadata/fields/",
+      "method": "POST",
+      "operation_id": "api_v1_metadata_fields_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MetadataField"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MetadataField"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MetadataField"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MetadataField"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/oauth/authorize/",
+      "method": "POST",
+      "operation_id": "api_v1_oauth_authorize_create",
+      "description": "Process a consent decision and return the redirect URI.",
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/onboarding/request/send/",
+      "method": "POST",
+      "operation_id": "api_v1_onboarding_request_send_create",
+      "description": null,
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SelfHostedOnboardingSupportSendRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SelfHostedOnboardingSupportSendRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SelfHostedOnboardingSupportSendRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "204": {
+          "description": "No response body"
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_create",
+      "description": "Override create method to add new organisation to authenticated user",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OrganisationSerializerFull"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/OrganisationSerializerFull"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/OrganisationSerializerFull"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationSerializerFull"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{id}/get-hosted-page-url-for-subscription-upgrade/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_get_hosted_page_url_for_subscription_upgrade_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetHostedPageForSubscriptionUpgrade"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GetHostedPageForSubscriptionUpgrade"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GetHostedPageForSubscriptionUpgrade"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetHostedPageForSubscriptionUpgrade"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{id}/invite/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_invite_create",
+      "description": null,
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MultiInvites"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MultiInvites"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MultiInvites"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultiInvites"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{id}/remove-users/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_remove_users_create",
+      "description": "Takes a list of users and removes them from the organisation provided in the url",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserId"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserId"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserId"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserId"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{id}/update-subscription/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_update_subscription_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateSubscription"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateSubscription"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateSubscription"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationSerializerFull"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/edge-proxy/keys/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_edge_proxy_keys_create",
+      "description": null,
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProxyKey"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ProxyKey"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ProxyKey"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProxyKey"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/github/create-cleanup-issue/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_github_create_cleanup_issue_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/groups/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_groups_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ListUserPermissionGroup"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ListUserPermissionGroup"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ListUserPermissionGroup"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUserPermissionGroup"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/groups/{group_pk}/users/{user_pk}/make-admin",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_groups_users_make_admin_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/groups/{group_pk}/users/{user_pk}/remove-admin",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_groups_users_remove_admin_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/groups/{id}/add-users/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_groups_add_users_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserIds"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserIds"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserIds"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPermissionGroupSerializerDetail"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/groups/{id}/remove-users/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_groups_remove_users_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserIds"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserIds"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserIds"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPermissionGroupSerializerDetail"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/integrations/github/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_integrations_github_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GithubConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/integrations/github/{github_pk}/repositories/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_integrations_github_repositories_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubRepository"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubRepository"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GithubRepository"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GithubRepository"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/integrations/grafana/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_integrations_grafana_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaOrganisationConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaOrganisationConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaOrganisationConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrafanaOrganisationConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/invite-links/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_invite_links_create",
+      "description": null,
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/InviteLink"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/InviteLink"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/InviteLink"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteLink"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/invites/",
+      "method": "POST",
+      "operation_id": "create_organization_invite",
+      "description": "Send an invitation to join the organisation with specified role and permissions.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Invite"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Invite"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Invite"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Invite"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/invites/{id}/resend/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_invites_resend_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/InviteList"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/InviteList"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/InviteList"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteList"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/master-api-keys/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_master_api_keys_create",
+      "description": null,
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MasterAPIKey"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MasterAPIKey"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MasterAPIKey"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MasterAPIKey"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/metadata-model-fields/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_metadata_model_fields_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MetaDataModelField"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MetaDataModelField"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MetaDataModelField"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MetaDataModelField"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/{role_pk}/environments-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_environments_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleEnvironmentPermission"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleEnvironmentPermission"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleEnvironmentPermission"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleEnvironmentPermission"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/{role_pk}/groups/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_groups_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GroupRole"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GroupRole"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GroupRole"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRole"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/{role_pk}/master-api-keys/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_master_api_keys_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MasterAPIKeyRole"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MasterAPIKeyRole"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MasterAPIKeyRole"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MasterAPIKeyRole"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/{role_pk}/organisation-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_organisation_permissions_create",
+      "description": null,
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleOrganisationPermisssion"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleOrganisationPermisssion"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleOrganisationPermisssion"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleOrganisationPermisssion"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/{role_pk}/projects-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_projects_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleProjectPermission"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleProjectPermission"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/RoleProjectPermission"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleProjectPermission"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/roles/{role_pk}/users/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_roles_users_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserRole"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserRole"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserRole"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRole"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/scim/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_scim_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/scim/regenerate-token/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_scim_regenerate_token_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/trust-relationships/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_trust_relationships_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TrustRelationship"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/TrustRelationship"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/TrustRelationship"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrustRelationship"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/user-group-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_user_group_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserPermissionGroupOrganisationPermissionUpdateCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserPermissionGroupOrganisationPermissionUpdateCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserPermissionGroupOrganisationPermissionUpdateCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPermissionGroupOrganisationPermissionUpdateCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/user-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_user_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserOrganisationPermissionUpdateCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserOrganisationPermissionUpdateCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserOrganisationPermissionUpdateCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserOrganisationPermissionUpdateCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/users/{id}/update-role/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_users_update_role_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserOrganisation"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/UserOrganisation"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/UserOrganisation"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserOrganisation"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/organisations/{organisation_pk}/webhooks/",
+      "method": "POST",
+      "operation_id": "api_v1_organisations_webhooks_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OrganisationWebhook"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/OrganisationWebhook"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/OrganisationWebhook"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationWebhook"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProjectCreate"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ProjectCreate"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ProjectCreate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreate"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{id}/migrate-to-edge/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_migrate_to_edge_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "202": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/change-requests/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_change_requests_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProjectChangeRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ProjectChangeRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ProjectChangeRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectChangeRequest"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/change-requests/{id}/approve/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_change_requests_approve_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectChangeRequestRetrieve"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/change-requests/{id}/commit/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_change_requests_commit_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectChangeRequestRetrieve"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowsError"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/code-references/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_code_references_create",
+      "description": "API view to create code references for a project",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureFlagCodeReferencesScan"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureFlagCodeReferencesScan"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureFlagCodeReferencesScan"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureFlagCodeReferencesScan"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/feature-health/events/{id}/dismiss/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_feature_health_events_dismiss_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureHealthEvent"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureHealthEvent"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureHealthEvent"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureHealthEvent"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/feature-health/providers/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_feature_health_providers_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateFeatureHealthProvider"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateFeatureHealthProvider"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateFeatureHealthProvider"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureHealthProvider"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/",
+      "method": "POST",
+      "operation_id": "create_feature",
+      "description": "Creates a new feature flag in the specified project with default settings.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ListFeature"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ListFeature"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ListFeature"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListFeature"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/{feature_pk}/feature-external-resources/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_features_feature_external_resources_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureExternalResource"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureExternalResource"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureExternalResource"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureExternalResource"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/{feature_pk}/mv-options/",
+      "method": "POST",
+      "operation_id": "create_feature_multivariate_option",
+      "description": "Creates a new multivariate option for a feature flag.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/MultivariateFeatureOption"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/MultivariateFeatureOption"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MultivariateFeatureOption"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultivariateFeatureOption"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/{id}/add-group-owners/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_features_add_group_owners_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureGroupOwnerInput"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureGroupOwnerInput"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureGroupOwnerInput"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectFeature"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/{id}/add-owners/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_features_add_owners_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureOwnerInput"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureOwnerInput"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureOwnerInput"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectFeature"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/{id}/remove-group-owners/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_features_remove_group_owners_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureGroupOwnerInput"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureGroupOwnerInput"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureGroupOwnerInput"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectFeature"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/features/{id}/remove-owners/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_features_remove_owners_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureOwnerInput"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureOwnerInput"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/FeatureOwnerInput"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectFeature"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/imports/launch-darkly/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_imports_launch_darkly_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateLaunchDarklyImportRequest"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateLaunchDarklyImportRequest"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateLaunchDarklyImportRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LaunchDarklyImportRequest"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/integrations/datadog/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_integrations_datadog_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DataDogConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/DataDogConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/DataDogConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataDogConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/integrations/gitlab/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_integrations_gitlab_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GitLabConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GitLabConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GitLabConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitLabConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/integrations/grafana/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_integrations_grafana_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrafanaProjectConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/integrations/new-relic/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_integrations_new_relic_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NewRelicConfiguration"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/NewRelicConfiguration"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/NewRelicConfiguration"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRelicConfiguration"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/release-pipelines/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_release_pipelines_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipelineDetail"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipelineDetail"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipelineDetail"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePipelineDetail"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/release-pipelines/{id}/add-feature/",
+      "method": "POST",
+      "operation_id": "add_feature_to_release_pipeline",
+      "description": "Adds a feature flag to a release pipeline for staged rollout.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePipeline"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/release-pipelines/{id}/clone/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_release_pipelines_clone_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipelineDetail"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipelineDetail"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipelineDetail"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePipelineDetail"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/release-pipelines/{id}/publish-pipeline/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_release_pipelines_publish_pipeline_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePipeline"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/release-pipelines/{id}/remove-feature/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_release_pipelines_remove_feature_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePipeline"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/release-pipelines/{id}/unpublish-pipeline/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_release_pipelines_unpublish_pipeline_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/ReleasePipeline"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePipeline"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/segments/",
+      "method": "POST",
+      "operation_id": "create_project_segment",
+      "description": "Creates a new user segment for audience targeting within the project.",
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Segment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Segment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Segment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Segment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/segments/{id}/clone/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_segments_clone_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CloneSegment"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CloneSegment"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CloneSegment"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Segment"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/tags/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_tags_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/user-group-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_user_group_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupProjectPermission"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupProjectPermission"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupProjectPermission"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateUserPermissionGroupProjectPermission"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/projects/{project_pk}/user-permissions/",
+      "method": "POST",
+      "operation_id": "api_v1_projects_user_permissions_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserProjectPermission"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserProjectPermission"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateUpdateUserProjectPermission"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateUserProjectPermission"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/proxy/usage/",
+      "method": "POST",
+      "operation_id": "api_v1_proxy_usage_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/traits/",
+      "method": "POST",
+      "operation_id": "api_v1_traits_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKCreateUpdateTrait"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKCreateUpdateTrait"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKCreateUpdateTrait"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SDKCreateUpdateTrait"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/traits/increment-value/",
+      "method": "POST",
+      "operation_id": "api_v1_traits_increment_value_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IncrementTraitValue"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/IncrementTraitValue"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/IncrementTraitValue"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncrementTraitValue"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/users/join/link/{hash}/",
+      "method": "POST",
+      "operation_id": "api_v1_users_join_link_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/users/join/{hash}/",
+      "method": "POST",
+      "operation_id": "api_v1_users_join_create",
+      "description": null,
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v1/webhooks/test/",
+      "method": "POST",
+      "operation_id": "api_v1_webhooks_test_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TestWebhook"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/TestWebhook"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/TestWebhook"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestWebhookSuccessResponse"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestWebhookErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/api/v2/analytics/flags/",
+      "method": "POST",
+      "operation_id": "api_v2_analytics_flags_create",
+      "description": null,
+      "request_body": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKAnalyticsFlags"
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKAnalyticsFlags"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/SDKAnalyticsFlags"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SDKAnalyticsFlags"
+              }
+            }
+          }
+        }
+      },
+      "source_eligibility": "unassessed"
+    },
+    {
+      "path": "/o/register/",
+      "method": "POST",
+      "operation_id": "o_register_create",
+      "description": "RFC 7591 Dynamic Client Registration endpoint.",
+      "request_body": null,
+      "responses": {
+        "200": {
+          "description": "No response body"
+        }
+      },
+      "source_eligibility": "unassessed"
+    }
+  ]
+}
