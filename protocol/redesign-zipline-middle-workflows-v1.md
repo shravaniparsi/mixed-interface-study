@@ -1,0 +1,7 @@
+# Zipline ordered import, folder and tag source review v1
+
+Acquire exactly the 18 pinned files in wave 13 before making their eligibility decisions. Original import APIs accept structured JSON, so do not infer a file-upload exclusion merely from their names; inspect original native import controls. Review folder creation, name editing, movement and item controls to establish the actual text-field set, rather than assuming a string parent ID is a free text field. Review tag creation and editing to establish whether name/color controls satisfy the original independent scalar-text requirement. Source availability alone does not qualify runtime behavior.
+
+Read original server entry point, plugin/handler registration and OpenAPI startup to locate actual Zod validator and serializer installation. Do not substitute handwritten schema semantics for the original runtime. No application build/start, imports, uploads, mutations or external service is authorized by this source wave. No new target input is selected.
+
+Retain original repository order and unresolved earlier operations. Apply existing per-project 256-path/16-MiB limits and previous wave-12 counters, 30 seconds/request, one request per exact blob and no retry/substitution. No issue history or outcome-selected tests. Preserve incidental comments as development exposure. GoModel's closed allocation remains unchanged; evaluation source remains separate.
