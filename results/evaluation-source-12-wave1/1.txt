@@ -1,0 +1,153 @@
+<p align="center">
+  <a href="https://relaticle.com">
+    <img src="https://relaticle.com/brand/logomark.svg" width="100px" alt="Relaticle logo" />
+  </a>
+</p>
+
+<h1 align="center">The Open-Source AI CRM for Selling Without a Sales Team</h1>
+
+<p align="center">
+  <a href="https://github.com/Relaticle/relaticle/actions/workflows/tests.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/Relaticle/relaticle/tests.yml?branch=main&style=for-the-badge&label=tests" alt="Tests"></a>
+  <a href="https://relaticle.com/docs/mcp"><img src="https://img.shields.io/badge/MCP-Server-8A2BE2?style=for-the-badge" alt="MCP Server"></a>
+  <a href="https://laravel.com/docs/13.x"><img src="https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel" alt="Laravel 13"></a>
+  <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.5-777BB4?style=for-the-badge&logo=php" alt="PHP 8.5"></a>
+  <a href="https://github.com/Relaticle/relaticle/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=for-the-badge" alt="License"></a>
+</p>
+
+<p align="center">
+  <a href="https://relaticle.com">Website</a> ·
+  <a href="https://relaticle.com/docs">Documentation</a> ·
+  <a href="https://relaticle.com/docs/mcp">MCP Server</a> ·
+  <a href="https://github.com/orgs/Relaticle/projects/1/views/1">Roadmap</a> ·
+  <a href="https://relaticle.com/discord">Discord</a>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Relaticle/relaticle/main/public/images/github-preview-dark.png" />
+    <img src="https://raw.githubusercontent.com/Relaticle/relaticle/main/public/images/github-preview-light.png" alt="A chat with Rela, the built-in AI assistant: one request becomes three proposed changes (an opportunity moved to Financing, a task and a note) waiting for approval" />
+  </picture>
+  <br>
+  <sub>One request to Rela, the built-in AI assistant: three changes, applied after you approve them.</sub>
+</p>
+
+---
+
+# About Relaticle
+
+Relaticle is a self-hosted CRM your AI agents can work in. Connect Claude, ChatGPT, or an open-source model over MCP to read, write, and analyze your CRM data. Custom fields, REST API, and multi-workspace isolation.
+
+**Built for:** people who sell to a named list of companies without a sales team. Connect Claude, ChatGPT, or your own agent to work in the CRM.
+
+**Core Strengths:**
+
+- **Agent-Native Infrastructure** - MCP server and REST API with full CRUD, schema access, activity history, and pipeline analysis
+- **Customizable Data Model** - Custom fields for text, dates, currency, selects, and links between records, with per-field encryption. No migrations needed.
+- **Multi-Workspace Isolation** - Workspace-scoped data with role-based permissions
+- **Modern Tech Stack** - Laravel 13, Filament 5, PHP 8.5, with an automated test suite on every change
+- **Privacy-First** - Self-hosted, AGPL-3.0, your data stays on your server
+
+# Connect an agent
+
+Relaticle ships an MCP server, so the agents you already use can work in your CRM.
+
+- **Claude**: add a connector with the URL `https://mcp.relaticle.com` (hosted) or `https://your-host/mcp` (self-hosted).
+- **ChatGPT**: install Relaticle from the [plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6a92c3af04a0819180ed6652ebe09961).
+- **Claude Code, Cursor, Gemini CLI**: plugins and the extension live in [relaticle/agent-plugins](https://github.com/relaticle/agent-plugins).
+- **Anything else that speaks MCP**: Streamable HTTP, OAuth 2.1 or a personal access token, one workspace per connection. Setup in the [MCP guide](https://relaticle.com/developers/mcp).
+
+# Run with Docker
+
+The fastest way to self-host. Six containers: the app, a queue worker, a scheduler, a websocket server, PostgreSQL, and Redis.
+
+1. Download the compose file:
+
+```bash
+curl -o compose.yml https://raw.githubusercontent.com/Relaticle/relaticle/main/compose.yml
+```
+
+2. Generate an application key:
+
+```bash
+echo "APP_KEY=base64:$(openssl rand -base64 32)"
+```
+
+3. Create a `.env` file with your settings:
+
+```bash
+APP_KEY=base64:your-generated-key-here
+DB_PASSWORD=your-secure-database-password
+APP_URL=https://crm.example.com
+```
+
+4. Start the containers:
+
+```bash
+docker compose up -d
+```
+
+5. Create your admin account:
+
+```bash
+docker compose exec app php artisan make:filament-user
+```
+
+Your CRM is now available at `{APP_URL}/app`. The [Self-Hosting Guide](https://relaticle.com/docs/self-hosting) covers configuration, updates, backups, and a manual deployment. The sections below are for running from source.
+
+# Requirements
+
+- PHP 8.5+
+- PostgreSQL 17+
+- Composer 2 and Node.js 22+
+- Redis for queues (optional for development)
+
+# Installation
+
+```bash
+git clone https://github.com/Relaticle/relaticle.git
+cd relaticle && composer app-install
+```
+
+# Development
+
+```bash
+# Start everything (server, queue, vite)
+composer dev
+
+# Run tests
+composer test
+
+# Format code
+composer lint
+```
+
+# Self-Hosting
+
+See the [Self-Hosting Guide](https://relaticle.com/docs/self-hosting) for Docker and manual deployment instructions.
+
+# Internationalization
+
+Relaticle ships English-only in the main repository, but the codebase is fully i18n-ready. Self-host forks can drop a `lang/<locale>/` directory in place to translate the entire app. See [`docs/i18n.md`](docs/i18n.md) for the override workflow and CI guardrails.
+
+# Documentation
+
+Visit our [documentation](https://relaticle.com/docs) for guides on business usage, technical architecture, MCP server setup, REST API integration, and more.
+
+# Community & Support
+
+- [Report Issues](https://github.com/Relaticle/relaticle/issues)
+- [Request Features](https://relaticle.com/discord)
+- [Ask Questions](https://relaticle.com/discord)
+- [Star us on GitHub](https://github.com/Relaticle/relaticle) to support the project
+
+# License
+
+Relaticle is open-source software licensed under the [AGPL-3.0 license](LICENSE). The one exception is [`packages/Cloud`](packages/Cloud), the code behind relaticle.com, which [its own license](packages/Cloud/LICENSE) governs. Everything else stays AGPL-3.0.
+
+- Software that talks to Relaticle only through its REST API or MCP server can use any license, including a proprietary one. See the [Integration Exception](INTEGRATION-EXCEPTION.md).
+- The Relaticle name and logo are trademarks of Relaticle, Inc. If you host Relaticle for others or ship a modified version, use your own name. See the [Trademark Policy](.github/TRADEMARK.md).
+- Contributors sign a [Contributor License Agreement](.github/CLA.md) on their first pull request.
+
+# Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=relaticle/relaticle&type=date&legend=top-left&sealed_token=c38GyCHd6M75Bak3QvcMoEfYHGDlV1lAIyuGyJoQ8AA1kyVwXhZR7A1qYLuGDZg9H0LsvERRX3YUEkOWkjt4q0N0y-mlHVm2NI3mDb74NKAka4KPxMrBBA)](https://www.star-history.com/?repos=relaticle%2Frelaticle&type=date&legend=top-left)
