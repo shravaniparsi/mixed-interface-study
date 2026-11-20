@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Shlinkio\Shlink\Common;
+
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
+
+return [
+    'entity_manager' => [
+        'orm' => [
+            'types' => [
+                Doctrine\Type\ChronosDateTimeType::CHRONOS_DATETIME => Doctrine\Type\ChronosDateTimeType::class,
+            ],
+        ],
+    ],
+
+    'dependencies' => [
+        'factories' => [
+            Configuration::class => Doctrine\ConfigurationFactory::class,
+            EntityManager::class => Doctrine\EntityManagerFactory::class,
+            Connection::class => Doctrine\ConnectionFactory::class,
+            Doctrine\NoDbNameConnectionFactory::SERVICE_NAME => Doctrine\NoDbNameConnectionFactory::class,
+        ],
+        'aliases' => [
+            'em' => EntityManager::class,
+        ],
+        'delegators' => [
+            EntityManager::class => [
+                Doctrine\ReopeningEntityManagerDelegator::class,
+            ],
+        ],
+    ],
+];
