@@ -1,0 +1,3 @@
+# Zipline state qualification dependency review v1
+
+Acquire exactly the four files in wave 18 to resolve original rate-limit process state, timed-cache behavior and the empty-file maintenance path before a checkpoint recipe. Use the existing pinned revision, per-file one-attempt/30-second acquisition, 256-path/16-MiB project budget and wave-17 cumulative accounting. No runtime, source patch, evaluation-source acquisition or new scientific input is authorized. This is preparation for allocation job 2, whose complete code and recipe still require publication. Preserve the original preparation deadline.
