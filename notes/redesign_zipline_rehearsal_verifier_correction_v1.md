@@ -1,0 +1,5 @@
+# Offline rehearsal timestamp-parser correction
+
+The successful run 44741990645 reached independent v2 verification, which stopped on Python's fromisoformat parsing of the valid PostgreSQL timestamp 2026-11-20T13:13:23.07+00:00. This local Python version does not accept that two-digit fractional-second form through fromisoformat. The observed timestamp is retained unchanged. No application rerun or new state exception is introduced.
+
+Preserve frozen verifier v2. New v3 uses datetime.strptime with explicit timezone-aware ISO date/time formats, choosing the fractional-seconds form when present. It accepts one through six fractional digits and the no-fraction form, rejects invalid dates, and retains the same nondecreasing comparison. All other checks are byte-identical. Local calibration checks equivalent .07/.070000 times, fractions of all supported lengths, no fraction and invalid input. This is a parser-portability correction, not removal of timestamp ordering or state-frame requirements.
