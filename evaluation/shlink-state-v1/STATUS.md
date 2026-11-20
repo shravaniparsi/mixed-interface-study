@@ -1,0 +1,1 @@
+Unused implementation draft from Shlink slot 2. No synthetic or application test executed. Shlink closed after unexplained source-archive verification failure in run 44836689455. These observers are unqualified and must not be reported as working infrastructure or scientific evidence. Original recipe/deadline is not renewed.

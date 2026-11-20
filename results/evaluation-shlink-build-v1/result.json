@@ -1,0 +1,65 @@
+{
+  "status": "build_unavailable",
+  "application_server_started": false,
+  "scientific_cases": 0,
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "version"
+      ],
+      "log": "docker-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.03168002899997191
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "version"
+      ],
+      "log": "buildx-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2140218039999695
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "create",
+        "--name",
+        "study-shlink-build",
+        "--driver",
+        "docker-container",
+        "--use"
+      ],
+      "log": "builder-create.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1654136639999706
+    },
+    {
+      "command": [
+        "curl",
+        "--fail",
+        "--location",
+        "--retry",
+        "0",
+        "--max-time",
+        "60",
+        "--max-filesize",
+        "67108864",
+        "--output",
+        "/home/runner/work/_temp/evaluation-shlink-build-v1/backend.tar.gz",
+        "https://codeload.github.com/shlinkio/shlink/tar.gz/2aae1740043c3ab9c53f76467273883ac1a32be8"
+      ],
+      "log": "backend-archive.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.21448439199997438
+    }
+  ],
+  "images": [],
+  "stage": "backend",
+  "error_type": "AssertionError",
+  "error": "",
+  "elapsed_seconds": 0.6806160869999758
+}
