@@ -1,0 +1,3 @@
+# Zipline baseline and field dependencies
+
+Development-only source acquisition of two prescheduled paths at the existing Zipline revision. Settings translations resolve native component controls; reserved routes resolve the original producer schema dependency. Existing per-project acquisition limits, no retry/substitution, and preparation deadline 2026-11-20T13:40:03Z remain. This acquisition executes no application or input. Complete conditional field inventory and original-schema/native-preflight qualification remain necessary before scientific registration. No new scientific execution allowance is granted.
