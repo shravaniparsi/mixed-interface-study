@@ -1,0 +1,67 @@
+name: Redesign Zipline ordinary browser API qualification v3
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published full commit for one ordinary lifecycle attempt
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: redesign-zipline-ordinary-v3
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify frozen inputs
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import json,hashlib,pathlib; x=json.load(open("manifests/redesign-zipline-ordinary-v3.json")); [(None if hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h else (_ for _ in ()).throw(ValueError(p))) for p,h in x["sha256"].items()]'
+          mkdir -p "$RUNNER_TEMP/redesign-zipline-ordinary-v3/evidence" "$RUNNER_TEMP/ordinary-tools"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/redesign-zipline-ordinary-v3/evidence/freeze.txt"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24.11.1'
+          package-manager-cache: false
+      - name: Download exact verified runtime artifact once
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ORDINARY_BASE: ${{ runner.temp }}/redesign-zipline-ordinary-v3
+        run: |
+          timeout 90s gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14624849143/zip > "$ORDINARY_BASE/build.zip"
+          python3 development/redesign-zipline-ordinary-v3/prepare.py
+      - name: Install locked browser tools on runner only
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ordinary-browsers
+        run: |
+          cp development/continuation-fixture-v1/package*.json "$RUNNER_TEMP/ordinary-tools/"
+          npm ci --prefix "$RUNNER_TEMP/ordinary-tools" --ignore-scripts --no-audit --no-fund
+          "$RUNNER_TEMP/ordinary-tools/node_modules/.bin/playwright" install --with-deps chromium
+          node --version > "$RUNNER_TEMP/redesign-zipline-ordinary-v3/evidence/node-version.txt"
+          python3 --version > "$RUNNER_TEMP/redesign-zipline-ordinary-v3/evidence/python-version.txt"
+      - name: Execute ordinary controls in loopback-only namespace once
+        run: |
+          timeout --signal=TERM --kill-after=10s 300s sudo env -i PATH="$PATH" ORDINARY_BASE="$RUNNER_TEMP/redesign-zipline-ordinary-v3" PLAYWRIGHT_MODULE_PATH="$RUNNER_TEMP/ordinary-tools/node_modules/playwright" PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/ordinary-browsers" NODE_BIN="$(command -v node)" RUN_SCRIPT="$GITHUB_WORKSPACE/development/redesign-zipline-ordinary-v3/run.mjs" unshare --net /bin/bash -c 'set -e; ip link set lo up; ip -json address > "$ORDINARY_BASE/evidence/network-interfaces.json"; ip -json route > "$ORDINARY_BASE/evidence/network-routes.json"; exec "$NODE_BIN" "$RUN_SCRIPT"'
+      - name: Sanitize public evidence
+        id: publish
+        if: ${{ always() }}
+        env:
+          ORDINARY_BASE: ${{ runner.temp }}/redesign-zipline-ordinary-v3
+        run: sudo --preserve-env=ORDINARY_BASE python3 development/redesign-zipline-ordinary-v3/export.py
+      - name: Retain ordinary qualification evidence
+        if: ${{ always() && steps.publish.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: redesign-zipline-ordinary-v3-${{ github.run_id }}
+          path: ${{ runner.temp }}/redesign-zipline-ordinary-v3/public-evidence/
+          retention-days: 14
+          if-no-files-found: warn
