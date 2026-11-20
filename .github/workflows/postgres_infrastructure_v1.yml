@@ -1,0 +1,40 @@
+name: Disposable PostgreSQL infrastructure v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: postgres-infrastructure-v1
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify frozen infrastructure recipe
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import json,hashlib,pathlib; x=json.load(open("manifests/postgres-infrastructure-v1.json")); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in x["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/postgres-infrastructure-v1/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/postgres-infrastructure-v1/evidence/freeze.txt"
+          PYTHONDONTWRITEBYTECODE=1 python3 development/infrastructure-journal-v1/test_journal.py
+      - name: One isolated synthetic infrastructure check
+        run: |
+          timeout --signal=TERM --kill-after=10s 300s sudo env -i PATH="$PATH" LANG=C.UTF-8 INFRA_OUT="$RUNNER_TEMP/postgres-infrastructure-v1/evidence" RUN_SCRIPT="$GITHUB_WORKSPACE/development/postgres-infrastructure-v1/run.py" unshare --net /bin/bash -c 'set -e; ip link set lo up; ip -json address > "$INFRA_OUT/network-interfaces.json"; ip -json route > "$INFRA_OUT/network-routes.json"; exec python3 "$RUN_SCRIPT"'
+      - name: Retain synthetic infrastructure receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: postgres-infrastructure-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/postgres-infrastructure-v1/evidence/
+          retention-days: 14
+          if-no-files-found: warn
