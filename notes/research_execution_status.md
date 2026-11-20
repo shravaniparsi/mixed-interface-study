@@ -6,7 +6,7 @@ Updated 2026-11-20. This is the maintained operational decision log, not manuscr
 
 - The original study yielded no qualified real-system cases; its results remain closed.
 - Redesigned development: Zipline scientific run 44743401707, 9 producers, 4 accepted, 5 rejected unchanged, 15 native branches successful, no observed editability defect or fixed-repair benefit. These are correlated observations from one development workflow, not independent evaluation evidence. See notes/redesign_zipline_scientific_outcome_v1.md and its verification artifact.
-- Evaluation: fixed 32-candidate schedule, maximum six selected source-qualified slots. Flagsmith consumed slot 1. Thirty-one candidates remain unattempted; five selection slots remain. Candidate 10 is voidrunner3074/aastro, not a replacement for Flagsmith.
+- Evaluation: fixed 32-candidate schedule, maximum six selected source-qualified slots. Flagsmith consumed slot 1. Candidate 10 (voidrunner3074/aastro) is source-ineligible: the original YAML-configured gateway and CLI provide no original native persistent-entity creator/editor workflow in the reviewed README and pinned tree. Two source files (21368 bytes) were acquired; no application ran and no slot was consumed. Thirty candidates remain unattempted; five selection slots remain. Candidate 11 is shlinkio/shlink, not a replacement for Flagsmith.
 - Flagsmith original build correction run 44749218743 succeeded. First run 44748797266 failed at exporter configuration; its evidence is preserved. No ordinary or scientific application experiment ran. The preparation deadline was 2026-11-20T15:56:28Z. The live audit occurred after that deadline, with only build implementations and an unregistered input draft present. Slot 1 is closed as runtime-unavailable; no extension, new correction or later scientific launch is authorized for it.
 - Build durations are 33 + 111 = 144 seconds. Both report zero Ubuntu billable execution. This is not a complete project invoice. Existing project-cost records and the $100 cap remain applicable; missing cost coverage must not be called zero.
 - No research application job is currently live in the checked GitHub run inventory. Source and unit-check automation are not scientific observations.
@@ -30,4 +30,6 @@ Maintain this document rather than creating a new narrative status file every tu
 
 ## Immediate next deliverable
 
-A verified Flagsmith build/closure receipt, then the exact candidate-10 source schedule and complete source-review dependency checklist. Current scientific conclusion: no independent evaluation result yet; Q1 readiness unproven.
+Flagsmith build/closure receipt is verified and published. Candidate 10 is closed from source evidence without a build. Proceed to candidate 11 under the same checklist and limits. Current scientific conclusion: no independent evaluation result yet; Q1 readiness unproven.
+
+CI efficiency: unit.yml push filtering excludes only new source-wave artifacts/manifests, evaluation-status snapshots and these operational notes. The historical job does not consume these new files. Exact source evidence is verified with source_wave.py before publication. Collector, experimental code, workflow and all other paths continue to trigger unit CI; pull-request behavior is unchanged.
