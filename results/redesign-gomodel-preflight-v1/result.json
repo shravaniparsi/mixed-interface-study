@@ -1,0 +1,74 @@
+{
+  "status": "ordinary_lifecycle_checks_passed",
+  "stage": "complete",
+  "scientific_cases": 0,
+  "altered_inputs_executed": false,
+  "checks": {
+    "native_create": true,
+    "api_create": true,
+    "maintenance_non_statistics_unchanged": true,
+    "checkpoint_backup": true,
+    "preflight_single_expected_request": true,
+    "preflight_no_state_write": true,
+    "preflight_reset_form": true,
+    "preflight_reset_browser": true,
+    "preflight_reset_actor": true,
+    "warm_frame_preserved": true,
+    "preflight_predicts_native_request": true,
+    "restored_start_state": true,
+    "restored_actor": true,
+    "restored_browser": true,
+    "restored_form": true,
+    "restored_frame_preserved": true,
+    "requests_equal": true,
+    "post_state_equal_with_target_timestamp_exception": true
+  },
+  "branches": [
+    {
+      "label": "warm",
+      "request": {
+        "method": "PUT",
+        "path": "/admin/guardrails",
+        "body": {
+          "name": "study-api-ordinary",
+          "type": "header_edit",
+          "description": "Ordinary local configuration",
+          "user_path": "/study/local",
+          "config": {
+            "request_remove": "X-Study-Remove",
+            "request_set": "X-Study-Request: edited",
+            "response_add": "X-Study-Additional: original",
+            "response_remove": "X-Study-Remove-Response",
+            "response_set": "X-Study-Response: original",
+            "upstream_set": "X-Study-Upstream: original"
+          }
+        },
+        "actor": "Bearer synthetic-local-research-master-v1"
+      },
+      "intended_edit": true
+    },
+    {
+      "label": "restored",
+      "request": {
+        "method": "PUT",
+        "path": "/admin/guardrails",
+        "body": {
+          "name": "study-api-ordinary",
+          "type": "header_edit",
+          "description": "Ordinary local configuration",
+          "user_path": "/study/local",
+          "config": {
+            "request_remove": "X-Study-Remove",
+            "request_set": "X-Study-Request: edited",
+            "response_add": "X-Study-Additional: original",
+            "response_remove": "X-Study-Remove-Response",
+            "response_set": "X-Study-Response: original",
+            "upstream_set": "X-Study-Upstream: original"
+          }
+        },
+        "actor": "Bearer synthetic-local-research-master-v1"
+      },
+      "intended_edit": true
+    }
+  ]
+}
