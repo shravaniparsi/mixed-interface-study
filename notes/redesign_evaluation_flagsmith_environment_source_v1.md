@@ -1,0 +1,9 @@
+# Environment candidate: unresolved source dependencies
+
+Wave 5 acquired and verified ten exact source files, 124475 bytes. No runtime or scientific cases. The original native CreateEnvironmentPage initializes no clone selection and offers name and description, plus empty metadata and no additional administrators. EnvironmentSettingsPage exposes both text controls and submits through AppActions.editEnv. Backend EnvironmentViewSet selects original create/update serializers, uses api_key for lookup, and grants the creating user an environment permission row. These support a potential same-actor workflow but are not terminal qualification.
+
+Source shows additional operation-specific effects that must be prospectively accounted for: the settings page can initialize null banner_colour to Constants.tagColors[0], hide_disabled_flags to false, and change-request approvals to null. The model is auditable, has timestamps, feature-state creation and cache/warehouse methods. Do not silently ignore those fields or assume database-only state. Native provider/store serialization, permissions, signals and compatibility documentation are scheduled in wave 6. Earlier platform-hub/audit route methods still require their original views before closing the route prefix.
+
+Incidental source-comment exposure: EnvironmentSerializerLight.get_use_mv_v2_evaluation says sending this read-only method field may not behave as expected. This concerns a boolean outside the frozen scalar-text family; no test target or mutation is chosen from it. The creator also comments on avoiding stale Flux handler state through refs. Environment model comments link historical project-cascade and database-column issues/PRs; these links were not opened and supply no defect evidence. Record these exposures rather than claiming pristine ignorance of all implementation concerns.
+
+Candidate not yet selected; the original two-hour source clock remains unchanged.
