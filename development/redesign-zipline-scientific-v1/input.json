@@ -1,0 +1,277 @@
+{
+  "port": 3100,
+  "username": "research-admin",
+  "password": "Disposable-Research-Only-2026",
+  "secret": "disposable-local-research-secret-2026-zipline",
+  "native": {
+    "destination": "https://example.com/native",
+    "vanity": "research-native",
+    "discordComponentEmbed": {
+      "enabled": true,
+      "accentColor": "#336699",
+      "spoiler": false,
+      "components": [
+        {
+          "type": 10,
+          "content": "Research preview"
+        }
+      ]
+    }
+  },
+  "api": {
+    "destination": "https://example.com/api",
+    "vanity": "research-api",
+    "enabled": true,
+    "discordPreviewMode": "components",
+    "discordComponentEmbed": {
+      "enabled": true,
+      "accentColor": "#336699",
+      "spoiler": false,
+      "components": [
+        {
+          "type": 10,
+          "content": "Research preview"
+        }
+      ]
+    }
+  },
+  "edit_destination": "https://example.com/edited",
+  "fields": [
+    {
+      "pointer": "/destination",
+      "ordinary": "https://example.com/api",
+      "replacement": "https://example.com/edited",
+      "label": "Destination",
+      "unrelated_pointer": "/discordComponentEmbed/accentColor"
+    },
+    {
+      "pointer": "/discordComponentEmbed/accentColor",
+      "ordinary": "#336699",
+      "replacement": "#669933",
+      "label": "Container accent color",
+      "unrelated_pointer": "/destination"
+    },
+    {
+      "pointer": "/discordComponentEmbed/components/0/content",
+      "ordinary": "Research preview",
+      "replacement": "Updated research preview",
+      "label": "Markdown content",
+      "unrelated_pointer": "/destination"
+    },
+    {
+      "pointer": "/vanity",
+      "ordinary": "research-api",
+      "replacement": "research-edited",
+      "label": "Vanity",
+      "unrelated_pointer": "/destination"
+    }
+  ],
+  "expected_schema_edit": {
+    "maxViews": null,
+    "discordComponentEmbed": {
+      "enabled": true,
+      "accentColor": "#669933",
+      "spoiler": false,
+      "components": [
+        {
+          "type": 10,
+          "content": "Research preview"
+        }
+      ]
+    }
+  },
+  "producers": [
+    {
+      "id": "ordinary",
+      "body": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "1",
+      "target": "/destination",
+      "operation": "omit",
+      "body": {
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "2",
+      "target": "/destination",
+      "operation": "null",
+      "body": {
+        "destination": null,
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3",
+      "target": "/discordComponentEmbed/accentColor",
+      "operation": "omit",
+      "body": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "4",
+      "target": "/discordComponentEmbed/accentColor",
+      "operation": "null",
+      "body": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": null,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "5",
+      "target": "/discordComponentEmbed/components/0/content",
+      "operation": "omit",
+      "body": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6",
+      "target": "/discordComponentEmbed/components/0/content",
+      "operation": "null",
+      "body": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "7",
+      "target": "/vanity",
+      "operation": "omit",
+      "body": {
+        "destination": "https://example.com/api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "8",
+      "target": "/vanity",
+      "operation": "null",
+      "body": {
+        "destination": "https://example.com/api",
+        "vanity": null,
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
