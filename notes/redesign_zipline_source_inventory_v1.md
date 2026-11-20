@@ -1,0 +1,9 @@
+# Zipline route-source acquisition outcome
+
+Wave 11 at freeze d86b4e3d37757f7950fcf95b3dc3cc7dac477f8d acquired and verified all 62 scheduled files, 299808 decoded bytes, with no failures. Cumulative Zipline source accounting is 66 paths and 314485 bytes including wave 1. No application, dependency install or scientific input ran.
+
+The retained route-reference index lists original PATH constants and HTTP method references for all acquired API route modules. It is a navigation aid, not a parser-certified or semantically adjudicated inventory of persistent producers. Generic typed post calls in upload handlers are included. The original startup module registers routes from a loader that remains to be acquired; completeness of loader coverage is still unresolved.
+
+The lexically early invite producer creates a generated code with expiration and maximum-use count. Its reviewed item route exposes fetch and delete, not update. This does not yet qualify a two-independent-text-field native editing workflow. Registration creates a user and authenticates the new session; its identity/lifecycle transitions and native edit fields require explicit review before eligibility. Do not skip those unresolved earlier operations to select convenient folders, tags or URLs. Runtime selection remains pending.
+
+Original route source uses Zod request/response schemas and an imported typedPlugin wrapper. Their actual coercion and validation behavior require the original wrapper and configuration before a schema baseline can be qualified. No claim is made about a bypass, normalization, frontend discrepancy or baseline advantage. Source comments and guard logic were encountered during inventory and are development exposure, not independently discovered findings. All scientific counts remain zero; evaluation source remains separate.
