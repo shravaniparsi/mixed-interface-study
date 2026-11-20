@@ -1,0 +1,7 @@
+# Zipline URL runtime-dependency source review v1
+
+Read exactly the 20 pinned wave-15 files to resolve the event callback invoked by original URL creation, original configuration/default loading, database startup/migrations, background task registration and original build helpers/configuration. These dependencies are evidenced by already acquired imports. All configuration and webhook modules in the frozen tree are included; no issue reports or defect-selected tests are used.
+
+Determine whether original supported configuration can keep webhooks and external effects inactive in a local synthetic fixture, without changing application code or validators. Identify all persistence resources and background activity that a causal checkpoint would have to include. File or PostgreSQL storage must use the application's original supported path. Do not infer that disabling one webhook covers every task, or that a database backup alone covers process/browser state.
+
+Apply existing source limits, wave-14 cumulative counters, original revision, 30-second single requests and no retry/substitute. No dependency installation, build, runtime, schema execution or scientific input is authorized. No Zipline runtime engineering allocation is started by this source-only wave. A build/full-tree acquisition, if justified, needs its own published bounded recipe; acquired build scripts alone are not permission to run them. Preserve the $100 ceiling and no new paid services.
