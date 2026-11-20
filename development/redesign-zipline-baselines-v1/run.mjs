@@ -1,0 +1,86 @@
+import assert from 'node:assert/strict';
+import {createCapture} from '../redesign-harness-qualification-v1/capture.mjs';
+import {spawn,execFileSync} from 'node:child_process';
+import {snapshot,canonical,sha,compareFrame} from './state.mjs';
+import {mkdirSync,readFileSync,writeFileSync,openSync,closeSync,cpSync,rmSync} from 'node:fs';
+import {createRequire} from 'node:module';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const dir=path.dirname(fileURLToPath(import.meta.url));
+const databaseUrl='postgresql://research@127.0.0.1:55432/zipline';
+const input=JSON.parse(readFileSync(path.join(dir,'input.json')));
+const base=process.env.ORDINARY_BASE,out=path.join(base,'evidence'),work=path.join(base,'work');
+mkdirSync(work,{recursive:true});
+writeFileSync(path.join(base,'redaction-values.json'),JSON.stringify([input.password,input.secret]),{mode:0o600});
+const origin=`http://127.0.0.1:${input.port}`;
+const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE_PATH);
+const save=(n,v)=>writeFileSync(path.join(out,n+'.json'),JSON.stringify(v,null,2)+'\n');
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+const result={status:'in_progress',stage:'startup',scientific_cases:0,altered_inputs_executed:false,checks:{}};
+let proc,browser,page,context,token,phase='startup',processNumber=0;const trace=[];
+const capture=createCapture({bodyTimeoutMs:2000,flushTimeoutMs:2500,write:rows=>save('response-capture',rows)});
+async function api(route,method='GET',body){const r=await fetch(origin+route,{method,headers:{Authorization:token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(10000)});const text=await r.text();trace.push({phase,channel:'api',route,method,body,status:r.status,response:text});assert(r.ok,text);return JSON.parse(text);}
+
+const equal=(a,b)=>canonical(a)===canonical(b);
+const runtime=path.join(base,'runtime'),pg=process.env.PG_BIN;
+assert(pg,'PG_BIN required');
+function command(name,args){return execFileSync(path.join(pg,name),args,{encoding:'utf8',timeout:30000,maxBuffer:16*1024*1024});}
+async function state(label,url=databaseUrl){const value=await snapshot({runtime,databaseUrl:url,fileRoot:work});save(label,value);return value;}
+function invariant(s){for(const name of ['public.File','public.Thumbnail','public.Invite'])assert.equal(s.tables[name]?.rows.length,0,name);assert(s.files.every(x=>x.type==='directory'),'nonempty file fixture');}
+async function stop(){if(!proc||proc.exitCode!==null||proc.signalCode!==null)return;proc.kill('SIGTERM');for(let i=0;i<100&&proc.exitCode===null&&proc.signalCode===null;i++)await pause(100);if(proc.exitCode===null&&proc.signalCode===null){proc.kill('SIGKILL');throw new Error('application shutdown timeout');}}
+async function idle(){const {Client}=createRequire(path.join(runtime,'package.json'))('pg');const c=new Client({connectionString:databaseUrl});await c.connect();try{const r=await c.query("SELECT count(*)::int AS n FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid() AND state<>'idle'");assert.equal(r.rows[0].n,0,'other database activity');}finally{await c.end();}}
+async function openEditor(){await page.goto(origin+'/dashboard/urls');const row=page.getByRole('row').filter({has:page.getByRole('link',{name:input.api.vanity,exact:true})});await row.waitFor();assert.equal(await row.count(),1);const button=row.getByRole('button').filter({has:page.locator('svg.tabler-icon-pencil')});assert.equal(await button.count(),1);assert(await button.isEnabled());await button.click();const editor=page.getByRole('dialog',{name:`Editing "${input.api.vanity}"`,exact:true});await editor.getByLabel('Destination',{exact:true}).waitFor();return editor;}
+async function form(editor){return await editor.locator('input,textarea,select').evaluateAll(xs=>xs.map(x=>({tag:x.tagName,type:x.type,value:x.value,required:x.required,disabled:x.disabled,checked:x.checked??null})));}
+async function storage(){const persistent=await context.storageState({indexedDB:true});persistent.cookies.sort((a,b)=>(a.domain+a.path+a.name).localeCompare(b.domain+b.path+b.name));persistent.origins.sort((a,b)=>a.origin.localeCompare(b.origin));for(const origin of persistent.origins)origin.localStorage.sort((a,b)=>a.name.localeCompare(b.name));return {persistent,session:await page.evaluate(()=>Object.fromEntries(Object.entries(sessionStorage)))};}
+function normalizedPost(s,id,timestamp){const x=structuredClone(s),table=x.tables['public.Url'];table.rows.find(r=>r.id===id).updatedAt=timestamp;table.rows.sort((a,b)=>canonical(a).localeCompare(canonical(b),'en'));table.row_sha256=table.rows.map(r=>sha(canonical(r)));return x;}
+
+async function start(){
+ const env={PATH:process.env.PATH,LANG:'C.UTF-8',NODE_ENV:'production',ZIPLINE_ROOT:path.join(base,'runtime'),ZIPLINE_NO_COLOR:'true',CORE_HOSTNAME:'127.0.0.1',CORE_PORT:String(input.port),CORE_SECRET:input.secret,DATABASE_URL:databaseUrl,RATELIMIT_ENABLED:'false',DATASOURCE_TYPE:'local',DATASOURCE_LOCAL_DIRECTORY:path.join(work,'uploads'),CORE_TEMP_DIRECTORY:path.join(work,'tmp'),CORE_RETURN_HTTPS_URLS:'false',FEATURES_VERSION_CHECKING:'false',FEATURES_METRICS_ENABLED:'false',FEATURES_THUMBNAILS_ENABLED:'false',FEATURES_DELETE_ON_MAX_VIEWS:'false',TASKS_DELETE_INTERVAL:'0s',TASKS_CLEAR_INVITES_INTERVAL:'0s',TASKS_MAX_VIEWS_INTERVAL:'0s',TASKS_CLEAN_THUMBNAILS_INTERVAL:'0s'};
+ save('environment',env);const fd=openSync(path.join(out,`application-${++processNumber}.log`),'w');proc=spawn('/bin/sh',[path.join(base,'entrypoint.sh')],{cwd:work,env,stdio:['ignore',fd,fd]});closeSync(fd);
+ let ready=false;for(let i=0;i<120;i++){assert(proc.exitCode===null,'application exited '+proc.exitCode);try{const r=await fetch(origin+'/api/server/public',{signal:AbortSignal.timeout(1000)});if(r.ok){save('public-startup',await r.json());ready=true;break;}}catch{}await pause(500);}assert(ready,'startup timeout');
+}
+async function openPage(saved){context=await browser.newContext({locale:'en-US',...(saved?{storageState:saved.persistent}:{})});if(saved)await context.addInitScript(({origin,session})=>{if(location.origin===origin)for(const[k,v]of Object.entries(session))sessionStorage.setItem(k,v);},{origin,session:saved.session});page=await context.newPage();page.setDefaultTimeout(10000);
+ page.on('request',r=>trace.push({phase,channel:'browser-request',method:r.method(),url:r.url(),body:r.postData()}));
+ page.on('response',r=>{if(!r.url().includes('/api/'))return;const row={phase,channel:'browser-response',url:r.url(),status:r.status()};trace.push(row);capture.observe(row,()=>r.text());});
+ page.on('pageerror',e=>trace.push({phase,channel:'pageerror',error:String(e)}));
+}
+try{
+ assert.equal(process.version,'v24.11.1');await start();browser=await chromium.launch({headless:true,args:['--no-sandbox']});await openPage();
+ phase=result.stage='native_setup';await page.goto(origin+'/auth/setup');await page.locator('input[name="username"]').fill(input.username);await page.locator('input[name="password"]').fill(input.password);await page.locator('input[name="confirmPassword"]').fill(input.password);await page.getByRole('button',{name:'Create account',exact:true}).click();await page.waitForURL(origin+'/dashboard');
+ const browserActor=await (await context.request.get(origin+'/api/user')).json();save('browser-actor',browserActor);const tokenResponse=await context.request.get(origin+'/api/user/token');assert(tokenResponse.ok());const tokenBody=await tokenResponse.json();token=tokenBody.token;assert(token);writeFileSync(path.join(base,'redaction-values.json'),JSON.stringify([input.password,input.secret,token]),{mode:0o600});save('api-token-response',{issued:true});const apiActor=await api('/api/user');save('api-actor',apiActor);assert.equal(browserActor.user.id,apiActor.user.id);result.checks.same_actor=true;
+ phase=result.stage='native_create';await page.goto(origin+'/dashboard/urls');await page.getByRole('button',{name:'Create',exact:true}).click();const create=page.getByRole('dialog',{name:'Shorten URL',exact:true});await create.getByLabel('URL',{exact:true}).fill(input.native.destination);await create.getByLabel('Vanity',{exact:true}).fill(input.native.vanity);
+ const [createdResponse]=await Promise.all([page.waitForResponse(r=>r.url()===origin+'/api/user/urls'&&r.request().method()==='POST'),create.getByRole('button',{name:'Create',exact:true}).click()]);assert(createdResponse.ok(),await createdResponse.text());save('native-create-request',createdResponse.request().postDataJSON());const native=await createdResponse.json();assert.equal(native.userId,browserActor.user.id);await page.getByRole('dialog',{name:'Shortened URL',exact:true}).waitFor();await page.keyboard.press('Escape');result.checks.native_create=true;
+ phase=result.stage='api_create';const created=await api('/api/user/urls','POST',input.api);assert.equal(created.userId,browserActor.user.id);assert(created.id);save('api-created',created);const before=await api('/api/user/urls');save('before',before);assert.equal(before.length,2);const target=before.find(x=>x.id===created.id);assert(target);assert.equal(target.destination,input.api.destination);assert.equal(target.vanity,input.api.vanity);result.checks.api_create_and_readback=true;
+
+ phase=result.stage='checkpoint';let editor=await openEditor();const settings=await api('/api/server/settings');save('settings',settings);
+ const startActor=await api('/api/user');save('checkpoint-actor',startActor);const initial=await state('checkpoint-state');invariant(initial);await idle();await pause(1000);assert(equal(initial,await state('checkpoint-repeat')),'state changed during fixed observation');await idle();
+ phase=result.stage='schema_baseline';
+ execFileSync(process.execPath,[path.join(dir,'schema.mjs'),runtime,path.join(dir,'input.json'),path.join(out,'schema-baseline.json')],{cwd:work,timeout:15000,maxBuffer:1024*1024,env:{PATH:process.env.PATH,LANG:'C.UTF-8',NODE_ENV:'production',DATABASE_URL:databaseUrl}});
+ assert(equal(initial,await state('schema-after')),'schema replay changed application state');result.checks.original_schema=true;
+ const savedStorage=await storage(),savedForm=await form(editor);save('checkpoint-browser',savedStorage);save('checkpoint-form',savedForm);save('checkpoint-browser-identity',{sha256:sha(canonical(savedStorage))});
+ const dump=path.join(base,'checkpoint.dump'),checkpointFiles=path.join(base,'checkpoint-files');cpSync(work,checkpointFiles,{recursive:true});
+ command('pg_dump',['--format=custom','--file',dump,databaseUrl]);assert(equal(initial,await state('checkpoint-after-backup')));
+ command('createdb',['-h','127.0.0.1','-p','55432','-U','research','checkpoint_verify']);command('pg_restore',['--exit-on-error','--no-owner','-d','postgresql://research@127.0.0.1:55432/checkpoint_verify',dump]);
+ assert(equal(initial,await state('backup-logical-state','postgresql://research@127.0.0.1:55432/checkpoint_verify')),'backup logical state mismatch');command('dropdb',['-h','127.0.0.1','-p','55432','-U','research','checkpoint_verify']);result.checks.backup_verified=true;
+ const baselineTarget=initial.tables['public.Url'].rows.find(r=>r.id===created.id);assert(baselineTarget&&baselineTarget.destination===input.api.destination&&baselineTarget.vanity===input.api.vanity);assert(initial.tables['public.Url'].rows.some(r=>r.id===native.id&&r.destination===input.native.destination));result.checks.independent_ordinary_readback=true;
+ async function branch(label,editor){phase=result.stage=label;const before=await state(label+'-before');invariant(before);assert(equal(initial,before),'branch state differs');await editor.getByLabel('Destination',{exact:true}).fill(input.edit_destination);const [response]=await Promise.all([page.waitForResponse(r=>r.url()===origin+'/api/user/urls/'+created.id&&r.request().method()==='PATCH'),editor.getByRole('button',{name:'Save changes',exact:true}).click()]);assert(response.ok(),await response.text());const request={method:response.request().method(),path:new URL(response.url()).pathname,body:response.request().postDataJSON()};save(label+'-request',request);save(label+'-response',await response.json());await editor.waitFor({state:'hidden'});const records=await api('/api/user/urls');save(label+'-api-after',records);assert.equal(records.find(r=>r.id===created.id).destination,input.edit_destination);const after=await state(label+'-after');assert(compareFrame(before,after,{table:'public.Url',id:created.id,destination:input.edit_destination}),'full logical state frame mismatch');return {request,after};}
+ phase=result.stage='native_preflight';
+ const intercepted=[];
+ await context.route('**/*',async route=>{const request=route.request();if(!['GET','HEAD','OPTIONS'].includes(request.method())){intercepted.push({method:request.method(),path:new URL(request.url()).pathname,body:request.postDataJSON()});await route.abort('blockedbyclient');}else await route.continue();});
+ await editor.getByLabel('Destination',{exact:true}).fill(input.edit_destination);
+ save('preflight-edited-form',await form(editor));
+ const attempted=page.waitForEvent('requestfailed',{predicate:r=>r.url()===origin+'/api/user/urls/'+created.id&&r.method()==='PATCH',timeout:10000});
+ await editor.getByRole('button',{name:'Save changes',exact:true}).click();const failedRequest=await attempted;save('preflight-abort',{method:failedRequest.method(),path:new URL(failedRequest.url()).pathname,failure:failedRequest.failure()});assert(failedRequest.failure()?.errorText.includes('ERR_BLOCKED_BY_CLIENT'));
+ assert.equal(intercepted.length,1);save('preflight-request',intercepted[0]);
+ assert(equal(initial,await state('preflight-after')),'preflight changed database/files');
+ await context.close();await openPage(savedStorage);editor=await openEditor();
+ const freshStorage=await storage();save('preflight-reset-browser-identity',{sha256:sha(canonical(freshStorage))});save('preflight-reset-form',await form(editor));save('preflight-reset-actor',await api('/api/user'));
+ assert(equal(savedStorage,freshStorage));assert(equal(savedForm,await form(editor)));assert(equal(startActor,await api('/api/user')));assert(equal(initial,await state('preflight-reset-state')));result.checks.native_preflight=true;
+ const warm=await branch('warm',editor);assert(equal(intercepted[0],warm.request),'preflight and warm native requests differ');result.checks.warm_frame=true;save('result',result);await context.close();await stop();
+ phase=result.stage='restore';command('dropdb',['-h','127.0.0.1','-p','55432','-U','research','zipline']);command('createdb',['-h','127.0.0.1','-p','55432','-U','research','zipline']);command('pg_restore',['--exit-on-error','--no-owner','-d',databaseUrl,dump]);rmSync(work,{recursive:true});cpSync(checkpointFiles,work,{recursive:true});assert(equal(initial,await state('restored-before-start')));
+ await start();await openPage(savedStorage);editor=await openEditor();const restoredActor=await api('/api/user');save('restored-actor',restoredActor);assert(equal(startActor,restoredActor),'actor mismatch');const restoredStorage=await storage(),restoredForm=await form(editor);save('restored-browser',restoredStorage);save('restored-browser-identity',{sha256:sha(canonical(restoredStorage))});save('restored-form',restoredForm);assert(equal(savedStorage,restoredStorage),'browser storage mismatch');assert(equal(savedForm,restoredForm),'loaded form mismatch');
+ assert(equal(initial,await state('restored-start-state')),'restored startup changed logical state');await idle();await pause(1000);assert(equal(initial,await state('restored-repeat')));result.checks.restored_start_equivalence=true;
+ const restored=await branch('restored',editor);assert(equal(warm.request,restored.request),'requests differ');assert(equal(normalizedPost(warm.after,created.id,baselineTarget.updatedAt),normalizedPost(restored.after,created.id,baselineTarget.updatedAt)),'post-state mismatch');result.checks.restored_frame=true;result.checks.requests_and_post_effects_equal=true;result.status='ordinary_state_restore_checks_passed';result.stage='complete';
+}catch(e){result.status='qualification_unavailable';result.error=String(e);result.stack=e.stack;save('result',result);save('trace',trace);if(page)try{await page.screenshot({path:path.join(out,'failure.png'),fullPage:true});writeFileSync(path.join(out,'failure.html'),await page.content());}catch{}}
+finally{save('result',result);save('trace',trace);if(page)page.removeAllListeners('response');try{await capture.close();}catch(e){result.status='qualification_unavailable';result.capture_error=String(e);save('result',result);}if(browser)await browser.close().catch(()=>{});try{await stop();result.cleanup_complete=true;}catch(e){result.status='qualification_unavailable';result.shutdown_error=String(e);}save('trace',trace);save('result',result);console.log(JSON.stringify(result));}
+process.exitCode=result.status==='ordinary_state_restore_checks_passed'?0:1;
