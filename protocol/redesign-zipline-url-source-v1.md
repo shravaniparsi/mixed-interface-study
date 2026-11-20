@@ -1,0 +1,7 @@
+# Zipline URL workflow source review v1
+
+Following the retained earlier workflow decisions, review the next pending original POST /api/user/urls producer. Acquire exactly the 13 frozen wave-14 files: original URL page/editor/views/actions, persistence model and URL helper, client actor hook and request wrapper, original build script and lockfile. These locate native producer dependencies, independently editable properties, original API readback and potential external effects; they do not establish eligibility or select inputs in advance.
+
+The name/color dependency decision for tags remains preserved. Do not choose a target because of a source error, issue or later outcome. Check whether URL creation or editing makes network requests outside the local fixture, and require original settings that prevent them before any proposed execution. A destination string alone does not prove a request occurs. Do not open generated links or use external destinations in runtime work. Runtime behavior, full-state restoration and baselines remain unqualified.
+
+Apply existing per-project source limits and wave-13 cumulative accounting, one request per blob, original pinned revision, 30-second timeout and no retry/substitute. Build script/lockfile inspection is read-only feasibility work, not permission to install, build or start an app. No evaluation-source acquisition or scientific input execution is authorized. Preserve all prior exclusions and unresolved scope as denominator information.
