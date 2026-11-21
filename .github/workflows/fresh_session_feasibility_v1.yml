@@ -23,9 +23,6 @@ jobs:
     if: ${{ github.event.repository.private == false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 40
-    env:
-      STUDY_BASE: ${{ runner.temp }}/fresh-session-${{ inputs.system }}
-      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/fresh-session-browsers
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -38,6 +35,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 development/fresh-session-feasibility-v1/dispatch_check.py
+          export STUDY_BASE="$RUNNER_TEMP/fresh-session-$STUDY_SYSTEM"
+          export PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/fresh-session-browsers"
+          printf 'STUDY_BASE=%s\nPLAYWRIGHT_BROWSERS_PATH=%s\n' "$STUDY_BASE" "$PLAYWRIGHT_BROWSERS_PATH" >> "$GITHUB_ENV"
           mkdir -p "$STUDY_BASE/evidence" "$RUNNER_TEMP/fresh-session-tools"
           chmod 700 "$STUDY_BASE" "$STUDY_BASE/evidence"
           printf '%s\n' "$FREEZE" > "$STUDY_BASE/evidence/freeze.txt"

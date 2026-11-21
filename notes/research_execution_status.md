@@ -347,3 +347,8 @@ Both synthetic system receipts pass. Twelve missing/contradictory evidence varia
 ## Fresh-session dispatch authorized
 
 User explicitly approved sanitized public Actions-log evidence. Completed transport checks and the integrated review; 43 local tests pass. G1/G2 now qualify dispatch, while G3 and both ordinary trials remain pending. Shlink is the sole first authorized system; no application job has yet launched. Protocol, inputs, runtime choices, caps and single shared correction are unchanged. Review: protocol/fresh-session-dispatch-review-v1.md.
+
+
+### Pre-job dispatch rejection and sole correction
+
+GitHub rejected freeze 77bcdcdc with HTTP422: runner context unavailable in job-level env. The run history remains empty; zero runner/application time. Corrected the two paths to use RUNNER_TEMP within the guarded step, persisted through GITHUB_ENV. This is a harness workflow defect, not an application finding. Conservatively consumed the one shared technical correction; no further correction or implicit rerun is permitted. Recorded the rejected original freeze and exact error in results/fresh-session-source-preflight-v1/dispatch-rejection-v1.json. Inputs and scientific scope are unchanged.
