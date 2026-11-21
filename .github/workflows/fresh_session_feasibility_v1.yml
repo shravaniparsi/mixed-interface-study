@@ -1,0 +1,104 @@
+name: Fresh-session feasibility v1
+run-name: Fresh-session feasibility / ${{ inputs.system }}
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Full reviewed commit; both harnesses must be ready
+        required: true
+        type: string
+      system:
+        description: Authorized feasibility system
+        required: true
+        type: choice
+        options: [shlink, zipline]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: fresh-session-feasibility-v1
+  cancel-in-progress: false
+jobs:
+  ordinary:
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      STUDY_BASE: ${{ runner.temp }}/fresh-session-${{ inputs.system }}
+      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/fresh-session-browsers
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Enforce frozen review and attempt budget
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FREEZE: ${{ inputs.freeze }}
+          STUDY_SYSTEM: ${{ inputs.system }}
+        run: |
+          set -euo pipefail
+          python3 development/fresh-session-feasibility-v1/dispatch_check.py
+          mkdir -p "$STUDY_BASE/evidence" "$RUNNER_TEMP/fresh-session-tools"
+          chmod 700 "$STUDY_BASE" "$STUDY_BASE/evidence"
+          printf '%s\n' "$FREEZE" > "$STUDY_BASE/evidence/freeze.txt"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24.11.1'
+          package-manager-cache: false
+      - name: Install frozen browser tooling
+        run: |
+          set -euo pipefail
+          cp development/continuation-fixture-v1/package*.json "$RUNNER_TEMP/fresh-session-tools/"
+          npm ci --prefix "$RUNNER_TEMP/fresh-session-tools" --ignore-scripts --no-audit --no-fund
+          "$RUNNER_TEMP/fresh-session-tools/node_modules/.bin/playwright" install --with-deps chromium
+          node --version > "$STUDY_BASE/evidence/node-version.txt"
+          python3 --version > "$STUDY_BASE/evidence/python-version.txt"
+      - name: Authenticate existing Docker Hub access for Shlink
+        if: ${{ inputs.system == 'shlink' }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$DOCKERHUB_USERNAME" && test -n "$DOCKERHUB_TOKEN"
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - name: Build Shlink once and retain runtime locally
+        if: ${{ inputs.system == 'shlink' }}
+        run: python3 development/fresh-session-feasibility-v1/shlink_build.py "$STUDY_BASE"
+      - name: Retrieve and verify the existing Zipline runtime
+        if: ${{ inputs.system == 'zipline' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ORDINARY_BASE: ${{ env.STUDY_BASE }}
+        run: |
+          set -euo pipefail
+          timeout 90s gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14624849143/zip > "$STUDY_BASE/build.zip"
+          python3 development/redesign-zipline-scientific-v1/prepare.py
+          python3 development/redesign-zipline-scientific-v1/verify_runtime.py > "$STUDY_BASE/evidence/runtime-before.json"
+      - name: Run the fixed Shlink ordinary schedule
+        if: ${{ inputs.system == 'shlink' }}
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=5s 1495s sudo env -i PATH="$PATH" SHLINK_BASE="$STUDY_BASE" PLAYWRIGHT_MODULE_PATH="$RUNNER_TEMP/fresh-session-tools/node_modules/playwright" PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_BROWSERS_PATH" "$(command -v node)" development/fresh-session-feasibility-v1/shlink_run.mjs > "$STUDY_BASE/evidence/execution.log" 2>&1
+      - name: Run the fixed Zipline ordinary schedule in an isolated network namespace
+        if: ${{ inputs.system == 'zipline' }}
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=5s 1495s sudo env -i PATH="$PATH" ORDINARY_BASE="$STUDY_BASE" PLAYWRIGHT_MODULE_PATH="$RUNNER_TEMP/fresh-session-tools/node_modules/playwright" PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_BROWSERS_PATH" NODE_BIN="$(command -v node)" RUN_SCRIPT="$GITHUB_WORKSPACE/development/fresh-session-feasibility-v1/zipline_run.mjs" unshare --net /bin/bash -c 'set -e; ip link set lo up; ip -json address > "$ORDINARY_BASE/evidence/network-interfaces.json"; ip -json route > "$ORDINARY_BASE/evidence/network-routes.json"; exec python3 "${RUN_SCRIPT%/*}/zipline_execute.py"'
+      - name: Score private raw observations independently
+        env:
+          STUDY_SYSTEM: ${{ inputs.system }}
+        run: sudo python3 "development/fresh-session-feasibility-v1/${STUDY_SYSTEM}_score.py" "$STUDY_BASE/evidence" manifests/fresh-session-ordinary-matrix-v1.json "$STUDY_BASE/evidence/independent-score.json"
+      - name: Verify Zipline runtime remains unchanged
+        if: ${{ always() && inputs.system == 'zipline' }}
+        env:
+          ORDINARY_BASE: ${{ env.STUDY_BASE }}
+        run: sudo --preserve-env=ORDINARY_BASE python3 development/redesign-zipline-scientific-v1/verify_runtime.py > "$STUDY_BASE/evidence/runtime-after.json"
+      - name: Ensure owned Shlink resources are removed
+        if: ${{ always() && inputs.system == 'shlink' }}
+        run: |
+          if test -f "$STUDY_BASE/deployment.json"; then sudo python3 development/fresh-session-feasibility-v1/shlink_deploy.py "$STUDY_BASE" cleanup; fi
+      - name: Export sanitized bounded evidence
+        id: publish
+        if: ${{ always() }}
+        run: sudo python3 development/fresh-session-feasibility-v1/export_evidence.py "$STUDY_BASE"

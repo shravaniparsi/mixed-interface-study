@@ -30,7 +30,7 @@ class Deployment:
   require(self.info is None and not self.data.exists(),'new_deployment_only')
   build=json.loads((self.base/'build-evidence/result.json').read_text());require(build['status']=='build_verified','verified_build_required')
   prefix='fresh-shlink-'+secrets.token_hex(5);key=secrets.token_urlsafe(32)
-  self.info=dict(prefix=prefix,network=prefix+'-net',containers={},commands=[],images={k:build['images'][k]['id'] for k in ['backend-runtime','client-runtime','redis']},api_key=key,deadline_epoch=time.time()+1500,network_created=False);self.save()
+  self.info=dict(prefix=prefix,network=prefix+'-net',containers={},commands=[],images={k:build['images'][k]['id'] for k in ['backend-runtime','client-runtime','redis']},api_key=key,deadline_epoch=time.time()+1400,network_created=False);self.save()
   self.data.mkdir(mode=0o700);(self.data/'data').mkdir();(self.data/'config').mkdir();self.save()
   self.command(['docker','network','create','--internal',self.info['network']],'network-create');self.info['network_created']=True;self.save()
   self.command(['docker','network','inspect',self.info['network']],'network-identity')

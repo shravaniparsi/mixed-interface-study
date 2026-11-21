@@ -26,7 +26,7 @@ function record(state,shortCode){
 }
 async function api(label,method,route,body){
  const response=await fetch('http://127.0.0.1:58080/rest/v3'+route,{method,headers:{'X-Api-Key':apiKey,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(10000)});
- const text=await response.text();const row={label,method,path:'/rest/v3'+route,body:body??null,status:response.status,response:text,api_key_sha256:apiKeyHash};apiTrace.push(row);save('api-trace',apiTrace);assert(response.ok(),text);return JSON.parse(text);
+ const text=await response.text();const row={label,method,path:'/rest/v3'+route,body:body??null,status:response.status,response:text,api_key_sha256:apiKeyHash};apiTrace.push(row);save('api-trace',apiTrace);assert(response.ok,text);return JSON.parse(text);
 }
 async function fresh(prefix){
  assert(!adapter);adapter=new ShlinkBrowser({browser,uiOrigin:'http://127.0.0.1:58081',apiOrigin:'http://127.0.0.1:58080',apiKey,serverName:'Study Shlink',write:(name,value)=>save(prefix+'-'+name,value)});
