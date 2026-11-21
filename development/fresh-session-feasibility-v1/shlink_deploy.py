@@ -78,6 +78,12 @@ class Deployment:
   name=self.info['containers']['backend'];self.command(['docker','cp',str(HERE/'shlink_event_probe.php'),name+':/tmp/study-event-probe.php'],'probe-copy')
   result=self.command(['docker','exec','--env','RR_MODE=http',name,'php','/tmp/study-event-probe.php'],'event-probe')
   probe=json.loads(result);require(probe['status']=='no_enabled_async_listeners','async_listeners_disabled');atomic(self.evidence/('event-probe-'+str(len(self.info['commands']))+'.json'),probe)
+  self.command(['docker','cp',str(HERE/'shlink_worker_probe.php'),name+':/tmp/study-worker-probe.php'],'worker-probe-copy')
+  worker_result=json.loads(self.command(['docker','exec',name,'php','/tmp/study-worker-probe.php'],'worker-probe'))
+  require(worker_result['status']=='worker_spawn_configuration_verified','worker_configuration_verified')
+  require(worker_result['workers'][0]['initial_api_key_sha256']==hashlib.sha256(self.info['api_key'].encode()).hexdigest(),'worker_key_identity')
+  atomic(self.evidence/('worker-probe-'+str(len(self.info['commands']))+'.json'),worker_result)
+
  def remove(self,role):
   name=self.info['containers'].get(role)
   if not name:return
