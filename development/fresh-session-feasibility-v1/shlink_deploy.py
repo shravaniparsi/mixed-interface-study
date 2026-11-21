@@ -43,34 +43,44 @@ class Deployment:
   for p in [self.data,self.data/'data',self.data/'config',self.data/'config/params']:
    p.chmod(0o755);os.chown(p,1001,1001)
   backend={'DB_DRIVER':'sqlite','DEFAULT_DOMAIN':'shlink.test','IS_HTTPS_ENABLED':'false','REDIS_SERVERS':'tcp://study-redis:6379','REDIS_PUB_SUB_ENABLED':'false','MERCURE_ENABLED':'false','RABBITMQ_ENABLED':'false','MATOMO_ENABLED':'false','AUTO_RESOLVE_TITLES':'true','SKIP_INITIAL_GEOLITE_DOWNLOAD':'true','WEB_WORKER_NUM':'1','TASK_WORKER_NUM':'1','INITIAL_API_KEY':key}
-  client={'SHLINK_SERVER_URL':'http://127.0.0.1:58080','SHLINK_SERVER_API_KEY':key,'SHLINK_SERVER_NAME':'Study Shlink'}
-  for name,values in [('backend',backend),('client',client)]:
+  for name,values in [('backend',backend)]:
    p=self.base/(name+'.env');p.write_text(''.join(k+'='+v+'\n' for k,v in values.items()));p.chmod(0o600)
   fixture=self.base/'fixture';fixture.mkdir();(fixture/'index.php').write_text('<?php header("Content-Type: text/html; charset=UTF-8"); echo "<title>Study fixture title</title>";')
   self.start_redis()
   self.run_container('fixture',self.info['images']['backend-runtime'],['--network-alias','study-fixture','--mount','type=bind,src='+str(fixture)+',dst=/study-fixture,readonly','--entrypoint','php'],['-S','0.0.0.0:8089','-t','/study-fixture','/study-fixture/index.php'])
-  self.run_container('client',self.info['images']['client-runtime'],['--env-file',str(self.base/'client.env'),'-p','127.0.0.1:58081:8080'])
   self.start_backend()
+  client={'SHLINK_SERVER_URL':self.info['api_origin'],'SHLINK_SERVER_API_KEY':key,'SHLINK_SERVER_NAME':'Study Shlink'}
+  p=self.base/'client.env';p.write_text(''.join(k+'='+v+'\n' for k,v in client.items()));p.chmod(0o600)
+  self.run_container('client',self.info['images']['client-runtime'],['--env-file',str(self.base/'client.env')])
  def run_container(self,role,image,options,arguments=None):
   require(role not in self.info['containers'],'unique_owned_role');name=self.info['prefix']+'-'+role
   # Record ownership before launch so a failed post-start command still has a cleanup target.
   self.info['containers'][role]=name;self.save()
   self.command(['docker','run','-d','--name',name,'--label','study.owner='+self.info['prefix'],'--network',self.info['network']]+options+[image]+(arguments or []),role+'-start')
-  require(self.inspect(name)['State']['Running'],'container_running',role=role)
+  observed=self.inspect(name);require(observed['State']['Running'],'container_running',role=role)
+  networks=observed['NetworkSettings']['Networks'];require(set(networks)=={self.info['network']},'owned_internal_network_only')
+  address=networks[self.info['network']]['IPAddress'];require(bool(address),'container_address_present')
+  if role=='redis':self.info['redis_host']=address
+  if role=='backend':
+   origin='http://'+address+':8080'
+   require('api_origin' not in self.info or self.info['api_origin']==origin,'backend_address_stable_across_restores')
+   self.info['api_origin']=origin
+  if role=='client':self.info['ui_origin']='http://'+address+':8080'
+  self.save()
  def start_redis(self):
-  self.run_container('redis',self.info['images']['redis'],['--network-alias','study-redis','-p','127.0.0.1:56379:6379'],['redis-server','--save','','--appendonly','no'])
+  self.run_container('redis',self.info['images']['redis'],['--network-alias','study-redis']+(['--ip',self.info['redis_host']] if 'redis_host' in self.info else []),['redis-server','--save','','--appendonly','no'])
   deadline=time.monotonic()+10
   while True:
    try:
-    c=Redis();require(c.cmd('PING')==b'PONG','redis_ready');c.close();break
+    c=Redis(host=self.info['redis_host'],port=6379);require(c.cmd('PING')==b'PONG','redis_ready');c.close();break
    except (ConnectionError,OSError):
     require(time.monotonic()<deadline,'redis_ready_deadline');time.sleep(.1)
  def start_backend(self):
-  self.run_container('backend',self.info['images']['backend-runtime'],['--env-file',str(self.base/'backend.env'),'-p','127.0.0.1:58080:8080','--mount','type=bind,src='+str(self.data/'data')+',dst=/etc/shlink/data','--mount','type=bind,src='+str(self.data/'config/params')+',dst=/etc/shlink/config/params'])
+  self.run_container('backend',self.info['images']['backend-runtime'],['--env-file',str(self.base/'backend.env')]+(['--ip',self.info['api_origin'].split('//')[1].split(':')[0]] if 'api_origin' in self.info else [])+['--mount','type=bind,src='+str(self.data/'data')+',dst=/etc/shlink/data','--mount','type=bind,src='+str(self.data/'config/params')+',dst=/etc/shlink/config/params'])
   deadline=time.monotonic()+90
   while True:
    try:
-    with urllib.request.urlopen('http://127.0.0.1:58080/rest/health',timeout=2) as response:
+    with urllib.request.urlopen(self.info['api_origin']+'/rest/health',timeout=2) as response:
      if response.status==200:break
    except (OSError,ValueError):pass
    require(time.monotonic()<deadline,'backend_health_deadline');require(self.inspect(self.info['containers']['backend'])['State']['Running'],'backend_stayed_running');time.sleep(.25)
@@ -104,7 +114,7 @@ class Deployment:
   self.command(['docker','pause',name],'pause-writer')
   try:
    require(self.inspect(name)['State']['Paused'],'writer_pause_verified')
-   c=Redis()
+   c=Redis(host=self.info['redis_host'],port=6379)
    try:cache=redis_snapshot(c)
    finally:c.close()
    value=dict(database=sqlite_snapshot(self.data/'data/database.sqlite'),filesystem=inventory(self.data),redis=cache)
@@ -114,7 +124,7 @@ class Deployment:
   before=self.observe('root-before-stop');name=self.info['containers']['backend'];self.command(['docker','stop','--time','10',name],'root-stop');require(not self.inspect(name)['State']['Running'],'root_stopped')
   root=self.base/'root-persistent';require(not root.exists(),'new_root_checkpoint');self.command(['cp','-a',str(self.data),str(root)],'root-copy')
   copied=dict(database=sqlite_snapshot(root/'data/database.sqlite'),filesystem=inventory(root));require(copied['database']==before['database'],'root_database_copy');compare_non_database(copied['filesystem'],before['filesystem'])
-  c=Redis()
+  c=Redis(host=self.info['redis_host'],port=6379)
   try:require(redis_logical(redis_snapshot(c))==redis_logical(before['redis']),'root_cache_unchanged')
   finally:c.close()
   atomic(self.base/'root-state.json',before);self.remove('backend');return before
@@ -124,7 +134,7 @@ class Deployment:
   require(self.data.parent==self.base and self.data.name=='persistent' and not self.data.is_symlink(),'owned_persistent_directory');shutil.rmtree(self.data)
   self.command(['cp','-a',str(root),str(self.data)],'restore-files');expected=json.loads((self.base/'root-state.json').read_text())
   require(sqlite_snapshot(self.data/'data/database.sqlite')==expected['database'],'restored_database');compare_non_database(inventory(self.data),expected['filesystem'])
-  self.start_redis();c=Redis()
+  self.start_redis();c=Redis(host=self.info['redis_host'],port=6379)
   try:restore_empty(c,expected['redis']);restored_cache=redis_snapshot(c)
   finally:c.close()
   restored=dict(database=sqlite_snapshot(self.data/'data/database.sqlite'),filesystem=inventory(self.data),redis=restored_cache)

@@ -13,7 +13,7 @@ const matrix=JSON.parse(readFileSync(path.join(dir,'../../manifests/fresh-sessio
 const save=(name,value)=>writeFileSync(path.join(out,name+'.json'),JSON.stringify(value,null,2)+'\n',{mode:0o600});
 const load=name=>JSON.parse(readFileSync(path.join(out,name+'.json')));
 const result={status:'in_progress',development_only:true,scientific_cases:0,stage:'deployment',cleanup_complete:false};
-const branches=[],cycles=[],apiTrace=[];let browser,adapter,apiKey,apiKeyHash;
+const branches=[],cycles=[],apiTrace=[];let browser,adapter,apiKey,apiKeyHash,apiOrigin,uiOrigin;
 function deploy(action,label){
  const args=[path.join(dir,'shlink_deploy.py'),base,action,...(label?[label]:[])];
  execFileSync(process.env.PYTHON_BIN||'python3',args,{timeout:action==='prepare'?180000:action==='cleanup'?100000:150000,maxBuffer:1024*1024});
@@ -25,11 +25,11 @@ function record(state,shortCode){
  const matches=rows.filter(row=>row.short_code===shortCode&&row.domain_id===null);assert.equal(matches.length,1);return matches[0];
 }
 async function api(label,method,route,body){
- const response=await fetch('http://127.0.0.1:58080/rest/v3'+route,{method,headers:{'X-Api-Key':apiKey,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(10000)});
+ const response=await fetch(apiOrigin+'/rest/v3'+route,{method,headers:{'X-Api-Key':apiKey,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(10000)});
  const text=await response.text();const row={label,method,path:'/rest/v3'+route,body:body??null,status:response.status,response:text,api_key_sha256:apiKeyHash};apiTrace.push(row);save('api-trace',apiTrace);assert(response.ok,text);return JSON.parse(text);
 }
 async function fresh(prefix){
- assert(!adapter);adapter=new ShlinkBrowser({browser,uiOrigin:'http://127.0.0.1:58081',apiOrigin:'http://127.0.0.1:58080',apiKey,serverName:'Study Shlink',write:(name,value)=>save(prefix+'-'+name,value)});
+ assert(!adapter);adapter=new ShlinkBrowser({browser,uiOrigin,apiOrigin,apiKey,serverName:'Study Shlink',write:(name,value)=>save(prefix+'-'+name,value)});
  await adapter.openFresh();return adapter;
 }
 async function close(){if(adapter){const current=adapter;adapter=null;await current.close();}}
@@ -45,7 +45,7 @@ async function edit(form,label,changes){
 }
 try{
  assert.equal(process.version,'v24.11.1');deploy('prepare');
- const deployment=JSON.parse(readFileSync(path.join(base,'deployment.json')));apiKey=deployment.api_key;apiKeyHash=createHash('sha256').update(apiKey).digest('hex');save('actor-key',{sha256:apiKeyHash});
+ const deployment=JSON.parse(readFileSync(path.join(base,'deployment.json')));apiOrigin=deployment.api_origin;uiOrigin=deployment.ui_origin;assert(apiOrigin&&uiOrigin);apiKey=deployment.api_key;apiKeyHash=createHash('sha256').update(apiKey).digest('hex');save('actor-key',{sha256:apiKeyHash});
  writeFileSync(path.join(base,'redaction-values.json'),JSON.stringify([apiKey]),{mode:0o600});
  const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE_PATH);browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  result.stage='native_create';await fresh('native');let form=await adapter.form();observe('native-before');

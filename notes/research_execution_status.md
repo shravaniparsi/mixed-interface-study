@@ -368,3 +368,6 @@ Automatic approval review rejected committing the recovered evidence bundle to r
 ## User-authorized repair resumed
 
 User superseded the procedural stop and requested full pipeline verification before a new feasibility attempt. Preserved original failure. Fixed Composer abbreviation handling only for pins explicitly declared in the original manifest; retained installed-source blob verification.45 local tests pass. Standalone actionlint1.7.12, release archive SHA256aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f, validates the workflow with shellcheck/pyflakes disabled. Next dispatch is pipeline qualification, not a fresh feasibility result.
+
+
+Pipeline qualification44873791375 passed the complete build and failed deployment: Redis7.2.5 was running/ready but Docker internal-network host port publication was absent. Corrected harness transport to inspected internal IPs, retaining network isolation and stable backend/Redis addresses across restores.45 local tests and runner syntax checks pass; actual deployment qualification remains pending. Full evidence stays in approved logs/local recovery; repository summary records the failure and elapsed time.
