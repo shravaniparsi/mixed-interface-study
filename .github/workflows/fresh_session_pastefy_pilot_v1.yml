@@ -1,0 +1,73 @@
+name: Fresh-session Pastefy fixed development pilot
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: fresh-session-pastefy-pilot-v1
+  cancel-in-progress: false
+jobs:
+  ordinary:
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Check frozen files
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import json,hashlib,pathlib; d=json.load(open("manifests/fresh-session-pastefy-pilot-dispatch-v1.json")); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==v for p,v in d["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/pastefy-fixed-pilot"
+          printf 'STUDY_BASE=%s\n' "$RUNNER_TEMP/pastefy-fixed-pilot" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24.11.1'
+          package-manager-cache: false
+      - name: Test and install browser tooling
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s development/fresh-session-pastefy-v1 -p 'test_*.py' > "$STUDY_BASE/unit-tests.log" 2>&1
+          python3 -m pip install --disable-pip-version-check --no-cache-dir --target "$STUDY_BASE/validator" -r development/fresh-session-pastefy-pilot-v1/requirements.txt > "$STUDY_BASE/validator-install.log" 2>&1
+          PYTHONPATH="$STUDY_BASE/validator" python3 -m unittest discover -s development/fresh-session-pastefy-pilot-v1 -p 'test_*.py' >> "$STUDY_BASE/unit-tests.log" 2>&1
+          node development/fresh-session-pastefy-pilot-v1/test_write_guard.mjs >> "$STUDY_BASE/unit-tests.log"
+          PYTHONPATH="$STUDY_BASE/validator" python3 development/fresh-session-pastefy-pilot-v1/freeze_inputs.py > "$STUDY_BASE/comparator-regeneration.json"
+          python3 -c 'import json,os; assert json.load(open(os.environ["STUDY_BASE"]+"/comparator-regeneration.json"))==json.load(open("manifests/fresh-session-pastefy-pilot-inputs-v1.json"))'
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends mysql-server-core-8.0 mysql-client-core-8.0 python3-pymysql
+          dpkg-query -W mysql-server-core-8.0 mysql-client-core-8.0 python3-pymysql > "$STUDY_BASE/database-packages.txt"
+          test -x "$JAVA_HOME_17_X64/bin/java"
+          printf 'JAVA_BIN=%s\n' "$JAVA_HOME_17_X64/bin/java" >> "$GITHUB_ENV"
+          mkdir "$STUDY_BASE/tools"
+          cp development/continuation-fixture-v1/package*.json "$STUDY_BASE/tools/"
+          npm ci --prefix "$STUDY_BASE/tools" --ignore-scripts --no-audit --no-fund
+          "$STUDY_BASE/tools/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Verify isolated MySQL resets
+        run: |
+          timeout --signal=TERM --kill-after=20s 150s sudo unshare --net --pid --fork --mount-proc --kill-child /bin/bash -c 'set -e; ip link set lo up; exec python3 "$1/development/fresh-session-pastefy-v1/mysql_smoke.py" "$2/mysql-smoke"' -- "$GITHUB_WORKSPACE" "$STUDY_BASE" > "$STUDY_BASE/mysql-smoke-run.log" 2>&1
+      - name: Authenticate existing Docker access
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - name: Build original pinned runtime
+        run: python3 development/fresh-session-pastefy-v1/build.py "$STUDY_BASE/build"
+      - name: Execute fixed pilot after ordinary gate
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=20s 1800s sudo env -i PATH="$PATH" HOME="$HOME" JAVA_BIN="$JAVA_BIN" NODE_BIN="$(command -v node)" PLAYWRIGHT_MODULE_PATH="$STUDY_BASE/tools/node_modules/playwright" PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright" STUDY_BASE="$STUDY_BASE" WORKSPACE="$GITHUB_WORKSPACE" unshare --net --pid --fork --mount-proc --kill-child /bin/bash -c 'set -e; ip link set lo up; exec python3 "$WORKSPACE/development/fresh-session-pastefy-pilot-v1/run_pilot.py" "$STUDY_BASE/execution" "$STUDY_BASE/build/backend.jar"' > "$STUDY_BASE/run.log" 2>&1
+      - name: Independently score private evidence
+        run: sudo python3 development/fresh-session-pastefy-pilot-v1/score_pilot.py "$STUDY_BASE/execution/evidence" "$STUDY_BASE/execution/evidence/independent-score.json"
+      - name: Sanitize approved disposable evidence
+        if: ${{ always() }}
+        run: sudo python3 development/fresh-session-pastefy-pilot-v1/export_controls.py "$STUDY_BASE"
+      - name: Emit approved sanitized evidence
+        if: ${{ always() }}
+        run: sudo python3 development/fresh-session-feasibility-v1/evidence_log.py emit "$STUDY_BASE/publication/public-evidence"

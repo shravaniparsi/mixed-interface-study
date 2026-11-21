@@ -4,8 +4,8 @@ from state_frame import frame,check_intervention,no_probe_effect
 from score_create import score_create,score_files
 from source_check import require
 ROOT=pathlib.Path(__file__).resolve().parents[2]
-def score(base):
- base=pathlib.Path(base);read=lambda name:json.loads((base/name).read_text());run=read('controls.json')
+def score(base,run=None):
+ base=pathlib.Path(base);read=lambda name:json.loads((base/name).read_text());run=read('controls.json') if run is None else run
  schedule=json.loads((ROOT/'manifests/fresh-session-pastefy-pilot-inputs-v1.json').read_text())['cases'][:2]
  require(run['status']=='schedule_finished_requires_independent_score','complete_control_schedule')
  require([c['id'] for c in run['cases']]==[s['id'] for s in schedule],'complete_ordered_control_pairs')

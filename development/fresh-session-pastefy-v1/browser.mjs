@@ -68,7 +68,7 @@ export async function session(browser, origin, credentials, diagnostics={}, opti
     }
     return {page,context,receipts,settled,actor:{user_id:user.id,role:user.type,key_sha256:createHash('sha256').update(credentials.api_key).digest('hex')},
       async create(input){await fill('title',input.title);await fill('content',input.content);return submit('POST','/api/v2/paste');},
-      prepareEdit,
+      prepareEdit,commitEdit:id=>submit('PUT','/api/v2/paste/'+id),
       async edit(id,field,value){await prepareEdit(id,field,value);return submit('PUT','/api/v2/paste/'+id);},
       async close(){diagnostics.stage='close';await settled();await context.close();}};
   } catch(error){diagnostics.url=page.url();diagnostics.dom=await Promise.race([page.content().catch(()=>null),new Promise(resolve=>setTimeout(()=>resolve(null),3000))]);await context.close();throw error;}
