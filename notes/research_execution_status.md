@@ -398,3 +398,6 @@ Both complete pipelines are qualified: Shlink44876464554 and Zipline44877489867.
 
 
 Fresh attempt v2 Shlink run44877829872 failed before application startup: original RoadRunner installer received HTTP403 from GitHub releases API. Cause beyond that response is unverified. Preserve it as infrastructure unavailability and in the reliability denominator. User authorized continuing past self-imposed stopping rules. Register one new job with identical harness and inputs; no application/scorer change and no retrospective success for the failed job. The original prospective implementation manifest remains unchanged.
+
+
+RoadRunner build repair: v2 runs 44877829872 and 44878149513 failed before application startup with HTTP403. Exact installed downloader source 54909d3fff22d34d1a6e894785f3df9dca0e2e8c src/Command.php supports GITHUB_TOKEN. Supply existing read-only workflow token through BuildKit secret mount only; no ARG, ENV, image persistence or literal credential in command logs. Requalify full pipeline before a new attempt; preserve v2 registration and failures.

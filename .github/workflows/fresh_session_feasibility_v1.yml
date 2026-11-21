@@ -64,6 +64,8 @@ jobs:
           printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
       - name: Build Shlink once and retain runtime locally
         if: ${{ inputs.system == 'shlink' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: python3 development/fresh-session-feasibility-v1/shlink_build.py "$STUDY_BASE"
       - name: Retrieve and verify the existing Zipline runtime
         if: ${{ inputs.system == 'zipline' }}

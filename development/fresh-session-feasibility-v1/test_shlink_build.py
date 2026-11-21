@@ -7,6 +7,8 @@ class BuildRecipe(unittest.TestCase):
   self.assertIn('cp composer.json composer.lock /study-build-evidence/',changed)
   self.assertLess(changed.index('cp composer.json composer.lock'),changed.index('rm -r docker composer.*'))
   reconstructed=changed.replace('mkdir -p /study-build-evidence && cp composer.json composer.lock /study-build-evidence/ && ','')
+  self.assertIn('--mount=type=secret,id=github_token,required=true',changed)
+  reconstructed=reconstructed.replace('RUN --mount=type=secret,id=github_token,required=true ','RUN ').replace('GITHUB_TOKEN="$(cat /run/secrets/github_token)" ','')
   for tag,digest in BASE_IMAGES.items():reconstructed=reconstructed.replace(tag+'@'+digest,tag)
   self.assertEqual(reconstructed,original)
  def test_original_client_only_base_pinning(self):

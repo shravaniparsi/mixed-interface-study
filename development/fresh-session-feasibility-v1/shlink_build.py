@@ -30,6 +30,10 @@ def recipe(original,role):
   needle='    php composer.phar clear-cache && '
   require(text.count(needle)==1,'unique_composer_cleanup')
   text=text.replace(needle,'    mkdir -p /study-build-evidence && cp composer.json composer.lock /study-build-evidence/ && '+needle.lstrip(),1)
+  needle='RUN ln -s /etc/shlink/bin/cli /usr/local/bin/shlink && '
+  require(text.count(needle)==1,'unique_roadrunner_download')
+  text=text.replace(needle,'RUN --mount=type=secret,id=github_token,required=true '+needle[4:],1)
+  text=text.replace('php ./vendor/bin/rr get ', 'GITHUB_TOKEN="$(cat /run/secrets/github_token)" php ./vendor/bin/rr get ',1)
  return text
 
 def main(base):
@@ -49,6 +53,9 @@ def main(base):
   finally:run(['docker','rm',name],label+'-container-remove.log')
  def build(src,dockerfile,tag,label,target=None):
   args=['docker','build','--platform=linux/amd64','--progress=plain','--file',str(dockerfile),'--tag',tag]
+  if label=='backend-runtime':
+   require(bool(os.environ.get('GITHUB_TOKEN')),'build_download_token_present')
+   args+=['--secret','id=github_token,env=GITHUB_TOKEN']
   if target:args+=['--target',target]
   run(args+[str(src)],label+'.log',900)
   run(['docker','image','inspect',tag],label+'-identity.json')
