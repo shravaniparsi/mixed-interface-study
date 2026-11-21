@@ -1,4 +1,4 @@
-import os,pathlib,sqlite3,tempfile,unittest
+import copy,os,pathlib,sqlite3,tempfile,unittest
 from shlink_files import inventory,compare_non_database
 class StateFiles(unittest.TestCase):
  def setUp(self):
@@ -15,6 +15,10 @@ class StateFiles(unittest.TestCase):
    elif kind=='mode':(self.root/'config/generated.php').chmod(0o700)
    else:(self.root/'data/unexpected').write_bytes(b'new')
    with self.subTest(kind=kind),self.assertRaises(ValueError):compare_non_database(before,inventory(self.root))
+ def test_directory_timestamp_change_needs_database_change(self):
+  before=inventory(self.root);after=copy.deepcopy(before)
+  next(r for r in after['files'] if r['path']=='data')['mtime_ns']+=1
+  with self.assertRaises(ValueError):compare_non_database(before,after)
  def test_symlink_fifo_and_missing_db_refused(self):
   path=self.root/'data/extra';path.symlink_to(self.root/'config')
   with self.assertRaises(ValueError):inventory(self.root)

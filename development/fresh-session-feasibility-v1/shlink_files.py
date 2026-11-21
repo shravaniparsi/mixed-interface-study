@@ -1,5 +1,5 @@
 """Inventory the owned persistent tree after its application writers have stopped."""
-import hashlib,os,pathlib,stat
+import copy,hashlib,os,pathlib,stat
 from source_check import require
 DATABASE_FILES={'data/database.sqlite','data/database.sqlite-wal','data/database.sqlite-shm','data/database.sqlite-journal'}
 def inventory(root):
@@ -26,5 +26,13 @@ def compare_non_database(before,after):
  # SQLite byte layout can differ across logically verified backups; those hashes are retained,
  # while the independent SQLite scorer must separately verify the database contents and schema.
  require(set(before)==set(after)=={'files','database_physical'},'file_inventory_sections')
- require(before['files']==after['files'],'non_database_files_changed')
+ left=copy.deepcopy(before['files']);right=copy.deepcopy(after['files'])
+ # SQLite creates/removes journals beside the main DB. Retain raw directory mtime,
+ # but permit its change only alongside observed DB-file changes. Other metadata,
+ # all directory entries, and all non-database file contents still compare exactly.
+ if before['database_physical']!=after['database_physical']:
+  for rows in (left,right):
+   for row in rows:
+    if row['path']=='data' and row['type']=='directory':row['mtime_ns']='sqlite_parent_directory'
+ require(left==right,'non_database_files_changed')
  return True
