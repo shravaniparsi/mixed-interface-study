@@ -1,0 +1,209 @@
+{
+  "phase": "development_pilot_inputs_and_schema_predictions_frozen_no_dispatch",
+  "repository": "interaapps/pastefy",
+  "revision": "caf35d8f279e2e1386a066753f2d644a0ba79507",
+  "schema_path": "docs/openapi.json",
+  "schema_sha256": "f87d2a2098433c708bab1fc7942a5efa77a3c140e557277100f6a081ae116364",
+  "schema_dialect": "OpenAPI 3.0.3 Schema Object; OAS30Validator 0.6.3; original internal refs resolved offline",
+  "cases": [
+    {
+      "id": "ordinary-content",
+      "target": "content",
+      "mutation": "ordinary",
+      "input": {
+        "title": "study-note",
+        "content": "Disposable ordinary study text.",
+        "type": "PASTE",
+        "encrypted": false,
+        "visibility": "UNLISTED",
+        "tags": [],
+        "ai": true
+      },
+      "continuation": {
+        "field": "title",
+        "value": "study-note-edited"
+      },
+      "repair": {
+        "content": "Disposable ordinary study text."
+      },
+      "sham": {},
+      "schema_prediction": {
+        "target": "original_creation_request_schema_conformance",
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "id": "ordinary-title",
+      "target": "title",
+      "mutation": "ordinary",
+      "input": {
+        "title": "study-note",
+        "content": "Disposable ordinary study text.",
+        "type": "PASTE",
+        "encrypted": false,
+        "visibility": "UNLISTED",
+        "tags": [],
+        "ai": true
+      },
+      "continuation": {
+        "field": "content",
+        "value": "Disposable revised study text."
+      },
+      "repair": {
+        "title": "study-note"
+      },
+      "sham": {},
+      "schema_prediction": {
+        "target": "original_creation_request_schema_conformance",
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "id": "content-omit",
+      "target": "content",
+      "mutation": "omit",
+      "input": {
+        "title": "study-note",
+        "type": "PASTE",
+        "encrypted": false,
+        "visibility": "UNLISTED",
+        "tags": [],
+        "ai": true
+      },
+      "continuation": {
+        "field": "title",
+        "value": "study-note-edited"
+      },
+      "repair": {
+        "content": "Disposable ordinary study text."
+      },
+      "sham": {},
+      "schema_prediction": {
+        "target": "original_creation_request_schema_conformance",
+        "valid": false,
+        "errors": [
+          {
+            "path": [],
+            "keyword": "required",
+            "message": "'content' is a required property"
+          }
+        ]
+      }
+    },
+    {
+      "id": "content-null",
+      "target": "content",
+      "mutation": "null",
+      "input": {
+        "title": "study-note",
+        "content": null,
+        "type": "PASTE",
+        "encrypted": false,
+        "visibility": "UNLISTED",
+        "tags": [],
+        "ai": true
+      },
+      "continuation": {
+        "field": "title",
+        "value": "study-note-edited"
+      },
+      "repair": {
+        "content": "Disposable ordinary study text."
+      },
+      "sham": {},
+      "schema_prediction": {
+        "target": "original_creation_request_schema_conformance",
+        "valid": false,
+        "errors": [
+          {
+            "path": [
+              "content"
+            ],
+            "keyword": "type",
+            "message": "None for not nullable"
+          },
+          {
+            "path": [
+              "content"
+            ],
+            "keyword": "type",
+            "message": "None is not of type 'string'"
+          }
+        ]
+      }
+    },
+    {
+      "id": "title-omit",
+      "target": "title",
+      "mutation": "omit",
+      "input": {
+        "content": "Disposable ordinary study text.",
+        "type": "PASTE",
+        "encrypted": false,
+        "visibility": "UNLISTED",
+        "tags": [],
+        "ai": true
+      },
+      "continuation": {
+        "field": "content",
+        "value": "Disposable revised study text."
+      },
+      "repair": {
+        "title": "study-note"
+      },
+      "sham": {},
+      "schema_prediction": {
+        "target": "original_creation_request_schema_conformance",
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "id": "title-null",
+      "target": "title",
+      "mutation": "null",
+      "input": {
+        "title": null,
+        "content": "Disposable ordinary study text.",
+        "type": "PASTE",
+        "encrypted": false,
+        "visibility": "UNLISTED",
+        "tags": [],
+        "ai": true
+      },
+      "continuation": {
+        "field": "content",
+        "value": "Disposable revised study text."
+      },
+      "repair": {
+        "title": "study-note"
+      },
+      "sham": {},
+      "schema_prediction": {
+        "target": "original_creation_request_schema_conformance",
+        "valid": false,
+        "errors": [
+          {
+            "path": [
+              "title"
+            ],
+            "keyword": "type",
+            "message": "None for not nullable"
+          },
+          {
+            "path": [
+              "title"
+            ],
+            "keyword": "type",
+            "message": "None is not of type 'string'"
+          }
+        ]
+      }
+    }
+  ],
+  "independent_application_evaluation": false,
+  "independently_authored_inputs": false,
+  "scientific_outcomes_collected": false
+}
