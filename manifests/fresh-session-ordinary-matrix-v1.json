@@ -1,0 +1,467 @@
+{
+  "study_id": "fresh-session-feasibility-v1",
+  "scope": "ordinary_controls_only",
+  "seed": "fresh-session-feasibility-v1-ordinary-only",
+  "systems": [
+    {
+      "id": "zipline",
+      "native": {
+        "destination": "https://example.com/native",
+        "vanity": "research-native",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      },
+      "api": {
+        "destination": "https://example.com/api",
+        "vanity": "research-api",
+        "enabled": true,
+        "discordPreviewMode": "components",
+        "discordComponentEmbed": {
+          "enabled": true,
+          "accentColor": "#336699",
+          "spoiler": false,
+          "components": [
+            {
+              "type": 10,
+              "content": "Research preview"
+            }
+          ]
+        }
+      },
+      "fields": [
+        {
+          "pointer": "/destination",
+          "ordinary": "https://example.com/api",
+          "replacement": "https://example.com/edited",
+          "label": "Destination",
+          "unrelated_pointer": "/discordComponentEmbed/accentColor"
+        },
+        {
+          "pointer": "/discordComponentEmbed/accentColor",
+          "ordinary": "#336699",
+          "replacement": "#669933",
+          "label": "Container accent color",
+          "unrelated_pointer": "/destination"
+        },
+        {
+          "pointer": "/discordComponentEmbed/components/0/content",
+          "ordinary": "Research preview",
+          "replacement": "Updated research preview",
+          "label": "Markdown content",
+          "unrelated_pointer": "/destination"
+        },
+        {
+          "pointer": "/vanity",
+          "ordinary": "research-api",
+          "replacement": "research-edited",
+          "label": "Vanity",
+          "unrelated_pointer": "/destination"
+        }
+      ],
+      "branches": [
+        {
+          "sequence": 1,
+          "id": "zipline-r1-f0-untouched",
+          "repetition": 1,
+          "target": "/destination",
+          "unrelated": "/discordComponentEmbed/accentColor",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 2,
+          "id": "zipline-r1-f0-noop_repair",
+          "repetition": 1,
+          "target": "/destination",
+          "unrelated": "/discordComponentEmbed/accentColor",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 3,
+          "id": "zipline-r3-f2-noop_repair",
+          "repetition": 3,
+          "target": "/discordComponentEmbed/components/0/content",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 4,
+          "id": "zipline-r3-f2-untouched",
+          "repetition": 3,
+          "target": "/discordComponentEmbed/components/0/content",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 5,
+          "id": "zipline-r2-f0-untouched",
+          "repetition": 2,
+          "target": "/destination",
+          "unrelated": "/discordComponentEmbed/accentColor",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 6,
+          "id": "zipline-r2-f0-noop_repair",
+          "repetition": 2,
+          "target": "/destination",
+          "unrelated": "/discordComponentEmbed/accentColor",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 7,
+          "id": "zipline-r3-f3-noop_repair",
+          "repetition": 3,
+          "target": "/vanity",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 8,
+          "id": "zipline-r3-f3-untouched",
+          "repetition": 3,
+          "target": "/vanity",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 9,
+          "id": "zipline-r2-f1-untouched",
+          "repetition": 2,
+          "target": "/discordComponentEmbed/accentColor",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 10,
+          "id": "zipline-r2-f1-noop_repair",
+          "repetition": 2,
+          "target": "/discordComponentEmbed/accentColor",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 11,
+          "id": "zipline-r1-f1-noop_repair",
+          "repetition": 1,
+          "target": "/discordComponentEmbed/accentColor",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 12,
+          "id": "zipline-r1-f1-untouched",
+          "repetition": 1,
+          "target": "/discordComponentEmbed/accentColor",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 13,
+          "id": "zipline-r2-f2-untouched",
+          "repetition": 2,
+          "target": "/discordComponentEmbed/components/0/content",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 14,
+          "id": "zipline-r2-f2-noop_repair",
+          "repetition": 2,
+          "target": "/discordComponentEmbed/components/0/content",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 15,
+          "id": "zipline-r1-f3-noop_repair",
+          "repetition": 1,
+          "target": "/vanity",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 16,
+          "id": "zipline-r1-f3-untouched",
+          "repetition": 1,
+          "target": "/vanity",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 17,
+          "id": "zipline-r2-f3-untouched",
+          "repetition": 2,
+          "target": "/vanity",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 18,
+          "id": "zipline-r2-f3-noop_repair",
+          "repetition": 2,
+          "target": "/vanity",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 19,
+          "id": "zipline-r1-f2-noop_repair",
+          "repetition": 1,
+          "target": "/discordComponentEmbed/components/0/content",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 20,
+          "id": "zipline-r1-f2-untouched",
+          "repetition": 1,
+          "target": "/discordComponentEmbed/components/0/content",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 21,
+          "id": "zipline-r3-f0-untouched",
+          "repetition": 3,
+          "target": "/destination",
+          "unrelated": "/discordComponentEmbed/accentColor",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 22,
+          "id": "zipline-r3-f0-noop_repair",
+          "repetition": 3,
+          "target": "/destination",
+          "unrelated": "/discordComponentEmbed/accentColor",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 23,
+          "id": "zipline-r3-f1-noop_repair",
+          "repetition": 3,
+          "target": "/discordComponentEmbed/accentColor",
+          "unrelated": "/destination",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 24,
+          "id": "zipline-r3-f1-untouched",
+          "repetition": 3,
+          "target": "/discordComponentEmbed/accentColor",
+          "unrelated": "/destination",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        }
+      ]
+    },
+    {
+      "id": "shlink",
+      "native": {
+        "longUrl": "http://study-fixture:8089/ordinary",
+        "title": "Study ordinary title",
+        "tags": [],
+        "forwardQuery": true
+      },
+      "api": {
+        "longUrl": "http://study-fixture:8089/ordinary",
+        "title": "Study ordinary title",
+        "tags": [],
+        "forwardQuery": true
+      },
+      "fields": [
+        {
+          "pointer": "/longUrl",
+          "ordinary": "http://study-fixture:8089/ordinary",
+          "replacement": "http://study-fixture:8089/edited",
+          "unrelated_pointer": "/title"
+        },
+        {
+          "pointer": "/title",
+          "ordinary": "Study ordinary title",
+          "replacement": "Study edited title",
+          "unrelated_pointer": "/longUrl"
+        }
+      ],
+      "branches": [
+        {
+          "sequence": 1,
+          "id": "shlink-r2-f0-untouched",
+          "repetition": 2,
+          "target": "/longUrl",
+          "unrelated": "/title",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 2,
+          "id": "shlink-r2-f0-noop_repair",
+          "repetition": 2,
+          "target": "/longUrl",
+          "unrelated": "/title",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 3,
+          "id": "shlink-r2-f1-noop_repair",
+          "repetition": 2,
+          "target": "/title",
+          "unrelated": "/longUrl",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 4,
+          "id": "shlink-r2-f1-untouched",
+          "repetition": 2,
+          "target": "/title",
+          "unrelated": "/longUrl",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 5,
+          "id": "shlink-r3-f0-untouched",
+          "repetition": 3,
+          "target": "/longUrl",
+          "unrelated": "/title",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 6,
+          "id": "shlink-r3-f0-noop_repair",
+          "repetition": 3,
+          "target": "/longUrl",
+          "unrelated": "/title",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 7,
+          "id": "shlink-r3-f1-noop_repair",
+          "repetition": 3,
+          "target": "/title",
+          "unrelated": "/longUrl",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 8,
+          "id": "shlink-r3-f1-untouched",
+          "repetition": 3,
+          "target": "/title",
+          "unrelated": "/longUrl",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 9,
+          "id": "shlink-r1-f1-untouched",
+          "repetition": 1,
+          "target": "/title",
+          "unrelated": "/longUrl",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 10,
+          "id": "shlink-r1-f1-noop_repair",
+          "repetition": 1,
+          "target": "/title",
+          "unrelated": "/longUrl",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 11,
+          "id": "shlink-r1-f0-noop_repair",
+          "repetition": 1,
+          "target": "/longUrl",
+          "unrelated": "/title",
+          "arm": "noop_repair",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        },
+        {
+          "sequence": 12,
+          "id": "shlink-r1-f0-untouched",
+          "repetition": 1,
+          "target": "/longUrl",
+          "unrelated": "/title",
+          "arm": "untouched",
+          "fresh_browser_context": true,
+          "restore_persistent_root": true
+        }
+      ]
+    }
+  ],
+  "scientific_defect_inputs": 0,
+  "independent_systems_for_evaluation": 0
+}
