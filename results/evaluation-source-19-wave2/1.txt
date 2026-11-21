@@ -1,0 +1,117 @@
+name: Go Release
+
+permissions:
+  contents: write
+  
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v1.0.0-beta.1)'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Push Docker Image
+    steps:
+      - name: Resolve release tag
+        id: resolve
+        run: echo "tag=${{ inputs.tag || github.ref_name }}" >> $GITHUB_OUTPUT
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.resolve.outputs.tag }}
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Checkout Frontend
+        uses: actions/checkout@v4
+        with:
+          repository: 'donetick/frontend'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: 'frontend-code'
+      # build frontend 
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '23'
+      - name: Install Dependencies
+        run: |
+          cd frontend-code
+          npm install
+      - name: Build Frontend
+        run: |
+          cd frontend-code
+          npm run build-selfhosted
+
+      - name: Copy Frontend
+        run: |
+          rm -rf ./frontend/dist
+          cp -r frontend-code/dist ./frontend/dist
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+          cache: true
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          # 'latest', 'nightly', or a semver
+          version: latest
+          args: release --clean --skip=validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # I added QEMU Emulation support for non-native architectures and also Buildx to enables multi-architecture. not sure if there is better/faster way to do this
+      - name: Set up QEMU 
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Resolve commit SHA
+        id: commit
+        run: echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Extract Docker tags
+        id: meta
+        run: |
+          VERSION=${{ steps.resolve.outputs.tag }}
+          DOCKER_USER=${{ secrets.DOCKER_USERNAME }}
+
+          # Check if this is a pre-release (contains -, like v1.0.0-beta.1)
+          if [[ "$VERSION" =~ - ]]; then
+            # Extract pre-release channel (alpha, beta, rc, etc.)
+            CHANNEL=$(echo "$VERSION" | sed -E 's/v[0-9]+\.[0-9]+\.[0-9]+-([a-z]+).*/\1/')
+            echo "Pre-release detected: $VERSION (channel: $CHANNEL)"
+            echo "tags=${DOCKER_USER}/donetick:${VERSION},${DOCKER_USER}/donetick:${CHANNEL}" >> $GITHUB_OUTPUT
+          else
+            echo "Stable release detected: $VERSION"
+            echo "tags=${DOCKER_USER}/donetick:latest,${DOCKER_USER}/donetick:${VERSION}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          build-args: |
+            VERSION=${{ steps.resolve.outputs.tag }}
+            COMMIT=${{ steps.commit.outputs.sha }}
