@@ -13,6 +13,7 @@ for name,source in [('evidence',base/'execution/evidence'),('build-evidence',bas
    if p.is_file() and not p.is_symlink():shutil.copyfile(p,target/p.name)
 for p in list((base/'execution/state').glob('jvm-*.log'))+list((base/'execution/state').glob('mysql.log')):
  shutil.copyfile(p,dest/'evidence'/p.name)
-for name in ['run.log','unit-tests.log','database-packages.txt']:
+if (base/'mysql-smoke/mysql.log').is_file():shutil.copyfile(base/'mysql-smoke/mysql.log',dest/'evidence/mysql-smoke.log')
+for name in ['mysql-smoke-run.log','run.log','unit-tests.log','database-packages.txt']:
  if (base/name).is_file():shutil.copyfile(base/name,dest/'evidence'/name)
 report=export(dest);print(json.dumps(dict(status=report['status'],files=len(report['files']),public_bytes=report['public_bytes'])))
