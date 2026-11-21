@@ -5,13 +5,14 @@ from source_check import require
 from shlink_database_score import creation,edit,locate,normalized,ordinary_record,records
 from shlink_files import compare_non_database
 from shlink_redis import logical as redis_logical
+from shlink_metadata_cache import compare as compare_cache,metadata
 
-def non_database(before,after,allow_metadata_additions=False):
+def non_database(before,after,allow_metadata_additions=False,cache_mode='exact'):
  require(set(before)==set(after)=={'database','filesystem','redis'},'complete_cross_store_observation')
  compare_non_database(before['filesystem'],after['filesystem'],allow_metadata_additions)
- require(redis_logical(before['redis'])==redis_logical(after['redis']),'redis_frame')
-def unchanged(before,after):
- non_database(before,after);require(normalized(before['database'])==normalized(after['database']),'database_unchanged')
+ compare_cache(before['redis'],after['redis'],'add_metadata' if allow_metadata_additions else cache_mode)
+def unchanged(before,after,cache_mode='exact'):
+ non_database(before,after,cache_mode=cache_mode);require(normalized(before['database'])==normalized(after['database']),'database_unchanged')
 def actor(state,identity,fingerprint):
  rows=records(state['database'],'api_keys');matches=[r for r in rows if r['id']==identity]
  require(len(matches)==1,'unique_actor');key=matches[0]
@@ -23,11 +24,17 @@ def readback(state,identity,value):
  require(value['tags']==[],'api_readback_tags')
 
 def score(root,matrix):
- root=pathlib.Path(root)
+ root=pathlib.Path(root);metadata_values={}
  def load(name):
   require(pathlib.PurePosixPath(name).name==name,'evidence_basename');p=root/(name+'.json')
   require(p.is_file() and not p.is_symlink() and p.stat().st_size<=16*1024**2,'evidence_file',name=name)
-  return json.loads(p.read_text())
+  value=json.loads(p.read_text())
+  if isinstance(value,dict) and 'redis' in value:
+   for row in value['redis']['entries']:
+    if metadata(row):
+     require(row['key'] not in metadata_values or metadata_values[row['key']]==row['value'],'metadata_content_stable_across_all_snapshots')
+     metadata_values[row['key']]=row['value']
+  return value
  result=load('result');require(result['status']=='controls_completed' and result['cleanup_complete'] is True,'completed_and_cleaned')
  plan=next(s for s in matrix['systems'] if s['id']=='shlink');identity=result['record_id'];key_id=result['actor_id'];fingerprint=result['api_key_sha256'];root_state=load('root-state')
  require(load('actor-key')['sha256']==fingerprint,'key_fingerprint');actor(root_state,key_id,fingerprint);ordinary_record(root_state['database'],identity,key_id,plan['api'])
@@ -78,7 +85,7 @@ def score(root,matrix):
  require(json.loads(creates[0]['response'])==load('api-create-response'),'api_creation_response_binding');readback(load('api-after'),identity,load('api-create-response'))
  unchanged(load('api-after'),root_state)
  def start(prefix):
-  restored=load(prefix+'-restored');loaded=load(prefix+'-loaded');unchanged(root_state,restored);unchanged(root_state,loaded);actor(loaded,key_id,fingerprint);return loaded
+  restored=load(prefix+'-restored');loaded=load(prefix+'-loaded');unchanged(root_state,restored);unchanged(root_state,loaded,cache_mode='restart_metadata');actor(loaded,key_id,fingerprint);return loaded
  def edited(prefix,label,before,changes,action_changes=None):
   prior=locate(before['database'],identity)[1]
   request=operation(prefix,label,action_changes if action_changes is not None else changes,expected_form={'longUrl':prior['original_url'],'title':prior['title']});after=load(label+'-after')

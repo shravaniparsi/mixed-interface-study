@@ -1,0 +1,19 @@
+{
+  "run_id": 44875736183,
+  "phase": "pipeline_qualification",
+  "freeze": "e1a576b87094678e134b81b0c7dc426d5092dbaa",
+  "conclusion": "failure",
+  "runner_seconds": 203,
+  "ordinary_runner": "all12branches_and2reset_cycles_completed",
+  "cleanup_verified": true,
+  "private_scorer": "failed_redis_frame",
+  "diagnosis": "Original Doctrine mapping/query caches populate lazily; original entrypoint clears DB caches at restart.20 observed cache keys were byte-stable across53 snapshots; presence differed.",
+  "repair": "Non-executing serialized-metadata classification; additive metadata effects for writes; source-defined metadata removal/repopulation on restart; global per-key byte stability; other Redis values remain strict.",
+  "source_basis": [
+    "config/autoload/cache.global.php",
+    "docker/docker-entrypoint.sh",
+    "shlink-common/src/Doctrine/ConfigurationFactory.php"
+  ],
+  "development_replay": "Sanitized local replay passed ordinary schedule; not a private raw-scoring or feasibility pass.",
+  "tests": "49_passed"
+}
