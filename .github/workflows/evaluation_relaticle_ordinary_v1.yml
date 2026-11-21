@@ -1,0 +1,74 @@
+name: Evaluation Relaticle ordinary role one v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: evaluation-relaticle-ordinary-role1
+  cancel-in-progress: false
+jobs:
+  ordinary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.freeze }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Verify frozen prerequisites and syntax
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import datetime,hashlib,json,pathlib; x=json.load(open("manifests/evaluation-relaticle-ordinary-v1.json")); assert datetime.datetime.now(datetime.timezone.utc)<datetime.datetime.fromisoformat(x["adapter_deadline_utc"]); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in x["sha256"].items())'
+          node --check evaluation/relaticle-ordinary-v1/run.mjs
+          mkdir -p "$RUNNER_TEMP/relaticle-ordinary-v1/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/relaticle-ordinary-v1/evidence/freeze.txt"
+      - name: Acquire verified original runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14680517500/zip > "$RUNNER_TEMP/relaticle-build.zip"
+          python3 -c 'import os,pathlib,hashlib,zipfile,shutil; p=pathlib.Path(os.environ["RUNNER_TEMP"]); z=p/"relaticle-build.zip"; h=hashlib.file_digest(z.open("rb"),"sha256").hexdigest(); assert h=="f5ed3811386aeebc74fe19bcb3d02bee62cdd7acaa287b97dee4809c9a4fa472"; a=zipfile.ZipFile(z); dst=p/"relaticle-runtime.tar"; shutil.copyfileobj(a.open("runtime-image.tar"),dst.open("wb")); assert hashlib.file_digest(dst.open("rb"),"sha256").hexdigest()=="3c2d6b75d55b64e1ed16b3a56e545f3c6fdd8ae3428321ca727f07dd40198c07"'
+          docker load -i "$RUNNER_TEMP/relaticle-runtime.tar"
+          rm "$RUNNER_TEMP/relaticle-build.zip" "$RUNNER_TEMP/relaticle-runtime.tar"
+      - name: Install frozen observation tools
+        run: |
+          mkdir -p "$RUNNER_TEMP/relaticle-tools"
+          cp development/continuation-fixture-v1/package*.json "$RUNNER_TEMP/relaticle-tools/"
+          cd "$RUNNER_TEMP/relaticle-tools"
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          python3 -m venv "$RUNNER_TEMP/relaticle-python"
+          "$RUNNER_TEMP/relaticle-python/bin/pip" install jsonschema==4.23.0 openapi-schema-validator==0.6.3 PyYAML==6.0.2
+          "$RUNNER_TEMP/relaticle-python/bin/pip" freeze > "$RUNNER_TEMP/relaticle-ordinary-v1/evidence/python-versions.txt"
+      - name: Run original native and API ordinary controls
+        env:
+          PLAYWRIGHT_MODULE_PATH: ${{ runner.temp }}/relaticle-tools/node_modules/playwright/index.mjs
+        run: python3 evaluation/relaticle-ordinary-v1/execute.py
+      - name: Independently verify ordinary evidence
+        run: python3 evaluation/relaticle-ordinary-v1/verify.py "$RUNNER_TEMP/relaticle-ordinary-v1/evidence"
+      - name: Retain sanitized ordinary evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: evaluation-relaticle-ordinary-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/relaticle-ordinary-v1/evidence/
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Clean private fixture state
+        if: ${{ always() }}
+        run: |
+          docker rm -f study-relaticle study-relaticle-seed 2>/dev/null || true
+          sudo rm -rf "$RUNNER_TEMP/relaticle-ordinary-v1/private"
