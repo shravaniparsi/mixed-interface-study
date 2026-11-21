@@ -1,0 +1,44 @@
+name: Evaluation SQLite synthetic qualification v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published immutable synthetic implementation
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: evaluation-sqlite-synthetic-v1
+  cancel-in-progress: false
+jobs:
+  synthetic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.freeze }}
+          persist-credentials: false
+      - name: Verify attempt bindings and deadline
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import datetime,hashlib,json,pathlib; x=json.load(open("manifests/evaluation-sqlite-synthetic-v1.json")); assert x["attempt"]==1; assert datetime.datetime.now(datetime.timezone.utc)<datetime.datetime.fromisoformat(x["adapter_deadline_utc"]); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in x["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/sqlite-synthetic-evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/sqlite-synthetic-evidence/freeze.txt"
+      - name: Run single synthetic attempt
+        env:
+          SQLITE_EVIDENCE: ${{ runner.temp }}/sqlite-synthetic-evidence
+        run: python3 evaluation/relaticle-state-v1/synthetic.py
+      - name: Preserve qualification evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: evaluation-sqlite-synthetic-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/sqlite-synthetic-evidence/
+          retention-days: 7
+          if-no-files-found: warn
