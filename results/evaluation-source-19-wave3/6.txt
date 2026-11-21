@@ -1,0 +1,4897 @@
+package chore
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"math"
+	"math/rand"
+	"net/http"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+
+	auth "donetick.com/core/internal/auth"
+	chModel "donetick.com/core/internal/chore/model"
+	chRepo "donetick.com/core/internal/chore/repo"
+	circle "donetick.com/core/internal/circle/model"
+	cRepo "donetick.com/core/internal/circle/repo"
+	dRepo "donetick.com/core/internal/device/repo"
+	"donetick.com/core/internal/events"
+	lModel "donetick.com/core/internal/label/model"
+	lRepo "donetick.com/core/internal/label/repo"
+	"donetick.com/core/internal/notifier"
+	"donetick.com/core/internal/notifier/dispatch"
+	"donetick.com/core/internal/notifier/push"
+	nRepo "donetick.com/core/internal/notifier/repo"
+	nps "donetick.com/core/internal/notifier/service"
+	fcmService "donetick.com/core/internal/notifier/service/fcm"
+	pModel "donetick.com/core/internal/project/model"
+	pjRepo "donetick.com/core/internal/project/repo"
+	"donetick.com/core/internal/realtime"
+	storage "donetick.com/core/internal/storage"
+	storageModel "donetick.com/core/internal/storage/model"
+	storageRepo "donetick.com/core/internal/storage/repo"
+	stModel "donetick.com/core/internal/subtask/model"
+	stRepo "donetick.com/core/internal/subtask/repo"
+	tModel "donetick.com/core/internal/thing/model"
+	tRepo "donetick.com/core/internal/thing/repo"
+	uModel "donetick.com/core/internal/user/model"
+	uRepo "donetick.com/core/internal/user/repo"
+	"donetick.com/core/internal/utils"
+	"donetick.com/core/logging"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"gorm.io/gorm"
+)
+
+type Handler struct {
+	choreRepo       *chRepo.ChoreRepository
+	circleRepo      *cRepo.CircleRepository
+	notifier        *notifier.Notifier
+	nPlanner        *nps.NotificationPlanner
+	nRepo           *nRepo.NotificationRepository
+	tRepo           *tRepo.ThingRepository
+	lRepo           *lRepo.LabelRepository
+	uRepo           *uRepo.UserRepository
+	deviceRepo      *dRepo.DeviceRepository
+	pushSender      *push.Sender
+	dispatcher      *dispatch.Dispatcher
+	eventProducer   *events.EventsProducer
+	stRepo          *stRepo.SubTasksRepository
+	storageRepo     *storageRepo.StorageRepository
+	storage         storage.Storage
+	realTimeService *realtime.RealTimeService
+	signer          storage.URLSigner
+	pjRepo          *pjRepo.ProjectRepository
+}
+
+func NewHandler(cr *chRepo.ChoreRepository, circleRepo *cRepo.CircleRepository, nt *notifier.Notifier,
+	np *nps.NotificationPlanner, nRepo *nRepo.NotificationRepository, tRepo *tRepo.ThingRepository, lRepo *lRepo.LabelRepository,
+	ep *events.EventsProducer, stRepo *stRepo.SubTasksRepository,
+	stor storage.Storage,
+	ur *uRepo.UserRepository,
+	dr *dRepo.DeviceRepository,
+	ps *push.Sender,
+	stoRepo *storageRepo.StorageRepository,
+	signer storage.URLSigner,
+	rts *realtime.RealTimeService,
+	dispatcher *dispatch.Dispatcher,
+	projectRepo *pjRepo.ProjectRepository) *Handler {
+	return &Handler{
+		choreRepo:       cr,
+		pjRepo:          projectRepo,
+		uRepo:           ur,
+		deviceRepo:      dr,
+		pushSender:      ps,
+		dispatcher:      dispatcher,
+		circleRepo:      circleRepo,
+		notifier:        nt,
+		nPlanner:        np,
+		nRepo:           nRepo,
+		tRepo:           tRepo,
+		lRepo:           lRepo,
+		eventProducer:   ep,
+		stRepo:          stRepo,
+		storageRepo:     stoRepo,
+		storage:         stor,
+		signer:          signer,
+		realTimeService: rts,
+	}
+}
+
+// GetChores godoc
+//
+//	@Summary		Get all chores
+//	@Description	Retrieves all chores for the current user's circle with optional archived chores
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			includeArchived	query		boolean						false	"Include archived chores"
+//	@Param			includeSubtasks	query		boolean						false	"Include subtasks for chore"
+//	@Success		200				{object}	map[string][]chModel.Chore	"res: array of chores"
+//	@Failure		401				{object}	map[string]string			"error: Authentication failed"
+//	@Failure		500				{object}	map[string]string			"error: Failed to retrieve chores"
+//	@Router			/chores [get]
+func (h *Handler) GetChores(c *gin.Context) {
+	logger := logging.FromContext(c)
+	u, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	includeArchived := false
+	includeSubtasks := false
+
+	if c.Query("includeSubtasks") == "true" {
+		includeSubtasks = true
+	}
+
+	if c.Query("includeArchived") == "true" {
+		includeArchived = true
+	}
+
+	chores, err := h.choreRepo.GetChores(c, u.CircleID, u.ID, includeArchived, nil, includeSubtasks)
+	if err != nil {
+		logger.Error("Failed to retrieve chores", "error", err, "userID", u.ID, "circleID", u.CircleID, "includeArchived", includeArchived)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chores",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"res": chores,
+	})
+}
+
+// GetArchivedChores godoc
+//
+//	@Summary		Get archived chores
+//	@Description	Retrieves all archived chores for the current user's circle
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Success		200	{object}	map[string][]chModel.Chore	"res: array of archived chores"
+//	@Failure		401	{object}	map[string]string			"error: Authentication failed"
+//	@Failure		500	{object}	map[string]string			"error: Failed to retrieve archived chores"
+//	@Router			/chores/archived [get]
+func (h *Handler) GetArchivedChores(c *gin.Context) {
+	logger := logging.FromContext(c)
+	u, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	chores, err := h.choreRepo.GetArchivedChores(c, u.CircleID, u.ID)
+	if err != nil {
+		logger.Error("Failed to retrieve archived chores", "error", err, "userID", u.ID, "circleID", u.CircleID)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve archived chores",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"res": chores,
+	})
+}
+
+// GetChore godoc
+//
+//	@Summary		Get a specific chore
+//	@Description	Retrieves detailed information about a specific chore by ID
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int							true	"Chore ID"
+//	@Success		200	{object}	map[string]chModel.Chore	"res: chore object"
+//	@Failure		400	{object}	map[string]string			"error: Invalid chore ID"
+//	@Failure		401	{object}	map[string]string			"error: Authentication failed"
+//	@Failure		403	{object}	map[string]string			"error: You are not allowed to view this chore"
+//	@Failure		500	{object}	map[string]string			"error: Failed to retrieve chore"
+//	@Router			/chores/{id} [get]
+func (h *Handler) GetChore(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		logger.Error("Invalid chore ID format", "error", err, "rawID", rawID)
+		c.JSON(400, gin.H{
+			"error": "Invalid chore ID",
+		})
+		return
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err, "choreID", id, "userID", currentUser.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err, "circleID", currentUser.CircleID, "userID", currentUser.ID)
+		c.JSON(500, gin.H{"error": "Failed to retrieve circle users"})
+		return
+	}
+
+	if !chore.CanView(currentUser.ID, circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to view this chore",
+		})
+		return
+	}
+	if chore.Description != nil {
+		// see if we have an <img> tag with attribute dt-data-path if so resigned the url using it's value and replace the src:
+		updatedDescription := h.generateUpdatedSignedDescription(c, *chore.Description)
+		chore.Description = &updatedDescription
+	}
+	h.signAttachments(c, chore.Attachments)
+	c.JSON(200, gin.H{
+		"res": chore,
+	})
+}
+
+func (h *Handler) generateUpdatedSignedDescription(c *gin.Context, description string) string {
+	logger := logging.FromContext(c)
+	reg := regexp.MustCompile(`<img[^>]+dt-data-path="([^">]+)"[^>]*>`)
+	matches := reg.FindAllStringSubmatch(description, -1)
+	if len(matches) > 0 {
+		for _, match := range matches {
+			if len(match) > 1 {
+				originalDataPath := match[1]
+				// Strip any existing query parameters to get the clean path
+				cleanPath := originalDataPath
+				if idx := strings.Index(cleanPath, "?"); idx != -1 {
+					cleanPath = cleanPath[:idx]
+				}
+
+				// Sign the clean path to get a fresh signed URL
+				newURL, err := h.signer.Sign(cleanPath)
+				if err != nil {
+					logger.Error("Failed to get signed URL for image", "error", err, "dtDataPath", cleanPath)
+					continue
+				}
+
+				// Update the img tag: ensure dt-data-path has clean path and src has signed URL
+				oldImgTag := match[0]
+				newImgTag := oldImgTag
+
+				// If dt-data-path had query params, update it to the clean path
+				if originalDataPath != cleanPath {
+					newImgTag = strings.Replace(newImgTag, fmt.Sprintf(`dt-data-path="%s"`, originalDataPath), fmt.Sprintf(`dt-data-path="%s"`, cleanPath), 1)
+				}
+
+				// Update the src attribute to have the new signed URL
+				// Match src="..." and replace its value
+				srcReg := regexp.MustCompile(`src="[^"]*"`)
+				newImgTag = srcReg.ReplaceAllString(newImgTag, fmt.Sprintf(`src="%s"`, newURL))
+
+				description = strings.Replace(description, oldImgTag, newImgTag, 1)
+			}
+		}
+	}
+	return description
+}
+
+// signAttachments populates a fetchable signed URL on each attachment record
+// before it is serialized to a client.
+func (h *Handler) signAttachments(c *gin.Context, attachments []storageModel.StorageFile) {
+	logger := logging.FromContext(c)
+	for i := range attachments {
+		signed, err := h.signer.Sign(attachments[i].FilePath)
+		if err != nil {
+			logger.Error("Failed to sign attachment url", "error", err, "path", attachments[i].FilePath)
+			continue
+		}
+		attachments[i].Sign = signed
+	}
+}
+
+// UpdatedAt is for internal use only when syncing a chore updated offline
+
+// region: request models
+type ChoreReq struct {
+	CompletionActions    *[]chModel.CompletionAction   `json:"completionActions"`
+	ID                   int                           `json:"id"`
+	Name                 string                        `json:"name" binding:"required"`
+	FrequencyType        chModel.FrequencyType         `json:"frequencyType" binding:"required,oneof=once daily weekly monthly yearly adaptive interval days_of_the_week day_of_the_month trigger no_repeat always"`
+	Frequency            *int                          `json:"frequency" binding:"omitempty"`
+	FrequencyMetadata    *chModel.FrequencyMetadata    `json:"frequencyMetadata,omitempty"`
+	NextDueDate          *time.Time                    `json:"nextDueDate" binding:"omitempty,required_with=IsRolling"` // Next due date in RFC3339 format
+	IsRolling            bool                          `json:"isRolling"`
+	AssignedTo           *int                          `json:"assignedTo" binding:"omitempty"`
+	Assignees            []chModel.ChoreAssignees      `json:"assignees" binding:"dive"`
+	AssignStrategy       chModel.AssignmentStrategy    `json:"assignStrategy" binding:"required,oneof=no_assignee least_assigned least_completed random keep_last_assigned random_except_last_assigned round_robin"`
+	IsActive             *bool                         `json:"isActive" binding:"omitempty"`
+	Notification         bool                          `json:"notification"`
+	NotificationMetadata *chModel.NotificationMetadata `json:"notificationMetadata"`
+	LabelsV2             *[]lModel.LabelReq            `json:"labelsV2" binding:"omitempty,unique=LabelID,dive"`
+	UpdatedAt            *time.Time                    `json:"updatedAt"`
+	Priority             *int                          `json:"priority" binding:"omitempty"`
+	CompletionWindow     *int                          `json:"completionWindow" binding:"omitempty"`
+	Points               *int                          `json:"points" binding:"omitempty"`
+	Description          *string                       `json:"description" binding:"omitempty"`
+	SubTasks             *[]stModel.SubTask            `json:"subTasks" binding:"omitempty,dive"`
+	RequireApproval      bool                          `json:"requireApproval" binding:"omitempty"`
+	IsPrivate            *bool                         `json:"isPrivate" binding:"omitempty"`
+	ProjectID            *int                          `json:"projectId" binding:"omitempty"`
+	// SectionID places a new chore directly into one of projectId's board
+	// columns. Ignored when ProjectID is nil; a chore without a section falls
+	// back to the project's first one when rendered.
+	SectionID    *int                 `json:"sectionId" binding:"omitempty"`
+	ThingTrigger *tModel.ThingTrigger `json:"thingTrigger"`
+	DraftId      *string              `json:"draftId,omitempty"`
+}
+
+type ActionOptions struct {
+	CreatedAt   time.Time  `json:"createdAt"`
+	SyncVersion int64      `json:"syncVersion"`
+	NextDueDate *time.Time `json:"nextDueDate"`
+}
+
+type ActionReq struct {
+	ActionOptions *ActionOptions `json:"actionOptions"`
+}
+
+func bindOptionalActionReq(c *gin.Context, req interface{}) error {
+	if c.Request == nil || c.Request.Body == nil || c.Request.ContentLength == 0 {
+		return nil
+	}
+
+	if err := c.ShouldBindJSON(req); err != nil {
+		if errors.Is(err, io.EOF) {
+			return nil
+		}
+		return err
+	}
+
+	return nil
+}
+
+func validateActionVersion(c *gin.Context, actionName string, chore *chModel.Chore, options *ActionOptions) bool {
+	if options == nil {
+		return true
+	}
+
+	if options.SyncVersion == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "actionOptions.syncVersion is required",
+		})
+		return false
+	}
+
+	if options.SyncVersion != chore.SyncVersion {
+		c.JSON(http.StatusConflict, gin.H{
+			"error":          fmt.Sprintf("%s version mismatch: action version %d does not match current chore version %d", actionName, options.SyncVersion, chore.SyncVersion),
+			"actionVersion":  options.SyncVersion,
+			"currentVersion": chore.SyncVersion,
+		})
+		return false
+	}
+
+	return true
+}
+
+func actionCreatedAtOrNow(options *ActionOptions) time.Time {
+	if options != nil && !options.CreatedAt.IsZero() {
+		return options.CreatedAt.UTC()
+	}
+
+	return time.Now().UTC()
+}
+
+func applyStartActionTime(session *chModel.TimeSession, userID int, actionTime time.Time) {
+	actionTime = actionTime.UTC()
+	session.StartTime = actionTime
+	if len(session.PauseLog) > 0 {
+		session.PauseLog[len(session.PauseLog)-1].StartTime = actionTime
+	}
+	session.UpdateBy = userID
+	session.UpdateAt = actionTime
+}
+
+func applyPauseActionTime(session *chModel.TimeSession, userID int, actionTime time.Time) {
+	actionTime = actionTime.UTC()
+	if len(session.PauseLog) > 0 {
+		lastLog := session.PauseLog[len(session.PauseLog)-1]
+		if lastLog.EndTime != nil {
+			previousDuration := lastLog.Duration
+			lastLog.EndTime = &actionTime
+			recalculatedDuration := int(actionTime.Sub(lastLog.StartTime).Seconds())
+			if recalculatedDuration < 0 {
+				recalculatedDuration = 0
+			}
+			lastLog.Duration = recalculatedDuration
+			session.Duration += recalculatedDuration - previousDuration
+		}
+	}
+	session.UpdateBy = userID
+	session.UpdateAt = actionTime
+}
+
+// endregion
+
+// CreateChore godoc
+//
+//	@Summary		Create a new chore
+//	@Description	Creates a new chore with assignees, labels, and optional configurations
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			chore	body		ChoreReq			true	"Chore creation request"
+//	@Success		200		{object}	map[string]int		"res: created chore ID"
+//	@Failure		400		{object}	map[string]string	"error: Invalid request format | Assignee not found in circle | Invalid date"
+//	@Failure		401		{object}	map[string]string	"error: Authentication failed"
+//	@Failure		500		{object}	map[string]string	"error: Failed to create chore | Error adding labels | Error adding chore assignees"
+//	@Router			/chores [post]
+func (h *Handler) CreateChore(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+
+	logger.Debug("Create chore", "currentUser", currentUser)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	// Validate chore:
+	var choreReq ChoreReq
+
+	if err := c.ShouldBindJSON(&choreReq); err != nil {
+		logger.Error("Invalid request body", "error", err)
+		c.JSON(400, gin.H{
+			"error":   "Invalid request format",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	status, response := h.createChore(c, currentUser, choreReq)
+	c.JSON(status, response)
+}
+
+// BulkCreateChoresReq decodes items separately so an invalid chore does not
+// prevent valid chores in the same batch from being created.
+type BulkCreateChoresReq struct {
+	Chores []json.RawMessage `json:"chores" binding:"required,min=1,max=100"`
+}
+
+// BulkCreateChores godoc
+//
+//	@Summary Create multiple chores
+//	@Description Creates up to 100 chores in request order. Each item uses the single-create request format and is validated independently; failures do not stop subsequent items. Results contain the zero-based index, HTTP status, and single-create response fields. Creation is not atomic; a failure after persistence also includes the created ID in res.
+//	@Tags chores
+//	@Accept json
+//	@Produce json
+//	@Security JWTKeyAuth
+//	@Security APIKeyAuth
+//	@Param chores body BulkCreateChoresReq true "Chores to create"
+//	@Success 200 {object} map[string]interface{} "res: ordered per-item results"
+//	@Failure 400 {object} map[string]string "Invalid request format"
+//	@Failure 401 {object} map[string]string "Authentication failed"
+//	@Router /chores/bulk [post]
+func (h *Handler) BulkCreateChores(c *gin.Context) {
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(401, gin.H{"error": "Authentication failed"})
+		return
+	}
+
+	var req BulkCreateChoresReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request format", "details": err.Error()})
+		return
+	}
+
+	results := make([]gin.H, 0, len(req.Chores))
+	for index, raw := range req.Chores {
+		var choreReq ChoreReq
+		if err := binding.JSON.BindBody(raw, &choreReq); err != nil {
+			results = append(results, gin.H{
+				"index":   index,
+				"status":  http.StatusBadRequest,
+				"error":   "Invalid request format",
+				"details": err.Error(),
+			})
+			continue
+		}
+		status, response := h.createChore(c, currentUser, choreReq)
+		response["index"] = index
+		response["status"] = status
+		results = append(results, response)
+	}
+	c.JSON(200, gin.H{"res": results})
+}
+
+func (h *Handler) createChore(c *gin.Context, currentUser *uModel.UserDetails, choreReq ChoreReq) (int, gin.H) {
+	logger := logging.FromContext(c)
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err, "circleID", currentUser.CircleID, "userID", currentUser.ID)
+		return 500, gin.H{"error": "Failed to retrieve circle users"}
+	}
+
+	assignees := choreReq.Assignees
+	if len(assignees) == 0 {
+		for _, circleUser := range circleUsers {
+			assignees = append(assignees, chModel.ChoreAssignees{
+				UserID:  circleUser.UserID,
+				ChoreID: choreReq.ID,
+			})
+		}
+	}
+	for _, assignee := range assignees {
+		userFound := false
+		for _, circleUser := range circleUsers {
+			if assignee.UserID == circleUser.UserID {
+				userFound = true
+				break
+			}
+		}
+		if !userFound {
+			return 400, gin.H{"error": "Assignee not found in circle"}
+		}
+
+	}
+
+	//  validate assignedTo is one of the assignees (which are all in the circle):
+	if choreReq.AssignedTo != nil {
+		assigneeFound := false
+		for _, assignee := range assignees {
+			if assignee.UserID == *choreReq.AssignedTo {
+				assigneeFound = true
+				break
+			}
+		}
+		if !assigneeFound {
+			return 400, gin.H{"error": "Assigned to not found in assignees"}
+		}
+	}
+	// Remove the auto-assignment logic - if no assignee then keep no assignee
+
+	var dueDate *time.Time
+	if choreReq.NextDueDate != nil {
+		utcDate := choreReq.NextDueDate.UTC()
+		if fm := choreReq.FrequencyMetadata; choreReq.FrequencyType == chModel.FrequencyTypeDayOfTheWeek && fm != nil && len(fm.Days) > 0 &&
+			(fm.WeekPattern == nil || *fm.WeekPattern == "" || *fm.WeekPattern == chModel.WeekpatternEveryWeek) {
+			utcDate = firstDueDateOnSelectedWeekday(utcDate, fm.Days, fm.Timezone)
+		}
+		dueDate = &utcDate
+	}
+
+	// Before the defaults, so a chore inheriting privacy from its project isn't warned
+	// about defaulting to public.
+	if err := h.inheritProjectPrivacy(c, &choreReq, currentUser.ID, currentUser.CircleID); err != nil {
+		return 400, gin.H{"error": err.Error()}
+	}
+
+	if err := h.validateCompletionActions(c, choreReq.CompletionActions, currentUser.ID); err != nil {
+		return 400, gin.H{"error": err.Error()}
+	}
+	warnings := setCreateChoreDefaults(&choreReq)
+
+	// The client sends the first due date directly, so it is the one occurrence
+	// the scheduler never derives: it has to be moved into the active period here.
+	if dueDate != nil {
+		bounded, err := applyScheduleBounds(c, choreFromReq(&choreReq, dueDate), *dueDate)
+		if err != nil {
+			return 400, gin.H{"error": "Error applying recurrence bounds"}
+		}
+		dueDate = bounded
+	}
+
+	if !choreReq.Notification && choreReq.NotificationMetadata != nil {
+		warnings = append(warnings, "notificationMetadata provided while notification is false; ignoring metadata")
+		choreReq.NotificationMetadata = nil
+	}
+
+	// A section only means something inside its project; drop it if the
+	// request didn't also place the chore in one.
+	var sectionID *int
+	if choreReq.ProjectID != nil {
+		sectionID = choreReq.SectionID
+	}
+
+	createdChore := &chModel.Chore{
+
+		Name:                   choreReq.Name,
+		FrequencyType:          choreReq.FrequencyType,
+		Frequency:              *choreReq.Frequency,
+		FrequencyMetadataV2:    choreReq.FrequencyMetadata,
+		NextDueDate:            dueDate,
+		AssignStrategy:         choreReq.AssignStrategy,
+		AssignedTo:             choreReq.AssignedTo,
+		IsRolling:              choreReq.IsRolling,
+		UpdatedBy:              currentUser.ID,
+		IsActive:               *choreReq.IsActive,
+		Notification:           choreReq.Notification,
+		NotificationMetadataV2: choreReq.NotificationMetadata,
+		CreatedBy:              currentUser.ID,
+		CreatedAt:              time.Now().UTC(),
+		CircleID:               currentUser.CircleID,
+		Points:                 choreReq.Points,
+		CompletionWindow:       choreReq.CompletionWindow,
+		Description:            choreReq.Description,
+		Priority:               *choreReq.Priority,
+		RequireApproval:        choreReq.RequireApproval,
+		IsPrivate:              *choreReq.IsPrivate,
+		ProjectID:              choreReq.ProjectID,
+		SectionID:              sectionID,
+		// SubTasks removed to prevent duplicate creation - handled by UpdateSubtask call below
+		// it's need custom logic to handle subtask creation as we send negative ids sometimes when we creating parent child releationship
+		// when the subtask is not yet created
+	}
+	if choreReq.CompletionActions != nil {
+		createdChore.CompletionActions = *choreReq.CompletionActions
+	}
+	assigneeIDs := make([]int, 0, len(choreReq.Assignees))
+	for _, assignee := range choreReq.Assignees {
+		assigneeIDs = append(assigneeIDs, assignee.UserID)
+	}
+	id, err := h.choreRepo.CreateChoreWithAssignees(c, createdChore, assigneeIDs, currentUser.ID)
+	createdChore.ID = id
+
+	if errors.Is(err, chRepo.ErrAssigneeOutsideProject) {
+		return 400, gin.H{"error": err.Error()}
+	}
+	if err != nil {
+		logger.Error("Failed to create chore", "error", err, "userID", currentUser.ID, "circleID", currentUser.CircleID)
+		if errors.Is(err, chRepo.ErrSectionOutsideProject) {
+			return 400, gin.H{"error": err.Error()}
+		}
+		return 500, gin.H{"error": "Failed to create chore"}
+	}
+
+	if choreReq.SubTasks != nil {
+		if h.stRepo.UpdateSubtask(c, createdChore.ID, nil, *choreReq.SubTasks) != nil {
+			return 500, gin.H{"error": "Error adding subtasks", "res": id}
+		}
+	}
+
+	if choreReq.LabelsV2 != nil {
+		labelsV2 := make([]int, len(*choreReq.LabelsV2))
+		for i, label := range *choreReq.LabelsV2 {
+			labelsV2[i] = int(label.LabelID)
+		}
+		if err := h.lRepo.AssignLabelsToChore(c, createdChore.ID, currentUser.ID, currentUser.CircleID, labelsV2, []int{}); err != nil {
+			return 500, gin.H{"error": "Error adding labels", "res": id}
+		}
+	}
+
+	if choreReq.Description != nil {
+		description := *choreReq.Description
+		if err := h.cleanUpUnreferencedFiles(c, currentUser.ID, storageModel.EntityTypeChoreDescription, createdChore.ID, description); err != nil {
+			return 500, gin.H{"error": "Error processing description", "res": id}
+		}
+	}
+
+	if choreReq.DraftId != nil && *choreReq.DraftId != "" {
+		if err := h.storageRepo.ReassignDraftAttachments(c, *choreReq.DraftId, currentUser.ID, createdChore.ID); err != nil {
+			logger.Error("Failed to reassign draft attachments", "error", err, "draftID", *choreReq.DraftId)
+			return 500, gin.H{"error": "Error processing attachments", "res": id}
+		}
+	}
+
+	// Reload relations used by notification and realtime authorization. In
+	// particular, Project must be populated before deciding event recipients.
+	eventChore, err := h.choreRepo.GetChore(c, createdChore.ID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to reload created chore", "error", err)
+		return 500, gin.H{"error": "Failed to reload created chore", "res": id}
+	}
+	// Copy Gin's pooled context before leaving the handler and detach request
+	// cancellation so notification planning can finish after the response.
+	notificationContext := context.WithoutCancel(c.Copy())
+	go func() {
+		ctx, cancel := context.WithTimeout(notificationContext, 30*time.Second)
+		defer cancel()
+		h.nPlanner.GenerateChoreNotifications(ctx, eventChore, nil, currentUser.ID)
+	}()
+
+	h.eventProducer.ChoreCreated(c, currentUser.WebhookURL, eventChore, &currentUser.User)
+
+	// Broadcast real-time chore creation event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		broadcaster.BroadcastChoreCreated(eventChore, &currentUser.User)
+	}
+
+	if status, response := associateThing(choreReq, createdChore, h, c, &currentUser.User); response != nil {
+		response["res"] = id
+		return status, response
+	}
+	response := gin.H{"res": id}
+	if len(warnings) > 0 {
+		response["warnings"] = warnings
+	}
+
+	return 200, response
+}
+
+// choreFromReq builds the minimum chore the scheduler needs to walk a
+// recurrence sequence, for use before the chore itself exists.
+func choreFromReq(choreReq *ChoreReq, dueDate *time.Time) *chModel.Chore {
+	return &chModel.Chore{
+		ID:                  choreReq.ID,
+		FrequencyType:       choreReq.FrequencyType,
+		Frequency:           *choreReq.Frequency,
+		FrequencyMetadataV2: choreReq.FrequencyMetadata,
+		NextDueDate:         dueDate,
+	}
+}
+
+func setCreateChoreDefaults(choreReq *ChoreReq) []string {
+	warnings := []string{}
+
+	if choreReq.Frequency == nil {
+		val := 1
+		choreReq.Frequency = &val
+		warnings = append(warnings, "frequency not provided, defaulting to 1")
+	}
+
+	if choreReq.Priority == nil {
+		val := 0
+		choreReq.Priority = &val
+		warnings = append(warnings, "priority not provided, defaulting to 0")
+	}
+
+	if choreReq.IsActive == nil {
+		val := true
+		choreReq.IsActive = &val
+		warnings = append(warnings, "isActive not provided, defaulting to true")
+	}
+
+	if choreReq.IsPrivate == nil {
+		val := false
+		choreReq.IsPrivate = &val
+		warnings = append(warnings, "isPrivate not provided, defaulting to false")
+	}
+
+	return warnings
+}
+
+// EditChore godoc
+//
+//	@Summary		Edit an existing chore
+//	@Description	Updates chore details including assignees, labels, subtasks, and metadata
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			chore	body		ChoreReq			true	"Chore update request"
+//	@Success		200		{object}	map[string]string	"message: Chore updated successfully"
+//	@Failure		400		{object}	map[string]string	"error: Invalid request format | Invalid date | Assignee not found in circle | Assigned to not found in assignees"
+//	@Failure		401		{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403		{object}	map[string]string	"error: You cannot edit this chore"
+//	@Failure		500		{object}	map[string]string	"error: Failed to retrieve chore | Error adding chore | Error adding subtasks"
+//	@Router			/chores [put]
+func (h *Handler) EditChore(c *gin.Context) {
+	// logger := logging.FromContext(c)
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	now := time.Now().UTC()
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	var choreReq ChoreReq
+	if err := c.ShouldBindJSON(&choreReq); err != nil {
+		logger.Error("Invalid request body", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+
+	// Before the assignee diff below, so a private project can narrow the list down.
+	if err := h.inheritProjectPrivacy(c, &choreReq, currentUser.ID, currentUser.CircleID); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	//  filter assignees that not in the circle
+	for _, assignee := range choreReq.Assignees {
+		userFound := false
+		for _, circleUser := range circleUsers {
+			if assignee.UserID == circleUser.UserID {
+				userFound = true
+				break
+			}
+		}
+		if !userFound {
+			c.JSON(400, gin.H{
+				"error": "Assignee not found in circle",
+			})
+			return
+		}
+	}
+
+	//  validate assignedTo part of the assignees:
+	if choreReq.AssignedTo != nil {
+		assigneeFound := false
+		// if we have assignees loop through them if we don't have any we default to circle as this task assigned to Anyone
+		assignees := choreReq.Assignees
+		if len(assignees) == 0 {
+			// everyone in the circle is considered an assignee, so we check if the assignedTo user is in the circle:
+			for _, circleUser := range circleUsers {
+				if circleUser.UserID == *choreReq.AssignedTo {
+					assigneeFound = true
+					break
+				}
+			}
+		}
+		for _, assignee := range assignees {
+			if assignee.UserID == *choreReq.AssignedTo {
+				assigneeFound = true
+				break
+			}
+		}
+		if !assigneeFound {
+			c.JSON(400, gin.H{
+				"error": "Assigned to not found in assignees",
+			})
+			return
+		}
+	}
+
+	// Remove the auto-assignment logic - if no assignee then keep no assignee
+	oldChore, err := h.choreRepo.GetChore(c, choreReq.ID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if err := oldChore.CanEdit(currentUser.ID, circleUsers, choreReq.UpdatedAt); err != nil {
+		c.JSON(403, gin.H{
+			"error": fmt.Sprintf("You cannot edit this chore: %s", err.Error()),
+		})
+		return
+	}
+
+	if choreReq.CompletionActions == nil {
+		choreReq.CompletionActions = &oldChore.CompletionActions
+	}
+	if err := h.validateCompletionActions(c, choreReq.CompletionActions, oldChore.CreatedBy); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	// Labels are only touched when the request carries them: an update without
+	// labelsV2 keeps the chore's current labels.
+	if choreReq.LabelsV2 != nil {
+		// Create a map to store the existing labels for quick lookup
+		oldLabelsMap := make(map[int]struct{})
+		if oldChore.LabelsV2 != nil {
+			for _, oldLabel := range *oldChore.LabelsV2 {
+				oldLabelsMap[oldLabel.ID] = struct{}{}
+			}
+		}
+		newLabelMap := make(map[int]struct{})
+		for _, newLabel := range *choreReq.LabelsV2 {
+			newLabelMap[newLabel.LabelID] = struct{}{}
+		}
+		// check what labels need to be added and what labels need to be deleted:
+		labelsV2ToAdd := make([]int, 0)
+		labelsV2ToBeRemoved := make([]int, 0)
+
+		for _, label := range *choreReq.LabelsV2 {
+			if _, ok := oldLabelsMap[label.LabelID]; !ok {
+				labelsV2ToAdd = append(labelsV2ToAdd, label.LabelID)
+			}
+		}
+		if oldChore.LabelsV2 != nil {
+			for _, oldLabel := range *oldChore.LabelsV2 {
+				if _, ok := newLabelMap[oldLabel.ID]; !ok {
+					labelsV2ToBeRemoved = append(labelsV2ToBeRemoved, oldLabel.ID)
+				}
+			}
+		}
+
+		if err := h.lRepo.AssignLabelsToChore(c, choreReq.ID, currentUser.ID, currentUser.CircleID, labelsV2ToAdd, labelsV2ToBeRemoved); err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error adding labels",
+			})
+			return
+		}
+	}
+	description := ""
+	if choreReq.Description != nil {
+		description = *choreReq.Description
+	}
+	if err := h.cleanUpUnreferencedFiles(c, currentUser.ID, storageModel.EntityTypeChoreDescription, choreReq.ID, description); err != nil { // TODO: this doesn't seem good, we clean up the request' file before adding it to the model
+		c.JSON(500, gin.H{
+			"error": "Error processing description",
+		})
+		return
+	}
+	var dueDate *time.Time
+	if choreReq.NextDueDate != nil {
+		utcDate := choreReq.NextDueDate.UTC()
+		dueDate = &utcDate
+	} else {
+		dueDate = oldChore.NextDueDate
+	}
+
+	setEditChoreDefaults(&choreReq, oldChore)
+
+	// Editing bounds has to move the current due date too, otherwise a newly
+	// narrowed chore keeps firing until its next completion.
+	if dueDate != nil {
+		bounded, err := applyScheduleBounds(c, choreFromReq(&choreReq, dueDate), *dueDate)
+		if err != nil {
+			c.JSON(400, gin.H{"error": "Error applying recurrence bounds"})
+			return
+		}
+		dueDate = bounded
+	}
+
+	updatedChore := &chModel.Chore{ // TODO: Assignees are missing
+		CompletionActions:      *choreReq.CompletionActions,
+		ID:                     choreReq.ID,
+		Name:                   choreReq.Name,
+		FrequencyType:          choreReq.FrequencyType,
+		Frequency:              *choreReq.Frequency,
+		FrequencyMetadataV2:    choreReq.FrequencyMetadata,
+		NextDueDate:            dueDate,
+		AssignStrategy:         choreReq.AssignStrategy,
+		AssignedTo:             choreReq.AssignedTo,
+		IsRolling:              choreReq.IsRolling,
+		IsActive:               *choreReq.IsActive,
+		Notification:           choreReq.Notification,
+		NotificationMetadataV2: choreReq.NotificationMetadata,
+		CircleID:               oldChore.CircleID,
+		UpdatedBy:              currentUser.ID,
+		CreatedBy:              oldChore.CreatedBy,
+		CreatedAt:              oldChore.CreatedAt,
+		Points:                 choreReq.Points,
+		CompletionWindow:       choreReq.CompletionWindow,
+		Description:            choreReq.Description,
+		Priority:               *choreReq.Priority,
+		RequireApproval:        choreReq.RequireApproval,
+		IsPrivate:              *choreReq.IsPrivate,
+		ProjectID:              choreReq.ProjectID,
+		Status:                 oldChore.Status,
+	}
+
+	assigneeIDs := make([]int, 0, len(choreReq.Assignees))
+	for _, assignee := range choreReq.Assignees {
+		assigneeIDs = append(assigneeIDs, assignee.UserID)
+	}
+	if err := h.choreRepo.UpdateChoreVisibilityForUser(c, updatedChore, assigneeIDs, currentUser.ID); err != nil {
+		if errors.Is(err, chRepo.ErrAssigneeOutsideProject) {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(500, gin.H{
+			"error": "Error adding chore",
+		})
+		return
+	}
+	if choreReq.SubTasks != nil {
+		ToBeRemoved := []stModel.SubTask{}
+		ToBeAdded := []stModel.SubTask{}
+		if oldChore.SubTasks == nil {
+			oldChore.SubTasks = &[]stModel.SubTask{}
+		}
+		if choreReq.SubTasks == nil {
+			choreReq.SubTasks = &[]stModel.SubTask{}
+		}
+		for _, existedSubTask := range *oldChore.SubTasks {
+			found := false
+			for _, newSubTask := range *choreReq.SubTasks {
+				if existedSubTask.ID == newSubTask.ID {
+					found = true
+					break
+				}
+			}
+			if !found {
+				ToBeRemoved = append(ToBeRemoved, existedSubTask)
+			}
+		}
+
+		for _, newSubTask := range *choreReq.SubTasks {
+			found := false
+			newSubTask.ChoreID = oldChore.ID
+
+			for _, existedSubTask := range *oldChore.SubTasks {
+				if existedSubTask.ID == newSubTask.ID {
+					if existedSubTask.Name != newSubTask.Name || existedSubTask.OrderID != newSubTask.OrderID {
+						// there is a change in the subtask, update it
+						break
+					}
+					found = true
+					break
+				}
+			}
+			if !found {
+				ToBeAdded = append(ToBeAdded, newSubTask)
+			}
+		}
+		if h.stRepo.UpdateSubtask(c, oldChore.ID, ToBeRemoved, ToBeAdded) != nil {
+			c.JSON(500, gin.H{
+				"error": "Error adding subtasks",
+			})
+			return
+		}
+	}
+
+	if dueDatesDiffer(oldChore.NextDueDate, updatedChore.NextDueDate) {
+		historyEntry := &chModel.ChoreHistory{
+			ChoreID:     oldChore.ID,
+			PerformedAt: &now,
+			CompletedBy: currentUser.ID,
+			AssignedTo:  oldChore.AssignedTo,
+			DueDate:     oldChore.NextDueDate,
+			Status:      chModel.ChoreHistoryStatusRescheduled,
+		}
+		if err := h.choreRepo.CreateChoreHistory(c, historyEntry); err != nil {
+			logging.FromContext(c).Error("Failed to create reschedule history", "error", err)
+		}
+	}
+
+	eventChore, err := h.choreRepo.GetChore(c, updatedChore.ID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to reload updated chore", "error", err)
+		c.JSON(500, gin.H{"error": "Failed to reload updated chore"})
+		return
+	}
+	notificationContext := context.WithoutCancel(c.Copy())
+	go func() {
+		ctx, cancel := context.WithTimeout(notificationContext, 30*time.Second)
+		defer cancel()
+		h.nPlanner.GenerateChoreNotifications(ctx, eventChore, oldChore.AssignedTo, currentUser.ID)
+	}()
+
+	// Broadcast real-time chore update event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		// Build changes map (simplified - in real implementation you might want to track actual changes)
+		changes := map[string]interface{}{
+			"updatedBy": currentUser.ID,
+			"updatedAt": time.Now().UTC(),
+		}
+		broadcaster.BroadcastChoreUpdated(eventChore, &currentUser.User, changes, nil)
+	}
+
+	if oldChore.ThingChore != nil {
+		// TODO: Add check to see if dissociation is necessary
+		h.tRepo.DissociateThingWithChore(c, oldChore.ThingChore.ThingID, oldChore.ID)
+
+	}
+	shouldReturn := handleThingAssociation(choreReq, updatedChore, h, c, &currentUser.User)
+	if shouldReturn {
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Chore updated successfully",
+	})
+}
+
+func setEditChoreDefaults(choreReq *ChoreReq, oldChore *chModel.Chore) {
+	if choreReq.Frequency == nil {
+		choreReq.Frequency = &oldChore.Frequency
+	}
+	if choreReq.Priority == nil {
+		choreReq.Priority = &oldChore.Priority
+	}
+
+	if choreReq.IsActive == nil {
+		choreReq.IsActive = &oldChore.IsActive
+	}
+
+	if choreReq.IsPrivate == nil {
+		choreReq.IsPrivate = &oldChore.IsPrivate
+	}
+}
+
+// inheritProjectPrivacy makes sure the project a chore is being placed in is visible
+// to the user, and makes the chore follow that project's privacy: a chore always
+// takes on the privacy of the project it's placed in, in both directions — moving a
+// private chore into a public project makes it public, and moving a public chore
+// into a private project makes it private. A chore in no project at all keeps its
+// own flag, since there's no project to inherit from.
+//
+// It also keeps the assignees of a chore in a private project down to the project
+// owner, the only user who can see it: assigning it to anyone else is rejected, and
+// "Anyone" (an empty assignee list) resolves to the owner instead of the whole
+// circle, so the chore never rotates or notifies its way to someone who can't see it.
+func (h *Handler) inheritProjectPrivacy(c *gin.Context, choreReq *ChoreReq, userID int, circleID int) error {
+	if choreReq.ProjectID == nil {
+		return nil
+	}
+
+	project, err := h.pjRepo.GetProjectByID(c, *choreReq.ProjectID, circleID)
+	// Don't tell apart "missing" from "not visible", it would leak private projects.
+	if err != nil || !project.CanView(userID) {
+		return errors.New("project not found")
+	}
+
+	isPrivate := project.IsPrivate
+	choreReq.IsPrivate = &isPrivate
+
+	if !project.IsPrivate {
+		return nil
+	}
+
+	if project.Visibility() == pModel.ProjectVisibilityMembers {
+		// A shared project's audience is its owner plus the selected members: any
+		// of them can be assigned, nobody else. "Anyone" (no assignees) stays as it
+		// is and rotates and notifies within that audience only.
+		for _, assignee := range choreReq.Assignees {
+			if !project.CanView(assignee.UserID) {
+				return chRepo.ErrAssigneeOutsideProject
+			}
+		}
+		if choreReq.AssignedTo != nil && *choreReq.AssignedTo != 0 && !project.CanView(*choreReq.AssignedTo) {
+			return chRepo.ErrAssigneeOutsideProject
+		}
+		return nil
+	}
+
+	for _, assignee := range choreReq.Assignees {
+		if assignee.UserID != project.CreatedBy {
+			return errors.New("chores in a private project can only be assigned to its owner")
+		}
+	}
+	if choreReq.AssignedTo != nil && *choreReq.AssignedTo != project.CreatedBy {
+		return errors.New("chores in a private project can only be assigned to its owner")
+	}
+
+	// "Anyone" would otherwise spread over the whole circle when rotating or notifying.
+	if len(choreReq.Assignees) == 0 && choreReq.AssignStrategy != chModel.AssignmentStrategyNoAssignee {
+		choreReq.Assignees = []chModel.ChoreAssignees{{ChoreID: choreReq.ID, UserID: project.CreatedBy}}
+		if choreReq.AssignedTo == nil {
+			owner := project.CreatedBy
+			choreReq.AssignedTo = &owner
+		}
+	}
+	return nil
+}
+
+func dueDatesDiffer(oldDueDate, newDueDate *time.Time) bool {
+	if oldDueDate == nil || newDueDate == nil {
+		return oldDueDate != newDueDate
+	}
+	return !oldDueDate.Equal(*newDueDate)
+}
+
+// isBeforeCompletionWindow reports whether completedDate is earlier than the chore's
+// completion window allows. A chore without a due date has no window to be early for.
+func isBeforeCompletionWindow(chore *chModel.Chore, completedDate time.Time) bool {
+	if chore.CompletionWindow == nil || chore.NextDueDate == nil {
+		return false
+	}
+	return completedDate.UTC().Before(chore.NextDueDate.UTC().Add(-time.Hour * time.Duration(*chore.CompletionWindow)))
+}
+
+func (h *Handler) deleteChoreFiles(ctx *gin.Context, choreID int) {
+	files, err := h.storageRepo.GetAllFilesByOwnerType(ctx, storageModel.EntityTypeChoreDescription, choreID)
+	if err != nil || len(files) == 0 {
+		return
+	}
+	paths := make([]string, len(files))
+	for i, f := range files {
+		paths[i] = f.FilePath
+	}
+	h.storage.Delete(ctx, paths)
+
+	byUser := make(map[int][]*storageModel.StorageFile)
+	for _, f := range files {
+		byUser[f.UserID] = append(byUser[f.UserID], f)
+	}
+	for userID, userFiles := range byUser {
+		h.storageRepo.RemoveFileRecords(ctx, userFiles, userID)
+	}
+}
+
+func (h *Handler) cleanUpUnreferencedFiles(ctx *gin.Context, userID int, entityType storageModel.EntityType, entityID int, text string) error {
+	existedFiles, err := h.storageRepo.GetFilesByUser(ctx, userID, entityType, entityID)
+	if err != nil {
+		return err
+	}
+	referencedFiles := utils.ExtractImageURLs(text)
+	var filesToBeDeleted []*storageModel.StorageFile
+	var filePathsToBeDeleted []string
+	for _, file := range existedFiles {
+		found := false
+		for _, refFile := range referencedFiles {
+			if strings.Contains(refFile, file.FilePath) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			// if the file is not referenced in the text, delete it
+			filesToBeDeleted = append(filesToBeDeleted, file)
+			filePathsToBeDeleted = append(filePathsToBeDeleted, file.FilePath)
+		}
+	}
+
+	h.storage.Delete(ctx, filePathsToBeDeleted)
+	h.storageRepo.RemoveFileRecords(ctx, filesToBeDeleted, userID)
+	return nil
+}
+
+func handleThingAssociation(choreReq ChoreReq, savedChore *chModel.Chore, h *Handler, c *gin.Context, currentUser *uModel.User) bool {
+	status, response := associateThing(choreReq, savedChore, h, c, currentUser)
+	if response != nil {
+		c.JSON(status, response)
+		return true
+	}
+	return false
+}
+
+func associateThing(choreReq ChoreReq, savedChore *chModel.Chore, h *Handler, c *gin.Context, currentUser *uModel.User) (int, gin.H) {
+	if choreReq.ThingTrigger != nil {
+		thing, err := h.tRepo.GetThingByID(c, choreReq.ThingTrigger.ID)
+		if err != nil {
+			return 500, gin.H{"error": "Error getting thing"}
+		}
+		if thing.UserID != currentUser.ID {
+			return 403, gin.H{"error": "You are not allowed to trigger this thing"}
+		}
+		if err := h.tRepo.AssociateThingWithChore(c, choreReq.ThingTrigger.ID, savedChore.ID, choreReq.ThingTrigger.TriggerState, choreReq.ThingTrigger.Condition); err != nil {
+			return 500, gin.H{"error": "Error associating thing with chore"}
+		}
+	}
+	return 200, nil
+}
+
+// DeleteChore godoc
+//
+//	@Summary		Delete a chore
+//	@Description	Deletes a chore and associated notifications (owner only)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int					true	"Chore ID"
+//	@Success		200	{object}	map[string]string	"message: Chore deleted successfully"
+//	@Failure		400	{object}	map[string]string	"error: Invalid ID"
+//	@Failure		401	{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403	{object}	map[string]string	"error: You are not allowed to delete this chore"
+//	@Failure		500	{object}	map[string]string	"error: Failed to retrieve chore | Failed to delete chore"
+//	@Router			/chores/{id} [delete]
+func (h *Handler) DeleteChore(c *gin.Context) {
+	// logger := logging.FromContext(c)
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	// Get chore details before deletion for real-time event; scopes to current circle
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if chore.CreatedBy != currentUser.ID {
+		circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+		if err != nil {
+			logger.Error("Failed to retrieve circle users", "error", err)
+			c.JSON(500, gin.H{
+				"error": "Failed to retrieve circle users",
+			})
+			return
+		}
+		if !currentUser.IsAdminOrManager(circleUsers) {
+			c.JSON(403, gin.H{
+				"error": "You are not allowed to delete this chore",
+			})
+			return
+		}
+	}
+
+	// Collect file paths before deletion; the DeleteChore transaction removes the
+	// DB records, so we must query them first or the backing objects are orphaned.
+	var choreFilePaths []string
+	for _, entityType := range []storageModel.EntityType{
+		storageModel.EntityTypeChoreDescription,
+		storageModel.EntityTypeChoreAttachment,
+	} {
+		files, err := h.storageRepo.GetAllFilesByOwnerType(c, entityType, id)
+		if err != nil {
+			logger.Error("Failed to list chore files for cleanup", "error", err, "choreID", id, "entityType", entityType)
+			continue
+		}
+		for _, f := range files {
+			choreFilePaths = append(choreFilePaths, f.FilePath)
+		}
+	}
+	deletedSyncVersion, err := h.choreRepo.DeleteChore(c, id)
+	if err != nil {
+		logger.Error("Failed to delete chore", "error", err, "choreID", id, "userID", currentUser.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to delete chore",
+		})
+		return
+	}
+	h.nRepo.DeleteAllChoreNotifications(id)
+	h.tRepo.DissociateChoreWithThing(c, id)
+	// DB records are already gone; only delete the backing storage objects.
+	if len(choreFilePaths) > 0 {
+		h.storage.Delete(c, choreFilePaths)
+	}
+
+	// Broadcast real-time chore deletion event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		broadcaster.BroadcastChoreDeleted(chore, &currentUser.User, deletedSyncVersion)
+	}
+
+	c.JSON(200, gin.H{
+		"message":     "Chore deleted successfully",
+		"syncVersion": deletedSyncVersion,
+	})
+}
+
+// region: request models
+// TODO: Add validation for time
+
+type AssigneeReq struct {
+	Assignee  int       `json:"assignee" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
+}
+
+// endregion
+
+// UpdateAssignee godoc
+//
+//	@Summary		Update chore assignee
+//	@Description	Updates the currently assigned user for a chore
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int							true	"Chore ID"
+//	@Param			assignee	body		AssigneeReq					true	"Assignee update request"
+//	@Success		200			{object}	map[string]chModel.Chore	"res: updated chore"
+//	@Failure		400			{object}	map[string]string			"error: Invalid ID | Invalid request | Assignee not found in assignees"
+//	@Failure		401			{object}	map[string]string			"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string			"error: You cannot edit this chore"
+//	@Failure		500			{object}	map[string]string			"error: Failed to retrieve chore | Error updating assignee"
+//	@Router			/chores/{id}/assignee [put]
+func (h *Handler) UpdateAssignee(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	var assigneeReq AssigneeReq
+	if err := c.ShouldBindJSON(&assigneeReq); err != nil {
+		logging.FromContext(c).Error("Operation failed", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	// confirm that the assignee is one of the assignees:
+	assigneeFound := false
+	for _, assignee := range chore.Assignees {
+
+		if assignee.UserID == assigneeReq.Assignee {
+			assigneeFound = true
+			break
+		}
+	}
+	if !assigneeFound {
+		c.JSON(400, gin.H{
+			"error": "Assignee not found in assignees",
+		})
+		return
+	}
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if err := chore.CanDelegate(currentUser.ID, circleUsers, &assigneeReq.UpdatedAt); err != nil {
+		c.JSON(403, gin.H{
+			"error": fmt.Sprintf("You cannot edit this chore: %s", err.Error()),
+		})
+		return
+	}
+
+	if err := h.choreRepo.UpdateChoreFields(c, id, map[string]interface{}{
+		"assigned_to": assigneeReq.Assignee,
+		"updated_by":  currentUser.ID,
+		"updated_at":  assigneeReq.UpdatedAt,
+	}); err != nil {
+		logging.FromContext(c).Error("Error updating assignee", "error", err, "choreID", id, "assignee", assigneeReq.Assignee)
+
+		c.JSON(500, gin.H{
+			"error": "Error updating assignee",
+		})
+		return
+	}
+
+	// Respond with the chore as it is now, not as it was before the update,
+	// otherwise the client keeps showing the previous assignee (#848).
+	updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve updated chore", "error", err, "choreID", id)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	h.nPlanner.GenerateChoreNotifications(c, updatedChore, chore.AssignedTo, currentUser.ID)
+
+	// Broadcast real-time assignee update event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		changes := map[string]interface{}{
+			"assignedTo": assigneeReq.Assignee,
+			"updatedBy":  currentUser.ID,
+			"updatedAt":  assigneeReq.UpdatedAt,
+		}
+		broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+	}
+
+	c.JSON(200, gin.H{
+		"res": updatedChore,
+	})
+}
+
+// StartChore godoc
+//
+//	@Summary		Start a chore timer
+//	@Description	Starts or resumes a chore timer session (supports impersonation)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int						true	"Chore ID"
+//
+// TODO: Add response model
+//
+//	@Success		200	{object}	map[string]interface{}	"res: {timerUpdatedAt, status, duration}"
+//	@Failure		400	{object}	map[string]string		"error: Invalid ID | Chore is not in a state that can be started"
+//	@Failure		401	{object}	map[string]string		"error: Authentication failed"
+//	@Failure		403	{object}	map[string]string		"error: You are not allowed to start this chore"
+//	@Failure		500	{object}	map[string]string		"error: Failed to retrieve chore | Error creating time session"
+//	@Router			/chores/{id}/start [put]
+func (h *Handler) StartChore(c *gin.Context) {
+	var req ActionReq
+	if err := bindOptionalActionReq(c, &req); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	logger := logging.FromContext(c)
+
+	// Get actual user and impersonated user (if any)
+	actualUser, impersonatedUser, hasImpersonation := auth.CurrentUserWithImpersonation(c)
+	if actualUser == nil {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	// Use impersonated user for operations
+	var effectiveUser *uModel.UserDetails
+	if hasImpersonation {
+		effectiveUser = impersonatedUser
+		logger.Info("Starting chore with impersonation",
+			"actualUserID", actualUser.ID,
+			"impersonatedUserID", impersonatedUser.ID,
+			"choreID", id)
+	} else {
+		effectiveUser = actualUser
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !h.impersonationGuard(c, chore, actualUser, effectiveUser, hasImpersonation) {
+		return
+	}
+	if !validateActionVersion(c, "start", chore, req.ActionOptions) {
+		return
+	}
+	actionTime := actionCreatedAtOrNow(req.ActionOptions)
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if !chore.CanComplete(effectiveUser.ID, circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to start this chore",
+		})
+		return
+	}
+	var session *chModel.TimeSession
+	var updatedSyncVersion int64
+	switch chore.Status {
+	case chModel.ChoreStatusNoStatus:
+		session, err = h.choreRepo.CreateTimeSession(c, chore, effectiveUser.ID)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error creating time session",
+			})
+			return
+		}
+		if req.ActionOptions != nil && !req.ActionOptions.CreatedAt.IsZero() {
+			applyStartActionTime(session, effectiveUser.ID, actionTime)
+			if err := h.choreRepo.UpdateTimeSession(c, session); err != nil {
+				c.JSON(500, gin.H{
+					"error": "Error updating time session",
+				})
+				return
+			}
+		}
+		updatedSyncVersion, err = h.choreRepo.UpdateChoreStatus(c, chore.ID, chModel.ChoreStatusInProgress, chore.CircleID)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error updating chore status",
+			})
+			return
+		}
+	case chModel.ChoreStatusPaused:
+		session, err = h.choreRepo.GetActiveTimeSession(c, chore.ID)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error getting active time session",
+			})
+			return
+		}
+		if session != nil {
+			session.Start(effectiveUser.ID)
+			if req.ActionOptions != nil && !req.ActionOptions.CreatedAt.IsZero() {
+				applyStartActionTime(session, effectiveUser.ID, actionTime)
+			}
+			if err := h.choreRepo.UpdateTimeSession(c, session); err != nil {
+				c.JSON(500, gin.H{
+					"error": "Error updating time session",
+				})
+				return
+			}
+		}
+		updatedSyncVersion, err = h.choreRepo.UpdateChoreStatus(c, chore.ID, chModel.ChoreStatusInProgress, chore.CircleID)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error updating chore status",
+			})
+			return
+		}
+
+	default:
+		c.JSON(400, gin.H{
+			"error": "Chore is not in a state that can be started",
+		})
+		return
+	}
+	chore.SyncVersion = updatedSyncVersion
+	if h.realTimeService != nil {
+		chore.Status = chModel.ChoreStatusInProgress
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		// Build changes map (simplified - in real implementation you might want to track actual changes)
+		changes := map[string]interface{}{
+			"updatedBy":      actualUser.ID, // Use actual user for audit trail
+			"updatedAt":      time.Now().UTC(),
+			"status":         chModel.ChoreStatusInProgress,
+			"timerUpdatedAt": session.UpdateAt,
+		}
+		broadcaster.BroadcastChoreUpdated(chore, &effectiveUser.User, changes, nil)
+	}
+
+	if session != nil {
+		c.JSON(200, gin.H{
+			"res": map[string]interface{}{
+				"timerUpdatedAt": session.UpdateAt,
+				"status":         chModel.ChoreStatusInProgress,
+				"duration":       session.Duration,
+				"syncVersion":    updatedSyncVersion,
+			},
+		})
+	}
+}
+
+// PauseChore godoc
+//
+//	@Summary		Pause a chore timer
+//	@Description	Pauses an active chore timer session (supports impersonation)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int						true	"Chore ID"
+//
+// TODO: Add response model
+//
+//	@Success		200	{object}	map[string]interface{}	"res: {duration, status, timerUpdatedAt}"
+//	@Failure		400	{object}	map[string]string		"error: Invalid ID | No active time session found for this chore"
+//	@Failure		401	{object}	map[string]string		"error: Authentication failed"
+//	@Failure		403	{object}	map[string]string		"error: You are not allowed to pause this chore"
+//	@Failure		500	{object}	map[string]string		"error: Failed to retrieve chore | Error getting active time session"
+//	@Router			/chores/{id}/pause [put]
+func (h *Handler) PauseChore(c *gin.Context) {
+	var req ActionReq
+	if err := bindOptionalActionReq(c, &req); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	logger := logging.FromContext(c)
+
+	// Get actual user and impersonated user (if any)
+	actualUser, impersonatedUser, hasImpersonation := auth.CurrentUserWithImpersonation(c)
+	if actualUser == nil {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	// Use impersonated user for operations
+	var effectiveUser *uModel.UserDetails
+	if hasImpersonation {
+		effectiveUser = impersonatedUser
+		logger.Info("Pausing chore with impersonation",
+			"actualUserID", actualUser.ID,
+			"impersonatedUserID", impersonatedUser.ID,
+			"choreID", id)
+	} else {
+		effectiveUser = actualUser
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !h.impersonationGuard(c, chore, actualUser, effectiveUser, hasImpersonation) {
+		return
+	}
+	if !validateActionVersion(c, "pause", chore, req.ActionOptions) {
+		return
+	}
+	actionTime := actionCreatedAtOrNow(req.ActionOptions)
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if !chore.CanComplete(effectiveUser.ID, circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to pause this chore",
+		})
+		return
+	}
+
+	session, err := h.choreRepo.GetActiveTimeSession(c, chore.ID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting active time session",
+		})
+		return
+	}
+	if session == nil {
+		c.JSON(400, gin.H{
+			"error": "No active time session found for this chore",
+		})
+		return
+	}
+	session.Pause(effectiveUser.ID)
+	if req.ActionOptions != nil && !req.ActionOptions.CreatedAt.IsZero() {
+		applyPauseActionTime(session, effectiveUser.ID, actionTime)
+	}
+	if err := h.choreRepo.UpdateTimeSession(c, session); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating time session",
+		})
+		return
+	}
+	updatedSyncVersion, err := h.choreRepo.UpdateChoreStatus(c, chore.ID, chModel.ChoreStatusPaused, chore.CircleID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating chore status",
+		})
+		return
+	}
+	chore.SyncVersion = updatedSyncVersion
+	if h.realTimeService != nil {
+		chore.Status = chModel.ChoreStatusPaused
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+
+		broadcaster.BroadcastChoreStatus(chore, &effectiveUser.User,
+			map[string]interface{}{
+				"updatedBy":      actualUser.ID, // Use actual user for audit trail
+				"updatedAt":      time.Now().UTC(),
+				"status":         chore.Status,
+				"timerUpdatedAt": session.UpdateAt,
+			})
+	}
+
+	c.JSON(200, gin.H{
+		"res": map[string]interface{}{
+			"duration":       session.Duration,
+			"status":         chModel.ChoreStatusPaused,
+			"timerUpdatedAt": session.UpdateAt,
+			"syncVersion":    updatedSyncVersion,
+		},
+	})
+
+}
+
+// ResetChoreTimer godoc
+//
+//	@Summary		Reset chore timer
+//	@Description	Resets the chore timer to zero and starts a new session
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int						true	"Chore ID"
+//
+// TODO: Add response model
+//
+//	@Success		200	{object}	map[string]interface{}	"res: {timerUpdatedAt, status, duration}"
+//	@Failure		400	{object}	map[string]string		"error: Invalid ID | No active time session found for this chore"
+//	@Failure		401	{object}	map[string]string		"error: Authentication failed"
+//	@Failure		403	{object}	map[string]string		"error: You are not allowed to reset timer for this chore"
+//	@Failure		500	{object}	map[string]string		"error: Failed to retrieve chore | Error updating time session"
+//	@Router			/chores/{id}/timer/reset [put]
+func (h *Handler) ResetChoreTimer(c *gin.Context) {
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if !chore.CanComplete(currentUser.ID, circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to reset timer for this chore",
+		})
+		return
+	}
+
+	session, err := h.choreRepo.GetActiveTimeSession(c, chore.ID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting active time session",
+		})
+		return
+	}
+
+	if session == nil {
+		c.JSON(400, gin.H{
+			"error": "No active time session found for this chore",
+		})
+		return
+	}
+
+	// Reset the timer: clear pause log, reset duration, set start time to now
+	timeNow := time.Now().UTC()
+	session.PauseLog = chModel.PauseLogEntries{}
+	session.Duration = 0
+	session.StartTime = timeNow
+	session.Status = chModel.TimeSessionStatusActive
+	session.UpdateBy = currentUser.ID
+	session.UpdateAt = timeNow
+
+	// Add new pause log entry for the reset session
+	session.PauseLog = append(session.PauseLog, &chModel.PauseLogEntry{
+		StartTime: timeNow,
+		UpdateBy:  currentUser.ID,
+	})
+
+	if err := h.choreRepo.UpdateTimeSession(c, session); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating time session",
+		})
+		return
+	}
+
+	// Update chore status to in progress
+	updatedSyncVersion, err := h.choreRepo.UpdateChoreStatus(c, chore.ID, chModel.ChoreStatusInProgress, chore.CircleID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating chore status",
+		})
+		return
+	}
+	chore.SyncVersion = updatedSyncVersion
+
+	// Broadcast the change via real-time service
+	if h.realTimeService != nil {
+		chore.Status = chModel.ChoreStatusInProgress
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+
+		changes := map[string]interface{}{
+			"updatedBy":      currentUser.ID,
+			"updatedAt":      timeNow,
+			"status":         chModel.ChoreStatusInProgress,
+			"timerUpdatedAt": session.UpdateAt,
+		}
+		broadcaster.BroadcastChoreUpdated(chore, &currentUser.User, changes, nil)
+	}
+
+	c.JSON(200, gin.H{
+		"res": map[string]interface{}{
+			"timerUpdatedAt": session.UpdateAt,
+			"status":         chModel.ChoreStatusInProgress,
+			"duration":       session.Duration,
+			"syncVersion":    updatedSyncVersion,
+		},
+	})
+}
+
+// SkipChore godoc
+//
+//	@Summary		Skip a chore
+//	@Description	Skips the current chore iteration and schedules the next due date (supports impersonation)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int							true	"Chore ID"
+//	@Success		200	{object}	map[string]chModel.Chore	"res: updated chore"
+//	@Failure		400	{object}	map[string]string			"error: Invalid ID"
+//	@Failure		401	{object}	map[string]string			"error: Authentication failed"
+//	@Failure		500	{object}	map[string]string			"error: Failed to retrieve chore | Error scheduling next due date | Error completing chore"
+//	@Router			/chores/{id}/skip [post]
+func (h *Handler) SkipChore(c *gin.Context) {
+	var req ActionReq
+	if err := bindOptionalActionReq(c, &req); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	logger := logging.FromContext(c)
+
+	// Get actual user and impersonated user (if any)
+	actualUser, impersonatedUser, hasImpersonation := auth.CurrentUserWithImpersonation(c)
+	if actualUser == nil {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	// Use impersonated user for operations
+	var effectiveUser *uModel.UserDetails
+	if hasImpersonation {
+		effectiveUser = impersonatedUser
+		logger.Info("Skipping chore with impersonation",
+			"actualUserID", actualUser.ID,
+			"impersonatedUserID", impersonatedUser.ID,
+			"choreID", id)
+	} else {
+		effectiveUser = actualUser
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !h.impersonationGuard(c, chore, actualUser, effectiveUser, hasImpersonation) {
+		return
+	}
+
+	completedDate := time.Now().UTC()
+	if chore.NextDueDate != nil {
+		completedDate = chore.NextDueDate.UTC()
+	}
+
+	if !validateActionVersion(c, "skip", chore, req.ActionOptions) {
+
+		return
+	}
+
+	var nextDueDate *time.Time
+	if req.ActionOptions != nil && req.ActionOptions.NextDueDate != nil {
+		t := req.ActionOptions.NextDueDate.UTC()
+		nextDueDate = &t
+	} else {
+		nextDueDate, err = scheduleNextDueDate(c, chore, completedDate)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error scheduling next due date",
+			})
+			return
+		}
+	}
+
+	nextAssignedTo := chore.AssignedTo
+	var skippedAt *time.Time
+	if req.ActionOptions != nil && !req.ActionOptions.CreatedAt.IsZero() {
+		t := req.ActionOptions.CreatedAt.UTC()
+		skippedAt = &t
+	}
+	if err := h.choreRepo.SkipChore(c, chore, effectiveUser.ID, nextDueDate, nextAssignedTo, skippedAt); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error completing chore",
+		})
+		return
+	}
+
+	updatedChore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	h.eventProducer.ChoreSkipped(c, effectiveUser.WebhookURL, updatedChore, &effectiveUser.User)
+
+	// Broadcast real-time chore skip event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		// Get the skip history entry
+		history, _ := h.choreRepo.GetChoreHistoryWithLimit(c, chore.ID, 1)
+		var choreHistory *chModel.ChoreHistory
+		if len(history) > 0 {
+			choreHistory = history[0]
+		}
+		broadcaster.BroadcastChoreSkipped(updatedChore, &effectiveUser.User, choreHistory, nil)
+	}
+
+	c.JSON(200, gin.H{
+		"res": updatedChore,
+	})
+}
+
+// region: request models
+// TODO: Check this if UpdatedAt is necessary.
+type DueDateReq struct {
+	DueDate   *time.Time `json:"dueDate"`
+	UpdatedAt *time.Time `json:"updatedAt" binding:"required"`
+}
+
+// endregion
+
+// UpdateDueDate godoc
+//
+//	@Summary		Update chore due date
+//	@Description	Updates the next due date for a chore (can be set to null)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id		path		int							true	"Chore ID"
+//	@Param			dueDate	body		DueDateReq					true	"Due date update request"
+//	@Success		200		{object}	map[string]chModel.Chore	"res: updated chore"
+//	@Failure		400		{object}	map[string]string			"error: Invalid ID | Invalid request | Invalid date"
+//	@Failure		401		{object}	map[string]string			"error: Authentication failed"
+//	@Failure		403		{object}	map[string]string			"error: You cannot edit this chore"
+//	@Failure		500		{object}	map[string]string			"error: Failed to retrieve chore | Error updating due date"
+//	@Router			/chores/{id}/dueDate [put]
+func (h *Handler) UpdateDueDate(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	var dueDateReq DueDateReq
+	if err := c.ShouldBindJSON(&dueDateReq); err != nil {
+		logging.FromContext(c).Error("Operation failed", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	var dueDate *time.Time
+
+	if dueDateReq.DueDate != nil {
+		utcTime := dueDateReq.DueDate.UTC()
+		dueDate = &utcTime
+	}
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if err := chore.CanEdit(currentUser.ID, circleUsers, dueDateReq.UpdatedAt); err != nil {
+		c.JSON(403, gin.H{})
+		return
+	}
+	now := time.Now().UTC()
+	if err := h.choreRepo.UpdateChoreFields(c, chore.ID, map[string]interface{}{
+		"next_due_date": dueDate,
+		"updated_by":    currentUser.ID,
+		"updated_at":    now,
+	}); err != nil {
+		logging.FromContext(c).Error("Failed to update due date", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Error updating due date",
+		})
+		return
+	}
+
+	historyEntry := &chModel.ChoreHistory{
+		ChoreID:     chore.ID,
+		PerformedAt: &now,
+		CompletedBy: currentUser.ID,
+		AssignedTo:  chore.AssignedTo,
+		DueDate:     chore.NextDueDate,
+		Status:      chModel.ChoreHistoryStatusRescheduled,
+	}
+	if err := h.choreRepo.CreateChoreHistory(c, historyEntry); err != nil {
+		logging.FromContext(c).Error("Failed to create reschedule history", "error", err)
+	}
+
+	// Broadcast real-time due date update event
+	if h.realTimeService != nil {
+		updatedChore, err := h.choreRepo.GetChore(c, chore.ID, currentUser.ID, currentUser.CircleID)
+		if err == nil {
+			broadcaster := h.realTimeService.GetEventBroadcaster()
+			changes := map[string]interface{}{
+				"nextDueDate": dueDate,
+				"updatedBy":   currentUser.ID,
+				"updatedAt":   time.Now().UTC(),
+			}
+			broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"res": chore,
+	})
+}
+
+// ArchiveChore godoc
+//
+//	@Summary		Archive a chore
+//	@Description	Archives a chore, hiding it from the main list
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int					true	"Chore ID"
+//	@Success		200	{object}	map[string]string	"message: Chore archived successfully"
+//	@Failure		400	{object}	map[string]string	"error: Invalid ID"
+//	@Failure		401	{object}	map[string]string	"error: Authentication failed"
+//	@Failure		500	{object}	map[string]string	"error: Error archiving chore"
+//	@Router			/chores/{id}/archive [put]
+func (h *Handler) ArchiveChore(c *gin.Context) {
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	// The repository only checks authorship; a creator who lost sight of the chore
+	// (e.g. removed from a shared project) must not be able to change it anymore.
+	if _, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID); err != nil {
+		c.JSON(404, gin.H{
+			"error": "Chore not found",
+		})
+		return
+	}
+	err = h.choreRepo.ArchiveChore(c, id, currentUser.ID, currentUser.CircleID)
+
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error archiving chore",
+		})
+		return
+	}
+
+	h.nRepo.DeleteAllChoreNotifications(id)
+
+	// Broadcast real-time chore archive event
+	if h.realTimeService != nil {
+		updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+		if err == nil {
+			broadcaster := h.realTimeService.GetEventBroadcaster()
+			changes := map[string]interface{}{
+				"archived":  true,
+				"updatedBy": currentUser.ID,
+				"updatedAt": time.Now().UTC(),
+			}
+			broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Chore archived successfully",
+	})
+}
+
+// UnarchiveChore godoc
+//
+//	@Summary		Unarchive a chore
+//	@Description	Restores an archived chore to the main list
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int					true	"Chore ID"
+//	@Success		200	{object}	map[string]string	"message: Chore unarchived successfully"
+//	@Failure		400	{object}	map[string]string	"error: Invalid ID"
+//	@Failure		401	{object}	map[string]string	"error: Authentication failed"
+//	@Failure		500	{object}	map[string]string	"error: Error unarchiving chore"
+//	@Router			/chores/{id}/unarchive [put]
+func (h *Handler) UnarchiveChore(c *gin.Context) {
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	// The repository only checks authorship; a creator who lost sight of the chore
+	// (e.g. removed from a shared project) must not be able to change it anymore.
+	if _, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID); err != nil {
+		c.JSON(404, gin.H{
+			"error": "Chore not found",
+		})
+		return
+	}
+	err = h.choreRepo.UnarchiveChore(c, id, currentUser.ID, currentUser.CircleID)
+
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error unarchiving chore",
+		})
+		return
+	}
+
+	// Broadcast real-time chore unarchive event
+	if h.realTimeService != nil {
+		updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+		if err == nil {
+			broadcaster := h.realTimeService.GetEventBroadcaster()
+			changes := map[string]interface{}{
+				"archived":  false,
+				"updatedBy": currentUser.ID,
+				"updatedAt": time.Now().UTC(),
+			}
+			broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Chore unarchived successfully",
+	})
+}
+
+// region: request models
+
+type CompleteChoreReq struct { // TODO: Remove "Note" in future.
+	Notes         *string        `json:"notes" binding:"omitempty,min=1"`
+	Note          *string        `json:"note" binding:"omitempty,min=1"` // This is going to be deprecated in future release, use "Notes" instead.
+	CompletedBy   *int           `json:"completedBy"`                    // The completed by only can be populated by the admin or super user.
+	CompletedDate *time.Time     `json:"completedTime"`                  // Completion date in RFC3339 format (defaults to now).
+	ActionOptions *ActionOptions `json:"actionOptions"`
+}
+
+// endregion
+
+// CompleteChore godoc
+//
+//	@Summary		Complete a chore
+//	@Description	Marks a chore as completed and schedules the next occurrence (supports impersonation)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int							true	"Chore ID"
+//	@Param			completion	body		CompleteChoreReq			false	"Completion details"
+//	@Success		200			{object}	map[string]chModel.Chore	"res: updated chore"
+//	@Failure		400			{object}	map[string]string			"error: Invalid ID | Invalid date | User is not assigned to chore | Chore is out of completion window"
+//	@Failure		401			{object}	map[string]string			"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string			"error: You are not allowed to complete this action"
+//	@Failure		500			{object}	map[string]string			"error: Failed to retrieve chore | Error completing chore"
+//	@Router			/chores/{id}/do [post]
+func (h *Handler) CompleteChore(c *gin.Context) {
+
+	var req CompleteChoreReq
+	logger := logging.FromContext(c)
+
+	actualUser, impersonatedUser, hasImpersonation := auth.CurrentUserWithImpersonation(c)
+	if actualUser == nil {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	// Use impersonated user for operations, actual user for audit
+	var effectiveUser *uModel.UserDetails
+	if hasImpersonation {
+		effectiveUser = impersonatedUser
+		logger.Info("Completing chore with impersonation",
+			"actualUserID", actualUser.ID,
+			"impersonatedUserID", impersonatedUser.ID,
+			"choreID", c.Param("id"))
+	} else {
+		effectiveUser = actualUser
+	}
+
+	completedBy := effectiveUser.ID
+	completeChoreID := c.Param("id")
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logging.FromContext(c).Error("Operation failed", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request",
+		})
+		return
+	}
+
+	var completedDate time.Time
+	if req.CompletedDate == nil {
+		completedDate = actionCreatedAtOrNow(req.ActionOptions)
+	} else {
+		completedDate = req.CompletedDate.UTC()
+	}
+
+	id, err := strconv.Atoi(completeChoreID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+	chore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !h.impersonationGuard(c, chore, actualUser, effectiveUser, hasImpersonation) {
+		return
+	}
+	if !validateActionVersion(c, "complete", chore, req.ActionOptions) {
+		return
+	}
+
+	// user need to be assigned to the chore to complete it
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if !chore.CanComplete(effectiveUser.ID, circleUsers) {
+		c.JSON(400, gin.H{
+			"error": "User is not assigned to chore",
+		})
+		return
+	}
+
+	// confirm that the chore in completion window:
+	if isBeforeCompletionWindow(chore, completedDate) {
+		c.JSON(400, gin.H{
+			"error": "Chore is out of completion window",
+		})
+		return
+	}
+
+	if req.CompletedBy != nil {
+		// Only allow admins to complete chores on behalf of others in the circle
+		// Use actualUser for authorization since this is an admin function
+		ok := authorizeChoreCompletionForUser(h, c, actualUser, req.CompletedBy)
+		if !ok {
+			return
+		}
+		// Credit only people who can see the chore: a completion (and its points)
+		// must not be attributed to somebody outside a restricted project.
+		if chore.Project != nil && chore.Project.IsPrivate && !chore.Project.CanView(*req.CompletedBy) {
+			c.JSON(403, gin.H{
+				"error": "The selected user cannot see this task",
+			})
+			return
+		}
+		completedBy = *req.CompletedBy
+	}
+	var nextDueDate *time.Time
+	if chore.FrequencyType == "adaptive" {
+		history, err := h.choreRepo.GetChoreHistoryWithLimit(c, chore.ID, 5)
+		if err != nil {
+			logging.FromContext(c).Errorw("Failed to fetch chore history for adaptive scheduling", "error", err, "choreID", chore.ID)
+			c.JSON(500, gin.H{
+				"error": "Failed to fetch chore history for adaptive scheduling",
+			})
+			return
+		}
+		nextDueDate, err = scheduleAdaptiveNextDueDate(c, chore, completedDate, history)
+		if err != nil {
+			logging.FromContext(c).Error("Failed to schedule next due date", "error", err)
+			c.JSON(500, gin.H{
+				"error": "Error scheduling next due date",
+			})
+			return
+		}
+
+	} else {
+		nextDueDate, err = scheduleNextDueDate(c, chore, completedDate.UTC())
+		if err != nil {
+			logging.FromContext(c).Error("Failed to schedule next due date", "error", err)
+			c.JSON(500, gin.H{
+				"error": "Error scheduling next due date",
+			})
+			return
+		}
+	}
+	choreHistory, err := h.choreRepo.GetChoreHistory(c, chore.ID)
+	if err != nil {
+		logging.FromContext(c).Errorw("Failed to fetch chore history for assignee calculation", "error", err, "choreID", chore.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch chore history for assignee calculation",
+		})
+		return
+	}
+	var note *string
+
+	if req.Notes != nil {
+		note = req.Notes
+	}
+	if req.Note != nil {
+		note = req.Note
+	}
+
+	// Check if chore requires approval
+	if chore.RequireApproval {
+		// Set chore status to pending approval instead of completing
+		if err := h.choreRepo.SetChorePendingApproval(c, chore, note, completedBy, &completedDate); err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error setting chore pending approval",
+			})
+			return
+		}
+
+		updatedChore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error getting chore",
+			})
+			return
+		}
+
+		// Broadcast pending approval event
+		if h.realTimeService != nil {
+			broadcaster := h.realTimeService.GetEventBroadcaster()
+			changes := map[string]interface{}{
+				"status":    chModel.ChoreStatusPendingApproval,
+				"updatedBy": actualUser.ID, // Use actual user for audit trail
+				"updatedAt": time.Now().UTC(),
+			}
+			broadcaster.BroadcastChoreUpdated(updatedChore, &effectiveUser.User, changes, note)
+		}
+
+		// updatedChore, not chore: the reloaded row carries the status and
+		// relations the recipients are decided from.
+		h.notifyApproversOfPendingApproval(c, updatedChore, &effectiveUser.User, circleUsers)
+
+		c.JSON(200, gin.H{
+			"res":     updatedChore,
+			"message": "Chore completion submitted for approval",
+		})
+		return
+	}
+
+	nextAssignedTo, err := checkNextAssignee(chore, choreHistory, completedBy, circleUsers)
+	if err != nil {
+		logging.FromContext(c).Error("Failed to check next assignee", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Error checking next assignee",
+		})
+		return
+	}
+
+	if err := h.choreRepo.CompleteChore(c, chore, note, completedBy, nextDueDate, &completedDate, nextAssignedTo, true); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error completing chore",
+		})
+		return
+	}
+	updatedChore, err := h.choreRepo.GetChore(c, id, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if updatedChore.SubTasks != nil && updatedChore.FrequencyType != chModel.FrequencyTypeOnce {
+		h.stRepo.ResetSubtasksCompletion(c, updatedChore.ID)
+	}
+
+	// go func() {
+
+	// 	h.notifier.SendChoreCompletion(c, chore, effectiveUser)
+	// }()
+	h.nPlanner.GenerateChoreNotifications(c, updatedChore, chore.AssignedTo, completedBy)
+	h.eventProducer.ChoreCompleted(c, effectiveUser.WebhookURL, chore, &effectiveUser.User)
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		// Get the completion history entry
+		history, _ := h.choreRepo.GetChoreHistoryWithLimit(c, chore.ID, 1)
+
+		var choreHistory *chModel.ChoreHistory
+		if len(history) > 0 {
+			choreHistory = history[0]
+		}
+		broadcaster.BroadcastChoreCompleted(updatedChore, &effectiveUser.User, choreHistory, note)
+	}
+
+	c.JSON(200, gin.H{
+		"res": updatedChore,
+	})
+}
+
+func authorizeChoreCompletionForUser(h *Handler, c *gin.Context, currentUser *uModel.UserDetails, completedByUserID *int) bool {
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting circle users",
+		})
+		return false
+	}
+
+	isAuthorized := false
+	isCompletedByAuthorized := false
+
+	for _, circleUser := range circleUsers {
+		if circleUser.UserID == currentUser.ID && (circleUser.Role == circle.UserRoleAdmin || circleUser.Role == circle.UserRoleManager) {
+			isAuthorized = true
+		}
+		if circleUser.UserID == *completedByUserID {
+			isCompletedByAuthorized = true
+		}
+	}
+	if !isAuthorized || !isCompletedByAuthorized {
+
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to complete this action, either you are not admin or the completed by user is not in the circle",
+		})
+		return false
+	}
+
+	return true
+}
+
+// GetChoreHistory godoc
+//
+//	@Summary		Get chore history
+//	@Description	Retrieves the completion history for a specific chore
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int									true	"Chore ID"
+//	@Success		200	{object}	map[string][]chModel.ChoreHistory	"res: array of chore history entries"
+//	@Failure		400	{object}	map[string]string					"error: Invalid ID"
+//	@Failure		500	{object}	map[string]string					"error: Failed to fetch chore history"
+//	@Router			/chores/{id}/history [get]
+func (h *Handler) GetChoreHistory(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	// Verify the chore belongs to the user's circle before returning history
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Errorw("Failed to fetch chore", "error", err, "choreID", id, "userID", currentUser.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{"error": "Failed to retrieve circle users"})
+		return
+	}
+
+	if !chore.CanView(currentUser.ID, circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to view this chore's history",
+		})
+		return
+	}
+
+	choreHistory, err := h.choreRepo.GetChoreHistory(c, id)
+	if err != nil {
+		logger.Errorw("Failed to fetch chore history", "error", err, "choreID", id)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch chore history",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"res": choreHistory,
+	})
+}
+
+// GetChoreDetail godoc
+//
+//	@Summary		Get chore details
+//	@Description	Retrieves comprehensive details about a chore including metadata
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int						true	"Chore ID"
+//
+// TODO: Add response model
+//
+//	@Success		200	{object}	map[string]interface{}	"res: detailed chore information"
+//	@Failure		400	{object}	map[string]string		"error: Invalid ID"
+//	@Failure		401	{object}	map[string]string		"error: Authentication failed"
+//	@Failure		500	{object}	map[string]string		"error: Failed to fetch chore details"
+//	@Router			/chores/{id}/details [get]
+func (h *Handler) GetChoreDetail(c *gin.Context) {
+
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	detailed, err := h.choreRepo.GetChoreDetailByID(c, id, currentUser.CircleID, currentUser.ID)
+	if err != nil {
+		logger.Errorw("Failed to fetch chore details", "error", err, "choreID", id, "userID", currentUser.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch chore details",
+		})
+		return
+	}
+	if detailed.Description != nil {
+		// see if we have an <img> tag with attribute dt-data-path if so resigned the url using it's value and replace the src:
+		updatedDescription := h.generateUpdatedSignedDescription(c, *detailed.Description)
+		detailed.Description = &updatedDescription
+	}
+	h.signAttachments(c, detailed.Attachments)
+	c.JSON(200, gin.H{
+		"res": detailed,
+	})
+}
+
+// region: request models
+
+type ModifyHistoryReq struct {
+	PerformedAt *time.Time `json:"performedAt"`
+	DueDate     *time.Time `json:"dueDate"`
+	Notes       *string    `json:"notes"`
+}
+
+// endregion
+
+// ModifyHistory godoc
+//
+//	@Summary		Modify chore history entry
+//	@Description	Updates a specific chore history entry (performed date, due date, notes)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int								true	"Chore ID"
+//	@Param			history_id	path		int								true	"History ID"
+//	@Param			history		body		ModifyHistoryReq				true	"History modification request"
+//	@Success		200			{object}	map[string]chModel.ChoreHistory	"res: updated history entry"
+//	@Failure		400			{object}	map[string]string				"error: Invalid Chore ID | Invalid History ID | Invalid request"
+//	@Failure		401			{object}	map[string]string				"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string				"error: You are not allowed to modify this history"
+//	@Failure		500			{object}	map[string]string				"error: Failed to fetch chore history entry | Error updating history"
+//	@Router			/chores/{id}/history/{history_id} [put]
+func (h *Handler) ModifyHistory(c *gin.Context) {
+
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	choreID, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid Chore ID",
+		})
+		return
+	}
+
+	var req ModifyHistoryReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logging.FromContext(c).Error("Operation failed", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+	rawHistoryID := c.Param("history_id")
+	historyID, err := strconv.Atoi(rawHistoryID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid History ID",
+		})
+		return
+	}
+
+	// Verify the chore belongs to the user's circle before accessing history
+	if _, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID); err != nil {
+		logger.Error("Failed to retrieve chore", "error", err, "choreID", choreID, "userID", currentUser.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	history, err := h.choreRepo.GetChoreHistoryByID(c, choreID, historyID)
+	if err != nil {
+		logging.FromContext(c).Errorw("Failed to fetch chore history entry", "error", err, "choreID", choreID, "historyID", historyID)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch chore history entry",
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+
+	if currentUser.ID != history.CompletedBy && (history.AssignedTo == nil || currentUser.ID != *history.AssignedTo) && !currentUser.IsAdminOrManager(circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to modify this history",
+		})
+		return
+	}
+	// only overwrite the part of history that's necessary
+	if req.PerformedAt != nil {
+		history.PerformedAt = req.PerformedAt
+	}
+	if req.DueDate != nil {
+		history.DueDate = req.DueDate
+	}
+	if req.Notes != nil {
+		history.Note = req.Notes
+	}
+
+	if err := h.choreRepo.UpdateChoreHistory(c, history); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating history",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"res": history,
+	})
+}
+
+// region: request models
+
+type PriorityReq struct {
+	Priority *int `json:"priority" binding:"required,gt=-1,lt=5"`
+}
+
+// endregion
+
+// UpdatePriority godoc
+//
+//	@Summary		Update chore priority
+//	@Description	Updates the priority level of a chore (0-4)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int					true	"Chore ID"
+//	@Param			priority	body		PriorityReq			true	"Priority value (0-4)"
+//	@Success		200			{object}	map[string]string	"message: Priority updated successfully"
+//	@Failure		400			{object}	map[string]string	"error: Invalid ID | Invalid request"
+//	@Failure		401			{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string	"error: You are not allowed to edit this chore"
+//	@Failure		500			{object}	map[string]string	"error: Failed to retrieve chore | Error updating priority"
+//	@Router			/chores/{id}/priority [put]
+func (h *Handler) UpdatePriority(c *gin.Context) {
+
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	var priorityReq PriorityReq
+	if err := c.ShouldBindJSON(&priorityReq); err != nil {
+		logging.FromContext(c).Error("Operation failed", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	// config user can edit:
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if err := chore.CanEdit(currentUser.ID, circleUsers, nil); err != nil {
+		logger.Error("User not allowed to edit chore", "userID", currentUser.ID, "choreID", chore.ID)
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to edit this chore",
+		})
+		return
+	}
+
+	if err := h.choreRepo.UpdateChorePriority(c, currentUser.ID, id, *priorityReq.Priority, chore.CircleID); err != nil {
+		logger.Error("Failed to update priority", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Error updating priority",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Priority updated successfully",
+	})
+}
+
+// GetChoresHistory godoc
+//
+//	@Summary		Get chores history for user
+//	@Description	Retrieves completion history for all chores for the current user
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			limit	query		int									false	"Number of days to retrieve history (default: 7)"
+//	@Param			members	query		boolean								false	"Include other circle members' history"
+//	@Success		200		{object}	map[string][]chModel.ChoreHistory	"res: array of chore history entries"
+//	@Failure		400		{object}	map[string]string					"error: Invalid duration"
+//	@Failure		401		{object}	map[string]string					"error: Authentication failed"
+//	@Failure		500		{object}	map[string]string					"error: Failed to fetch user's chore history"
+//	@Router			/chores/history [get]
+func (h *Handler) GetChoresHistory(c *gin.Context) {
+
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+	durationRaw := c.Query("limit")
+	if durationRaw == "" {
+		durationRaw = "7"
+	}
+
+	duration, err := strconv.Atoi(durationRaw)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid duration",
+		})
+		return
+	}
+	includeCircleRaw := c.Query("members")
+	includeCircle := false
+	if includeCircleRaw == "true" {
+		includeCircle = true
+	}
+
+	choreHistories, err := h.choreRepo.GetChoresHistoryByUserID(c, currentUser.ID, currentUser.CircleID, duration, includeCircle)
+	if err != nil {
+		logging.FromContext(c).Errorw("Failed to fetch user's chore history", "error", err, "userID", currentUser.ID, "duration", duration)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch user's chore history",
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"res": choreHistories,
+	})
+}
+
+// DeleteHistory godoc
+//
+//	@Summary		Delete chore history entry
+//	@Description	Deletes a specific chore history entry (creator only)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int					true	"Chore ID"
+//	@Param			history_id	path		int					true	"History ID"
+//	@Success		200			{object}	map[string]string	"message: History deleted successfully"
+//	@Failure		400			{object}	map[string]string	"error: Invalid Chore ID | Invalid History ID"
+//	@Failure		401			{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string	"error: You are not allowed to delete this history"
+//	@Failure		500			{object}	map[string]string	"error: Failed to fetch chore history entry | Error deleting history"
+//	@Router			/chores/{id}/history/{history_id} [delete]
+func (h *Handler) DeleteHistory(c *gin.Context) {
+
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	choreID, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid Chore ID",
+		})
+		return
+	}
+
+	rawHistoryID := c.Param("history_id")
+	historyID, err := strconv.Atoi(rawHistoryID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid History ID",
+		})
+		return
+	}
+
+	chore, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err, "circleID", currentUser.CircleID, "userID", currentUser.ID)
+		c.JSON(500, gin.H{"error": "Failed to retrieve circle users"})
+		return
+	}
+
+	history, err := h.choreRepo.GetChoreHistoryByID(c, choreID, historyID)
+	if err != nil {
+		logging.FromContext(c).Errorw("Failed to fetch chore history entry", "error", err, "choreID", choreID, "historyID", historyID)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch chore history entry",
+		})
+		return
+	}
+
+	if !chore.CanDeleteHistory(currentUser.ID, circleUsers, history) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to delete this history",
+		})
+		return
+	}
+
+	if err := h.choreRepo.DeleteChoreHistory(c, historyID, currentUser.CircleID); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error deleting history",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "History deleted successfully",
+	})
+}
+
+// region: request models
+
+type SubtaskReq struct {
+	ID          int        `json:"id"`
+	ChoreID     int        `json:"choreId"`
+	CompletedAt *time.Time `json:"completedAt"`
+}
+
+// endregion
+
+// UpdateSubtaskCompletedAt godoc
+//
+//	@Summary		Update subtask completion status
+//	@Description	Marks a subtask as completed or uncompleted (supports impersonation)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id		path		int						true	"Chore ID"
+//	@Param			subtask	body		SubtaskReq				true	"Subtask completion request"
+//
+// TODO: Add response model
+//
+//	@Success		200		{object}	map[string]interface{}	"Empty success response"
+//	@Failure		400		{object}	map[string]string		"error: Invalid Chore ID | Invalid request | User is not assigned to chore"
+//	@Failure		401		{object}	map[string]string		"error: Authentication failed"
+//	@Failure		500		{object}	map[string]string		"error: Failed to retrieve chore | Error getting subtask"
+//	@Router			/chores/{id}/subtask [put]
+func (h *Handler) UpdateSubtaskCompletedAt(c *gin.Context) {
+	logger := logging.FromContext(c)
+
+	// Get actual user and impersonated user (if any)
+	actualUser, impersonatedUser, hasImpersonation := auth.CurrentUserWithImpersonation(c)
+	if actualUser == nil {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	// Use impersonated user for operations
+	var effectiveUser *uModel.UserDetails
+	if hasImpersonation {
+		effectiveUser = impersonatedUser
+		logger.Info("Updating subtask with impersonation",
+			"actualUserID", actualUser.ID,
+			"impersonatedUserID", impersonatedUser.ID,
+			"choreID", c.Param("id"))
+	} else {
+		effectiveUser = actualUser
+	}
+
+	rawID := c.Param("id")
+	choreID, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid Chore ID",
+		})
+		return
+	}
+
+	var req SubtaskReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logging.FromContext(c).Error("Operation failed", "error", err)
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+	chore, err := h.choreRepo.GetChore(c, choreID, effectiveUser.ID, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !h.impersonationGuard(c, chore, actualUser, effectiveUser, hasImpersonation) {
+		return
+	}
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, actualUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if !chore.CanComplete(effectiveUser.ID, circleUsers) {
+		c.JSON(400, gin.H{
+			"error": "User is not assigned to chore",
+		})
+		return
+	}
+	err = h.stRepo.UpdateSubTaskStatus(c, effectiveUser.ID, choreID, req.ID, req.CompletedAt)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting subtask",
+		})
+		return
+	}
+
+	// Broadcast real-time subtask event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+
+		broadcaster.BroadcastSubtaskUpdated(
+			chore,
+			req.ID,
+			req.CompletedAt,
+			&effectiveUser.User,
+			chore.SyncVersion,
+		)
+
+	}
+
+	webhookURL := effectiveUser.WebhookURL
+	if chore.Project != nil && chore.Project.IsPrivate {
+		// Restricted projects never reach the circle-wide webhook.
+		webhookURL = nil
+	}
+	h.eventProducer.SubtaskUpdated(c, webhookURL,
+		&stModel.SubTask{
+			ID:          req.ID,
+			ChoreID:     req.ChoreID,
+			CompletedAt: req.CompletedAt,
+			CompletedBy: effectiveUser.ID,
+		},
+	)
+	c.JSON(200, gin.H{})
+
+}
+
+// GetChoreTimeSessions godoc
+//
+//	@Summary		Get chore time sessions
+//	@Description	Retrieves all time tracking sessions for a chore
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id				path		int								true	"Chore ID"
+//	@Param			choreHistoryId	query		int								false	"Filter by specific history ID"
+//	@Success		200				{object}	map[string][]model.TimeSession	"res: array of time sessions"
+//	@Failure		400				{object}	map[string]string				"error: Invalid ID | Invalid choreHistoryId parameter"
+//	@Failure		401				{object}	map[string]string				"error: Authentication failed"
+//	@Failure		403				{object}	map[string]string				"error: You are not allowed to view time sessions for this chore"
+//	@Failure		404				{object}	map[string]string				"error: No time session found"
+//	@Failure		500				{object}	map[string]string				"error: Failed to retrieve chore | Error getting chore time session"
+//	@Router			/chores/{id}/timer [get]
+func (h *Handler) GetChoreTimeSessions(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	// First, get the chore to check authorization
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if !chore.CanView(currentUser.ID, circleUsers) {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to view time sessions for this chore",
+		})
+		return
+	}
+
+	// Check for optional choreHistoryId query parameter
+	var choreHistoryId *int
+	if historyIdStr := c.Query("choreHistoryId"); historyIdStr != "" {
+		if historyIdInt, err := strconv.Atoi(historyIdStr); err == nil {
+			choreHistoryId = &historyIdInt
+		} else {
+			c.JSON(400, gin.H{
+				"error": "Invalid choreHistoryId parameter",
+			})
+			return
+		}
+	}
+
+	session, err := h.choreRepo.GetTimeSessionsByChoreID(c, id, choreHistoryId)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting chore time session",
+		})
+		return
+	}
+
+	if session == nil {
+		c.JSON(404, gin.H{
+			"error": "No time session found",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"res": session,
+	})
+}
+
+// region: request models
+
+type UpdateTimeSessionReq struct {
+	StartTime *time.Time               `json:"startTime"`
+	EndTime   *time.Time               `json:"endTime"`
+	PauseLog  *chModel.PauseLogEntries `json:"pauseLog"`
+}
+
+// endregion
+
+// UpdateTimeSession godoc
+//
+//	@Summary		Update a time session
+//	@Description	Updates start time, end time, or pause log for a time session
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int								true	"Chore ID"
+//	@Param			session_id	path		int								true	"Session ID"
+//	@Param			session		body		UpdateTimeSessionReq			true	"Time session update request"
+//	@Success		200			{object}	map[string]model.TimeSession	"res: updated time session"
+//	@Failure		400			{object}	map[string]string				"error: Invalid chore ID | Invalid session ID | Invalid request body | Time session does not belong to the specified chore"
+//	@Failure		401			{object}	map[string]string				"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string				"error: You are not allowed to modify time sessions for this chore"
+//	@Failure		500			{object}	map[string]string				"error: Failed to retrieve chore | Error getting time session | Error updating time session"
+//	@Router			/chores/{id}/timer/{session_id} [put]
+func (h *Handler) UpdateTimeSession(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawChoreID := c.Param("id")
+	choreID, err := strconv.Atoi(rawChoreID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid chore ID",
+		})
+		return
+	}
+
+	rawSessionID := c.Param("session_id")
+	sessionID, err := strconv.Atoi(rawSessionID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid session ID",
+		})
+		return
+	}
+
+	var req UpdateTimeSessionReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+
+	// First, get the chore to check authorization
+	chore, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	// Check if user has permission to modify time sessions for this chore
+	// User can modify if they are the creator OR an assignee
+	isAssignee := false
+	for _, assignee := range chore.Assignees {
+		if assignee.UserID == currentUser.ID {
+			isAssignee = true
+			break
+		}
+	}
+
+	if currentUser.ID != chore.CreatedBy && !isAssignee {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to modify time sessions for this chore",
+		})
+		return
+	}
+
+	// Get the time session to ensure it exists and belongs to the chore
+	session, err := h.choreRepo.GetTimeSessionByID(c, sessionID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting time session",
+		})
+		return
+	}
+
+	// Verify the session belongs to the specified chore
+	if session.ChoreID != choreID {
+		c.JSON(400, gin.H{
+			"error": "Time session does not belong to the specified chore",
+		})
+		return
+	}
+
+	// Update only the necessary session fields
+	if req.StartTime != nil {
+		session.StartTime = *req.StartTime
+	}
+	if req.EndTime != nil {
+		session.EndTime = req.EndTime
+	}
+	if req.PauseLog != nil {
+		session.PauseLog = *req.PauseLog
+	}
+
+	session.UpdateBy = currentUser.ID
+
+	// Save the updated session (this will recalculate duration)
+	if err := h.choreRepo.UpdateTimeSessionData(c, session); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating time session",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"res": session,
+	})
+}
+
+// DeleteTimeSession godoc
+//
+//	@Summary		Delete a time session
+//	@Description	Deletes a specific time tracking session
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int					true	"Chore ID"
+//	@Param			session_id	path		int					true	"Session ID"
+//	@Success		200			{object}	map[string]string	"message: Time session deleted successfully"
+//	@Failure		400			{object}	map[string]string	"error: Invalid chore ID | Invalid session ID | Time session does not belong to the specified chore"
+//	@Failure		401			{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string	"error: You are not allowed to delete time sessions for this chore"
+//	@Failure		500			{object}	map[string]string	"error: Failed to retrieve chore | Error getting time session | Error deleting time session"
+//	@Router			/chores/{id}/timer/{session_id} [delete]
+func (h *Handler) DeleteTimeSession(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawChoreID := c.Param("id")
+	choreID, err := strconv.Atoi(rawChoreID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid chore ID",
+		})
+		return
+	}
+
+	rawSessionID := c.Param("session_id")
+	sessionID, err := strconv.Atoi(rawSessionID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid session ID",
+		})
+		return
+	}
+
+	// First, get the chore to check authorization
+	chore, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	// Check if user has permission to delete time sessions for this chore
+	// User can delete if they are the creator OR an assignee
+	isAssignee := false
+	for _, assignee := range chore.Assignees {
+		if assignee.UserID == currentUser.ID {
+			isAssignee = true
+			break
+		}
+	}
+
+	if currentUser.ID != chore.CreatedBy && !isAssignee {
+		c.JSON(403, gin.H{
+			"error": "You are not allowed to delete time sessions for this chore",
+		})
+		return
+	}
+
+	// Get the time session to ensure it exists and belongs to the chore
+	session, err := h.choreRepo.GetTimeSessionByID(c, sessionID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error getting time session",
+		})
+		return
+	}
+
+	// Verify the session belongs to the specified chore
+	if session.ChoreID != choreID {
+		c.JSON(400, gin.H{
+			"error": "Time session does not belong to the specified chore",
+		})
+		return
+	}
+
+	// Delete the time session
+	if err := h.choreRepo.DeleteTimeSession(c, sessionID, choreID); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error deleting time session",
+		})
+		return
+	}
+	if chore.Status == chModel.ChoreStatusInProgress || chore.Status == chModel.ChoreStatusPaused {
+		updatedSyncVersion, err := h.choreRepo.UpdateChoreStatus(c, choreID, chModel.ChoreStatusNoStatus, chore.CircleID)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error updating chore status",
+			})
+			return
+		}
+		chore.SyncVersion = updatedSyncVersion
+		c.JSON(200, gin.H{
+			"message":     "Time session deleted successfully",
+			"syncVersion": updatedSyncVersion,
+		})
+
+		return
+	}
+}
+
+// ApproveChore godoc
+//
+//	@Summary		Approve a chore completion
+//	@Description	Approves a pending chore completion (admin/manager only)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int							true	"Chore ID"
+//	@Success		200	{object}	map[string]chModel.Chore	"res: updated chore"
+//	@Failure		400	{object}	map[string]string			"error: Invalid ID | Chore is not pending approval"
+//	@Failure		401	{object}	map[string]string			"error: Authentication failed"
+//	@Failure		403	{object}	map[string]string			"error: Only admins can approve chores"
+//	@Failure		500	{object}	map[string]string			"error: Failed to retrieve chore | Error approving chore"
+//	@Router			/chores/{id}/approve [post]
+func (h *Handler) ApproveChore(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	var req ActionReq
+	if err := bindOptionalActionReq(c, &req); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	// Get the chore
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !validateActionVersion(c, "approve", chore, req.ActionOptions) {
+		return
+	}
+
+	// Check if user is admin in the circle
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+
+	isAdmin := false
+	for _, user := range circleUsers {
+		if user.UserID == currentUser.ID && (user.Role == circle.UserRoleAdmin || user.Role == circle.UserRoleManager) {
+			isAdmin = true
+			break
+		}
+	}
+
+	if !isAdmin {
+		c.JSON(403, gin.H{
+			"error": "Only admins can approve chores",
+		})
+		return
+	}
+
+	// Check if chore is pending approval
+	if chore.Status != chModel.ChoreStatusPendingApproval {
+		c.JSON(400, gin.H{
+			"error": "Chore is not pending approval",
+		})
+		return
+	}
+
+	// Get the pending approval history to determine who completed it
+	allHistory, err := h.choreRepo.GetChoreHistory(c, chore.ID)
+	if err != nil {
+		logging.FromContext(c).Errorw("Failed to fetch chore history for approval process", "error", err, "choreID", chore.ID)
+		c.JSON(500, gin.H{
+			"error": "Failed to fetch chore history for approval process",
+		})
+		return
+	}
+
+	// Find the most recent pending approval entry
+	var pendingHistory *chModel.ChoreHistory
+	for _, h := range allHistory {
+		if h.Status == chModel.ChoreHistoryStatusPendingApproval {
+			pendingHistory = h
+			break
+		}
+	}
+
+	if pendingHistory == nil {
+		c.JSON(500, gin.H{
+			"error": "No pending approval history found",
+		})
+		return
+	}
+
+	completedBy := pendingHistory.CompletedBy
+	completedDate := *pendingHistory.PerformedAt
+
+	// Calculate next due date and assignee like in normal completion
+	var nextDueDate *time.Time
+	if chore.FrequencyType == "adaptive" {
+		allHistory, err := h.choreRepo.GetChoreHistoryWithLimit(c, chore.ID, 5)
+		if err != nil {
+			logging.FromContext(c).Errorw("Failed to fetch chore history for adaptive scheduling during approval", "error", err, "choreID", chore.ID)
+			c.JSON(500, gin.H{
+				"error": "Failed to fetch chore history for adaptive scheduling",
+			})
+			return
+		}
+		nextDueDate, err = scheduleAdaptiveNextDueDate(c, chore, completedDate, allHistory)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error scheduling next due date",
+			})
+			return
+		}
+	} else {
+		nextDueDate, err = scheduleNextDueDate(c, chore, completedDate.UTC())
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": "Error scheduling next due date",
+			})
+			return
+		}
+	}
+
+	nextAssignedTo, err := checkNextAssignee(chore, allHistory, completedBy, circleUsers)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error checking next assignee",
+		})
+		return
+	}
+
+	// Approve the chore
+	if err := h.choreRepo.ApproveChore(c, chore, currentUser.ID, nextDueDate, nextAssignedTo, true); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error approving chore",
+		})
+		return
+	}
+
+	updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	if updatedChore.SubTasks != nil && updatedChore.FrequencyType != chModel.FrequencyTypeOnce {
+		h.stRepo.ResetSubtasksCompletion(c, updatedChore.ID)
+	}
+
+	h.nPlanner.GenerateChoreNotifications(c, updatedChore, chore.AssignedTo, currentUser.ID)
+	h.eventProducer.ChoreCompleted(c, currentUser.WebhookURL, chore, &currentUser.User)
+
+	// Broadcast real-time chore approved event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		broadcaster.BroadcastChoreCompleted(updatedChore, &currentUser.User, pendingHistory, nil)
+	}
+
+	c.JSON(200, gin.H{
+		"res":     updatedChore,
+		"message": "Chore approved successfully",
+	})
+}
+
+// region: request models
+
+type RejectChoreReq struct { // TODO: Remove "Note" in future.
+	Notes         *string        `json:"notes" binding:"omitempty,min=1"`
+	Note          *string        `json:"note" binding:"omitempty,min=1"` // This is going to be deprecated in future release, use "Notes" instead.
+	ActionOptions *ActionOptions `json:"actionOptions"`
+}
+
+// endregion
+
+// RejectChore godoc
+//
+//	@Summary		Reject a chore completion
+//	@Description	Rejects a pending chore completion and returns it to no status (admin/manager only)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id			path		int						true	"Chore ID"
+//	@Param			rejection	body		RejectChoreReq			false	"Rejection details"
+//
+// TODO: Add response model
+//
+//	@Success		200			{object}	map[string]interface{}	"res: updated chore, message: Chore rejected successfully"
+//	@Failure		400			{object}	map[string]string		"error: Invalid ID | Chore is not pending approval"
+//	@Failure		401			{object}	map[string]string		"error: Authentication failed"
+//	@Failure		403			{object}	map[string]string		"error: Only admins can reject chores"
+//	@Failure		500			{object}	map[string]string		"error: Failed to retrieve chore | Error rejecting chore"
+//	@Router			/chores/{id}/reject [post]
+func (h *Handler) RejectChore(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	var req RejectChoreReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+	// Get the chore
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+	if !validateActionVersion(c, "reject", chore, req.ActionOptions) {
+		return
+	}
+
+	// Check if user is admin in the circle
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+
+	isAdmin := false
+	for _, user := range circleUsers {
+		if user.UserID == currentUser.ID && (user.Role == circle.UserRoleAdmin || user.Role == circle.UserRoleManager) {
+			isAdmin = true
+			break
+		}
+	}
+
+	if !isAdmin {
+		c.JSON(403, gin.H{
+			"error": "Only admins can reject chores",
+		})
+		return
+	}
+
+	// Check if chore is pending approval
+	if chore.Status != chModel.ChoreStatusPendingApproval {
+		c.JSON(400, gin.H{
+			"error": "Chore is not pending approval",
+		})
+		return
+	}
+
+	// Reject the chore
+	var note *string
+
+	if req.Notes != nil {
+		note = req.Notes
+	}
+	if req.Note != nil {
+		note = req.Note
+	}
+
+	// Reject the chore
+	if err := h.choreRepo.RejectChore(c, id, currentUser.CircleID, note); err != nil {
+
+		c.JSON(500, gin.H{
+			"error": "Error rejecting chore",
+		})
+		return
+	}
+
+	updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	// Broadcast real-time chore rejected event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		changes := map[string]interface{}{
+			"status":    chModel.ChoreStatusNoStatus,
+			"updatedBy": currentUser.ID,
+			"updatedAt": time.Now().UTC(),
+		}
+		broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, note)
+	}
+
+	c.JSON(200, gin.H{
+		"res":     updatedChore,
+		"message": "Chore rejected successfully",
+	})
+}
+
+// region: request models
+
+type StatusUpdateReq struct {
+	Status    chModel.Status `json:"status" binding:"required"`
+	UpdatedAt time.Time      `json:"updatedAt" binding:"required"`
+}
+
+// endregion
+
+// UpdateChoreStatus godoc
+//
+//	@Summary		Update chore status
+//	@Description	Updates the status of a chore (e.g., no status, in progress, paused)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id		path		int					true	"Chore ID"
+//	@Param			status	body		StatusUpdateReq		true	"Status update request"
+//	@Success		200		{object}	map[string]string	"message: Chore status updated successfully"
+//	@Failure		400		{object}	map[string]string	"error: Invalid ID | Invalid request"
+//	@Failure		401		{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403		{object}	map[string]string	"error: You cannot update the status of this chore"
+//	@Failure		500		{object}	map[string]string	"error: Failed to retrieve chore | Error updating chore status"
+//	@Router			/chores/{id}/status [put]
+func (h *Handler) updateChoreStatus(c *gin.Context) { // TODO: Not used in Routes
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	var statusReq StatusUpdateReq
+	if err := c.ShouldBindJSON(&statusReq); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if err := chore.CanEdit(currentUser.ID, circleUsers, &statusReq.UpdatedAt); err != nil {
+		c.JSON(403, gin.H{
+			"error": fmt.Sprintf("You cannot update the status of this chore: %s", err.Error()),
+		})
+		return
+	}
+
+	if err := h.choreRepo.UpdateChoreFields(c, id, map[string]interface{}{
+		"status":     statusReq.Status,
+		"updated_by": currentUser.ID,
+		"updated_at": statusReq.UpdatedAt,
+	}); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating chore status",
+		})
+		return
+	}
+
+	// Broadcast real-time chore status update event
+	if h.realTimeService != nil {
+		updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+		if err == nil {
+			broadcaster := h.realTimeService.GetEventBroadcaster()
+			changes := map[string]interface{}{
+				"status":    statusReq.Status,
+				"updatedBy": currentUser.ID,
+				"updatedAt": statusReq.UpdatedAt,
+			}
+			broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Chore status updated successfully",
+	})
+}
+
+// region: request models
+
+type TimerUpdateReq struct {
+	Duration  int       `json:"duration" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
+}
+
+// endregion
+
+// UpdateTimer godoc
+//
+//	@Summary		Update chore timer duration
+//	@Description	Manually updates the timer duration for a chore
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id		path		int					true	"Chore ID"
+//	@Param			timer	body		TimerUpdateReq		true	"Timer update request"
+//	@Success		200		{object}	map[string]string	"message: Chore timer updated successfully"
+//	@Failure		400		{object}	map[string]string	"error: Invalid ID | Invalid request"
+//	@Failure		401		{object}	map[string]string	"error: Authentication failed"
+//	@Failure		403		{object}	map[string]string	"error: You cannot update the timer of this chore"
+//	@Failure		500		{object}	map[string]string	"error: Failed to retrieve chore | Error updating chore timer"
+//	@Router			/chores/{id}/timer [put]
+func (h *Handler) updateTimer(c *gin.Context) { // TODO: Not used in Routes
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	var timerReq TimerUpdateReq
+	if err := c.ShouldBindJSON(&timerReq); err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid request: " + err.Error(),
+		})
+		return
+	}
+
+	chore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	circleUsers, err := h.circleRepo.GetCircleUsers(c, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve circle users", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve circle users",
+		})
+		return
+	}
+	if err := chore.CanEdit(currentUser.ID, circleUsers, &timerReq.UpdatedAt); err != nil {
+		c.JSON(403, gin.H{
+			"error": fmt.Sprintf("You cannot update the timer of this chore: %s", err.Error()),
+		})
+		return
+	}
+
+	if err := h.choreRepo.UpdateChoreFields(c, id, map[string]interface{}{
+		"timer":      timerReq.Duration,
+		"updated_by": currentUser.ID,
+		"updated_at": timerReq.UpdatedAt,
+	}); err != nil {
+		c.JSON(500, gin.H{
+			"error": "Error updating chore timer",
+		})
+		return
+	}
+
+	// Broadcast real-time chore timer update event
+	if h.realTimeService != nil {
+		updatedChore, err := h.choreRepo.GetChore(c, id, currentUser.ID, currentUser.CircleID)
+		if err == nil {
+			broadcaster := h.realTimeService.GetEventBroadcaster()
+			changes := map[string]interface{}{
+				"timer":     timerReq.Duration,
+				"updatedBy": currentUser.ID,
+				"updatedAt": timerReq.UpdatedAt,
+			}
+			broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Chore timer updated successfully",
+	})
+}
+
+// impersonationGuard keeps an admin or manager who acts as another member
+// (X-Impersonate-User-ID) from reaching into a chore they could not see
+// themselves, e.g. one in a project that is private to or shared with the
+// impersonated user only. Managing a sub-account stays possible: a parent may
+// act for their own child. Writes a 403 and returns false when blocked.
+func (h *Handler) impersonationGuard(c *gin.Context, chore *chModel.Chore, actualUser, effectiveUser *uModel.UserDetails, hasImpersonation bool) bool {
+	if !hasImpersonation || actualUser == nil || effectiveUser == nil || actualUser.ID == effectiveUser.ID {
+		return true
+	}
+	if effectiveUser.ParentUserID != nil && *effectiveUser.ParentUserID == actualUser.ID {
+		return true
+	}
+	if _, err := h.choreRepo.GetChore(c, chore.ID, actualUser.ID, actualUser.CircleID); err == nil {
+		return true
+	}
+	logging.FromContext(c).Warn("Impersonation into a chore the actual user cannot see was blocked",
+		"actualUserID", actualUser.ID, "impersonatedUserID", effectiveUser.ID, "choreID", chore.ID)
+	c.JSON(403, gin.H{
+		"error": "You are not allowed to act on this chore on behalf of another user",
+	})
+	return false
+}
+
+func checkNextAssignee(chore *chModel.Chore, choresHistory []*chModel.ChoreHistory, performerID int, circleUsers []*circle.UserCircleDetail) (*int, error) {
+	// copy the history to avoid modifying the original:
+	history := make([]*chModel.ChoreHistory, len(choresHistory))
+	copy(history, choresHistory)
+
+	// "Anyone" chores carry no explicit assignees, so rotate across the whole circle rather
+	// than dropping the assignment: a nil result is persisted verbatim by CompleteChore/
+	// ApproveChore/SkipChore, and the notification planner only emits for an assigned user,
+	// so dropping it would silence the chore. no_assignee is excluded because nil is its
+	// intended result. Mirrors the create/edit validation, which treats an empty assignee
+	// list as the whole circle.
+	assignees := chore.Assignees
+	if len(assignees) == 0 && chore.AssignStrategy != chModel.AssignmentStrategyNoAssignee {
+		for _, circleUser := range circleUsers {
+			assignees = append(assignees, chModel.ChoreAssignees{
+				ChoreID: chore.ID,
+				UserID:  circleUser.UserID,
+			})
+		}
+	}
+	// In a restricted project only its audience may be picked, so "Anyone" means
+	// anyone who can see the project, and a stale assignee never gets a turn.
+	if chore.Project != nil && chore.Project.IsPrivate {
+		visible := make([]chModel.ChoreAssignees, 0, len(assignees))
+		for _, assignee := range assignees {
+			if chore.Project.CanView(assignee.UserID) {
+				visible = append(visible, assignee)
+			}
+		}
+		assignees = visible
+	}
+
+	assigneesMap := map[int]bool{}
+	for _, assignee := range assignees {
+		assigneesMap[assignee.UserID] = true
+	}
+	var nextAssignee *int
+	if len(history) == 0 {
+		// if there is no history, just assume the current operation as the first
+		history = append(history, &chModel.ChoreHistory{
+			AssignedTo: &performerID,
+		})
+	}
+
+	switch chore.AssignStrategy {
+	case chModel.AssignmentStrategyLeastAssigned:
+		// find the assignee with the least number of chores
+		assigneeChores := map[int]int{}
+		for _, performer := range assignees {
+			assigneeChores[performer.UserID] = 0
+		}
+		for _, history := range history {
+			if history.AssignedTo != nil {
+				if ok := assigneesMap[*history.AssignedTo]; ok {
+					// calculate the number of chores assigned to each assignee
+					assigneeChores[*history.AssignedTo]++
+				}
+			}
+		}
+
+		var minChores int64 = math.MaxInt64
+		var bestAssignee int
+		for assignee, numChores := range assigneeChores {
+			// if this is the first assignee or if the number of
+			// chores assigned to this assignee is less than the current minimum
+			if int64(numChores) < minChores {
+				minChores = int64(numChores)
+				// set the next assignee to this assignee
+				bestAssignee = assignee
+			}
+		}
+		if len(assigneeChores) > 0 {
+			nextAssignee = &bestAssignee
+		}
+	case chModel.AssignmentStrategyLeastCompleted:
+		// find the assignee who has completed the least number of chores
+		assigneeChores := map[int]int{}
+		for _, performer := range assignees {
+			assigneeChores[performer.UserID] = 0
+		}
+		for _, history := range history {
+			// only count completions by users who are current assignees
+			if _, ok := assigneesMap[history.CompletedBy]; ok {
+				assigneeChores[history.CompletedBy]++
+			}
+		}
+
+		// max Int value
+		var minChores int64 = math.MaxInt64
+		var bestAssignee int
+
+		for assignee, numChores := range assigneeChores {
+			// if this is the first assignee or if the number of
+			// chores completed by this assignee is less than the current minimum
+			if int64(numChores) < minChores {
+				minChores = int64(numChores)
+				// set the next assignee to this assignee
+				bestAssignee = assignee
+			}
+		}
+		if len(assigneeChores) > 0 {
+			nextAssignee = &bestAssignee
+		}
+	case chModel.AssignmentStrategyRandom:
+		if len(assignees) > 0 {
+			assigneeID := assignees[rand.Intn(len(assignees))].UserID
+			nextAssignee = &assigneeID
+		}
+	case chModel.AssignmentStrategyNoAssignee:
+		nextAssignee = nil
+	case chModel.AssignmentStrategyKeepLastAssigned:
+		// keep the last assignee
+		nextAssignee = chore.AssignedTo
+	case chModel.AssignmentStrategyRandomExceptLastAssigned:
+		var lastAssigned *int = chore.AssignedTo
+		AssigneesCopy := make([]chModel.ChoreAssignees, len(assignees))
+		copy(AssigneesCopy, assignees)
+		var removeLastAssigned []chModel.ChoreAssignees
+		if lastAssigned != nil {
+			removeLastAssigned = remove(AssigneesCopy, *lastAssigned)
+		} else {
+			removeLastAssigned = AssigneesCopy
+		}
+		if len(removeLastAssigned) > 0 {
+			assigneeID := removeLastAssigned[rand.Intn(len(removeLastAssigned))].UserID
+			nextAssignee = &assigneeID
+		} else {
+			// only candidate is the last assignee (e.g. a single-member circle), so keep
+			// them rather than dropping the assignment
+			nextAssignee = chore.AssignedTo
+		}
+	case chModel.AssignmentStrategyRoundRobin:
+		if len(assignees) == 0 {
+			return chore.AssignedTo, fmt.Errorf("no assignees available")
+		}
+
+		// Find current assignee index
+		currentIndex := -1
+		for i, assignee := range assignees {
+			if chore.AssignedTo != nil && assignee.UserID == *chore.AssignedTo {
+				currentIndex = i
+				break
+			}
+		}
+
+		// If current assignee is not found, start from the beginning
+		var assigneeID int
+		if currentIndex == -1 {
+			assigneeID = assignees[0].UserID
+		} else {
+			nextIndex := (currentIndex + 1) % len(assignees)
+			assigneeID = assignees[nextIndex].UserID
+		}
+		nextAssignee = &assigneeID
+	default:
+		return chore.AssignedTo, fmt.Errorf("invalid assign strategy")
+	}
+	return nextAssignee, nil
+}
+
+func remove(s []chModel.ChoreAssignees, i int) []chModel.ChoreAssignees {
+	var targetIndex = indexOf(s, i)
+	if targetIndex == -1 {
+		return s
+	}
+	s[targetIndex] = s[len(s)-1]
+	return s[:len(s)-1]
+}
+
+func indexOf(arr []chModel.ChoreAssignees, value int) int {
+	for i, v := range arr {
+		if v.UserID == value {
+			return i
+		}
+	}
+	return -1
+}
+
+// region: request models
+type NudgeRequest struct {
+	AllAssignees bool   `json:"all_assignees"`     // If true, send to all assignees; if false, send to current assignee
+	Message      string `json:"message,omitempty"` // Optional custom message
+}
+
+// endregion
+
+// SendNudgeNotification godoc
+//
+//	@Summary		Send a nudge notification
+//	@Description	Sends a reminder notification to chore assignee(s)
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id		path		int						true	"Chore ID"
+//	@Param			nudge	body		NudgeRequest			true	"Nudge request"
+//
+// TODO: Add response model
+//
+//	@Success		200		{object}	map[string]interface{}	"message: Nudge sent status"
+//	@Failure		400		{object}	map[string]string		"error: Invalid chore ID | Invalid request payload | Chore has no assignees | Cannot nudge yourself"
+//	@Failure		401		{object}	map[string]string		"error: Authentication failed"
+//	@Failure		404		{object}	map[string]string		"error: Chore not found"
+//	@Router			/chores/{id}/nudge [post]
+func (h *Handler) SendNudgeNotification(c *gin.Context) {
+	log := logging.FromContext(c)
+
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		log.Error("Failed to get current user from authentication context")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+	}
+
+	choreID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Error("Invalid chore ID", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid chore ID"})
+		return
+	}
+
+	var req NudgeRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error("Invalid request payload", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		return
+	}
+
+	// Get chore with assignees
+	chore, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		log.Error("Chore not found or access denied", "error", err, "choreID", choreID)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Chore not found"})
+		return
+	}
+
+	// Determine target user IDs based on request
+	var targetUserIDs []int
+
+	if req.AllAssignees {
+		// Send to all assignees
+		if len(chore.Assignees) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Chore has no assignees"})
+			return
+		}
+		for _, assignee := range chore.Assignees {
+			targetUserIDs = append(targetUserIDs, assignee.UserID)
+		}
+	} else {
+		// Send to current assignee only
+		if chore.AssignedTo == nil || *chore.AssignedTo == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Chore has no current assignee"})
+			return
+		}
+		targetUserIDs = []int{*chore.AssignedTo}
+	}
+
+	// Remove current user from targets (can't nudge yourself)
+	filteredTargets := make([]int, 0, len(targetUserIDs))
+	for _, userID := range targetUserIDs {
+		if userID != currentUser.ID {
+			filteredTargets = append(filteredTargets, userID)
+		}
+	}
+
+	if len(filteredTargets) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot nudge yourself or no valid targets found"})
+		return
+	}
+
+	// Send nudge notifications to all target users
+	totalDevicesSent := 0
+	var errors []string
+
+	for _, userID := range filteredTargets {
+		deviceCount, err := h.sendNudgeToUser(c, userID, chore, currentUser, req.Message)
+		if err != nil {
+			errors = append(errors, fmt.Sprintf("Failed to send to user %d: %v", userID, err))
+			log.Error("Failed to send nudge to user", "error", err, "targetUserID", userID)
+		} else {
+			totalDevicesSent += deviceCount
+		}
+	}
+
+	log.Infow("Nudge notification process completed",
+		"fromUserID", currentUser.ID,
+		"choreID", choreID,
+		"targetUsers", len(filteredTargets),
+		"totalDevicesSent", totalDevicesSent,
+		"errors", len(errors))
+
+	response := gin.H{
+		"message": fmt.Sprintf("Nudge sent to %d user(s) across %d device(s)", len(filteredTargets)-len(errors), totalDevicesSent),
+	}
+
+	if len(errors) > 0 {
+		response["warnings"] = errors
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// notifyApproversOfPendingApproval tells the admins and managers who can act on
+// a completion that it is waiting for approval. Approvers tied to the task (its
+// creator or an assignee) are preferred; if none of them can approve, every
+// admin and manager in the circle is notified so the request is not left
+// stranded. Failures are logged only: the submission already succeeded.
+//
+// This is the only pending-approval notification path, so each approver hears
+// about it exactly once: registered devices get an immediate push, and a
+// configured legacy target (Telegram/Discord/Pushover, or FCM when the user has
+// no devices) gets a queued row -- the same no-double-push split
+// NotificationPlanner's assignment delivery uses.
+func (h *Handler) notifyApproversOfPendingApproval(c context.Context, chore *chModel.Chore, submittedBy *uModel.User, circleUsers []*circle.UserCircleDetail) {
+	approvers := pendingApprovalRecipients(chore, submittedBy, circleUsers)
+	if len(approvers) == 0 {
+		return
+	}
+
+	submitterName := submittedBy.DisplayName
+	if submitterName == "" {
+		submitterName = submittedBy.Username
+	}
+
+	h.dispatcher.NotifyUsers(c, dispatch.Request{
+		EventType: nps.EventTypeOnPendingApproval,
+		CircleID:  chore.CircleID,
+		ChoreID:   chore.ID,
+		Subject:   chore.Name,
+		PushTitle: "Approval Needed",
+		PushBody:  fmt.Sprintf("%s completed '%s' and is waiting for your approval", submitterName, chore.Name),
+		PushData: map[string]string{
+			"type":         "chore_pending_approval",
+			"chore_id":     fmt.Sprintf("%d", chore.ID),
+			"chore_name":   chore.Name,
+			"from_user_id": fmt.Sprintf("%d", submittedBy.ID),
+			"from_user":    submitterName,
+		},
+		Text:             fmt.Sprintf("%s marked \"%s\" done — needs your approval", submitterName, chore.Name),
+		IdempotencyScope: "approval",
+	}, approvers)
+}
+
+// pendingApprovalRecipients picks who is told about a completion waiting for
+// approval: active admins and managers tied to the task (its creator or an
+// assignee), or every active admin and manager when none of those can approve.
+// Only people who can see the chore count, so its name never reaches anyone
+// outside a private chore or a restricted project, who could not approve it
+// anyway -- using the same visibility rule as the notification planner, which
+// also fails closed when the chore's project was not loaded.
+func pendingApprovalRecipients(chore *chModel.Chore, submittedBy *uModel.User, circleUsers []*circle.UserCircleDetail) []*circle.UserCircleDetail {
+	relatedToChore := map[int]bool{chore.CreatedBy: true}
+	if chore.AssignedTo != nil {
+		relatedToChore[*chore.AssignedTo] = true
+	}
+	for _, assignee := range chore.Assignees {
+		relatedToChore[assignee.UserID] = true
+	}
+
+	related := make([]*circle.UserCircleDetail, 0, len(circleUsers))
+	fallback := make([]*circle.UserCircleDetail, 0, len(circleUsers))
+	seen := make(map[int]bool, len(circleUsers))
+	for _, user := range circleUsers {
+		if user.UserID == submittedBy.ID || !user.IsActive || !user.IsManagerOrAdmin() || seen[user.UserID] {
+			continue
+		}
+		if !nps.CanReceiveChore(chore, user.UserID, circleUsers) {
+			continue
+		}
+		seen[user.UserID] = true
+		fallback = append(fallback, user)
+		if relatedToChore[user.UserID] {
+			related = append(related, user)
+		}
+	}
+
+	if len(related) > 0 {
+		return related
+	}
+	return fallback
+}
+
+func (h *Handler) sendNudgeToUser(c context.Context, userID int, chore *chModel.Chore, fromUser *uModel.UserDetails, customMessage string) (int, error) {
+	deviceTokens, err := h.deviceRepo.GetActiveDeviceTokens(c, userID)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get device tokens: %w", err)
+	}
+	if len(deviceTokens) == 0 {
+		return 0, nil // No devices, but not an error
+	}
+
+	message := customMessage
+	if message == "" {
+		message = fmt.Sprintf("👋 %s nudged you about '%s'", fromUser.DisplayName, chore.Name)
+	}
+
+	payload := fcmService.FCMNotificationPayload{
+		Title: "Gentle Nudge",
+		Body:  message,
+		Data: map[string]string{
+			"type":         "nudge",
+			"chore_id":     fmt.Sprintf("%d", chore.ID),
+			"chore_name":   chore.Name,
+			"from_user_id": fmt.Sprintf("%d", fromUser.ID),
+			"from_user":    fromUser.DisplayName,
+		},
+	}
+
+	sent, err := h.pushSender.SendToDeviceTokens(c, "nudge", deviceTokens, payload)
+	if err != nil {
+		return 0, fmt.Errorf("failed to send nudge notifications: %w", err)
+	}
+	return sent, nil
+}
+
+// UndoChore godoc
+//
+//	@Summary		Undo a chore action
+//	@Description	Undoes the most recent action (completion, skip, approval submission, or rejection) performed by the current user on a chore within the last 5 minutes
+//	@Tags			chores
+//	@Accept			json
+//	@Produce		json
+//	@Security		JWTKeyAuth
+//	@Security		APIKeyAuth
+//	@Param			id	path		int						true	"Chore ID"
+//
+// TODO: Add response model
+//
+//	@Success		200	{object}	map[string]interface{}	"message: Successfully undid {action} action, res: updated chore object"
+//	@Failure		400	{object}	map[string]string		"error: Invalid chore ID | No recent action found to undo | Cannot undo this type of action"
+//	@Failure		401	{object}	map[string]string		"error: Authentication failed"
+//	@Failure		500	{object}	map[string]string		"error: Failed to retrieve chore | Failed to check recent actions | Failed to undo action | Failed to restore pending approval status | Failed to retrieve updated chore"
+//	@Router			/chores/{id}/undo [post]
+func (h *Handler) UndoChore(c *gin.Context) {
+	logger := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		logger.Error("Failed to get current user from authentication context")
+		c.JSON(401, gin.H{
+			"error": "Authentication failed",
+		})
+		return
+	}
+
+	rawID := c.Param("id")
+	choreID, err := strconv.Atoi(rawID)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "Invalid chore ID",
+		})
+		return
+	}
+
+	// Check if user can access this chore
+	chore, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve chore",
+		})
+		return
+	}
+
+	// Find user's last action on this chore within 5 minutes
+	fiveMinutes := 5 * time.Minute
+	lastAction, err := h.choreRepo.GetUserLastChoreAction(c, choreID, currentUser.ID, fiveMinutes)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(400, gin.H{
+				"error": "No recent action found to undo (actions can only be undone within 5 minutes)",
+			})
+		} else {
+			logger.Error("Failed to get user's last action", "error", err)
+			c.JSON(500, gin.H{
+				"error": "Failed to check recent actions",
+			})
+		}
+		return
+	}
+
+	// Determine previous state based on action type
+	var previousAssignedTo *int
+	var previousDueDate *time.Time
+	reactivateOneTimeChore := false
+
+	switch lastAction.Status {
+	case chModel.ChoreHistoryStatusCompleted, chModel.ChoreHistoryStatusSkipped:
+		// lastAction.AssignedTo/DueDate are snapshots of the chore's state taken
+		// right before this action was applied (see CompleteChore/SkipChore), so
+		// they are exactly the state to restore on undo.
+		previousAssignedTo = lastAction.AssignedTo
+		previousDueDate = lastAction.DueDate
+		if chore.FrequencyType == chModel.FrequencyTypeOnce || chore.FrequencyType == chModel.FrequencyTypeNoRepeat || chore.FrequencyType == chModel.FrequencyTypeTrigger {
+			reactivateOneTimeChore = true
+		}
+
+	case chModel.ChoreHistoryStatusPendingApproval:
+		// For pending approval, restore to the state before submission
+		previousAssignedTo = lastAction.AssignedTo
+		previousDueDate = lastAction.DueDate
+
+	case chModel.ChoreHistoryStatusRejected:
+		// For rejected, restore to pending approval
+		previousAssignedTo = lastAction.AssignedTo
+		previousDueDate = lastAction.DueDate
+
+	default:
+		c.JSON(400, gin.H{
+			"error": "Cannot undo this type of action",
+		})
+		return
+	}
+
+	// Perform the undo
+	err = h.choreRepo.UndoChoreAction(c, choreID, lastAction.ID, currentUser.CircleID, previousAssignedTo, previousDueDate)
+	if err != nil {
+		logger.Error("Failed to undo chore action", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to undo action",
+		})
+		return
+	}
+
+	if reactivateOneTimeChore {
+		if err := h.choreRepo.UpdateChoreFields(c, choreID, map[string]interface{}{
+			"is_active":     true,
+			"next_due_date": nil,
+		}); err != nil {
+			logger.Error("Failed to reactivate one-time chore after undo", "error", err)
+			c.JSON(500, gin.H{
+				"error": "Failed to restore chore state",
+			})
+			return
+		}
+	}
+
+	// Special handling for rejected actions - restore to pending approval
+	if lastAction.Status == chModel.ChoreHistoryStatusRejected {
+		if err := h.choreRepo.UpdateChoreFields(c, choreID, map[string]interface{}{
+			"status": chModel.ChoreStatusPendingApproval,
+		}); err != nil {
+			logger.Error("Failed to restore pending approval status", "error", err)
+			c.JSON(500, gin.H{
+				"error": "Failed to restore pending approval status",
+			})
+			return
+		}
+	}
+
+	// Get updated chore
+	updatedChore, err := h.choreRepo.GetChore(c, choreID, currentUser.ID, currentUser.CircleID)
+	if err != nil {
+		logger.Error("Failed to retrieve updated chore", "error", err)
+		c.JSON(500, gin.H{
+			"error": "Failed to retrieve updated chore",
+		})
+		return
+	}
+
+	// Broadcast real-time undo event
+	if h.realTimeService != nil {
+		broadcaster := h.realTimeService.GetEventBroadcaster()
+		changes := map[string]interface{}{
+			"undoAction":  lastAction.Status,
+			"undoneBy":    currentUser.ID,
+			"undoneAt":    time.Now().UTC(),
+			"assignedTo":  previousAssignedTo,
+			"nextDueDate": previousDueDate,
+			"status":      updatedChore.Status,
+		}
+		broadcaster.BroadcastChoreUpdated(updatedChore, &currentUser.User, changes, nil)
+	}
+
+	c.JSON(200, gin.H{
+		"message": fmt.Sprintf("Successfully undid %s action", getActionName(lastAction.Status)),
+		"res":     updatedChore,
+	})
+}
+
+func getActionName(status chModel.ChoreHistoryStatus) string {
+	switch status {
+	case chModel.ChoreHistoryStatusCompleted:
+		return "completion"
+	case chModel.ChoreHistoryStatusSkipped:
+		return "skip"
+	case chModel.ChoreHistoryStatusPendingApproval:
+		return "approval submission"
+	case chModel.ChoreHistoryStatusRejected:
+		return "rejection"
+	default:
+		return "action"
+	}
+}
+
+func Routes(router *gin.Engine, h *Handler, multiAuthMiddleware *auth.MultiAuthMiddleware) {
+
+	// Input validation
+	// if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+	// 	v.RegisterStructValidation(ChoreReqStructLevelValidation, ChoreReq{})
+	// }
+
+	choresRoutes := router.Group("api/v1/chores")
+	choresRoutes.Use(multiAuthMiddleware.MiddlewareFunc())
+	choresRoutes.Use(auth.ImpersonationMiddleware(h.uRepo, h.circleRepo))
+	{
+		choresRoutes.GET("/", h.GetChores)
+		choresRoutes.GET("/archived", h.GetArchivedChores)
+		choresRoutes.GET("/history", h.GetChoresHistory)
+		choresRoutes.PUT("/", h.EditChore)
+		choresRoutes.PUT("/:id/priority", h.UpdatePriority)
+		choresRoutes.POST("/", h.CreateChore)
+		choresRoutes.POST("/bulk", h.BulkCreateChores)
+		choresRoutes.GET("/:id", h.GetChore)
+		choresRoutes.PUT("/:id/subtask", h.UpdateSubtaskCompletedAt)
+		choresRoutes.GET("/:id/details", h.GetChoreDetail)
+		choresRoutes.GET("/:id/history", h.GetChoreHistory)
+		choresRoutes.PUT("/:id/history/:history_id", h.ModifyHistory)
+		choresRoutes.DELETE("/:id/history/:history_id", h.DeleteHistory)
+		choresRoutes.POST("/:id/do", h.CompleteChore)
+		choresRoutes.POST("/:id/skip", h.SkipChore)
+		choresRoutes.PUT("/:id/start", h.StartChore)
+		choresRoutes.PUT("/:id/pause", h.PauseChore)
+		choresRoutes.GET("/:id/timer", h.GetChoreTimeSessions)
+		choresRoutes.PUT("/:id/timer/reset", h.ResetChoreTimer)
+		choresRoutes.PUT("/:id/assignee", h.UpdateAssignee)
+		choresRoutes.PUT("/:id/dueDate", h.UpdateDueDate)
+		choresRoutes.PUT("/:id/archive", h.ArchiveChore)
+		choresRoutes.PUT("/:id/unarchive", h.UnarchiveChore)
+		choresRoutes.POST("/:id/approve", h.ApproveChore)
+		choresRoutes.POST("/:id/reject", h.RejectChore)
+		choresRoutes.DELETE("/:id", h.DeleteChore)
+		choresRoutes.PUT("/:id/timer/:session_id", h.UpdateTimeSession)
+		choresRoutes.DELETE("/:id/timer/:session_id", h.DeleteTimeSession)
+		choresRoutes.POST("/:id/nudge", h.SendNudgeNotification)
+		choresRoutes.POST("/:id/undo", h.UndoChore)
+	}
+}
+
+func (h *Handler) validateCompletionActions(c *gin.Context, actions *[]chModel.CompletionAction, ownerID int) error {
+	if actions == nil {
+		return nil
+	}
+	if len(*actions) > 20 {
+		return fmt.Errorf("A task can have at most 20 completion actions")
+	}
+	for _, action := range *actions {
+		thing, err := h.tRepo.GetThingByID(c, action.ThingID)
+		if err != nil || thing.UserID != ownerID {
+			return fmt.Errorf("Completion action Thing must belong to the task owner")
+		}
+		if _, err := action.NextState(thing); err != nil {
+			return err
+		}
+	}
+	return nil
+}

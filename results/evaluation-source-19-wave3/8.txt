@@ -1,0 +1,332 @@
+package device
+
+import (
+	"context"
+	"errors"
+	"net/http"
+	"strconv"
+
+	auth "donetick.com/core/internal/auth"
+	"donetick.com/core/internal/bridge"
+	dRepo "donetick.com/core/internal/device/repo"
+	errorx "donetick.com/core/internal/error"
+	uModel "donetick.com/core/internal/user/model"
+	"donetick.com/core/logging"
+	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/gin-gonic/gin"
+	"github.com/ulule/limiter/v3"
+)
+
+type Handler struct {
+	deviceRepo *dRepo.DeviceRepository
+	bridgeSvc  *bridge.Service
+}
+
+type RegisterDeviceTokenRequest struct {
+	Token       string `json:"token" binding:"required"`
+	DeviceID    string `json:"deviceId" binding:"required"`
+	Platform    string `json:"platform" binding:"required,oneof=ios android"`
+	AppVersion  string `json:"appVersion,omitempty"`
+	DeviceModel string `json:"deviceModel,omitempty"`
+}
+
+type UnregisterDeviceTokenRequest struct {
+	DeviceID string `json:"deviceId,omitempty"`
+	Token    string `json:"token,omitempty"`
+}
+
+func NewHandler(dr *dRepo.DeviceRepository, bs *bridge.Service) *Handler {
+	return &Handler{
+		deviceRepo: dr,
+		bridgeSvc:  bs,
+	}
+}
+
+// syncDeviceWithBridge registers or updates deviceToken with Bridge after
+// it has already been saved locally. It
+// never blocks the caller's HTTP response on Bridge -- failures only
+// update deviceToken.BridgeSyncStatus (a sanitized category, see
+// user/model.UserDeviceToken) and are retried later by
+// RetryPendingBridgeSync. The raw FCM token only ever leaves this stack
+// frame as an argument to bridge.Client.RegisterDevice; it is not logged
+// here or by that client.
+func (h *Handler) syncDeviceWithBridge(c context.Context, deviceToken *uModel.UserDeviceToken) {
+	log := logging.FromContext(c)
+	client := h.bridgeSvc.Client()
+	if !client.Enabled() {
+		return
+	}
+
+	res, err := client.RegisterDevice(c, bridge.RegisterDeviceInput{
+		LocalDeviceID: deviceToken.DeviceID,
+		Token:         deviceToken.Token,
+		Platform:      deviceToken.Platform,
+		AppVersion:    deviceToken.AppVersion,
+		DeviceModel:   deviceToken.DeviceModel,
+	})
+	if err != nil {
+		category := bridge.Classify(err)
+		log.Warn("bridge_device_register_failed", "category", string(category), "device_id", deviceToken.DeviceID)
+		if updErr := h.deviceRepo.UpdateBridgeSyncStatus(c, deviceToken.ID, nil, string(category)); updErr != nil {
+			log.Error("Failed to record bridge sync status", "error", updErr)
+		}
+		return
+	}
+
+	if err := h.deviceRepo.UpdateBridgeSyncStatus(c, deviceToken.ID, &res.BridgeDeviceID, "synced"); err != nil {
+		log.Error("Failed to persist bridge device id", "error", err)
+	}
+}
+
+// RegisterDeviceToken registers a new FCM device token
+func (h *Handler) RegisterDeviceToken(c *gin.Context) {
+	log := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	var req RegisterDeviceTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error("Invalid request payload", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	deviceToken := &uModel.UserDeviceToken{
+		UserID:      currentUser.ID,
+		Token:       req.Token,
+		DeviceID:    req.DeviceID,
+		Platform:    req.Platform,
+		AppVersion:  req.AppVersion,
+		DeviceModel: req.DeviceModel,
+	}
+
+	if err := h.deviceRepo.RegisterDeviceToken(c, deviceToken); err != nil {
+		log.Error("Failed to register device token", "error", err)
+
+		// Check for device limit error
+		if errors.Is(err, errorx.ErrDeviceLimitExceeded) {
+			c.JSON(http.StatusConflict, gin.H{
+				"error": err.Error(),
+				"code":  "DEVICE_LIMIT_EXCEEDED",
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register device token"})
+		return
+	}
+
+	log.Debugw("Device token registered successfully", "user_id", currentUser.ID, "device_id", req.DeviceID)
+
+	// Register with Bridge synchronously but non-blockingly: any failure
+	// here (including Bridge being temporarily unreachable) only affects
+	// deviceToken.BridgeSyncStatus, never this response. If Bridge is
+	// temporarily unavailable, registration is retried later without
+	// blocking normal login. The bounded client timeout
+	// (config bridge.timeout_seconds) keeps this call from hanging the
+	// request indefinitely.
+	h.syncDeviceWithBridge(c, deviceToken)
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message":   "Device token registered successfully",
+		"device_id": deviceToken.DeviceID,
+		"id":        deviceToken.ID,
+	})
+}
+
+// UnregisterDeviceToken removes a device token
+func (h *Handler) UnregisterDeviceToken(c *gin.Context) {
+	log := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	var req UnregisterDeviceTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error("Invalid request payload", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// Must provide either deviceId or token
+	if req.DeviceID == "" && req.Token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Either deviceId or token must be provided"})
+		return
+	}
+
+	// Look up the row before deleting/deactivating it locally so we still
+	// have bridgeDeviceId to deactivate on Bridge afterward: on
+	// logout/unregister both the local and the Bridge device record are
+	// deactivated.
+	var existing *uModel.UserDeviceToken
+	if req.DeviceID != "" {
+		existing, _ = h.deviceRepo.GetActiveDeviceByDeviceID(c, currentUser.ID, req.DeviceID)
+	} else {
+		existing, _ = h.deviceRepo.GetActiveDeviceByToken(c, currentUser.ID, req.Token)
+	}
+
+	var err error
+	if req.DeviceID != "" {
+		err = h.deviceRepo.UnregisterDeviceToken(c, currentUser.ID, req.DeviceID)
+	} else {
+		err = h.deviceRepo.UnregisterDeviceTokenByToken(c, currentUser.ID, req.Token)
+	}
+
+	if err != nil {
+		log.Error("Failed to unregister device token", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to unregister device token"})
+		return
+	}
+
+	if existing != nil && existing.BridgeDeviceID != nil {
+		client := h.bridgeSvc.Client()
+		if client.Enabled() {
+			if err := client.DeactivateDevice(c, *existing.BridgeDeviceID); err != nil {
+				// Best-effort: local unregistration already succeeded and
+				// is authoritative; Bridge will still enforce its own
+				// active-device accounting independently, and this
+				// deactivation can be retried by an operator/cleanup job
+				// later. Never block the response on this.
+				log.Warn("bridge_device_deactivate_failed", "category", string(bridge.Classify(err)))
+			}
+		}
+	}
+
+	log.Info("Device token unregistered successfully", "user_id", currentUser.ID)
+	c.JSON(http.StatusOK, gin.H{"message": "Device token unregistered successfully"})
+}
+
+// GetDeviceTokens retrieves all device tokens for the current user
+func (h *Handler) GetDeviceTokens(c *gin.Context) {
+	log := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	// Check if only active tokens are requested
+	activeOnly := c.Query("active") == "true"
+
+	var tokens []*uModel.UserDeviceToken
+	var err error
+
+	if activeOnly {
+		tokens, err = h.deviceRepo.GetActiveDeviceTokens(c, currentUser.ID)
+	} else {
+		tokens, err = h.deviceRepo.GetUserDeviceTokens(c, currentUser.ID)
+	}
+
+	if err != nil {
+		log.Error("Failed to retrieve device tokens", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve device tokens"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"res": tokens,
+	})
+}
+
+// UpdateDeviceActivity updates the last active timestamp for a device
+func (h *Handler) UpdateDeviceActivity(c *gin.Context) {
+	log := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	deviceID := c.Param("deviceId")
+	if deviceID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Device ID is required"})
+		return
+	}
+
+	if err := h.deviceRepo.UpdateDeviceTokenActivity(c, currentUser.ID, deviceID); err != nil {
+		// 404 tells the client its cached registration is stale so it can
+		// re-register, instead of silently assuming it is still a push target.
+		if errors.Is(err, errorx.ErrDeviceNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+				"code":  "DEVICE_NOT_REGISTERED",
+			})
+			return
+		}
+
+		log.Error("Failed to update device activity", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update device activity"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Device activity updated successfully"})
+}
+
+// GetDeviceCount returns the number of active devices for the current user
+func (h *Handler) GetDeviceCount(c *gin.Context) {
+	log := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	count, err := h.deviceRepo.GetActiveDeviceCount(c, currentUser.ID)
+	if err != nil {
+		log.Error("Failed to get device count", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get device count"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"count": count,
+		"limit": dRepo.MaxDevicesPerUser,
+	})
+}
+
+// CleanupInactiveTokens removes tokens that haven't been active for specified days (admin only)
+func (h *Handler) CleanupInactiveTokens(c *gin.Context) {
+	log := logging.FromContext(c)
+	currentUser, ok := auth.CurrentUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	// This could be an admin-only endpoint
+	// For now, allowing any user to trigger cleanup for their own tokens would require additional logic
+
+	daysStr := c.DefaultQuery("days", "30")
+	days, err := strconv.Atoi(daysStr)
+	if err != nil || days < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid days parameter"})
+		return
+	}
+
+	if err := h.deviceRepo.CleanupInactiveTokens(c, days); err != nil {
+		log.Error("Failed to cleanup inactive tokens", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to cleanup inactive tokens"})
+		return
+	}
+
+	log.Info("Cleanup completed", "user_id", currentUser.ID, "days", days)
+	c.JSON(http.StatusOK, gin.H{"message": "Cleanup completed successfully"})
+}
+
+// Routes sets up the device token management routes
+func Routes(router *gin.Engine, h *Handler, auth *jwt.GinJWTMiddleware, limiter *limiter.Limiter) {
+	deviceRoutes := router.Group("api/v1/devices")
+	deviceRoutes.Use(auth.MiddlewareFunc())
+	{
+		deviceRoutes.POST("/tokens", h.RegisterDeviceToken)
+		deviceRoutes.DELETE("/tokens", h.UnregisterDeviceToken)
+		deviceRoutes.GET("/tokens", h.GetDeviceTokens)
+		deviceRoutes.GET("/count", h.GetDeviceCount)
+		deviceRoutes.PUT("/tokens/:deviceId/activity", h.UpdateDeviceActivity)
+	}
+}
