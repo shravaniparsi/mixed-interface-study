@@ -401,3 +401,5 @@ Fresh attempt v2 Shlink run44877829872 failed before application startup: origin
 
 
 RoadRunner build repair: v2 runs 44877829872 and 44878149513 failed before application startup with HTTP403. Exact installed downloader source 54909d3fff22d34d1a6e894785f3df9dca0e2e8c src/Command.php supports GITHUB_TOKEN. Supply existing read-only workflow token through BuildKit secret mount only; no ARG, ENV, image persistence or literal credential in command logs. Requalify full pipeline before a new attempt; preserve v2 registration and failures.
+
+Authenticated downloader qualification 44878654323 passed all 12 Shlink branches, 2 reset cycles, private independent scorer, runtime and cleanup gates, checksum-verified sanitized log recovery. 49 local tests pass. Fresh v3 registered before dispatch, preserving v2 failures. Zipline unchanged from qualification 44877489867.
