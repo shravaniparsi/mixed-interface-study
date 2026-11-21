@@ -20,11 +20,11 @@ def score(base):
  for c in run['creations']:
   before,after=read(c['before']),read(c['after']);created[c['arm']]=(c,after)
   require(c['identity']['body']['id']==owner and c['identity']['body']['logged_in'] is True,'api_identity')
-  if c['arm']=='native':browser(c['browser'],'POST','/api/v2/paste')
+  if c['arm']=='native':require(json.loads(browser(c['browser'],'POST','/api/v2/paste')['request'])==ordinary,'native_original_input')
   else:require(c['api']['request']==ordinary and c['api']['body']['paste']['id']==c['key'],'api_original_input_and_key')
   score_create(before['database'],after['database'],c['key'],owner,ordinary['title'],ordinary['content']);score_files(before['files'],after['files']);readback(c['readback'],c['key'],ordinary['title'],ordinary['content'])
  require(read(run['creations'][0]['before'])==read(run['creations'][1]['before']),'same_initial_producer_state')
- expected={'title':'study-note-edited.txt','content':'Disposable revised study text.'}
+ expected={'title':'study-note-edited','content':'Disposable revised study text.'}
  for b in run['branches']:
   c,root=created[b['arm']];before,after=read(b['before']),read(b['after']);require(before==root and b['key']==c['key'],'restored_creation_state');require(b['value']==expected[b['field']],'registered_ordinary_edit')
   browser(b['browser'],'PUT','/api/v2/paste/'+b['key']);score_edit(before['database'],after['database'],b['key'],owner,b['field'],b['value']);score_files(before['files'],after['files'])

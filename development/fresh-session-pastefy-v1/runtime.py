@@ -11,7 +11,7 @@ class Runtime:
  def __init__(self,base,jar,java='java'):
   self.state=MySQLState(pathlib.Path(base).resolve());self.jar=pathlib.Path(jar).resolve();require(self.jar.is_file(),'built_jar_present');self.java=java;self.process=None;self.log=None;self.starts=0
   live=self.state.live;(live/'tmp').mkdir()
-  env={'DATABASE_DRIVER':'mysql','DATABASE_HOST':'127.0.0.1','DATABASE_PORT':'3306','DATABASE_NAME':'study','DATABASE_USER':'root','DATABASE_PASSWORD':'','DATABASE_POOL_MIN':'1','DATABASE_POOL_MAX':'1','HTTP_SERVER_PORT':'1337','HTTP_SERVER_CORS':'*','SERVER_NAME':'http://127.0.0.1:1337','OAUTH2_OIDC_CLIENT_ID':'disposable-study','OAUTH2_OIDC_CLIENT_SECRET':'local-fixture-only','OAUTH2_OIDC_AUTH_ENDPOINT':'http://127.0.0.1:9/auth','OAUTH2_OIDC_TOKEN_ENDPOINT':'http://127.0.0.1:9/token','OAUTH2_OIDC_USERINFO_ENDPOINT':'http://127.0.0.1:9/user','AI_PROVIDER':''}
+  env={'DATABASE_DRIVER':'mysql','DATABASE_HOST':'127.0.0.1','DATABASE_PORT':'3306','DATABASE_NAME':'study','DATABASE_USER':'root','DATABASE_PASSWORD':'','DATABASE_POOL_MIN':'20','DATABASE_POOL_MAX':'50','HTTP_SERVER_PORT':'1337','HTTP_SERVER_CORS':'*','SERVER_NAME':'http://127.0.0.1:1337','OAUTH2_OIDC_CLIENT_ID':'disposable-study','OAUTH2_OIDC_CLIENT_SECRET':'local-fixture-only','OAUTH2_OIDC_AUTH_ENDPOINT':'http://127.0.0.1:9/auth','OAUTH2_OIDC_TOKEN_ENDPOINT':'http://127.0.0.1:9/token','OAUTH2_OIDC_USERINFO_ENDPOINT':'http://127.0.0.1:9/user','AI_PROVIDER':''}
   (live/'.env').write_text(''.join(k+'='+v+'\n' for k,v in env.items()));os.chmod(live/'.env',0o600)
  def command(self,mode):return [self.java,'-Xmx512m','-Djava.io.tmpdir='+str(self.state.live/'tmp'),'-jar',str(self.jar),mode]
  def launch(self,mode):

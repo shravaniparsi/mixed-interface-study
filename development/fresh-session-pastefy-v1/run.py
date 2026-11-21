@@ -1,5 +1,5 @@
 """Fixed ordinary native/API producer schedule. Must execute in owned loopback namespace."""
-import hashlib,json,os,pathlib,subprocess,sys,urllib.request
+import hashlib,json,os,pathlib,subprocess,sys,urllib.request,signal,time
 from runtime import Runtime
 from source_check import require
 ROOT=pathlib.Path(__file__).resolve().parents[2]
@@ -29,9 +29,12 @@ def main(base,jar):
    else:record=api('POST','/api/v2/paste',ordinary);body=record['body'];transport=dict(api=record)
    require(body.get('success') is True,'producer_success');key=body['paste']['id'];readback=api('GET','/api/v2/paste/'+key);after=observe(arm+'-create-after');rt.state.checkpoint(arm)
    report['creations'].append(dict(arm=arm,before=before,after=after,key=key,identity=identity,readback=readback,**transport));save()
-   for field,value in [('title','study-note-edited.txt'),('content','Disposable revised study text.')]:
+   for field,value in [('title','study-note-edited'),('content','Disposable revised study text.')]:
     rt.state.restore(arm);name=arm+'-'+field;before=observe(name+'-before');rt.start();record,path=native(name,'edit',key=key,field=field,value=value);readback=api('GET','/api/v2/paste/'+key);after=observe(name+'-after')
     report['branches'].append(dict(arm=arm,field=field,value=value,key=key,before=before,after=after,browser=path,readback=readback));save()
   report['status']='ordinary_execution_completed_requires_independent_score'
+ except Exception:
+  if rt.process is not None and rt.process.poll() is None:os.kill(rt.process.pid,signal.SIGQUIT);time.sleep(.5)
+  raise
  finally:rt.stop();report['jvm_stopped']=all(p.poll() is not None for p in rt.state.writers);rt.state.close_database();report['database_stopped']=rt.state.db_process is None or rt.state.db_process.poll() is not None;save()
 if __name__=='__main__':main(sys.argv[1],sys.argv[2])
