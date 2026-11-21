@@ -6,6 +6,10 @@ from checkpoint import State,inventory
 from shlink_sqlite import canonical,typed
 from source_check import require
 
+def canonical_ddl(ddl):
+ # A collation uniquely identifies its character set; mysqldump makes it explicit.
+ ddl=re.sub(r' CHARACTER SET ([A-Za-z0-9_]+)(?= COLLATE \1_)','',ddl)
+ return re.sub(r' AUTO_INCREMENT=\d+','',ddl)
 def ident(name):return '`'+name.replace('`','``')+'`'
 def cell(value):
  if isinstance(value,(datetime.datetime,datetime.date)):return typed(value.isoformat(sep=' ') if isinstance(value,datetime.datetime) else value.isoformat())
@@ -48,7 +52,7 @@ class MySQLState(State):
     c.execute('SET TRANSACTION READ ONLY');c.execute('START TRANSACTION WITH CONSISTENT SNAPSHOT');c.execute('SHOW FULL TABLES');names=c.fetchall();tables={};schema=[];sequences={}
     for name,kind in names:
      require(kind=='BASE TABLE','mysql_base_tables_only')
-     c.execute('SHOW CREATE TABLE '+ident(name));ddl=c.fetchone()[1];schema.append([name,re.sub(r' AUTO_INCREMENT=\d+','',ddl)])
+     c.execute('SHOW CREATE TABLE '+ident(name));ddl=c.fetchone()[1];schema.append([name,canonical_ddl(ddl)])
      c.execute('SHOW FULL COLUMNS FROM '+ident(name));cols=c.fetchall();columns=[[i,col[0],*col[1:]] for i,col in enumerate(cols)]
      c.execute('SHOW INDEX FROM '+ident(name));indexes=[list(x) for x in c.fetchall()]
      # Cardinality is a query-optimizer estimate, not a schema attribute.
