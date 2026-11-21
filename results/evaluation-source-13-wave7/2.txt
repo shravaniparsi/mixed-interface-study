@@ -1,0 +1,1431 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, breadcrumb_nav, button, filter_badge, form_group, form_select, form_textarea, form_checkbox, form_date, form_section, form_actions %}
+{% from "components/client_select.html" import client_select %}
+
+{% block content %}
+{% set breadcrumbs = [
+    {'text': _('Time Tracking')},
+    {'text': _('Log Time') if not is_duplicate else _('Duplicate Entry')}
+] %}
+
+{{ page_header(
+    icon_class='fas fa-clock',
+    title_text=_('Duplicate Time Entry') if is_duplicate else _('Log Time Manually'),
+    subtitle_text=_('Create a copy of a previous entry with new times') if is_duplicate else _('Create a new time entry'),
+    breadcrumbs=breadcrumbs,
+    actions_html=None
+) }}
+
+{% if is_duplicate and original_entry %}
+<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6 max-w-3xl mx-auto">
+    <div class="flex items-start gap-3">
+        <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 mt-1"></i>
+        <div>
+            <p class="text-sm text-blue-800 dark:text-blue-200">
+                <strong>{{ _('Duplicating entry:') }}</strong>
+                {% if original_entry.project %}
+                    {{ original_entry.project.name }}{% if original_entry.task %} - {{ original_entry.task.name }}{% endif %}
+                {% elif original_entry.client %}
+                    {{ original_entry.client.name }} <span class="text-xs text-gray-500">({{ _('Direct') }})</span>
+                {% endif %}
+            </p>
+            <p class="text-xs text-blue-600 dark:text-blue-300 mt-1">
+                {{ _('Original:') }} {{ original_entry.start_time|user_datetime }} {{ _('to') }} {{ original_entry.end_time|user_datetime if original_entry.end_time else _('N/A') }} ({{ original_entry.duration_formatted }})
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-lg max-w-3xl mx-auto">
+    <form method="POST" action="{{ url_for('timer.manual_entry') }}" autocomplete="off" novalidate data-validate-form id="manualEntryForm"
+          data-require-task="{{ 'true' if getattr(settings, 'time_entry_require_task', false) else 'false' }}"
+          data-require-description="{{ 'true' if getattr(settings, 'time_entry_require_description', false) else 'false' }}"
+          data-description-min-length="{{ getattr(settings, 'time_entry_description_min_length', 20) }}"
+          data-description-min-msg="{{ _('Description must be at least %(min)s characters', min=getattr(settings, 'time_entry_description_min_length', 20))|e }}"
+          data-break-after-hours-1="{{ getattr(settings, 'break_after_hours_1', none) or 6 }}"
+          data-break-minutes-1="{{ getattr(settings, 'break_minutes_1', none) or 30 }}"
+          data-break-after-hours-2="{{ getattr(settings, 'break_after_hours_2', none) or 9 }}"
+          data-break-minutes-2="{{ getattr(settings, 'break_minutes_2', none) or 45 }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="worked_time_mode" id="worked_time_mode" value="{{ prefill_worked_time_mode or '' }}">
+
+        <div class="space-y-8">
+            {% if current_user.is_admin and users %}
+            {# Section: User (admin only — book time for another person) #}
+            <section class="pb-6 border-b border-border-light dark:border-border-dark">
+                <h2 class="form-section-title">
+                    <i class="fas fa-user text-primary"></i>{{ _('User') }}
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="user_id" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Log time for') }}</label>
+                        <select name="user_id" id="user_id" class="form-input">
+                            {% for user in users %}
+                            <option value="{{ user.id }}" {% if selected_user_id is not none and (selected_user_id|string) == (user.id|string) %}selected{% elif selected_user_id is none and user.id == current_user.id %}selected{% endif %}>{{ user.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">{{ _('As admin, you can create entries for other users') }}</p>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            {# Section: Project & task #}
+            <section class="pb-6 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-folder text-primary"></i>{{ _('Project & task') }}
+                    </h2>
+                    {% if ai_enabled %}
+                    <div id="aiAutofillContainer" class="relative hidden mb-2">
+                        <button type="button" id="aiAutofillBtn"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-primary/40 text-primary bg-primary/5 hover:bg-primary/10 dark:hover:bg-primary/15 transition focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                aria-haspopup="menu"
+                                aria-expanded="false"
+                                aria-controls="aiAutofillPopover">
+                            <span aria-hidden="true">✦</span>{{ _('Autofill') }}
+                        </button>
+                        <div id="aiAutofillPopover"
+                             class="hidden absolute z-30 right-0 mt-2 w-80 rounded-xl border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark shadow-lg p-2"
+                             role="menu"
+                             aria-hidden="true">
+                            <div data-ai-autofill-loading class="hidden flex-col gap-2 px-1 py-2">
+                                <div class="h-12 rounded-lg bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
+                                <div class="h-12 rounded-lg bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
+                            </div>
+                            <p data-ai-autofill-empty class="hidden px-3 py-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                {{ _('No suggestions available') }}
+                            </p>
+                            <div data-ai-autofill-list class="space-y-1"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="client_id" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Client') }}</label>
+                            {{ client_select('client_id', clients, selected_id=selected_client_id, required=False, only_one_client=only_one_client|default(false), single_client=single_client, searchable=True, can_create=can_create_clients|default(false)) }}
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">{{ _('Select a client first, then optionally a project. Type to search or create.') }}</p>
+                        </div>
+                        <div>
+                            <label for="project_id" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Project') }}</label>
+                            <select name="project_id" id="project_id" class="form-input" data-inline-project-select
+                                    data-searchable-select="project"
+                                    data-filter-by="client_id"
+                                    {% if can_create_projects|default(false) %}data-can-create="1"{% endif %}
+                                    data-search-placeholder="{{ _('Type to search projects…') }}"
+                                    {% if not selected_client_id %}disabled{% endif %}>
+                                <option value="">{{ _('Select a project (optional)') }}</option>
+                                {% for project in projects %}
+                                <option value="{{ project.id }}" data-client-id="{{ project.client_id }}" data-parent-id="{{ project.client_id }}" {% if selected_project_id == project.id %}selected{% endif %}>{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">{{ _('Pick a client first, then choose one of their projects. Leave empty for a client-only entry.') }}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="task_id" class="block text-sm font-medium text-text-light dark:text-text-dark">{% if getattr(settings, 'time_entry_require_task', false) %}{{ _('Task') }} *{% else %}{{ _('Task (optional)') }}{% endif %}</label>
+                            <select name="task_id" id="task_id" class="form-input"
+                                    data-selected-task-id="{{ selected_task_id or '' }}"
+                                    data-searchable-select="task"
+                                    data-inline-task-select
+                                    data-filter-by="project_id"
+                                    data-can-create="1"
+                                    data-search-placeholder="{{ _('Type to search tasks…') }}"
+                                    {% if not selected_project_id %}disabled{% endif %}>
+                                <option value="">{{ _('No task') }}</option>
+                            </select>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">{{ _('Select a project first. Type to search or create.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {# Section: Date & time #}
+            <section class="pb-6 border-b border-border-light dark:border-border-dark">
+                <h2 class="form-section-title">
+                    <i class="fas fa-calendar-alt text-primary"></i>{{ _('Date & time') }}
+                </h2>
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="start_date" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Start Date') }}</label>
+                            <input type="date" name="start_date" id="start_date" class="form-input user-date-input" value="{{ prefill_start_date or '' }}">
+                        </div>
+                        <div>
+                            <label for="end_date" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('End Date') }}</label>
+                            <input type="date" name="end_date" id="end_date" class="form-input user-date-input" value="{{ prefill_end_date or '' }}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="start_time" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Start Time') }}</label>
+                            <input type="time" name="start_time" id="start_time" class="form-input user-time-input" value="{{ prefill_start_time or '' }}">
+                        </div>
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('End Time') }}</label>
+                            <input type="time" name="end_time" id="end_time" class="form-input user-time-input" value="{{ prefill_end_time or '' }}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="worked_time" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Worked Time') }}</label>
+                            <input type="text" name="worked_time" id="worked_time" class="form-input" inputmode="numeric" placeholder="HH:MM" autocomplete="off" value="{{ prefill_worked_time or '' }}">
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">{{ _('Optional: enter HH:MM for duration. You can combine with Start Date/Time to log time on a specific day.') }}</p>
+                        </div>
+                        <div>
+                            <label for="break_time" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Break') }}</label>
+                            <div class="flex items-center gap-2">
+                                <input type="text" name="break_time" id="break_time" class="form-input flex-1" inputmode="numeric" placeholder="HH:MM" autocomplete="off" value="{{ prefill_break_time or '' }}">
+                                <button type="button" id="suggestBreakBtn" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-text-light dark:text-text-dark text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="{{ _('Suggest break based on duration (e.g. >6h: 30 min, >9h: 45 min)') }}">{{ _('Suggest') }}</button>
+                            </div>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">{{ _('Optional: break duration (HH:MM). Subtracted from total time to get worked duration.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {# Progressive disclosure: notes / tags / billable #}
+            {% set _require_notes = getattr(settings, 'time_entry_require_description', false) %}
+            {% set _has_more_prefill = (prefill_notes or '')|trim or (prefill_tags or '')|trim %}
+            <details class="group rounded-xl border border-border-light dark:border-border-dark"{% if _require_notes or _has_more_prefill %} open{% endif %}>
+                <summary class="cursor-pointer list-none flex items-center justify-between gap-3 px-4 py-3 select-none">
+                    <span class="text-sm font-semibold text-text-light dark:text-text-dark uppercase tracking-wide flex items-center gap-2">
+                        <i class="fas fa-align-left text-primary"></i>{{ _('More details') }}
+                    </span>
+                    <i class="fas fa-chevron-down text-text-muted-light dark:text-text-muted-dark text-xs transition-transform group-open:rotate-180" aria-hidden="true"></i>
+                </summary>
+                <div class="px-4 pb-4 pt-1 border-t border-border-light dark:border-border-dark">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2">
+                            <label for="notes" class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">{% if _require_notes %}{{ _('Notes') }} *{% else %}{{ _('Notes') }}{% endif %}</label>
+                            <div class="markdown-editor-wrapper">
+                                <textarea name="notes" id="notes" class="hidden" data-ai-autocomplete="notes">{{ prefill_notes or '' }}</textarea>
+                                <div id="notes_editor"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="tags" class="block text-sm font-medium text-text-light dark:text-text-dark">{{ _('Tags') }}</label>
+                                <input type="text" name="tags" id="tags" class="form-input" placeholder="{{ _('tag1, tag2') }}" value="{{ prefill_tags or '' }}">
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="billable" name="billable" class="h-5 w-5 rounded border-gray-300 text-primary focus:ring-0" {% if prefill_billable is not defined or prefill_billable %}checked{% endif %}>
+                                <label for="billable" class="text-sm font-medium text-text-light dark:text-text-dark">{{ _('Billable') }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        {% with section_help=_('These custom fields are defined globally and available for time entries.') %}
+        {% include 'partials/_custom_fields.html' %}
+        {% endwith %}
+
+        <div class="mt-8 border-t border-border-light dark:border-border-dark pt-6 flex flex-col sm:flex-row justify-end gap-3">
+            <button type="reset" class="w-full sm:w-auto px-5 py-2.5 rounded-lg border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-background-light dark:hover:bg-background-dark font-medium transition-all">{{ _('Clear') }}</button>
+            <button type="submit" class="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200">{{ _('Log Time') }}</button>
+        </div>
+    </form>
+</div>
+{% include 'components/inline_create_modals.html' %}
+<script nonce="{{ csp_nonce() }}">
+(function() {
+    // Issue #557: avoid loading Toast UI Editor on mobile to prevent browser freeze
+    window.isMobileView = window.matchMedia('(max-width: 767px)').matches;
+    if (window.isMobileView) {
+        var notes = document.getElementById('notes');
+        var editorEl = document.getElementById('notes_editor');
+        if (notes) {
+            notes.classList.remove('hidden');
+            notes.classList.add('form-input');
+            notes.setAttribute('rows', '5');
+        }
+        if (editorEl) editorEl.style.display = 'none';
+    }
+})();
+</script>
+<script nonce="{{ csp_nonce() }}">
+    function ttResetSelectOptions(select, placeholderText) {
+        if (!select) return;
+        select.replaceChildren();
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = placeholderText == null ? '' : String(placeholderText);
+        select.appendChild(opt);
+    }
+
+document.addEventListener('DOMContentLoaded', async function(){
+    // Default values for date/time to now (use local date, not UTC, for timezones ahead of UTC)
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const monthPad = String(now.getMonth() + 1).padStart(2, '0');
+    const dayPad = String(now.getDate()).padStart(2, '0');
+    const today = `${yyyy}-${monthPad}-${dayPad}`;
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const startDate = document.getElementById('start_date');
+    const endDate = document.getElementById('end_date');
+    const startTime = document.getElementById('start_time');
+    const endTime = document.getElementById('end_time');
+    const workedTime = document.getElementById('worked_time');
+    const form = document.getElementById('manualEntryForm');
+    // Only auto-fill start/end if user isn't trying to do duration-only.
+    const hasWorkedPrefill = !!(workedTime && String(workedTime.value || '').trim());
+    if (!hasWorkedPrefill) {
+        if (startDate && !startDate.value) startDate.value = today;
+        if (endDate && !endDate.value) endDate.value = today;
+        if (startTime && !startTime.value) startTime.value = `${hh}:${mm}`;
+        if (endTime && !endTime.value) endTime.value = `${hh}:${mm}`;
+    }
+
+    // Worked time helper (duration)
+    const workedTimeMode = document.getElementById('worked_time_mode');
+    let suppressTimeSync = false;
+    let workedTimeUserEdited = false;
+    let timeFieldsUserEdited = false;
+
+    function setDurationOnlyMode(on) {
+        // No longer disable date/time when duration is entered: allow combined use
+        // (e.g. "2:30" + "yesterday" = 2.5h on that date). Only track mode for backend.
+        if (workedTimeMode) workedTimeMode.value = on ? 'explicit' : (workedTimeMode.value || '');
+    }
+
+    function ensureStartEndDefaultsIfEmpty() {
+        if (startDate && !startDate.value) startDate.value = today;
+        if (endDate && !endDate.value) endDate.value = today;
+        if (startTime && !startTime.value) startTime.value = `${hh}:${mm}`;
+        if (endTime && !endTime.value) endTime.value = `${hh}:${mm}`;
+    }
+
+    function parseWorkedMinutes(raw) {
+        const s = String(raw || '').trim();
+        if (!s) return null;
+        const m = s.match(/^(\d{1,3}):([0-5]\d)$/);
+        if (!m) return null;
+        const hours = parseInt(m[1], 10);
+        const minutes = parseInt(m[2], 10);
+        if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
+        return hours * 60 + minutes;
+    }
+
+    function formatWorkedMinutes(totalMinutes) {
+        const mins = Math.max(0, Math.floor(totalMinutes || 0));
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    }
+
+    function getStartEnd() {
+        if (!startDate || !startTime || !endDate || !endTime) return { start: null, end: null };
+        if (!startDate.value || !startTime.value || !endDate.value || !endTime.value) return { start: null, end: null };
+        const start = new Date(`${startDate.value}T${startTime.value}:00`);
+        const end = new Date(`${endDate.value}T${endTime.value}:00`);
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) return { start: null, end: null };
+        return { start, end };
+    }
+
+    function setEndFromDate(end) {
+        const yyyy = end.getFullYear();
+        const mm2 = String(end.getMonth() + 1).padStart(2,'0');
+        const dd = String(end.getDate()).padStart(2,'0');
+        const hh2 = String(end.getHours()).padStart(2,'0');
+        const mi2 = String(end.getMinutes()).padStart(2,'0');
+        if (endDate) endDate.value = `${yyyy}-${mm2}-${dd}`;
+        if (endTime) endTime.value = `${hh2}:${mi2}`;
+    }
+
+    function updateWorkedFromStartEnd() {
+        if (!workedTime || suppressTimeSync) return;
+        const { start, end } = getStartEnd();
+        if (!start || !end) return;
+        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000);
+        if (diffMinutes <= 0) return;
+        suppressTimeSync = true;
+        workedTime.value = formatWorkedMinutes(diffMinutes);
+        // Auto-calculated; do not mark as explicit duration override.
+        if (!workedTimeUserEdited && workedTimeMode) workedTimeMode.value = '';
+        suppressTimeSync = false;
+    }
+
+    function updateEndFromStartWorked() {
+        if (!workedTime || suppressTimeSync) return;
+        if (!startDate || !startTime) return;
+        if (!startDate.value || !startTime.value) return;
+        const minutes = parseWorkedMinutes(workedTime.value);
+        if (minutes == null) return;
+        const start = new Date(`${startDate.value}T${startTime.value}:00`);
+        if (isNaN(start.getTime())) return;
+        const end = new Date(start.getTime() + minutes * 60000);
+        suppressTimeSync = true;
+        setEndFromDate(end);
+        if (workedTimeMode) workedTimeMode.value = workedTimeUserEdited ? 'explicit' : '';
+        suppressTimeSync = false;
+    }
+
+    // Suggest break from duration (default rules: >6h = 30 min, >9h = 45 min)
+    const suggestBreakBtn = document.getElementById('suggestBreakBtn');
+    const breakTimeInput = document.getElementById('break_time');
+    if (suggestBreakBtn && breakTimeInput && form) {
+        suggestBreakBtn.addEventListener('click', function() {
+            let durationHours = 0;
+            const workedMins = parseWorkedMinutes(workedTime && workedTime.value);
+            if (workedMins != null) {
+                durationHours = workedMins / 60;
+            } else {
+                const { start, end } = getStartEnd();
+                if (start && end && end > start) {
+                    durationHours = (end.getTime() - start.getTime()) / (60 * 60 * 1000);
+                }
+            }
+            const h1 = parseFloat(form.dataset.breakAfterHours1 || '6');
+            const m1 = parseInt(form.dataset.breakMinutes1 || '30', 10);
+            const h2 = parseFloat(form.dataset.breakAfterHours2 || '9');
+            const m2 = parseInt(form.dataset.breakMinutes2 || '45', 10);
+            let suggestedMinutes = 0;
+            if (durationHours >= h2) suggestedMinutes = m2;
+            else if (durationHours >= h1) suggestedMinutes = m1;
+            breakTimeInput.value = formatWorkedMinutes(suggestedMinutes);
+        });
+    }
+
+    function onStartChange() {
+        if (suppressTimeSync) return;
+        // If worked time is valid, keep duration constant and move end; otherwise just recompute worked time.
+        const minutes = workedTime ? parseWorkedMinutes(workedTime.value) : null;
+        if (minutes != null) updateEndFromStartWorked();
+        else updateWorkedFromStartEnd();
+    }
+
+    // Defer recalculation so the DOM has the latest date/time values (Issue #559)
+    let scheduledWorkedTime = false;
+    let pendingStart = false;
+    let pendingEnd = false;
+    function scheduleWorkedTimeUpdate(isStart) {
+        if (isStart) pendingStart = true; else pendingEnd = true;
+        if (scheduledWorkedTime) return;
+        scheduledWorkedTime = true;
+        queueMicrotask(function() {
+            scheduledWorkedTime = false;
+            const runStart = pendingStart;
+            const runEnd = pendingEnd;
+            pendingStart = false;
+            pendingEnd = false;
+            if (runStart) onStartChange();
+            if (runEnd) updateWorkedFromStartEnd();
+        });
+    }
+
+    // Dynamic task loading when a project is chosen
+    const projectSelect = document.getElementById('project_id');
+    const clientSelect = document.getElementById('client_id');
+    const taskSelect = document.getElementById('task_id');
+    const noTaskText = {{ _('No task')|tojson }};
+    const failedToLoadTasksText = {{ _('Failed to load tasks')|tojson }};
+    const scriptRoot = {{ request.script_root|default('')|tojson }};
+
+    // Hierarchy: project auto-fills client; client clears mismatched project
+    if (projectSelect && taskSelect) {
+        projectSelect.addEventListener('change', function() {
+            const projectId = this.value;
+            if (projectId && clientSelect && clientSelect.tagName === 'SELECT') {
+                const opt = this.options[this.selectedIndex];
+                const cid = opt ? (opt.getAttribute('data-client-id') || '') : '';
+                if (cid && clientSelect.value !== cid) {
+                    clientSelect.value = cid;
+                }
+            }
+            loadTasks(projectId);
+        });
+    }
+
+    // Issue #789: unlock project when client is already set (hidden auto-client or select).
+    // Multi-client cascade still gates on an empty <select>.
+    function syncProjectEnabledFromClient() {
+        if (!projectSelect || !clientSelect) return;
+        const clientVal = String(clientSelect.value || '');
+        if (clientVal) {
+            projectSelect.disabled = false;
+        } else if (clientSelect.tagName === 'SELECT') {
+            projectSelect.disabled = true;
+        }
+    }
+    syncProjectEnabledFromClient();
+
+    if (clientSelect && clientSelect.tagName === 'SELECT') {
+        // Pick a client first: the project picker unlocks once a client is chosen
+        clientSelect.addEventListener('change', function() {
+            const cid = this.value;
+            if (projectSelect) {
+                if (!cid) {
+                    projectSelect.value = '';
+                    projectSelect.disabled = true;
+                    try { projectSelect.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {}
+                } else if (projectSelect.disabled) {
+                    projectSelect.disabled = false;
+                }
+                if (projectSelect.value) {
+                    const opt = projectSelect.options[projectSelect.selectedIndex];
+                    const projectClientId = opt ? (opt.getAttribute('data-client-id') || '') : '';
+                    if (cid && projectClientId && projectClientId !== cid) {
+                        projectSelect.value = '';
+                        try { projectSelect.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {}
+                    }
+                }
+            }
+        });
+    }
+
+    function buildTasksUrl(projectId) {
+        const pid = String(projectId || '').trim();
+        if (!pid) return '';
+        return (scriptRoot || '') + '/api/projects/' + encodeURIComponent(pid) + '/tasks';
+    }
+
+    async function loadTasks(projectId){
+        if (!taskSelect) return;
+        if (!projectId){
+            ttResetSelectOptions(taskSelect, noTaskText);
+            taskSelect.disabled = true;
+            if (window.ttEnhanceSearchableSelects) window.ttEnhanceSearchableSelects();
+            return;
+        }
+        const url = buildTasksUrl(projectId);
+        try{
+            const resp = await fetch(url, {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' },
+                cache: 'no-store'
+            });
+            const ct = (resp.headers.get('content-type') || '').toLowerCase();
+            const isJson = ct.includes('application/json');
+
+            // Detect auth redirect: got HTML instead of JSON (session expired -> login page) (Issue #489)
+            if (!isJson) {
+                const sessionExpiredMsg = {{ _("Session may have expired. Please refresh the page and try again.")|tojson }};
+                if (window.toastManager && typeof window.toastManager.error === 'function') {
+                    window.toastManager.error(sessionExpiredMsg, {{ _("Error")|tojson }}, 6000);
+                } else {
+                    ttAlert(sessionExpiredMsg);
+                }
+                ttResetSelectOptions(taskSelect, noTaskText);
+                taskSelect.disabled = true;
+                if (window.ttEnhanceSearchableSelects) window.ttEnhanceSearchableSelects();
+                return;
+            }
+            if (!resp.ok) {
+                if (resp.status === 404) {
+                    const projectNotFoundText = {{ _('Project not found or inactive')|tojson }};
+                    if (window.toastManager && typeof window.toastManager.error === 'function') {
+                        window.toastManager.error(projectNotFoundText, {{ _("Error")|tojson }}, 5000);
+                    } else {
+                        ttAlert(projectNotFoundText);
+                    }
+                    ttResetSelectOptions(taskSelect, noTaskText);
+                    taskSelect.disabled = true;
+                    if (window.ttEnhanceSearchableSelects) window.ttEnhanceSearchableSelects();
+                    return;
+                }
+                throw new Error(failedToLoadTasksText + ' (HTTP ' + resp.status + ')');
+            }
+            const data = await resp.json();
+            const tasks = Array.isArray(data?.tasks) ? data.tasks : [];
+            ttResetSelectOptions(taskSelect, noTaskText);
+            tasks.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = String(t.id);
+                opt.textContent = t.name;
+                opt.setAttribute('data-parent-id', String(projectId));
+                taskSelect.appendChild(opt);
+            });
+            const pre = taskSelect.getAttribute('data-selected-task-id');
+            if (pre){
+                const found = Array.from(taskSelect.options).some(o => o.value === pre);
+                if (found) taskSelect.value = pre;
+                taskSelect.setAttribute('data-selected-task-id','');
+            }
+            taskSelect.disabled = false;
+            if (window.ttEnhanceSearchableSelects) window.ttEnhanceSearchableSelects();
+        }catch(e){
+            ttResetSelectOptions(taskSelect, noTaskText);
+            taskSelect.disabled = true;
+            if (window.ttEnhanceSearchableSelects) window.ttEnhanceSearchableSelects();
+            try {
+                const msg = e && e.message ? e.message : (failedToLoadTasksText || 'Failed to load tasks');
+                if (window.toastManager && typeof window.toastManager.error === 'function') {
+                    window.toastManager.error(msg, {{ _("Error")|tojson }}, 5000);
+                } else if (window.toastManager && typeof window.toastManager.show === 'function') {
+                    window.toastManager.show(msg, 'error');
+                } else {
+                    ttAlert(msg);
+                }
+            } catch (_) {}
+            if (typeof console !== 'undefined' && console.error) {
+                console.error('[Log Time] Task dropdown failed. Project:', projectId, 'URL:', url, 'Error:', e);
+            }
+        }
+    }
+
+    if (projectSelect && projectSelect.value) {
+        loadTasks(projectSelect.value);
+    }
+
+    // Keep worked time in sync with start/end inputs (date/time stay editable so user can combine duration + date)
+    if (workedTime) {
+        if (String(workedTime.value || '').trim()) {
+            workedTimeUserEdited = true;
+            setDurationOnlyMode(true);
+        }
+
+        updateWorkedFromStartEnd();
+
+        workedTime.addEventListener('change', function() {
+            workedTimeUserEdited = true;
+            const mins = parseWorkedMinutes(workedTime.value);
+            if (mins != null) setDurationOnlyMode(true);
+            updateEndFromStartWorked();
+        });
+        workedTime.addEventListener('input', function() {
+            if (!suppressTimeSync) workedTimeUserEdited = true;
+            const raw = String(workedTime.value || '').trim();
+            if (raw && workedTimeMode) workedTimeMode.value = 'explicit';
+        });
+        workedTime.addEventListener('blur', function() {
+            // Normalize formatting if valid
+            const mins = parseWorkedMinutes(workedTime.value);
+            if (mins != null) workedTime.value = formatWorkedMinutes(mins);
+        });
+    }
+    if (startDate) {
+        startDate.addEventListener('change', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(true); });
+        startDate.addEventListener('input', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(true); });
+        startDate.addEventListener('focus', () => { if (startDate.disabled) { setDurationOnlyMode(false); ensureStartEndDefaultsIfEmpty(); } });
+    }
+    if (startTime) {
+        startTime.addEventListener('change', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(true); });
+        startTime.addEventListener('input', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(true); });
+        startTime.addEventListener('focus', () => { if (startTime.disabled) { setDurationOnlyMode(false); ensureStartEndDefaultsIfEmpty(); } });
+    }
+    if (endDate) {
+        endDate.addEventListener('change', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(false); });
+        endDate.addEventListener('input', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(false); });
+        endDate.addEventListener('focus', () => { if (endDate.disabled) { setDurationOnlyMode(false); ensureStartEndDefaultsIfEmpty(); } });
+    }
+    if (endTime) {
+        endTime.addEventListener('change', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(false); });
+        endTime.addEventListener('input', () => { timeFieldsUserEdited = true; scheduleWorkedTimeUpdate(false); });
+        endTime.addEventListener('focus', () => { if (endTime.disabled) { setDurationOnlyMode(false); ensureStartEndDefaultsIfEmpty(); } });
+    }
+
+    // Form validation: ensure either project or client is selected and validate time range / duration-only
+    // Use capture phase to run before other handlers
+    if (form) {
+        // Store original button state to restore if needed
+        const submitBtn = form.querySelector('button[type="submit"]');
+        let originalButtonHTML = submitBtn ? submitBtn.innerHTML : null;
+
+        form.addEventListener('submit', function(e) {
+            // Validate project or client selection
+            const projectVal = projectSelect ? projectSelect.value : '';
+            const clientVal = clientSelect ? clientSelect.value : '';
+            if (!projectVal && !clientVal) {
+                e.preventDefault();
+                e.stopImmediatePropagation(); // Stop other handlers from running
+
+                // Ensure button state is preserved
+                if (submitBtn && originalButtonHTML) {
+                    submitBtn.innerHTML = originalButtonHTML;
+                    submitBtn.disabled = false;
+                }
+
+                        // Show error message using toast notification
+                        const errorMsg = {{ _("Please select either a project or a client")|tojson }};
+                        if (window.toastManager && typeof window.toastManager.error === 'function') {
+                            window.toastManager.error(errorMsg, {{ _("Error")|tojson }}, 5000);
+                        } else {
+                            ttAlert(errorMsg);
+                        }
+                        // After showing error, ensure button is still in correct state
+                        if (submitBtn && originalButtonHTML) {
+                            submitBtn.innerHTML = originalButtonHTML;
+                            submitBtn.disabled = false;
+                        }
+                return false;
+            }
+
+            // Validate time entry requirements (task, description)
+            const requireTask = form.dataset.requireTask === 'true';
+            const requireDescription = form.dataset.requireDescription === 'true';
+            const descMinLen = parseInt(form.dataset.descriptionMinLength || '20', 10);
+            if (projectVal && requireTask) {
+                const taskVal = taskSelect ? taskSelect.value : '';
+                if (!taskVal) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if (submitBtn && originalButtonHTML) {
+                        submitBtn.innerHTML = originalButtonHTML;
+                        submitBtn.disabled = false;
+                    }
+                    const errorMsg = {{ _("A task must be selected when logging time for a project")|tojson }};
+                    if (window.toastManager && typeof window.toastManager.error === 'function') {
+                        window.toastManager.error(errorMsg, {{ _("Error")|tojson }}, 5000);
+                    } else {
+                        ttAlert(errorMsg);
+                    }
+                    return false;
+                }
+            }
+            if (requireDescription) {
+                const notesEl = document.getElementById('notes');
+                let notesVal = notesEl ? notesEl.value : '';
+                if (window.mdEditor && typeof window.mdEditor.getMarkdown === 'function') {
+                    try { notesVal = window.mdEditor.getMarkdown(); } catch (err) {}
+                }
+                const notesTrimmed = (notesVal || '').trim();
+                if (!notesTrimmed) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if (submitBtn && originalButtonHTML) {
+                        submitBtn.innerHTML = originalButtonHTML;
+                        submitBtn.disabled = false;
+                    }
+                    const errorMsg = {{ _("A description is required when logging time")|tojson }};
+                    if (window.toastManager && typeof window.toastManager.error === 'function') {
+                        window.toastManager.error(errorMsg, {{ _("Error")|tojson }}, 5000);
+                    } else {
+                        ttAlert(errorMsg);
+                    }
+                    return false;
+                }
+                if (notesTrimmed.length < descMinLen) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if (submitBtn && originalButtonHTML) {
+                        submitBtn.innerHTML = originalButtonHTML;
+                        submitBtn.disabled = false;
+                    }
+                    const errorMsg = form.dataset.descriptionMinMsg || ('Description must be at least ' + descMinLen + ' characters');
+                    if (window.toastManager && typeof window.toastManager.error === 'function') {
+                        window.toastManager.error(errorMsg, {{ _("Error")|tojson }}, 5000);
+                    } else {
+                        ttAlert(errorMsg);
+                    }
+                    return false;
+                }
+            }
+
+            // Validate that either full start/end is present, or a worked_time duration is provided.
+            const startDate = document.getElementById('start_date');
+            const startTime = document.getElementById('start_time');
+            const endDate = document.getElementById('end_date');
+            const endTime = document.getElementById('end_time');
+            const wt = document.getElementById('worked_time');
+            const hasAllTimes = !!(startDate && startTime && endDate && endTime && startDate.value && startTime.value && endDate.value && endTime.value);
+            const workedMinutes = wt ? parseWorkedMinutes(wt.value) : null;
+            const hasWorked = workedMinutes != null;
+            if (!hasAllTimes && !hasWorked) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                if (submitBtn && originalButtonHTML) {
+                    submitBtn.innerHTML = originalButtonHTML;
+                    submitBtn.disabled = false;
+                }
+                const errorMsg = {{ _("Please provide either start/end date+time or a worked time duration (HH:MM).")|tojson }};
+                if (window.toastManager && typeof window.toastManager.error === 'function') {
+                    window.toastManager.error(errorMsg, {{ _("Error")|tojson }}, 5000);
+                } else {
+                    ttAlert(errorMsg);
+                }
+                return false;
+            }
+
+            // If we have start+end, validate the range. If duration-only, backend will compute range.
+            if (hasAllTimes) {
+                const start = new Date(`${startDate.value}T${startTime.value}:00`);
+                const end = new Date(`${endDate.value}T${endTime.value}:00`);
+
+                if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                    if (end <= start) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation(); // Stop other handlers from running
+
+                        // Ensure button state is preserved
+                        if (submitBtn && originalButtonHTML) {
+                            submitBtn.innerHTML = originalButtonHTML;
+                            submitBtn.disabled = false;
+                        }
+
+                        // Show error message using toast notification
+                        const errorMsg = {{ _("End time must be after start time")|tojson }};
+                        if (window.toastManager && typeof window.toastManager.error === 'function') {
+                            window.toastManager.error(errorMsg, {{ _("Error")|tojson }}, 5000);
+                        } else {
+                            ttAlert(errorMsg);
+                        }
+                        // After showing error, ensure button is still in correct state
+                        if (submitBtn && originalButtonHTML) {
+                            submitBtn.innerHTML = originalButtonHTML;
+                            submitBtn.disabled = false;
+                        }
+                        return false;
+                    }
+                }
+            }
+        }, true); // Use capture phase to run before other handlers
+    }
+
+    // Apply Time Entry Template if provided via sessionStorage or query param
+    // Skip template application when duplicating an entry to preserve the original entry's task
+    const isDuplicating = {{ 'true' if is_duplicate else 'false' }};
+    if (!isDuplicating) {
+        try {
+            let tpl = null;
+            const raw = sessionStorage.getItem('activeTemplate');
+            if (raw) {
+                try { tpl = JSON.parse(raw); } catch(_) { tpl = null; }
+            }
+            if (!tpl) {
+                const params = new URLSearchParams(window.location.search);
+                const tplId = params.get('template');
+                // Only allow integer template ids; fixed same-origin path (blocks client-side request forgery)
+                if (tplId && /^\d+$/.test(tplId)) {
+                    try {
+                        const resp = await fetch(
+                            new URL('/api/templates/' + encodeURIComponent(tplId), window.location.origin).pathname
+                        );
+                        if (resp.ok) tpl = await resp.json();
+                    } catch(_) {}
+                }
+            }
+            if (tpl && typeof tpl === 'object') {
+                // Preselect project and task
+                if (tpl.project_id && projectSelect) {
+                    projectSelect.value = String(tpl.project_id);
+                    // Preselect task after load
+                    if (taskSelect) {
+                        taskSelect.setAttribute('data-selected-task-id', tpl.task_id ? String(tpl.task_id) : '');
+                    }
+                    await loadTasks(projectSelect.value);
+                    try { projectSelect.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {}
+                }
+
+            // Notes, tags, billable
+            const notes = document.getElementById('notes');
+            const tagsInput = document.getElementById('tags');
+            const billable = document.getElementById('billable');
+            if (notes && tpl.default_notes) {
+                notes.value = tpl.default_notes;
+                // Update markdown editor if it exists
+                if (window.mdEditor && typeof window.mdEditor.setMarkdown === 'function') {
+                    try {
+                        window.mdEditor.setMarkdown(tpl.default_notes);
+                    } catch (e) {}
+                }
+            }
+            if (tagsInput && tpl.tags) tagsInput.value = tpl.tags;
+            if (billable != null && typeof tpl.billable === 'boolean') billable.checked = !!tpl.billable;
+
+            // Duration → set end time relative to start if provided
+            const minutes = (() => {
+                if (typeof tpl.default_duration_minutes === 'number') return tpl.default_duration_minutes;
+                if (typeof tpl.default_duration === 'number') return Math.round(tpl.default_duration * 60);
+                return 0;
+            })();
+            if (minutes > 0) {
+                const sd = document.getElementById('start_date');
+                const st = document.getElementById('start_time');
+                const ed = document.getElementById('end_date');
+                const et = document.getElementById('end_time');
+                if (sd && st && ed && et && sd.value && st.value) {
+                    const start = new Date(`${sd.value}T${st.value}:00`);
+                    if (!isNaN(start.getTime())) {
+                        const end = new Date(start.getTime() + minutes * 60000);
+                        const yyyy = end.getFullYear();
+                        const mm = String(end.getMonth() + 1).padStart(2,'0');
+                        const dd = String(end.getDate()).padStart(2,'0');
+                        const hh = String(end.getHours()).padStart(2,'0');
+                        const mi = String(end.getMinutes()).padStart(2,'0');
+                        ed.value = `${yyyy}-${mm}-${dd}`;
+                        et.value = `${hh}:${mi}`;
+                    }
+                }
+            }
+            // Update worked time field after applying duration, if present
+            try { updateWorkedFromStartEnd(); } catch (_) {}
+
+                // Clear after applying so it does not persist
+                try { sessionStorage.removeItem('activeTemplate'); } catch(_) {}
+            }
+        } catch(_) {}
+    }
+});
+</script>
+
+<!-- Toast UI Editor: load only on desktop to avoid mobile freeze (Issue #557) -->
+<script nonce="{{ csp_nonce() }}">
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.isMobileView) {
+        window.mdEditor = null;
+        return;
+    }
+    var link1 = document.createElement('link');
+    link1.rel = 'stylesheet';
+    link1.href = '{{ url_for('static', filename='vendor/toastui/toastui-editor.css') }}';
+    document.head.appendChild(link1);
+    var link2 = document.createElement('link');
+    link2.rel = 'stylesheet';
+    link2.href = '{{ url_for('static', filename='vendor/toastui/theme/toastui-editor-dark.css') }}';
+    document.head.appendChild(link2);
+    var scriptEl = document.createElement('script');
+    scriptEl.src = '{{ url_for('static', filename='vendor/toastui/toastui-editor.js') }}';
+    scriptEl.onload = function initToastEditorManualEntry() {
+    const notesInput = document.getElementById('notes');
+    let mdEditor = null;
+
+    if (notesInput && window.toastui && window.toastui.Editor) {
+        const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        mdEditor = new toastui.Editor({
+            el: document.getElementById('notes_editor'),
+            height: '300px',
+            initialEditType: 'wysiwyg',
+            previewStyle: 'vertical',
+            usageStatistics: false,
+            hideModeSwitch: false,
+            placeholder: {{ _("What did you work on?")|tojson }},
+            theme: theme,
+            toolbarItems: [
+                ['heading', 'bold', 'italic', 'strike'],
+                ['hr', 'quote'],
+                ['ul', 'ol', 'task'],
+                ['link', 'code', 'codeblock', 'table'],
+                ['image'],
+                ['scrollSync']
+            ],
+            initialValue: notesInput.value || ''
+        });
+
+        // Apply theme changes dynamically if supported
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class' && mdEditor) {
+                    const nextTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+                    try {
+                        if (typeof mdEditor.setTheme === 'function') {
+                            mdEditor.setTheme(nextTheme);
+                        }
+                    } catch (e) {}
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        // Multiple image upload handler - improved version
+        mdEditor.removeHook && mdEditor.removeHook('addImageBlobHook');
+
+        // Create custom multiple file input with unique ID
+        const fileInputId = 'manual-entry-image-input-' + Date.now();
+        let fileInput = document.getElementById(fileInputId);
+        if (!fileInput) {
+            fileInput = document.createElement('input');
+            fileInput.id = fileInputId;
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.setAttribute('multiple', 'multiple'); // Use setAttribute to ensure it's set
+            fileInput.style.display = 'none';
+            fileInput.style.position = 'absolute';
+            fileInput.style.left = '-9999px';
+            document.body.appendChild(fileInput);
+        }
+
+        // Verify multiple attribute is set
+        if (!fileInput.hasAttribute('multiple')) {
+            fileInput.setAttribute('multiple', 'multiple');
+        }
+        console.log('File input multiple attribute:', fileInput.multiple, fileInput.hasAttribute('multiple'));
+
+        // Function to find image button with multiple strategies
+        function findImageButton(toolbar, retries = 0) {
+            if (!toolbar) return null;
+
+            // Try multiple selectors in order of reliability
+            const selectors = [
+                '[data-tooltip="Insert image"]',
+                '[data-tooltip*="image" i]',
+                '[aria-label*="image" i]',
+                '.toastui-editor-toolbar-icons.image',
+                'button[class*="image"]',
+                '.toastui-editor-toolbar-group button:nth-child(5)', // Common position for image button
+                '.toastui-editor-toolbar-group button:nth-child(6)',
+                '.toastui-editor-toolbar-group button:nth-child(4)'
+            ];
+
+            for (const selector of selectors) {
+                try {
+                    const button = toolbar.querySelector(selector);
+                    if (button) {
+                        // Verify it's likely the image button by checking if it has image-related attributes or classes
+                        const buttonText = (button.textContent || '').toLowerCase();
+                        const buttonTitle = (button.title || button.getAttribute('title') || '').toLowerCase();
+                        if (buttonText.includes('image') || buttonTitle.includes('image') ||
+                            selector.includes('image') || button.classList.toString().includes('image')) {
+                            return button;
+                        }
+                    }
+                } catch (e) {
+                    // Continue to next selector
+                }
+            }
+
+            return null;
+        }
+
+        // Function to intercept image button with retry logic
+        function setupImageButtonInterception(editor, input, maxRetries = 5) {
+            let attempts = 0;
+            let intercepted = false;
+
+            function tryIntercept() {
+                attempts++;
+                try {
+                    // Get the editor's root element - try multiple ways
+                    const editorContainer = document.getElementById('notes_editor');
+                    if (!editorContainer) {
+                        throw new Error('Editor container element not found');
+                    }
+
+                    // Find toolbar - try multiple ways to access it
+                    let toolbar = null;
+                    // Try finding toolbar relative to editor container
+                    let editorWrapper = null;
+                    if (editorContainer.closest) {
+                        editorWrapper = editorContainer.closest('.toastui-editor');
+                    }
+                    if (!editorWrapper && editorContainer.parentElement) {
+                        editorWrapper = editorContainer.parentElement;
+                    }
+                    if (editorWrapper) {
+                        toolbar = editorWrapper.querySelector('.toastui-editor-toolbar');
+                    }
+                    // Fallback: search entire document
+                    if (!toolbar) {
+                        toolbar = document.querySelector('.toastui-editor-toolbar');
+                    }
+
+                    if (toolbar && !intercepted) {
+                        const imageButton = findImageButton(toolbar, attempts);
+                        if (imageButton) {
+                            // Use capture phase to intercept before ToastUI's handler
+                            imageButton.addEventListener('click', function handler(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                e.stopImmediatePropagation();
+
+                                // Small delay to ensure default behavior is prevented
+                                setTimeout(() => {
+                                    input.click();
+                                }, 10);
+
+                                return false;
+                            }, true); // Use capture phase
+
+                            intercepted = true;
+                            console.log('Successfully intercepted image button for multiple file selection');
+                            return true;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Error intercepting image button (attempt ' + attempts + '):', err);
+                }
+
+                // Retry if we haven't exceeded max retries
+                if (attempts < maxRetries && !intercepted) {
+                    setTimeout(tryIntercept, 200 * attempts); // Exponential backoff
+                    return false;
+                } else if (!intercepted) {
+                    console.warn('Could not intercept image button after ' + maxRetries + ' attempts. Multiple image selection may not work via toolbar button.');
+                    return false;
+                }
+                return false;
+            }
+
+            // Start with initial delay to ensure toolbar is ready
+            setTimeout(tryIntercept, 100);
+        }
+
+        // Override the addImageBlobHook to use multiple file selection
+        // This is the fallback if button interception fails
+        if (mdEditor && typeof mdEditor.addHook === 'function') {
+            mdEditor.addHook('addImageBlobHook', async function(blob, callback) {
+                // Prevent the default single file behavior
+                // Trigger our multiple file input instead
+                setTimeout(function() {
+                    fileInput.click();
+                }, 10);
+                // Don't call callback - let fileInput.change handle it
+            });
+        }
+
+        // Setup button interception
+        if (mdEditor) {
+            setupImageButtonInterception(mdEditor, fileInput);
+        }
+
+        // Handle multiple file selection with progress feedback
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            console.log('File input changed. Files selected:', files.length, 'Multiple attribute:', fileInput.multiple);
+
+            if (files.length === 0) {
+                console.log('No files selected');
+                return;
+            }
+
+            // Log file details for debugging
+            files.forEach((file, index) => {
+                console.log(`File ${index + 1}: ${file.name}, type: ${file.type}, size: ${file.size}`);
+            });
+
+            // Validate file types
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+            const validFiles = files.filter(file => {
+                const isValid = allowedTypes.includes(file.type) || /\.(png|jpg|jpeg|gif|webp)$/i.test(file.name);
+                if (!isValid) {
+                    console.warn('Skipping invalid file type:', file.name, file.type);
+                }
+                return isValid;
+            });
+
+            if (validFiles.length === 0) {
+                ttAlert({{ _("No valid image files selected. Please select PNG, JPG, GIF, or WebP images.")|tojson }});
+                fileInput.value = '';
+                return;
+            }
+
+            if (validFiles.length < files.length) {
+                console.warn('Some files were skipped due to invalid type');
+            }
+
+            // Show loading feedback
+            const fileCount = validFiles.length;
+            const loadingMsg = fileCount > 1 ?
+                        ({{ _("Uploading")|tojson }} + ' ' + fileCount + ' ' + {{ _("images")|tojson }} + '...') :
+                {{ _("Uploading image")|tojson }} + '...';
+
+            // Try to show a temporary loading indicator (if toast/notification system exists)
+            let loadingIndicator = null;
+            try {
+                // Check if there's a toast/notification system we can use
+                if (window.showToast || window.showNotification) {
+                    const showToast = window.showToast || window.showNotification;
+                    loadingIndicator = showToast(loadingMsg, 'info', { duration: 0 });
+                }
+            } catch (e) {
+                // No toast system available, continue without it
+            }
+
+            try {
+                const formData = new FormData();
+                validFiles.forEach(file => {
+                    formData.append('images', file);
+                });
+
+                const res = await fetch('{{ url_for('api.upload_editor_images_bulk') }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (data && data.urls && data.urls.length > 0) {
+                    // Insert all images into editor
+                    const imagesMarkdown = data.urls.map((url, index) => {
+                        const fileName = validFiles[index].name || 'image';
+                        return `![${fileName}](${url})`;
+                    }).join('\n\n');
+
+                    // Get current markdown content
+                    const currentMarkdown = mdEditor.getMarkdown() || '';
+
+                    // Append images to current content (with proper spacing)
+                    const newMarkdown = currentMarkdown
+                        ? currentMarkdown + '\n\n' + imagesMarkdown
+                        : imagesMarkdown;
+
+                    // Set the markdown which will properly render images in WYSIWYG mode
+                    mdEditor.setMarkdown(newMarkdown);
+
+                    // Show success message
+                    const successMsg = data.urls.length > 1 ?
+                        ({{ _("Successfully uploaded")|tojson }} + ' ' + data.urls.length + ' ' + {{ _("images")|tojson }}) :
+                        {{ _("Image uploaded successfully")|tojson }};
+
+                    if (loadingIndicator && typeof loadingIndicator.update === 'function') {
+                        loadingIndicator.update(successMsg, 'success');
+                        setTimeout(() => loadingIndicator.remove && loadingIndicator.remove(), 2000);
+                    }
+
+                    // Show warnings if any
+                    if (data.warnings && data.warnings.length > 0) {
+                        console.warn('Some images failed to upload:', data.warnings);
+                        const warningMsg = {{ _("Warning")|tojson }} + ': ' + data.warnings.length + ' ' + {{ _("image(s) failed to upload")|tojson }};
+                        if (window.showToast || window.showNotification) {
+                            const showToast = window.showToast || window.showNotification;
+                            showToast(warningMsg, 'warning');
+                        } else {
+                            ttAlert(warningMsg);
+                        }
+                    }
+                } else {
+                    const errorMsg = data.error || {{ _("Failed to upload images. Please try again.")|tojson }};
+                    console.error('Upload failed', data);
+                    if (loadingIndicator && typeof loadingIndicator.remove === 'function') {
+                        loadingIndicator.remove();
+                    }
+                    ttAlert(errorMsg);
+                }
+            } catch (error) {
+                console.error('Multiple image upload error', error);
+                if (loadingIndicator && typeof loadingIndicator.remove === 'function') {
+                    loadingIndicator.remove();
+                }
+                ttAlert({{ _("Failed to upload images. Please check your connection and try again.")|tojson }});
+            }
+
+            // Reset file input
+            fileInput.value = '';
+        });
+
+        // Make editor accessible globally for template application
+        window.mdEditor = mdEditor;
+
+        // Sync editor content to hidden textarea on form submit
+        const form = document.getElementById('manualEntryForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (mdEditor && notesInput) {
+                    try {
+                        notesInput.value = mdEditor.getMarkdown();
+                    } catch (err) {
+                        console.error('Failed to sync markdown editor:', err);
+                    }
+                }
+            });
+        }
+
+        // Update notes when template is applied
+        const originalNotesHandler = window.addEventListener;
+        // This will be handled in the existing template application code
+    }
+    }; // end Toast UI init onload
+    document.head.appendChild(scriptEl);
+});
+</script>
+
+{% if ai_enabled %}
+<script nonce="{{ csp_nonce() }}">
+(function() {
+    const container = document.getElementById('aiAutofillContainer');
+    const button = document.getElementById('aiAutofillBtn');
+    const popover = document.getElementById('aiAutofillPopover');
+    if (!container || !button || !popover) return;
+
+    const listEl = popover.querySelector('[data-ai-autofill-list]');
+    const emptyEl = popover.querySelector('[data-ai-autofill-empty]');
+    const loadingEl = popover.querySelector('[data-ai-autofill-loading]');
+    const projectSelect = document.getElementById('project_id');
+    const taskSelect = document.getElementById('task_id');
+    const notesInput = document.getElementById('notes');
+    const tagsInput = document.getElementById('tags');
+    const billableInput = document.getElementById('billable');
+
+    let cachedSuggestions = null;
+    let everFetched = false;
+
+    function setLoading(busy) {
+        if (loadingEl) {
+            loadingEl.classList.toggle('hidden', !busy);
+            loadingEl.classList.toggle('flex', busy);
+        }
+        if (busy) {
+            if (emptyEl) emptyEl.classList.add('hidden');
+            if (listEl) listEl.innerHTML = '';
+        }
+    }
+
+    function openPopover() {
+        popover.classList.remove('hidden');
+        popover.setAttribute('aria-hidden', 'false');
+        button.setAttribute('aria-expanded', 'true');
+    }
+
+    function closePopover() {
+        popover.classList.add('hidden');
+        popover.setAttribute('aria-hidden', 'true');
+        button.setAttribute('aria-expanded', 'false');
+    }
+
+    function isOpen() {
+        return !popover.classList.contains('hidden');
+    }
+
+    function truncate(value, max) {
+        const s = (value == null ? '' : String(value));
+        if (s.length <= max) return s;
+        return s.slice(0, Math.max(0, max - 1)) + '…';
+    }
+
+    function setNotesValue(value) {
+        if (notesInput) notesInput.value = value || '';
+        if (window.mdEditor && typeof window.mdEditor.setMarkdown === 'function') {
+            try { window.mdEditor.setMarkdown(value || ''); } catch (_) {}
+        }
+    }
+
+    function trySetTaskWhenAvailable(taskId, attemptsRemaining) {
+        if (!taskSelect || !taskId) return;
+        const target = String(taskId);
+        const found = Array.from(taskSelect.options).some(function(o) { return o.value === target; });
+        if (found) {
+            taskSelect.value = target;
+            try { taskSelect.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {}
+            return;
+        }
+        if (attemptsRemaining > 0) {
+            setTimeout(function() { trySetTaskWhenAvailable(taskId, attemptsRemaining - 1); }, 100);
+        }
+    }
+
+    function applySuggestion(s) {
+        if (!s) return;
+        if (projectSelect && s.project_id) {
+            projectSelect.value = String(s.project_id);
+            try { projectSelect.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {}
+            if (s.task_id) {
+                taskSelect && taskSelect.setAttribute('data-selected-task-id', String(s.task_id));
+                trySetTaskWhenAvailable(s.task_id, 15);
+            }
+        }
+        if (s.notes) setNotesValue(s.notes);
+        if (tagsInput && s.tags != null) tagsInput.value = s.tags;
+        if (billableInput && typeof s.billable === 'boolean') billableInput.checked = !!s.billable;
+        closePopover();
+    }
+
+    function buildRow(s) {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = [
+            'w-full text-left px-3 py-2 rounded-lg',
+            'hover:bg-background-light dark:hover:bg-background-dark',
+            'focus:outline-none focus:bg-background-light dark:focus:bg-background-dark',
+            'transition'
+        ].join(' ');
+        row.setAttribute('role', 'menuitem');
+
+        const title = document.createElement('div');
+        title.className = 'flex items-center gap-2 text-sm font-medium text-text-light dark:text-text-dark';
+        const projectSpan = document.createElement('span');
+        projectSpan.textContent = truncate(s.project_name || '—', 28);
+        title.appendChild(projectSpan);
+        if (s.task_name) {
+            const sep = document.createElement('span');
+            sep.className = 'text-text-muted-light dark:text-text-muted-dark';
+            sep.textContent = '· ' + truncate(s.task_name, 22);
+            title.appendChild(sep);
+        }
+        row.appendChild(title);
+
+        if (s.notes) {
+            const notesPreview = document.createElement('div');
+            notesPreview.className = 'mt-1 text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-2';
+            notesPreview.textContent = truncate(s.notes, 120);
+            row.appendChild(notesPreview);
+        }
+
+        row.addEventListener('click', function(e) {
+            e.preventDefault();
+            applySuggestion(s);
+        });
+        return row;
+    }
+
+    function renderSuggestions(suggestions) {
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        if (!Array.isArray(suggestions) || suggestions.length === 0) {
+            if (emptyEl) emptyEl.classList.remove('hidden');
+            return;
+        }
+        if (emptyEl) emptyEl.classList.add('hidden');
+        suggestions.slice(0, 3).forEach(function(s) {
+            listEl.appendChild(buildRow(s));
+        });
+    }
+
+    async function loadSuggestions() {
+        setLoading(true);
+        try {
+            const resp = await fetch('{{ url_for("api.ai_suggest") }}', {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' },
+                cache: 'no-store'
+            });
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const data = await resp.json();
+            cachedSuggestions = (data && Array.isArray(data.suggestions)) ? data.suggestions : [];
+        } catch (_) {
+            cachedSuggestions = [];
+        } finally {
+            everFetched = true;
+            setLoading(false);
+            // hide the entire button if we never got any suggestions
+            if (!cachedSuggestions || cachedSuggestions.length === 0) {
+                container.classList.add('hidden');
+            } else {
+                container.classList.remove('hidden');
+            }
+            renderSuggestions(cachedSuggestions || []);
+        }
+    }
+
+    button.addEventListener('click', async function(e) {
+        e.preventDefault();
+        if (isOpen()) { closePopover(); return; }
+        if (!everFetched) {
+            openPopover();
+            await loadSuggestions();
+            if (!cachedSuggestions || cachedSuggestions.length === 0) {
+                closePopover();
+                return;
+            }
+        } else {
+            renderSuggestions(cachedSuggestions || []);
+            openPopover();
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!isOpen()) return;
+        if (container.contains(e.target)) return;
+        closePopover();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isOpen()) {
+            closePopover();
+            try { button.focus(); } catch (_) {}
+        }
+    });
+
+    // Probe once on load: hide the button entirely if there are no suggestions.
+    loadSuggestions().then(function() {
+        // popover stays closed; container visibility is set inside loadSuggestions
+    });
+})();
+</script>
+{% endif %}
+<script src="{{ url_for('static', filename='notes-autocomplete.js') }}" defer></script>
+{% endblock %}
