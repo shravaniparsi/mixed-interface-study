@@ -1,0 +1,289 @@
+{
+  "status": "build_succeeded",
+  "application_server_started": false,
+  "scientific_cases": 0,
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "version"
+      ],
+      "log": "docker-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.03180787799999507
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "version"
+      ],
+      "log": "buildx-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 2.87025380700004
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "create",
+        "--name",
+        "study-relaticle-build",
+        "--driver",
+        "docker-container",
+        "--use"
+      ],
+      "log": "builder-create.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.11417570900005103
+    },
+    {
+      "command": [
+        "curl",
+        "--fail",
+        "--location",
+        "--retry",
+        "0",
+        "--max-time",
+        "60",
+        "--max-filesize",
+        "100663296",
+        "--output",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/evidence/original-source.tar.gz",
+        "https://codeload.github.com/relaticle/relaticle/tar.gz/480c46e20b6c3d9c39c9254c1ef90369c0615986"
+      ],
+      "log": "archive-download.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.6175855579999734
+    },
+    {
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--builder",
+        "study-relaticle-build",
+        "--tag",
+        "study-relaticle:480c46e20b6c3d9c39c9254c1ef90369c0615986",
+        "--progress",
+        "plain",
+        "--provenance=false",
+        "--metadata-file",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/evidence/build-metadata.json",
+        "--load",
+        "."
+      ],
+      "log": "build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 125.24157540499994
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "study-relaticle:480c46e20b6c3d9c39c9254c1ef90369c0615986"
+      ],
+      "log": "image.json",
+      "exit_code": 0,
+      "elapsed_seconds": 0.01609122299998944
+    },
+    {
+      "command": [
+        "docker",
+        "create",
+        "--name",
+        "study-relaticle-inspect",
+        "--entrypoint",
+        "/bin/true",
+        "study-relaticle:480c46e20b6c3d9c39c9254c1ef90369c0615986"
+      ],
+      "log": "inspect-create.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.9681342760000007
+    },
+    {
+      "command": [
+        "docker",
+        "cp",
+        "study-relaticle-inspect:/var/www/html/vendor/composer/installed.json",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/evidence/composer-installed.json"
+      ],
+      "log": "composer-copy.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.032035870000072464
+    },
+    {
+      "command": [
+        "docker",
+        "cp",
+        "study-relaticle-inspect:/var/www/html/vendor/relaticle/custom-fields",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/relaticle-custom-fields"
+      ],
+      "log": "relaticle-custom-fields-copy.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.11411604399995667
+    },
+    {
+      "command": [
+        "docker",
+        "cp",
+        "study-relaticle-inspect:/var/www/html/vendor/laravel/framework",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/laravel-framework"
+      ],
+      "log": "laravel-framework-copy.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2644635639999251
+    },
+    {
+      "command": [
+        "docker",
+        "cp",
+        "study-relaticle-inspect:/var/www/html/vendor/laravel/sanctum",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/laravel-sanctum"
+      ],
+      "log": "laravel-sanctum-copy.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.015660241000091446
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "study-relaticle-inspect"
+      ],
+      "log": "inspect-remove.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.015618628000083845
+    },
+    {
+      "command": [
+        "docker",
+        "save",
+        "--output",
+        "/home/runner/work/_temp/evaluation-relaticle-build-v1/evidence/runtime-image.tar",
+        "study-relaticle:480c46e20b6c3d9c39c9254c1ef90369c0615986"
+      ],
+      "log": "image-export.log",
+      "exit_code": 0,
+      "elapsed_seconds": 6.477434523999932
+    }
+  ],
+  "stage": "complete",
+  "source_archive": {
+    "file": "original-source.tar.gz",
+    "sha256": "968d50b0cc2e92220789a1cb5844711999ca673e9f2083cf42fd5c6747e76a4e",
+    "bytes": 15526214
+  },
+  "tree_sha256": "12b680cffbebf132b9e55b3353adacf78b64f9fc79930f96a1d4f41e355c0866",
+  "source_verification": {
+    "verified_files": 4274,
+    "verified_bytes": 39865338,
+    "excluded_paths": [
+      ".github/CLA.md",
+      ".github/ISSUE_TEMPLATE/1-bug_report.yml",
+      ".github/ISSUE_TEMPLATE/2-feature_request.yml",
+      ".github/ISSUE_TEMPLATE/config.yml",
+      ".github/SECURITY.md",
+      ".github/TRADEMARK.md",
+      ".github/copilot-instructions.md",
+      ".github/dependabot.yml",
+      ".github/hooks/manual-testing-stop.sh",
+      ".github/hooks/test-manual-testing-stop.sh",
+      ".github/pr/948/from-menu.png",
+      ".github/pr/948/signature-empty.png",
+      ".github/pr/948/signature-saved.png",
+      ".github/pr/948/template-empty.png",
+      ".github/pull_request_template.md",
+      ".github/skills/custom-fields-development/SKILL.md",
+      ".github/skills/flowforge-development/SKILL.md",
+      ".github/skills/livewire-development/SKILL.md",
+      ".github/skills/livewire-development/reference/javascript-hooks.md",
+      ".github/skills/manual-testing/SKILL.md",
+      ".github/skills/manual-testing/bin/should-skip.sh",
+      ".github/skills/manual-testing/bin/test-should-skip.sh",
+      ".github/skills/manual-testing/references/.gitkeep",
+      ".github/skills/manual-testing/references/data-nasties.md",
+      ".github/skills/manual-testing/references/multi-tenant-checklist.md",
+      ".github/skills/manual-testing/references/oracles.md",
+      ".github/skills/manual-testing/references/personas.md",
+      ".github/skills/manual-testing/references/risk-rubric.md",
+      ".github/skills/manual-testing/references/surfaces.md",
+      ".github/skills/manual-testing/references/tours.md",
+      ".github/skills/manual-testing/references/visual-probes.md",
+      ".github/skills/manual-testing/templates/.gitkeep",
+      ".github/skills/manual-testing/templates/charter.md",
+      ".github/skills/manual-testing/templates/regression-test.php.stub",
+      ".github/skills/manual-testing/templates/report.md",
+      ".github/skills/tailwindcss-development/SKILL.md",
+      ".github/workflows/ci.yml",
+      ".github/workflows/cla.yml",
+      ".github/workflows/deploy.yml",
+      ".github/workflows/docker-publish.yml",
+      ".github/workflows/filament-view-monitor-simple.yml",
+      ".github/workflows/publish-mcp.yml",
+      ".github/workflows/rela-evals.yml",
+      ".github/workflows/security-audit.yml",
+      ".github/workflows/skills-evals.yml",
+      ".github/workflows/tests.yml",
+      ".github/workflows/tia-baseline.yml",
+      ".github/workflows/warm-caches.yml"
+    ]
+  },
+  "image": "study-relaticle:480c46e20b6c3d9c39c9254c1ef90369c0615986",
+  "resolved_materials": [
+    {
+      "uri": "pkg:docker/docker/dockerfile@1",
+      "digest": {
+        "sha256": "572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183"
+      }
+    },
+    {
+      "uri": "pkg:docker/composer@2?digest=sha256:d0c32820c62cc860fddd22adceed4eeda7698b093a7a88d503414172ce400626&platform=linux%2Famd64",
+      "digest": {
+        "sha256": "d0c32820c62cc860fddd22adceed4eeda7698b093a7a88d503414172ce400626"
+      }
+    },
+    {
+      "uri": "pkg:docker/node@26-alpine?digest=sha256:9bd229b644e391df00fb989efa732335aefc6170a05d8c163c5c8ca9870da401&platform=linux%2Famd64",
+      "digest": {
+        "sha256": "9bd229b644e391df00fb989efa732335aefc6170a05d8c163c5c8ca9870da401"
+      }
+    },
+    {
+      "uri": "pkg:docker/serversideup/php@8.5-fpm-nginx?digest=sha256:0b3d79815a1c8f06bb923a4cfdaf515ff9b466271c41428d61f08b29e6c4ac5a&platform=linux%2Famd64",
+      "digest": {
+        "sha256": "0b3d79815a1c8f06bb923a4cfdaf515ff9b466271c41428d61f08b29e6c4ac5a"
+      }
+    }
+  ],
+  "image_id": "sha256:2befacb0970cf5bf94a559ee9ae21f5944aa1ebc11ee6ac866b2b7a3202c6e44",
+  "image_bytes": 1159291244,
+  "verified_dependency_files": {
+    "relaticle/custom-fields": [
+      "LICENSE",
+      "src/FieldTypeSystem/Definitions/LinkFieldType.php",
+      "src/Filament/Integration/Builders/FormBuilder.php",
+      "src/Filament/Integration/Components/Forms/LinkComponent.php",
+      "src/Filament/Integration/Base/AbstractFormComponent.php",
+      "src/Filament/Integration/Components/Forms/MultiValueInput/MultiValueInputComponent.php",
+      "src/FieldTypeSystem/Definitions/RichEditorFieldType.php",
+      "src/Filament/Integration/Builders/FormContainer.php",
+      "src/Models/Concerns/UsesCustomFields.php",
+      "src/Models/CustomFieldValue.php"
+    ],
+    "laravel/framework": [
+      "src/Illuminate/Session/DatabaseSessionHandler.php",
+      "src/Illuminate/Session/Middleware/StartSession.php",
+      "src/Illuminate/Cache/DatabaseStore.php",
+      "src/Illuminate/Cache/RateLimiter.php"
+    ],
+    "laravel/sanctum": [
+      "src/Guard.php"
+    ]
+  },
+  "runtime_archive": "runtime-image.tar",
+  "runtime_archive_sha256": "3c2d6b75d55b64e1ed16b3a56e545f3c6fdd8ae3428321ca727f07dd40198c07",
+  "runtime_archive_bytes": 1241633280,
+  "elapsed_seconds": 140.204838925
+}
