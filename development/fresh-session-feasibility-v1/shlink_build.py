@@ -11,6 +11,15 @@ BASE_IMAGES={
  'node:26.12-alpine':'sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797',
  'nginx/nginx-unprivileged:1.31-alpine':'sha256:60214a103e6f38e953ff957f34b1f2e97a9db801ab2df3821da955d0fe6cadd6'}
 DEPENDENCIES={'shlinkio/shlink-common':'7e5d108270e8218b139708e2a587605ba55b55c5','shlinkio/shlink-event-dispatcher':'e53a2fc66b1aa43ac264add2104e4cbe1e44569c'}
+def reviewed_reference(observed,expected,constraint):
+ # Composer preserves an explicitly abbreviated source pin in installed.json.
+ # Accept that spelling only when it is declared by the original manifest;
+ # the installed reviewed source blobs are still verified below before passing.
+ require(re.fullmatch(r'[a-f0-9]{40}',expected) is not None,'full_reviewed_revision')
+ if observed==expected:return
+ match=re.search(r'#([a-f0-9]{7,40})(?:\s|$)',constraint)
+ require(match is not None and observed==match.group(1) and expected.startswith(observed),'reviewed_dependency_identity')
+
 def sha(path):return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 def recipe(original,role):
  text=original
@@ -69,7 +78,7 @@ def main(base):
     build(src,dockerfile,'fresh-shlink-backend:v1','backend-runtime')
     extract('fresh-shlink-backend:v1','backend-runtime',[('/etc/shlink/vendor/composer/installed.json','backend-installed.json'),('/etc/shlink/bin/rr','roadrunner')])
     installed=json.loads((out/'backend-installed.json').read_text());packages={p['name']:p for p in installed['packages']}
-    for name,reference in DEPENDENCIES.items():require(packages[name]['source']['reference']==reference,'reviewed_dependency_identity',package=name)
+    for name,reference in DEPENDENCIES.items():reviewed_reference(packages[name]['source']['reference'],reference,json.loads(original_composer.read_text())['require'][name])
     for name,constraint in json.loads(original_composer.read_text())['require'].items():
      match=re.search(r'#([a-f0-9]{7,40})(?:\s|$)',constraint)
      if match:require(packages[name]['source']['reference'].startswith(match.group(1)),'original_dependency_source_pin',package=name)

@@ -3,7 +3,7 @@ from dispatch_check import validate
 class DispatchGuard(unittest.TestCase):
  def setUp(self):
   self.study={'ready_for_application_dispatch':True,'gates':{'G1_build_chain_audit':'passed','G2_both_adapters_observers_scorers':'passed'},'preparation_deadline_utc':'2026-11-23T03:23:28Z'}
-  self.plan={'status':'reviewed','publication_status':'authorized_sanitized_public_logs','authorized_systems':['shlink'],'max_workflow_attempts':3,'max_runner_minutes':120,'previous_runs':{},'sha256':{'fixture':'hash'}}
+  self.plan={'status':'reviewed','publication_status':'authorized_sanitized_public_logs','authorized_systems':['shlink'],'max_workflow_attempts':3,'max_runner_minutes':180,'previous_runs':{},'sha256':{'fixture':'hash'}}
   self.history=[dict(id=1,run_attempt=1,display_title='Fresh-session feasibility / shlink',status='in_progress',conclusion=None)]
   self.now=datetime.datetime(2026,11,21,tzinfo=datetime.timezone.utc)
  def test_initial_registered_run(self):self.assertTrue(validate(self.study,self.plan,'shlink',self.history,1,self.now))

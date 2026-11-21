@@ -363,3 +363,8 @@ Composer recorded shlinkio/shlink-common reference7e5d108, matching the prefix o
 The single technical correction was already consumed by the pre-job workflow-context defect. The registered stop rule therefore closes this study, disables dispatch, and prohibits another correction, retry or substitute. Zipline was not run. Zero ordinary branches and zero qualified independent cases were produced; Q1 readiness remains unestablished.
 
 Automatic approval review rejected committing the recovered evidence bundle to repository files because the user's specific publication approval covered Actions logs. The bundle remains only in approved logs and local recovery. Only this non-sensitive aggregate diagnosis, public revision identifiers and the dispatch-state ledger are committed. Summary: results/fresh-session-source-preflight-v1/terminal-summary.json.
+
+
+## User-authorized repair resumed
+
+User superseded the procedural stop and requested full pipeline verification before a new feasibility attempt. Preserved original failure. Fixed Composer abbreviation handling only for pins explicitly declared in the original manifest; retained installed-source blob verification.45 local tests pass. Standalone actionlint1.7.12, release archive SHA256aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f, validates the workflow with shellcheck/pyflakes disabled. Next dispatch is pipeline qualification, not a fresh feasibility result.
