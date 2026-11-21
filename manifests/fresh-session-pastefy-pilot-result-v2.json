@@ -1,0 +1,109 @@
+{
+  "status": "development_pilot_one_qualified_repair_effect",
+  "run_id": 44941163584,
+  "url": "https://github.com/shravaniparsi/mixed-interface-study/actions/runs/44941163584",
+  "head": "f4e046d5d1f122650d667178539b5c12718866d6",
+  "previous_run": 44940198661,
+  "classification_rule_version": 2,
+  "runner_seconds": 422.0,
+  "verified_export_files": 123,
+  "export_sha256": "9b8452e606531b5f00442aa3e46a909c0f5895e9f20a288ce860db8c8559e14f",
+  "classification_sha256": "76da377473ff9ba70dbccf7aaf73f6c08ae6bed207ff7807890921c05d469034",
+  "case_outcomes": [
+    {
+      "id": "ordinary-content",
+      "producer": "accepted_readable",
+      "schema_conformant": true,
+      "branches": {
+        "sham": "exact_intended_edit",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": false
+    },
+    {
+      "id": "ordinary-title",
+      "producer": "accepted_readable",
+      "schema_conformant": true,
+      "branches": {
+        "sham": "exact_intended_edit",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": false
+    },
+    {
+      "id": "content-omit",
+      "producer": "producer_rejected",
+      "schema_conformant": false,
+      "branches": {},
+      "paired_comparison_qualified": false,
+      "repair_restores_exact_edit": null
+    },
+    {
+      "id": "content-null",
+      "producer": "producer_rejected",
+      "schema_conformant": false,
+      "branches": {},
+      "paired_comparison_qualified": false,
+      "repair_restores_exact_edit": null
+    },
+    {
+      "id": "title-omit",
+      "producer": "accepted_readable",
+      "schema_conformant": true,
+      "branches": {
+        "sham": "exact_intended_edit",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": false
+    },
+    {
+      "id": "title-null",
+      "producer": "accepted_readable",
+      "schema_conformant": false,
+      "branches": {
+        "sham": "client_runtime_error",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": true
+    }
+  ],
+  "manual_evidence_audit": [
+    {
+      "arm": "sham",
+      "intervention_changed_fields": [
+        "updated_at",
+        "version"
+      ],
+      "continuation_changed_fields": [],
+      "forms": 0,
+      "title_inputs": 0
+    },
+    {
+      "arm": "repair",
+      "intervention_changed_fields": [
+        "updated_at",
+        "title",
+        "version"
+      ],
+      "continuation_changed_fields": [
+        "updated_at",
+        "content",
+        "version",
+        "length",
+        "hash"
+      ],
+      "forms": 1,
+      "title_inputs": 1
+    }
+  ],
+  "qualified_repair_effects_in_development": 1,
+  "independent_research_cases": 0,
+  "mechanism": "API accepts and persists title=null; readback omits title. The native edit path receives undefined and logs original CreatePaste component TypeErrors in endsWith and split. Its form is absent. Restoring the same producer state and setting only title to the fixed ordinary value, plus expected save metadata, restores the form and permits exact unrelated content editing.",
+  "attribution": "Observed cross-interface compatibility failure with qualified paired repair effect; schema-invalid input and development exposure must remain explicit. No broad prevalence, independent sample or agent improvement established.",
+  "baseline_assessment": "Original OpenAPI schema rejects null title. This pilot demonstrates no incremental benefit over enforcing that schema. Client request-production comparator remains unknown for the crashing probe; console diagnostics are separately reported.",
+  "next_step": "Stop expanding Pastefy cases. Continue the pre-existing catalog/provenance schedule, including unresolved DreamFactory disposition, to test whether the mechanism generalizes and whether any outcome adds value beyond competent schema validation."
+}
