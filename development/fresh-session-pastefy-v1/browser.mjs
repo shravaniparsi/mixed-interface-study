@@ -1,7 +1,7 @@
 // Original native controls only; receipts remain private until sanitized export.
 import {createHash} from 'node:crypto';
 const requireValue=(ok,message)=>{if(!ok)throw new Error(message);};
-export async function session(browser, origin, credentials, diagnostics={}) {
+export async function session(browser, origin, credentials, diagnostics={}, options={}) {
   const context=await browser.newContext({viewport:{width:1440,height:1000},locale:'en-US'});
   context.setDefaultTimeout(15000);context.setDefaultNavigationTimeout(30000);
   const page=await context.newPage();const pending=new Set(), tasks=new Set(), receipts=[], errors=[];
@@ -26,6 +26,7 @@ export async function session(browser, origin, credentials, diagnostics={}) {
     const task=(async()=>{receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:await response.text()});pending.delete(req);})();
     tasks.add(task);task.catch(e=>errors.push({error:String(e)})).finally(()=>tasks.delete(task));
   });
+  if(options.configureContext)await options.configureContext(context);
   async function settled(){
     const end=Date.now()+15000;let emptySince=0;
     while(Date.now()<end){
@@ -60,9 +61,15 @@ export async function session(browser, origin, credentials, diagnostics={}) {
       requireValue(response&&response.status>=200&&response.status<300,'Native write HTTP failure or missing capture');
       const body=JSON.parse(response.body);requireValue(body.success===true,'Native write rejected');if(reloaded)await reloaded;await settled();return body;
     }
+    async function prepareEdit(id,field,value){
+      diagnostics.stage='edit-navigation';await settled();await page.goto(origin+'/'+encodeURIComponent(id));await settled();
+      diagnostics.stage='edit-button';await page.getByRole('button',{name:'Edit',exact:true}).click();
+      await form().locator('input[placeholder="file.js"]').waitFor();await fill(field,value);return form();
+    }
     return {page,context,receipts,settled,actor:{user_id:user.id,role:user.type,key_sha256:createHash('sha256').update(credentials.api_key).digest('hex')},
       async create(input){await fill('title',input.title);await fill('content',input.content);return submit('POST','/api/v2/paste');},
-      async edit(id,field,value){diagnostics.stage='edit-navigation';await settled();await page.goto(origin+'/'+encodeURIComponent(id));await settled();diagnostics.stage='edit-button';await page.getByRole('button',{name:'Edit',exact:true}).click();await form().locator('input[placeholder="file.js"]').waitFor();await fill(field,value);return submit('PUT','/api/v2/paste/'+id);},
+      prepareEdit,
+      async edit(id,field,value){await prepareEdit(id,field,value);return submit('PUT','/api/v2/paste/'+id);},
       async close(){diagnostics.stage='close';await settled();await context.close();}};
   } catch(error){diagnostics.url=page.url();diagnostics.dom=await Promise.race([page.content().catch(()=>null),new Promise(resolve=>setTimeout(()=>resolve(null),3000))]);await context.close();throw error;}
 }
