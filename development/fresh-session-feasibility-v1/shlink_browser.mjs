@@ -52,7 +52,17 @@ export class ShlinkBrowser {
  async form({shortCode,expected}={}){
   assert(this.prefix,'native server selection required');
   const suffix=shortCode?'/short-code/'+encodeURIComponent(shortCode)+'/edit':'/create-short-url';
-  await this.page.goto(this.uiOrigin+this.prefix+suffix);
+  if(new URL(this.page.url()).pathname!==this.prefix+suffix){
+   if(!shortCode){
+    const create=this.page.locator('nav a').filter({hasText:'Create short URL'});assert.equal(await create.count(),1);await create.click();
+   }else{
+    const list=this.page.locator('nav a').filter({hasText:'List short URLs'});assert.equal(await list.count(),1);await list.click();
+    const row=this.page.getByRole('row').filter({has:this.page.locator('a[href="http://shlink.test/'+shortCode+'"]')});await row.waitFor();assert.equal(await row.count(),1);
+    const menu=row.locator('button[aria-haspopup="true"]');assert.equal(await menu.count(),1);await menu.click();
+    const edit=this.page.locator('a[href="'+this.prefix+suffix+'"]');await edit.waitFor();assert.equal(await edit.count(),1);await edit.click();
+   }
+   await this.page.waitForURL(url=>url.pathname===this.prefix+suffix);
+  }
   const form=this.page.locator('form[name="shortUrlForm"]');await form.waitFor();assert.equal(await form.count(),1);
   await form.getByPlaceholder('URL to be shortened',{exact:true}).waitFor();await form.getByPlaceholder('Title',{exact:true}).waitFor();
   if(shortCode){
@@ -90,6 +100,7 @@ export class ShlinkBrowser {
  async close(){
   let failure;
   try{await this.settle();}catch(error){failure=error;}
+  if(this.page&&!this.page.isClosed())this.write('final-page-diagnostic',{url:this.page.url(),text:(await this.page.locator('body').innerText()).slice(0,40000),controls:await this.page.locator('form,input,button,a').evaluateAll(nodes=>nodes.slice(0,200).map(n=>({tag:n.tagName,name:n.getAttribute('name'),label:n.getAttribute('aria-label'),text:n.textContent?.slice(0,200),href:n.getAttribute('href')})))});
   if(this.context)await this.context.close();const captured=await this.capture.close();
   this.write('browser-errors',this.errors);assert.deepEqual(this.errors,[],'browser errors at close');assert(captured.every(r=>r.capture.status==='complete'),'incomplete API response capture');
   if(failure)throw failure;

@@ -371,3 +371,6 @@ User superseded the procedural stop and requested full pipeline verification bef
 
 
 Pipeline qualification44873791375 passed the complete build and failed deployment: Redis7.2.5 was running/ready but Docker internal-network host port publication was absent. Corrected harness transport to inspected internal IPs, retaining network isolation and stable backend/Redis addresses across restores.45 local tests and runner syntax checks pass; actual deployment qualification remains pending. Full evidence stays in approved logs/local recovery; repository summary records the failure and elapsed time.
+
+
+Qualification44874253600 passed build, network connectivity, original backend startup and worker/listener probes; failed waiting for native creation form after hard navigation. Original client source selects a server from its asynchronously populated registry, explaining the recorded reload with no subsequent health request. Replaced harness page reload with original navigation links and row menu; inspected exact npm-lockfile-verified frontend-kit1.6.1 markup to identify its aria-haspopup button. Added bounded page diagnostics. Application inputs and handlers unchanged.
