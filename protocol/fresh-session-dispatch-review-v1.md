@@ -1,0 +1,15 @@
+# Fresh-session pre-dispatch review
+
+Preparation cycles 1 and 2 are complete. This review qualifies the harness for a bounded feasibility attempt, not the applications or a scientific contribution.
+
+G1: Original pinned Git trees and the retained Zipline archive were independently verified. The build-chain audit covers nested scripts, original entrypoints, generated files, dependency resolution and manifest retention. Shlink packages and RoadRunner remain runtime checks; their identities must be retained by the build. No business logic or validation patches are permitted.
+
+G2: Both ordinary-only schedules, fresh native-context adapters, deployment lifecycles, cross-store observers, independent scorers, runtime checks and failure diagnostics are implemented. The 43-test local suite covers full fabricated schedules, corrupted evidence, real SQLite and Redis fixtures, source/archive checks, dispatch refusal and sanitized transport integrity. Local Redis tests do not qualify the study Redis version. All actual application checks remain pending.
+
+The integrated review corrected native-fetch response handling and Zipline timeout/process-group cleanup before dispatch. The runtime gate now separately checks image/archive identity, isolated networking, per-start Shlink listener/worker evidence and cleanup. Configuration probes do not measure opaque process memory. Ordinary score success alone is insufficient.
+
+Publication: the user explicitly approved sanitized disposable evidence in public GitHub Actions logs. The exporter runs on private raw observations after scoring, redacts generated credentials/sessions and refuses incomplete exports. Transport accepts only the completed sanitized directory, verifies its public hashes and provides a complete-stream checksum. Recovery refuses truncated, reordered or altered streams. Runtime images, raw database archives and private credential files are never transported. Public redacted state cannot be rescored as if it were raw evidence; the private scorer result and raw/public hashes preserve that distinction.
+
+Cost and dispatch: public repository visibility and both required Docker Hub secret names were checked without reading secret values. Only standard ubuntu-24.04 compute, no cache/artifact uploads, no paid services or account changes. Evidence uses logs rather than new artifact storage. Historical project spend remains unverified. Authorize Shlink first, with a 40-minute job cap including a build phase capped below 30 minutes and live execution capped at 25 minutes. Retain the single shared technical correction; no implicit rerun or scope change. The source, workflow, matrix and complete implementation are hash-frozen before dispatch. The old evaluation remains closed.
+
+G3 and ordinary trials require actual runtime evidence. A terminal failure stops this feasibility study; do not launch Zipline merely to fill a table. Passing both exposed development systems would permit designing independent evaluation, not a Q1-ready claim.

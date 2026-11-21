@@ -106,3 +106,6 @@ jobs:
         id: publish
         if: ${{ always() }}
         run: sudo python3 development/fresh-session-feasibility-v1/export_evidence.py "$STUDY_BASE"
+      - name: Publish authorized sanitized receipts in logs
+        if: ${{ always() && steps.publish.outcome == 'success' }}
+        run: sudo python3 development/fresh-session-feasibility-v1/evidence_log.py emit "$STUDY_BASE/public-evidence"
