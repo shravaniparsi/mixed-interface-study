@@ -10,8 +10,19 @@ export async function session(browser, origin, credentials, diagnostics={}) {
   page.on('request',req=>{if(isApi(req))pending.add(req);});
   page.on('requestfinished',req=>pending.delete(req));
   page.on('requestfailed',req=>{pending.delete(req);if(isApi(req))errors.push({path:new URL(req.url()).pathname,error:req.failure()?.errorText});});
+  // The native edit handler reloads immediately after PUT. Buffer its real server
+  // response before releasing it, so navigation cannot discard response-body evidence.
+  await context.route(url=>url.origin===origin && /^\/api\/v2\/paste(?:\/[^/]+)?$/.test(url.pathname),async route=>{
+    const req=route.request();if(!['POST','PUT'].includes(req.method()))return route.continue();
+    try {
+      const response=await route.fetch({timeout:15000,maxRedirects:0,maxRetries:0});
+      const body=await response.body();
+      receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:body.toString('utf8'),capture:'unchanged_request_forwarded_response_buffered_before_release'});
+      await route.fulfill({response,body});
+    } catch(error){errors.push({error:String(error),path:new URL(req.url()).pathname});await route.abort();}
+  });
   page.on('response',response=>{
-    const req=response.request();if(!isApi(req))return;
+    const req=response.request();if(!isApi(req)||['POST','PUT'].includes(req.method()))return;
     const task=(async()=>{receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:await response.text()});})();
     tasks.add(task);task.catch(e=>errors.push({error:String(e)})).finally(()=>tasks.delete(task));
   });
@@ -42,9 +53,11 @@ export async function session(browser, origin, credentials, diagnostics={}) {
     }
     async function submit(method,path){
       diagnostics.stage='submit-'+method;
-      const reply=page.waitForResponse(r=>r.request().method()===method&&new URL(r.url()).pathname===path);
-      await form().locator('button[type="submit"]').click();const response=await reply;
-      requireValue(response.ok(),'Native write HTTP failure');const body=await response.json();requireValue(body.success===true,'Native write rejected');await settled();return body;
+      await form().locator('button[type="submit"]').click();diagnostics.stage='capture-'+method;
+      const deadline=Date.now()+15000;let response;
+      while(Date.now()<deadline){response=receipts.find(r=>r.method===method&&r.path===path);if(response)break;await page.waitForTimeout(50);}
+      requireValue(response&&response.status>=200&&response.status<300,'Native write HTTP failure or missing capture');
+      const body=JSON.parse(response.body);requireValue(body.success===true,'Native write rejected');await settled();return body;
     }
     return {page,context,receipts,settled,actor:{user_id:user.id,role:user.type,key_sha256:createHash('sha256').update(credentials.api_key).digest('hex')},
       async create(input){await fill('title',input.title);await fill('content',input.content);return submit('POST','/api/v2/paste');},

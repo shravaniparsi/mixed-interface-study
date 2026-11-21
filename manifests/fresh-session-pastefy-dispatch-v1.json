@@ -7,7 +7,7 @@
   },
   "new_paid_spend_authorized_usd": 0,
   "max_job_minutes": 40,
-  "attempt": 14,
+  "attempt": 15,
   "publication": "User-authorized sanitized disposable test evidence in public GitHub Actions logs; no artifact uploads.",
   "sha256": {
     "development/fresh-session-pastefy-v1/export_run.py": "b583cffa6c137fdd5390e322364c1aeff356771f963e73f9781db7517a969159",
@@ -28,7 +28,7 @@
     "development/fresh-session-pastefy-v1/test_score_create.py": "2aeb21909614393d0034128659356b96c2dea5cfb27bc6a3ccf51ecf76b8b596",
     "development/fresh-session-pastefy-v1/score_run.py": "ec2b2f1a626998bb1df98d2a61ec1eb08b0c6292cc23a84b28ae796be3c474fc",
     "development/fresh-session-pastefy-v1/test_checkpoint.py": "159f71ab3187bd46c2a9e78da38ea75ed2d83506489803b217bd810ca08ca239",
-    "development/fresh-session-pastefy-v1/browser.mjs": "c1f58807142c33a91b0fbb2bf58b80a4ea22ea9b78a68cc4b7b17e02b070fa8a",
+    "development/fresh-session-pastefy-v1/browser.mjs": "2ac167cf7777264d40f4849141cf7d6f70a514b417a458c516a0e3e4c3f3af62",
     "development/fresh-session-pastefy-v1/browser_cli.mjs": "a61339ff088ca2e6274a0a9e2b065367304b268935c843a510b84a79a7465184",
     ".github/workflows/fresh_session_pastefy_v1.yml": "c89073f99074836406b546cdc56d5619d406c11c14f4fa9b7e84e66b67ffeae1",
     "manifests/fresh-session-pastefy-ordinary-input-v1.json": "48799424a22afd4d3567a1f9327ee7e87f4322edb37550206f872bf7247290cd",
@@ -145,8 +145,16 @@
       "conclusion": "failure",
       "diagnosis": "First native creation again passed; second browser subprocess timed out without failure file. Add immediate stage output, launch timeout and browser process diagnostics to distinguish launch from page operations.",
       "independent_cases": 0
+    },
+    {
+      "run_id": 44936220959,
+      "head": "82832f7b503758aedf915e93a7add68b2deadc5f",
+      "conclusion": "failure",
+      "diagnosis": "Trace reached submit-PUT and native reload; server threads idle. Response-body await never completed across reload. Buffer unchanged original POST/PUT response before release to native handler.",
+      "independent_cases": 0
     }
   ],
   "purpose": "Qualify original build using prospectively bound complete npm resolution",
-  "database": "MySQL 8.0 from Ubuntu 24.04 packages, exact installed versions exported; no application source changes. Two real database smoke resets precede application execution."
+  "database": "MySQL 8.0 from Ubuntu 24.04 packages, exact installed versions exported; no application source changes. Two real database smoke resets precede application execution.",
+  "native_response_capture": "Playwright forwards the native POST/PUT unchanged to the original server, buffers response bytes, then fulfills with the original status/headers/body. No request fields or application code modified."
 }
