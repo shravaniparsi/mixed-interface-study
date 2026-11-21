@@ -15,8 +15,8 @@ class Checkpoints(unittest.TestCase):
    s.checkpoint()
  def test_tampered_checkpoint_and_symlink_refused(self):
   with tempfile.TemporaryDirectory() as tmp:
-   s=self.fixture(tmp);s.checkpoint();(s.base/'checkpoint'/'asset').write_text('changed')
+   s=self.fixture(tmp);s.checkpoint();(s.base/'checkpoint-root'/'asset').write_text('changed')
    with self.assertRaises(ValueError):s.restore()
-   (s.live/'link').symlink_to(s.base/'checkpoint'/'asset')
+   (s.live/'link').symlink_to(s.base/'checkpoint-root'/'asset')
    with self.assertRaises(ValueError):s.observe(s.live)
 if __name__=='__main__':unittest.main()

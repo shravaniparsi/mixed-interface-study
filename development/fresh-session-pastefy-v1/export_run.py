@@ -1,0 +1,18 @@
+"""Assemble sanitized text evidence only, using the qualified common exporter."""
+import json,pathlib,shutil,sys
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[2]/'development/fresh-session-feasibility-v1'))
+from export_evidence import export
+base=pathlib.Path(sys.argv[1]);dest=base/'publication';dest.mkdir();secrets=[]
+credentials=base/'execution/state/credentials.json'
+if credentials.exists():secrets.append(json.loads(credentials.read_text())['api_key'])
+(dest/'redaction-values.json').write_text(json.dumps(secrets))
+for name,source in [('evidence',base/'execution/evidence'),('build-evidence',base/'build/evidence')]:
+ target=dest/name;target.mkdir()
+ if source.exists():
+  for p in source.iterdir():
+   if p.is_file() and not p.is_symlink():shutil.copyfile(p,target/p.name)
+for p in (base/'execution/state').glob('jvm-*.log'):
+ shutil.copyfile(p,dest/'evidence'/p.name)
+for name in ['run.log','unit-tests.log']:
+ if (base/name).is_file():shutil.copyfile(base/name,dest/'evidence'/name)
+report=export(dest);print(json.dumps(dict(status=report['status'],files=len(report['files']),public_bytes=report['public_bytes'])))

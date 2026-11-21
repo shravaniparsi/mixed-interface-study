@@ -25,12 +25,14 @@ class State:
   require(not root.is_symlink() and root.is_dir(),'owned_state_directory')
   before=inventory(root);db=snapshot(root/'study.sqlite');require(before==inventory(root),'observation_did_not_change_files')
   return dict(files=before,database_sha256=hashlib.sha256(canonical(db)).hexdigest())
- def checkpoint(self):
-  self.stopped();dest=self.base/'checkpoint';require(not dest.exists(),'single_checkpoint')
+ def checkpoint(self,label="root"):
+  require(label in ["root","native","api"],"registered_checkpoint_label")
+  self.stopped();dest=self.base/('checkpoint-'+label);require(not dest.exists(),'single_checkpoint')
   before=self.observe(self.live);shutil.copytree(self.live,dest);require(self.observe(dest)==before==self.observe(self.live),'checkpoint_equal')
-  (self.base/'checkpoint.json').write_bytes(canonical(before));return before
- def restore(self):
-  self.stopped();saved=json.loads((self.base/'checkpoint.json').read_text());root=self.base/'checkpoint'
+  (self.base/('checkpoint-'+label+'.json')).write_bytes(canonical(before));return before
+ def restore(self,label="root"):
+  require(label in ["root","native","api"],"registered_checkpoint_label")
+  self.stopped();saved=json.loads((self.base/('checkpoint-'+label+'.json')).read_text());root=self.base/('checkpoint-'+label)
   require(self.observe(root)==saved,'checkpoint_not_tampered')
   pending=self.base/'restore-pending';old=self.base/'previous'
   require(not pending.exists() and not old.exists(),'restore_destinations_unused')
