@@ -1,0 +1,61 @@
+name: Evaluation Komga original JDBC SQLite attempt2
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: evaluation-sqlite-family-attempt2
+  cancel-in-progress: false
+jobs:
+  synthetic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.freeze }}
+          persist-credentials: false
+      - name: Verify prospective freeze and prerequisites
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import datetime,hashlib,json,pathlib; m=json.load(open("manifests/evaluation-komga-sqlite-v1.json")); assert datetime.datetime.now(datetime.timezone.utc)<datetime.datetime.fromisoformat(m["adapter_deadline_utc"]); assert m["storage_family_attempt"]==2; assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in m["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/komga-synthetic/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/komga-synthetic/evidence/freeze.txt"
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Acquire and independently verify original build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          timeout 120 gh api repos/shravaniparsi/mixed-interface-study/actions/artifacts/14682703580/zip > "$RUNNER_TEMP/komga-synthetic/build.zip"
+          python3 -c 'import hashlib,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"komga-synthetic/build.zip"; assert p.stat().st_size==516079291; h=hashlib.sha256(); f=p.open("rb"); [h.update(b) for b in iter(lambda:f.read(1048576),b"")]; assert h.hexdigest()=="80ee2bdae4f83f224f1ecf10ce4bad047232808dbd40d1960472361724625792"'
+          python3 evaluation/komga-build-v1/verify_artifact.py --archive "$RUNNER_TEMP/komga-synthetic/build.zip" --out "$RUNNER_TEMP/komga-synthetic/build-receipts" --extract-jar "$RUNNER_TEMP/komga-synthetic/application.jar"
+          cp "$RUNNER_TEMP/komga-synthetic/build-receipts/independent-verification.json" "$RUNNER_TEMP/komga-synthetic/evidence/build-verification.json"
+      - name: Compile read-only original-JDBC bridge
+        run: |
+          mkdir -p "$RUNNER_TEMP/komga-synthetic/app" "$RUNNER_TEMP/komga-synthetic/classes"
+          cd "$RUNNER_TEMP/komga-synthetic/app"
+          jar xf ../application.jar
+          cd "$GITHUB_WORKSPACE"
+          javac -d "$RUNNER_TEMP/komga-synthetic/classes" evaluation/komga-state-v1/OriginalJdbc.java
+          java -version > "$RUNNER_TEMP/komga-synthetic/evidence/java-version.txt" 2>&1
+      - name: Execute remaining SQLite-family synthetic attempt
+        run: |
+          python3 evaluation/komga-state-v1/synthetic.py --classpath "$RUNNER_TEMP/komga-synthetic/classes:$RUNNER_TEMP/komga-synthetic/app/BOOT-INF/classes:$RUNNER_TEMP/komga-synthetic/app/BOOT-INF/lib/*" --out "$RUNNER_TEMP/komga-synthetic/evidence" --work "$RUNNER_TEMP/komga-synthetic/private"
+      - name: Retain synthetic evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: evaluation-komga-sqlite-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/komga-synthetic/evidence/
+          retention-days: 7
+          if-no-files-found: warn

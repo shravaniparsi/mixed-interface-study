@@ -1,0 +1,242 @@
+{
+  "status": "build_succeeded",
+  "stage": "complete",
+  "application_started": false,
+  "scientific_cases": 0,
+  "commands": [
+    {
+      "command": [
+        "git",
+        "init",
+        "--quiet",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/source"
+      ],
+      "log": "git-init.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.007709011000002874
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/source",
+        "fetch",
+        "--depth=1",
+        "--no-tags",
+        "https://github.com/gotson/komga.git",
+        "db2ad643c64d9199f7dd01cd3cca3ff0e7a17445"
+      ],
+      "log": "git-fetch.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.768243511999998
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/source",
+        "rev-parse",
+        "FETCH_HEAD"
+      ],
+      "log": "fetched-commit.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.0036009989999996606
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/source",
+        "rev-parse",
+        "FETCH_HEAD^{tree}"
+      ],
+      "log": "fetched-tree.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.0035142979999989166
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/source",
+        "checkout",
+        "--detach",
+        "--quiet",
+        "FETCH_HEAD"
+      ],
+      "log": "checkout.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3645139760000049
+    },
+    {
+      "command": [
+        "node",
+        "--version"
+      ],
+      "log": "komga-webui-node.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.007852935999999033
+    },
+    {
+      "command": [
+        "npm",
+        "--version"
+      ],
+      "log": "komga-webui-npm.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.11409327700000205
+    },
+    {
+      "command": [
+        "npm",
+        "ci"
+      ],
+      "log": "komga-webui-install.log",
+      "exit_code": 0,
+      "elapsed_seconds": 56.561461644000005
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "log": "komga-webui-build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 219.83643961099997
+    },
+    {
+      "command": [
+        "node",
+        "--version"
+      ],
+      "log": "next-ui-node.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.007842649000053825
+    },
+    {
+      "command": [
+        "npm",
+        "--version"
+      ],
+      "log": "next-ui-npm.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1141406380000376
+    },
+    {
+      "command": [
+        "npm",
+        "ci"
+      ],
+      "log": "next-ui-install.log",
+      "exit_code": 0,
+      "elapsed_seconds": 62.715010966999955
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build:with-i18n"
+      ],
+      "log": "next-ui-build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 10.621959199999992
+    },
+    {
+      "command": [
+        "java",
+        "-version"
+      ],
+      "log": "java-version.txt",
+      "exit_code": 0,
+      "elapsed_seconds": 1.339507513000001
+    },
+    {
+      "command": [
+        "/home/runner/work/_temp/evaluation-komga-build-v1/source/gradlew",
+        ":komga:webuiCopyIndex",
+        ":komga:nextuiCopyIndex",
+        ":komga:bootJar"
+      ],
+      "log": "gradle-build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 195.159692023
+    },
+    {
+      "command": [
+        "docker",
+        "pull",
+        "eclipse-temurin:21-jdk"
+      ],
+      "log": "base-pull.log",
+      "exit_code": 0,
+      "elapsed_seconds": 7.228270363999968
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "eclipse-temurin:21-jdk"
+      ],
+      "log": "base-identity.json",
+      "exit_code": 0,
+      "elapsed_seconds": 0.031977772000004734
+    },
+    {
+      "command": [
+        "docker",
+        "build",
+        "--pull=false",
+        "--tag",
+        "study-komga-evaluation:v1",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/packaging"
+      ],
+      "log": "packaging-build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 2.068838434999975
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "study-komga-evaluation:v1"
+      ],
+      "log": "runtime-identity.json",
+      "exit_code": 0,
+      "elapsed_seconds": 0.015828087000045343
+    },
+    {
+      "command": [
+        "docker",
+        "save",
+        "--output",
+        "/home/runner/work/_temp/evaluation-komga-build-v1/evidence/runtime-image.tar",
+        "study-komga-evaluation:v1"
+      ],
+      "log": "export.log",
+      "exit_code": 0,
+      "elapsed_seconds": 4.275350376999995
+    }
+  ],
+  "revision": "db2ad643c64d9199f7dd01cd3cca3ff0e7a17445",
+  "git_directory_bytes": 32180498,
+  "tree_identity": "f767efb020fe043621ec761a3b2d039b3ba69fe8",
+  "source_archive_sha256": "8ac3ff643af1f2291fa820e3eb2aba983675ea3857768e2b299b4a4fcdfddbf7",
+  "source_archive_bytes": 39514423,
+  "jar_sha256": "b10cb19b99ca23f950548d2515e6570ccb74fe3060a3ebb1020cd281bed18576",
+  "build_modified_original_paths": [],
+  "image_id": "sha256:971f422e5e9419faaba3d2a87dddfd2bf5c51c0fe584a477aead132f268e7801",
+  "runtime_archive_sha256": "ad402e2e4ed1031ddedb420120bd9c8b032c015ea97a256c535f80c3e2cd8578",
+  "runtime_archive_bytes": 633867264,
+  "elapsed_seconds": 565.482325979
+}
