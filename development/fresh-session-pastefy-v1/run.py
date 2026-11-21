@@ -14,7 +14,7 @@ def main(base,jar):
   return dict(method=method,path=path,request=payload,status=status,body=body)
  def native(name,action,**kwargs):
   inp=dict(action=action,credentials=str(rt.state.base/'credentials.json'),**kwargs);p=base/(name+'-input.json');p.write_text(json.dumps(inp));os.chmod(p,0o600);target=out/(name+'-browser.json')
-  subprocess.run([os.environ.get('NODE_BIN','node'),str(pathlib.Path(__file__).with_name('browser_cli.mjs')),str(p),str(target)],check=True,timeout=120)
+  subprocess.run([os.environ.get('NODE_BIN','node'),str(pathlib.Path(__file__).with_name('browser_cli.mjs')),str(p),str(target)],check=True,timeout=120,env={**os.environ,'DEBUG':'pw:browser'})
   return json.loads(target.read_text()),target.name
  try:
   require(pathlib.Path('/proc/self/ns/net').exists(),'linux_namespace_required')

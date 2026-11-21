@@ -50,5 +50,5 @@ export async function session(browser, origin, credentials, diagnostics={}) {
       async create(input){await fill('title',input.title);await fill('content',input.content);return submit('POST','/api/v2/paste');},
       async edit(id,field,value){diagnostics.stage='edit-navigation';await settled();await page.goto(origin+'/'+encodeURIComponent(id));await settled();diagnostics.stage='edit-button';await page.getByRole('button',{name:'Edit',exact:true}).click();await form().locator('input[placeholder="file.js"]').waitFor();await fill(field,value);return submit('PUT','/api/v2/paste/'+id);},
       async close(){diagnostics.stage='close';await settled();await context.close();}};
-  } catch(error){diagnostics.url=page.url();diagnostics.dom=await page.content().catch(()=>null);await context.close();throw error;}
+  } catch(error){diagnostics.url=page.url();diagnostics.dom=await Promise.race([page.content().catch(()=>null),new Promise(resolve=>setTimeout(()=>resolve(null),3000))]);await context.close();throw error;}
 }
