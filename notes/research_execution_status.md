@@ -395,3 +395,6 @@ Zipline diagnostic44877242731 identifies three setup-dashboard requests retained
 
 
 Both complete pipelines are qualified: Shlink44876464554 and Zipline44877489867. Zipline passed24branches/4resetcycles, private scoring, runtime identity and cleanup, plus complete log recovery. All Shlink/common source files were byte-compared to its successful qualification freeze and remain unchanged. Registered fresh-session-feasibility-v2 before new outcomes, using the final fixed harness and original36-branch matrix. New jobs use fresh disposable state; engineering runs remain separate exposed development evidence.
+
+
+Fresh attempt v2 Shlink run44877829872 failed before application startup: original RoadRunner installer received HTTP403 from GitHub releases API. Cause beyond that response is unverified. Preserve it as infrastructure unavailability and in the reliability denominator. User authorized continuing past self-imposed stopping rules. Register one new job with identical harness and inputs; no application/scorer change and no retrospective success for the failed job. The original prospective implementation manifest remains unchanged.
