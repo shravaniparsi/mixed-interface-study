@@ -39,7 +39,7 @@ def build(base):
     for name in ['resolved','installed']:(out/('frontend-'+name+'.json')).write_bytes((dep/(name+'.json')).read_bytes())
     before,after=original.get('packages',{}),resolved.get('packages',{})
     report['frontend_lock_delta']=dict(top_level_changed=[k for k in sorted(set(original)|set(resolved)) if k!='packages' and original.get(k)!=resolved.get(k)],added=sorted(set(after)-set(before)),removed=sorted(set(before)-set(after)),changed={k:sorted(f for f in set(before[k])|set(after[k]) if before[k].get(f)!=after[k].get(f)) for k in before.keys()&after.keys() if before[k]!=after[k]});save()
-    report['frontend']=verify_frontend(src/'frontend/package-lock.json',dep/'resolved.json',dep/'installed.json')
+    report['frontend']=verify_frontend(src/'frontend/package-lock.json',dep/'resolved.json',dep/'installed.json',json.loads((ROOT/'manifests/fresh-session-pastefy-npm-resolution-v1.json').read_text()))
    if stage=='build':
     extract(tag,stage,[('/root/.m2/repository',base/'maven-repository'),('/home/app/target/backend.jar',base/'backend.jar')]);report['vendored_resolution']=verify_maven(src/'backend/vendor-maven-repository',base/'maven-repository')
     report['resolved_jars']=[dict(path=str(p.relative_to(base/'maven-repository')),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in sorted((base/'maven-repository').rglob('*.jar'))]

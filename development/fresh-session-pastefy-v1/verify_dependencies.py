@@ -3,10 +3,14 @@ import hashlib,json,pathlib,sys
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[2]/'development/fresh-session-feasibility-v1'))
 from source_check import require
 
-def verify_frontend(original_lock, final_lock, installed_lock):
+def verify_frontend(original_lock, final_lock, installed_lock, resolution=None):
  original=json.loads(pathlib.Path(original_lock).read_text());final=json.loads(pathlib.Path(final_lock).read_text());installed=json.loads(pathlib.Path(installed_lock).read_text())
- require(original==final,'frontend_lock_unchanged')
- expected=original['packages'];actual=installed['packages'];checked=[]
+ if resolution is None:require(original==final,'frontend_lock_unchanged')
+ else:
+  digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+  require(digest(original)==resolution['original_lock_canonical_sha256'],'original_lock_binding')
+  require(digest(final)==resolution['resolved_lock_canonical_sha256'],'reviewed_complete_resolution')
+ expected=final['packages'];actual=installed['packages'];checked=[]
  require(set(actual)<=set(expected),'no_unlocked_frontend_packages')
  for path,pkg in expected.items():
   if not path:continue
