@@ -1,0 +1,93 @@
+{
+  "sequence": 17,
+  "repository": "mohamedelashri/snipo",
+  "revision": "6708d7b0c9dd3b949ac6554d42bc1b013f6a0ec3",
+  "status": "closed_runtime_unavailable_existing_observer_rejects_fts5",
+  "evaluation_slot": 5,
+  "source_qualified": true,
+  "operation": {
+    "method": "POST",
+    "path": "/api/v1/snippets"
+  },
+  "source_phase_anchor_utc": "2026-11-21T02:42:55.484632+00:00",
+  "source_phase_terminal_utc": "2026-11-21T02:47:02.832443+00:00",
+  "source_phase_seconds": 247.347811,
+  "scheduled_paths": 20,
+  "decoded_bytes": 476773,
+  "source_gates": {
+    "native_create_edit": "editor-mixin newSnippet/saveSnippet/editSnippet and editor.html; same original API create/update",
+    "persistent_named_entity": "SnippetRepository INSERT snippets(title,description,...) RETURNING id; GetByID selects same id",
+    "same_actor_lifecycle": "Single-user master-password deployment; protected routes share RequireAuthWithSettings; native API client uses same routes",
+    "compatibility_obligation": "Native viewSnippet loads GET /api/v1/snippets/{id} into original editor; save uses POST for new, PUT for same id",
+    "independent_text": "Native title and description controls independent; default one-file structure also has content and filename controls",
+    "exclusions": "Literal local code text entry, not file upload; public=false, no tags/folder/Gist/external account required"
+  },
+  "earlier_operations": [
+    {
+      "path": "/api/v1/auth/*",
+      "reason": "Session login/logout, not persistent named entity creators"
+    },
+    {
+      "path": "/api/v1/backup/*",
+      "reason": "File export/import/restore or external S3 effects"
+    },
+    {
+      "path": "/api/v1/folders",
+      "reason": "Only native name text plus parent relationship; API icon has no mapped native control"
+    },
+    {
+      "path": "/api/v1/gist/*",
+      "reason": "External account/Gist synchronization excluded"
+    },
+    {
+      "path": "/api/v1/settings",
+      "reason": "Existing singleton settings update, not named entity creation"
+    }
+  ],
+  "native_structure": {
+    "title": "",
+    "description": "",
+    "content": "",
+    "language": "plaintext",
+    "tags": [],
+    "folder_id": null,
+    "is_public": false,
+    "files": [
+      {
+        "id": 0,
+        "filename": "snippet.txt",
+        "content": "",
+        "language": "plaintext"
+      }
+    ]
+  },
+  "field_inventory": {
+    "/title": "Native editable text",
+    "/description": "Native editable text",
+    "/files/0/content": "Native code-editor text; top-level /content mirrors it, not another independent variable",
+    "/files/0/filename": "Native rename text; filename sanitization and derived language require scoped controls before any execution",
+    "/content": "Dependent mirror of first-file content",
+    "/language and /files/0/language": "Language choices/enums, not text targets",
+    "/tags and /folder_id": "Relationships; empty/default retained",
+    "/expires_at": "Expiration choice/date, not independent scalar text study target",
+    "IDs/timestamps/flags": "Identities/server output/booleans excluded"
+  },
+  "lineage": {
+    "main_fork": false,
+    "known_shared_application_lineage": false,
+    "proof_of_complete_independence": false,
+    "unlisted_history_exposure": "unknown",
+    "historical_index_gaps_retained": true
+  },
+  "runtime_terminal_reason": "Original mandatory migration creates snippets_fts virtual FTS5 table with insert/update/delete triggers. Existing observer rejects virtual tables; synthetic1 verified refusal, not FTS support; SQLite-family attempt2 already consumed. No qualified full-state observer and no authorized further synthetic attempt.",
+  "runtime_scope": "Infrastructure-unavailable, not a Snipo defect, scientific null, or evidence of editability. No build required to reproduce an already proven observer refusal.",
+  "adapter_recipe_published": false,
+  "adapter_clock_started": false,
+  "build_dispatched": false,
+  "scientific_inputs_frozen": false,
+  "application_executed": false,
+  "scientific_cases": 0,
+  "selection_slot_consumed": true,
+  "source_receipt_sha256": "324dd40c2aae9069537bd74224afca10e2c29ed372597be676ee4f9f592d884b",
+  "observer_evidence": "results/evaluation-source-17-observer-scope.json"
+}
