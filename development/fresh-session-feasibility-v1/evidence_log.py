@@ -9,7 +9,7 @@ def encode(directory):
  names=['export.json']+[row['file'] for row in report['files']];require(len(set(names))==len(names),'unique_export_names');files={}
  for name in names:
   require(pathlib.Path(name).name==name and name not in {'.','..'},'safe_export_name')
-  p=directory/name;require(p.is_file() and not p.is_symlink(),'regular_export_file');files[name]=p.read_text()
+  p=directory/name;require(p.is_file() and not p.is_symlink(),'regular_export_file');files[name]=p.read_bytes().decode('utf-8')
  for row in report['files']:require(hashlib.sha256(files[row['file']].encode()).hexdigest()==row['public_sha256'],'export_digest')
  raw=json.dumps(files,separators=(',',':')).encode();require(len(raw)<=LIMIT,'log_transport_size')
  payload=base64.b64encode(zlib.compress(raw,9)).decode();parts=[payload[i:i+12000] for i in range(0,len(payload),12000)]
@@ -33,5 +33,5 @@ if __name__=='__main__':
  if sys.argv[1]=='emit':sys.stdout.write(encode(sys.argv[2]))
  elif sys.argv[1]=='recover':
   files=decode(pathlib.Path(sys.argv[2]).read_text());dest=pathlib.Path(sys.argv[3]);dest.mkdir(exist_ok=False)
-  for name,content in files.items():(dest/name).write_text(content)
+  for name,content in files.items():(dest/name).write_bytes(content.encode('utf-8'))
  else:raise ValueError('unknown mode')
