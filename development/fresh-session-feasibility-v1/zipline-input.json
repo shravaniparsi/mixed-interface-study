@@ -1,0 +1,66 @@
+{
+  "port": 3100,
+  "username": "research-admin",
+  "native": {
+    "destination": "https://example.com/native",
+    "vanity": "research-native",
+    "discordComponentEmbed": {
+      "enabled": true,
+      "accentColor": "#336699",
+      "spoiler": false,
+      "components": [
+        {
+          "type": 10,
+          "content": "Research preview"
+        }
+      ]
+    }
+  },
+  "api": {
+    "destination": "https://example.com/api",
+    "vanity": "research-api",
+    "enabled": true,
+    "discordPreviewMode": "components",
+    "discordComponentEmbed": {
+      "enabled": true,
+      "accentColor": "#336699",
+      "spoiler": false,
+      "components": [
+        {
+          "type": 10,
+          "content": "Research preview"
+        }
+      ]
+    }
+  },
+  "fields": [
+    {
+      "pointer": "/destination",
+      "ordinary": "https://example.com/api",
+      "replacement": "https://example.com/edited",
+      "label": "Destination",
+      "unrelated_pointer": "/discordComponentEmbed/accentColor"
+    },
+    {
+      "pointer": "/discordComponentEmbed/accentColor",
+      "ordinary": "#336699",
+      "replacement": "#669933",
+      "label": "Container accent color",
+      "unrelated_pointer": "/destination"
+    },
+    {
+      "pointer": "/discordComponentEmbed/components/0/content",
+      "ordinary": "Research preview",
+      "replacement": "Updated research preview",
+      "label": "Markdown content",
+      "unrelated_pointer": "/destination"
+    },
+    {
+      "pointer": "/vanity",
+      "ordinary": "research-api",
+      "replacement": "research-edited",
+      "label": "Vanity",
+      "unrelated_pointer": "/destination"
+    }
+  ]
+}
