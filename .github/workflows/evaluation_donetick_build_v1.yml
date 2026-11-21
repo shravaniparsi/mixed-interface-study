@@ -1,0 +1,55 @@
+name: Evaluation Donetick original source v1
+on:
+  workflow_dispatch:
+    inputs:
+      freeze:
+        description: Published implementation freeze for the single build
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: evaluation-donetick-build-v1
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.freeze }}
+          persist-credentials: false
+      - name: Verify freeze and prospective deadline
+        env:
+          FREEZE: ${{ inputs.freeze }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$FREEZE"
+          python3 -c 'import datetime,hashlib,json,pathlib; x=json.load(open("manifests/evaluation-donetick-build-v1.json")); assert datetime.datetime.now(datetime.timezone.utc)<datetime.datetime.fromisoformat(x["adapter_deadline_utc"]); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==h for p,h in x["sha256"].items())'
+          mkdir -p "$RUNNER_TEMP/evaluation-donetick-build-v1/evidence"
+          printf '%s\n' "$FREEZE" > "$RUNNER_TEMP/evaluation-donetick-build-v1/evidence/freeze.txt"
+          python3 evaluation/donetick-build-v1/test_verify.py
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '23'
+      - name: Authenticate runtime registry
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          test -n "$DOCKERHUB_USERNAME" && test -n "$DOCKERHUB_TOKEN"
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin > /dev/null 2>&1
+      - name: Build original backend and frontend without application startup
+        run: python3 evaluation/donetick-build-v1/build.py
+      - name: Preserve build receipt and runtime artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: evaluation-donetick-build-v1-${{ github.run_id }}
+          path: ${{ runner.temp }}/evaluation-donetick-build-v1/evidence/
+          retention-days: 7
+          compression-level: 1
+          if-no-files-found: warn
+      - name: Remove registry credentials
+        if: ${{ always() }}
+        run: docker logout > /dev/null 2>&1 || true
