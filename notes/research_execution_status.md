@@ -352,3 +352,14 @@ User explicitly approved sanitized public Actions-log evidence. Completed transp
 ### Pre-job dispatch rejection and sole correction
 
 GitHub rejected freeze 77bcdcdc with HTTP422: runner context unavailable in job-level env. The run history remains empty; zero runner/application time. Corrected the two paths to use RUNNER_TEMP within the guarded step, persisted through GITHUB_ENV. This is a harness workflow defect, not an application finding. Conservatively consumed the one shared technical correction; no further correction or implicit rerun is permitted. Recorded the rejected original freeze and exact error in results/fresh-session-source-preflight-v1/dispatch-rejection-v1.json. Inputs and scientific scope are unchanged.
+
+
+## Fresh-session feasibility closed: NO-GO
+
+Run44866601216 at freeze6a662d86 failed after135 runner seconds. Guard, tooling and authentication passed; the backend image built, but verification failed before application startup. All ordinary trials and result scoring were skipped. Sanitized export/log publication succeeded, and the recovered transport checksum passed. The previous rejected dispatch used zero runner seconds. Public standard-runner compute added no charge; no new artifact/cache storage was used. Historical project spend remains unverified.
+
+Composer recorded shlinkio/shlink-common reference7e5d108, matching the prefix of reviewed revision7e5d108270e8218b139708e2a587605ba55b55c5. The original composer.json uses dev-main#7e5d108. Our verifier incorrectly required exact string equality with the full hash; installed-source-byte checks were never reached. This is a harness bug, not demonstrated dependency drift or an application defect. The initial shorthand diagnosis of a different revision was corrected after inspecting metadata. The43 synthetic/local tests missed this Composer representation.
+
+The single technical correction was already consumed by the pre-job workflow-context defect. The registered stop rule therefore closes this study, disables dispatch, and prohibits another correction, retry or substitute. Zipline was not run. Zero ordinary branches and zero qualified independent cases were produced; Q1 readiness remains unestablished.
+
+Automatic approval review rejected committing the recovered evidence bundle to repository files because the user's specific publication approval covered Actions logs. The bundle remains only in approved logs and local recovery. Only this non-sensitive aggregate diagnosis, public revision identifiers and the dispatch-state ledger are committed. Summary: results/fresh-session-source-preflight-v1/terminal-summary.json.
