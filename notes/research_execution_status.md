@@ -389,3 +389,6 @@ Shlink full-pipeline qualification44876464554 passed: all12 branches,2field-rese
 
 
 Zipline qualification44876939621 verified runtime, completed native/API creation, then failed pending HTTP completion at checkpoint. PostgreSQL and application shutdown succeeded. Added request-finish and outstanding-request diagnostics; no wait-rule relaxation. Original version endpoint bypasses disabled feature flag for administrators and attempts upstream reads in isolated namespace, but current evidence does not identify it as the remaining request.
+
+
+Zipline diagnostic44877242731 identifies three setup-dashboard requests retained across hard navigation. Later same-endpoint requests finish. Changed harness to finish owned work before leaving dashboard and use original visible navigation link. Strict pending-request completion remains; no request class ignored or mocked. Native setup/login and ordinary inputs unchanged.

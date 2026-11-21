@@ -1,0 +1,16 @@
+{
+  "run_id": 44877242731,
+  "phase": "pipeline_qualification",
+  "system": "zipline",
+  "freeze": "71fc32dbed6caff6d7793554d90795fef43271d7",
+  "conclusion": "failure",
+  "runner_seconds": 100,
+  "pending_requests": [
+    "GET /api/version",
+    "GET /api/user/stats",
+    "GET /api/user/avatar"
+  ],
+  "diagnosis": "Tracker retains setup-dashboard requests across hard navigation; later requests to same endpoints complete. Harness navigated before finishing owned work.",
+  "fix": "Settle setup/dashboard work before snapshot and use original visible dashboard URLs navigation link instead of hard reload. Keep pending diagnostics and strict completion.",
+  "cleanup_verified": true
+}
