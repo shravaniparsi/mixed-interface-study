@@ -26,7 +26,7 @@ export async function session(browser, origin, credentials, diagnostics={}, opti
     const task=(async()=>{receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:await response.text()});pending.delete(req);})();
     tasks.add(task);task.catch(e=>errors.push({error:String(e)})).finally(()=>tasks.delete(task));
   });
-  if(options.configureContext)await options.configureContext(context);
+  if(options.configureContext)await options.configureContext(context,page);
   async function settled(){
     const end=Date.now()+15000;let emptySince=0;
     while(Date.now()<end){

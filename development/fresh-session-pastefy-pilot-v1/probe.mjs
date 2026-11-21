@@ -13,8 +13,8 @@ let browser,s;
 const report={target:'native_request_production_before_transmission',prediction:'unknown',writes,diagnostics,pageErrors,requires_independent_no_persistence_check:true};
 try {
  browser=await chromium.launch({headless:true,timeout:30000,args:['--no-sandbox']});
- s=await session(browser,origin,credentials,diagnostics,{configureContext:context=>{
-   context.on('page',page=>page.on('pageerror',error=>pageErrors.push(String(error))));
+ s=await session(browser,origin,credentials,diagnostics,{configureContext:(context,page)=>{
+   page.on('pageerror',error=>pageErrors.push(String(error)));
    return installWriteGuard(context,writes);
  }});
  report.actor=s.actor;
