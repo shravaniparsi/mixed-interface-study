@@ -35,7 +35,7 @@ class Runtime:
   while time.monotonic()<deadline:
    require(self.process.poll() is None,'jvm_running_during_start')
    try:
-    with urllib.request.urlopen('http://127.0.0.1:1337/api/v2/app',timeout=1) as r:
+    with urllib.request.urlopen('http://127.0.0.1:1337/api/v2/app/info',timeout=1) as r:
      if r.status==200:return dict(status='http_ready',starts=self.starts)
    except (OSError,TimeoutError):pass
    time.sleep(.2)
