@@ -1,0 +1,82 @@
+"""Independent complete ordinary-schedule scoring; deployment gates remain separate."""
+import json,pathlib
+from urllib.parse import urlsplit
+from source_check import require
+from shlink_database_score import creation,edit,locate,normalized,ordinary_record,records
+from shlink_files import compare_non_database
+from shlink_redis import logical as redis_logical
+
+def non_database(before,after):
+ require(set(before)==set(after)=={'database','filesystem','redis'},'complete_cross_store_observation')
+ compare_non_database(before['filesystem'],after['filesystem'])
+ require(redis_logical(before['redis'])==redis_logical(after['redis']),'redis_frame')
+def unchanged(before,after):
+ non_database(before,after);require(normalized(before['database'])==normalized(after['database']),'database_unchanged')
+def actor(state,identity,fingerprint):
+ rows=records(state['database'],'api_keys');matches=[r for r in rows if r['id']==identity]
+ require(len(matches)==1,'unique_actor');key=matches[0]
+ require(key['key']==fingerprint and key['enabled']==1 and key['expiration_date'] is None,'persistent_key_and_validity')
+ require(not any(r['api_key_id']==identity for r in records(state['database'],'api_key_roles')),'unrestricted_same_actor')
+def readback(state,identity,value):
+ _,record=locate(state['database'],identity)
+ for field,column in [('shortCode','short_code'),('longUrl','original_url'),('title','title'),('domain','domain_id')]:require(value[field]==record[column],'api_readback_field',field=field)
+ require(value['tags']==[],'api_readback_tags')
+
+def score(root,matrix):
+ root=pathlib.Path(root)
+ def load(name):
+  require(pathlib.PurePosixPath(name).name==name,'evidence_basename');p=root/(name+'.json')
+  require(p.is_file() and not p.is_symlink() and p.stat().st_size<=16*1024**2,'evidence_file',name=name)
+  return json.loads(p.read_text())
+ result=load('result');require(result['status']=='controls_completed' and result['cleanup_complete'] is True,'completed_and_cleaned')
+ plan=next(s for s in matrix['systems'] if s['id']=='shlink');identity=result['record_id'];key_id=result['actor_id'];fingerprint=result['api_key_sha256'];root_state=load('root-state')
+ require(load('actor-key')['sha256']==fingerprint,'key_fingerprint');actor(root_state,key_id,fingerprint);ordinary_record(root_state['database'],identity,key_id,plan['api'])
+ require(locate(root_state['database'],identity)[1]['short_code']==result['short_code'],'stable_short_code')
+ api_trace=load('api-trace');require(bool(api_trace) and all(r['api_key_sha256']==fingerprint and 200<=r['status']<300 for r in api_trace),'api_trace_identity_and_success')
+ def context(prefix):
+  require(load(prefix+'-initial-context')=={'cookies':[],'origins':[]},'fresh_browser_context')
+  require(load(prefix+'-browser-errors')==[],'no_browser_errors')
+  require(load(prefix+'-selected-server')['api_key_sha256']==fingerprint,'native_server_key')
+  captures=load(prefix+'-response-capture');require(bool(captures) and all(c['capture']['status']=='complete' for c in captures),'complete_native_capture')
+  trace=load(prefix+'-browser-trace')
+  for row in trace:
+   if row['kind']=='request' and urlsplit(row['url']).path.startswith('/rest/v3/'):
+    require(row['api_key_sha256']==fingerprint,'native_request_actor')
+  return trace
+ def operation(prefix,label,changes,method='PATCH'):
+  trace=context(prefix);control=load(prefix+'-'+label+'-control');request=load(prefix+'-'+label+'-request');response=load(prefix+'-'+label+'-response')
+  require(control['label']==label and control['actions']==[dict(pointer=p,value=v) for p,v in changes.items()],'exact_native_actions')
+  require(control['request']==request and control['response_status']==response['status'] and 200<=response['status']<300,'native_response_consistency')
+  require(request['method']==method and request['query']=='','native_method_and_domain')
+  writes=[]
+  for r in trace:
+   if r.get('phase')==label and r['kind']=='request' and r['method'] not in ['GET','HEAD','OPTIONS']:
+    u=urlsplit(r['url']);writes.append(dict(method=r['method'],path=u.path,query=('?'+u.query if u.query else ''),body=json.loads(r['body'])))
+  require(writes==load(prefix+'-'+label+'-writes')==[request],'exactly_one_native_write')
+  return request
+ native_request=operation('native','create',{'/longUrl':plan['native']['longUrl'],'/title':plan['native']['title']},'POST')
+ require(native_request['path']=='/rest/v3/short-urls','native_create_route')
+ for key in ['longUrl','title']:require(native_request['body'][key]==plan['native'][key],'native_create_value')
+ for label,record_id,body in [('native',result['native_record_id'],plan['native']),('api',identity,plan['api'])]:
+  before,after=load(label+'-before'),load(label+'-after');creation(before['database'],after['database'],record_id,key_id,body);non_database(before,after);actor(after,key_id,fingerprint)
+ require(result['native_record_id']!=identity,'distinct_native_and_api_records')
+ readback(load('native-after'),result['native_record_id'],load('native-api-readback'));readback(load('api-after'),identity,load('api-created-readback'))
+ creates=[r for r in api_trace if r['method']=='POST'];require(len(creates)==1 and creates[0]['label']=='api-create' and creates[0]['path']=='/rest/v3/short-urls' and creates[0]['body']==plan['api'],'one_original_api_creation')
+ unchanged(load('api-after'),root_state)
+ def start(prefix):
+  restored=load(prefix+'-restored');loaded=load(prefix+'-loaded');unchanged(root_state,restored);unchanged(root_state,loaded);actor(loaded,key_id,fingerprint);return loaded
+ def edited(prefix,label,before,changes,action_changes=None):
+  request=operation(prefix,label,action_changes if action_changes is not None else changes);after=load(label+'-after')
+  edit(before['database'],after['database'],identity,key_id,changes,request);non_database(before,after);readback(after,identity,load(label+'-api-readback'));return after
+ cycles=load('control-cycles');require(cycles==[dict(label='cycle-'+str(i),field=f['pointer']) for i,f in enumerate(plan['fields'])],'complete_reset_schedule')
+ for i,field in enumerate(plan['fields']):
+  prefix='cycle-'+str(i);loaded=start(prefix);replaced=edited(prefix,prefix+'-replace',loaded,{field['pointer']:field['replacement']});reset_before=load(prefix+'-reset-before');unchanged(replaced,reset_before);edited(prefix,prefix+'-reset',reset_before,{field['pointer']:field['ordinary']})
+ branches=load('branches');require(branches==[{'id':b['id']} for b in plan['branches']],'complete_branch_schedule')
+ for branch in plan['branches']:
+  label=branch['id'];loaded=start(label);target=next(f for f in plan['fields'] if f['pointer']==branch['target']);other=next(f for f in plan['fields'] if f['pointer']==branch['unrelated'])
+  changes={other['pointer']:other['replacement']};actions={**({target['pointer']:target['ordinary']} if branch['arm']=='noop_repair' else {}),**changes}
+  edited(label,label,loaded,changes,actions)
+ return dict(status='ordinary_controls_verified',branches=len(branches),field_reset_cycles=len(cycles),independent_evaluation_cases=0,scope='schedule and cross-store evidence only; runtime/worker/network/dependency gates separate')
+if __name__=='__main__':
+ import sys
+ result=score(sys.argv[1],json.loads(pathlib.Path(sys.argv[2]).read_text()));pathlib.Path(sys.argv[3]).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))

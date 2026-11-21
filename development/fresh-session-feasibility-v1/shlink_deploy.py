@@ -119,9 +119,10 @@ class Deployment:
   self.command(['cp','-a',str(root),str(self.data)],'restore-files');expected=json.loads((self.base/'root-state.json').read_text())
   require(sqlite_snapshot(self.data/'data/database.sqlite')==expected['database'],'restored_database');compare_non_database(inventory(self.data),expected['filesystem'])
   self.start_redis();c=Redis()
-  try:restore_empty(c,expected['redis'])
+  try:restore_empty(c,expected['redis']);restored_cache=redis_snapshot(c)
   finally:c.close()
-  atomic(self.evidence/'last-restored-root.json',expected);self.start_backend()
+  restored=dict(database=sqlite_snapshot(self.data/'data/database.sqlite'),filesystem=inventory(self.data),redis=restored_cache)
+  atomic(self.evidence/'last-restored-root.json',restored);self.start_backend()
  def cleanup(self):
   # Cleanup gets its own bounded window even when the application deadline elapsed.
   self.info['deadline_epoch']=time.time()+90;self.save();errors=[]
