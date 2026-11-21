@@ -1,7 +1,7 @@
 """Disposable MySQL process, typed observations and verified logical resets.
 Application writers must be stopped. Database storage is outside application files.
 """
-import datetime,hashlib,json,os,pathlib,re,shutil,signal,subprocess,time
+import datetime,hashlib,json,os,pathlib,re,shutil,signal,subprocess,time,tempfile
 from checkpoint import State,inventory
 from shlink_sqlite import canonical,typed
 from source_check import require
@@ -12,15 +12,15 @@ def cell(value):
  return typed(value)
 class MySQLState(State):
  def __init__(self,base):
-  super().__init__(base);self.db_process=None;self.db_log=None;self.socket=str(self.base/'mysql.sock')
+  super().__init__(base);self.db_process=None;self.db_log=None;self.socket=None;self.storage=None
  def connection(self,database=True):
   import pymysql
   return pymysql.connect(unix_socket=self.socket,user='root',database='study' if database else None,charset='utf8mb4',autocommit=False)
  def start_database(self):
-  data=self.base/'mysql';require(not data.exists(),'fresh_mysql_datadir');self.db_log=(self.base/'mysql.log').open('wb')
+  root=pathlib.Path('/var/lib/mysql');root.mkdir(exist_ok=True);self.storage=pathlib.Path(tempfile.mkdtemp(prefix='fresh-study-',dir=root));data=self.storage/'data';self.socket=str(self.storage/'mysql.sock');require(not data.exists(),'fresh_mysql_datadir');self.db_log=(self.base/'mysql.log').open('wb')
   args=['/usr/sbin/mysqld','--no-defaults','--user=root','--datadir='+str(data)]
   p=subprocess.run(args+['--initialize-insecure'],stdout=self.db_log,stderr=subprocess.STDOUT,timeout=90);require(p.returncode==0,'mysql_initialize')
-  self.db_process=subprocess.Popen(args+['--socket='+self.socket,'--pid-file='+str(self.base/'mysql.pid'),'--bind-address=127.0.0.1','--port=3306','--mysqlx=OFF','--skip-log-bin','--innodb-buffer-pool-size=64M'],stdout=self.db_log,stderr=subprocess.STDOUT,start_new_session=True)
+  self.db_process=subprocess.Popen(args+['--socket='+self.socket,'--pid-file='+str(self.storage/'mysql.pid'),'--bind-address=127.0.0.1','--port=3306','--mysqlx=OFF','--skip-log-bin','--innodb-buffer-pool-size=64M'],stdout=self.db_log,stderr=subprocess.STDOUT,start_new_session=True)
   deadline=time.monotonic()+60
   while time.monotonic()<deadline:
    require(self.db_process.poll() is None,'mysql_running')
@@ -39,6 +39,8 @@ class MySQLState(State):
    try:self.db_process.wait(timeout=30)
    except subprocess.TimeoutExpired:os.killpg(self.db_process.pid,signal.SIGKILL);self.db_process.wait(timeout=5)
   if self.db_log:self.db_log.close();self.db_log=None
+  if self.storage is not None:
+   require(self.storage.parent==pathlib.Path('/var/lib/mysql') and self.storage.name.startswith('fresh-study-'),'owned_mysql_cleanup');shutil.rmtree(self.storage);self.storage=None
  def snapshot(self):
   self.stopped();con=self.connection()
   try:
