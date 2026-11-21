@@ -98,6 +98,10 @@ jobs:
         if: ${{ always() && inputs.system == 'shlink' }}
         run: |
           if test -f "$STUDY_BASE/deployment.json"; then sudo python3 development/fresh-session-feasibility-v1/shlink_deploy.py "$STUDY_BASE" cleanup; fi
+      - name: Verify runtime, isolation and cleanup gates
+        env:
+          STUDY_SYSTEM: ${{ inputs.system }}
+        run: sudo python3 development/fresh-session-feasibility-v1/runtime_score.py "$STUDY_BASE" "$STUDY_SYSTEM"
       - name: Export sanitized bounded evidence
         id: publish
         if: ${{ always() }}
