@@ -40,8 +40,12 @@ class Deployment:
    self.command(['docker','cp','-a',name+':/etc/shlink/config/params',str(self.data/'config')],'seed-config')
    self.command(['docker','cp','-a',name+':/etc/shlink/data/.',str(self.data/'data')],'seed-data')
   finally:self.remove('extract')
-  for p in [self.data,self.data/'data',self.data/'config',self.data/'config/params']:
-   p.chmod(0o755);os.chown(p,1001,1001)
+  # Provision all copied mount entries for the original image's UID, including
+  # empty nested cache/proxy directories copied out as root by Docker.
+  for p in [self.data,*self.data.rglob('*')]:
+   require(not p.is_symlink(),'seed_has_no_symlink')
+   os.chown(p,1001,1001)
+   if p.is_dir():p.chmod(0o755)
   backend={'DB_DRIVER':'sqlite','DEFAULT_DOMAIN':'shlink.test','IS_HTTPS_ENABLED':'false','REDIS_SERVERS':'tcp://study-redis:6379','REDIS_PUB_SUB_ENABLED':'false','MERCURE_ENABLED':'false','RABBITMQ_ENABLED':'false','MATOMO_ENABLED':'false','AUTO_RESOLVE_TITLES':'true','SKIP_INITIAL_GEOLITE_DOWNLOAD':'true','WEB_WORKER_NUM':'1','TASK_WORKER_NUM':'1','INITIAL_API_KEY':key}
   for name,values in [('backend',backend)]:
    p=self.base/(name+'.env');p.write_text(''.join(k+'='+v+'\n' for k,v in values.items()));p.chmod(0o600)

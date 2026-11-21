@@ -374,3 +374,6 @@ Pipeline qualification44873791375 passed the complete build and failed deploymen
 
 
 Qualification44874253600 passed build, network connectivity, original backend startup and worker/listener probes; failed waiting for native creation form after hard navigation. Original client source selects a server from its asynchronously populated registry, explaining the recorded reload with no subsequent health request. Replaced harness page reload with original navigation links and row menu; inspected exact npm-lockfile-verified frontend-kit1.6.1 markup to identify its aria-haspopup button. Added bounded page diagnostics. Application inputs and handlers unchanged.
+
+
+Qualification44874764794 reached and submitted the original creation form. HTTP500 traced to root-owned copied data/proxies while original worker uses UID1001; independently confirmed by native-before filesystem snapshot. Corrected recursive ownership of copied disposable mount entries before startup. No application validation or request changes. Prior source/traffic-based navigation repair succeeded.
