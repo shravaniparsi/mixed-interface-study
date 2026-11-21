@@ -1,0 +1,19 @@
+{
+  "project_sequence": 16,
+  "purpose": "Resolve catalog version7.2.0 to an exact native backend source tag, without substituting current default branch or Electron wrapper",
+  "parent_collection": "results/evaluation-source-16-native-repository-search/collection.json",
+  "basis": [
+    "results/evaluation-source-16-native-repository-search/metadata.json",
+    "results/evaluation-source-16-native-catalog/metadata.json"
+  ],
+  "output": "results/evaluation-source-16-native-tags",
+  "command": [
+    "gh",
+    "api",
+    "repos/apioo/fusio-apps-backend/git/matching-refs/tags/"
+  ],
+  "attempts": 1,
+  "timeout_seconds": 30,
+  "max_response_bytes": 1048576,
+  "selection_rule": "Only refs/tags/7.2.0 or refs/tags/v7.2.0 matching the original catalog version; if both differ or neither exists leave unresolved. Annotated tags require separately bound dereference. No HEAD substitution."
+}
