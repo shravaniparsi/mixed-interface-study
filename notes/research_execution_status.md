@@ -377,3 +377,6 @@ Qualification44874253600 passed build, network connectivity, original backend st
 
 
 Qualification44874764794 reached and submitted the original creation form. HTTP500 traced to root-owned copied data/proxies while original worker uses UID1001; independently confirmed by native-before filesystem snapshot. Corrected recursive ownership of copied disposable mount entries before startup. No application validation or request changes. Prior source/traffic-based navigation repair succeeded.
+
+
+Qualification44875201463 completed native/API creation and verified root checkpoint, then Docker rejected fixed IP on an automatically allocated subnet. Added an explicit internal subnet. Creation snapshots also revealed Valinor type-metadata generation. Reviewed the installed Valinor473ba512 source and Shlink cache factory; added narrowly scoped additive metadata-file classification for writes, retaining code/content hashes and directory timestamps. Existing files, unrelated additions, unexpected markers and all read/restore frames remain strict. This repairs a cold-cache assumption during development, not a retrospective feasibility pass.46 local tests pass, including adversarial file-effect cases.

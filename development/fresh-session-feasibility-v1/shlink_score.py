@@ -6,9 +6,9 @@ from shlink_database_score import creation,edit,locate,normalized,ordinary_recor
 from shlink_files import compare_non_database
 from shlink_redis import logical as redis_logical
 
-def non_database(before,after):
+def non_database(before,after,allow_metadata_additions=False):
  require(set(before)==set(after)=={'database','filesystem','redis'},'complete_cross_store_observation')
- compare_non_database(before['filesystem'],after['filesystem'])
+ compare_non_database(before['filesystem'],after['filesystem'],allow_metadata_additions)
  require(redis_logical(before['redis'])==redis_logical(after['redis']),'redis_frame')
 def unchanged(before,after):
  non_database(before,after);require(normalized(before['database'])==normalized(after['database']),'database_unchanged')
@@ -71,7 +71,7 @@ def score(root,matrix):
  require(native_request['path']=='/rest/v3/short-urls','native_create_route')
  for key in ['longUrl','title']:require(native_request['body'][key]==plan['native'][key],'native_create_value')
  for label,record_id,body in [('native',result['native_record_id'],plan['native']),('api',identity,plan['api'])]:
-  before,after=load(label+'-before'),load(label+'-after');creation(before['database'],after['database'],record_id,key_id,body);non_database(before,after);actor(after,key_id,fingerprint)
+  before,after=load(label+'-before'),load(label+'-after');creation(before['database'],after['database'],record_id,key_id,body);non_database(before,after,True);actor(after,key_id,fingerprint)
  require(result['native_record_id']!=identity,'distinct_native_and_api_records')
  bound_readback('native-readback','native-api-readback',load('native-after'),result['native_record_id']);bound_readback('api-created-readback','api-created-readback',load('api-after'),identity)
  creates=[r for r in api_trace if r['method']=='POST'];require(len(creates)==1 and creates[0]['label']=='api-create' and creates[0]['path']=='/rest/v3/short-urls' and creates[0]['body']==plan['api'],'one_original_api_creation')
@@ -82,7 +82,7 @@ def score(root,matrix):
  def edited(prefix,label,before,changes,action_changes=None):
   prior=locate(before['database'],identity)[1]
   request=operation(prefix,label,action_changes if action_changes is not None else changes,expected_form={'longUrl':prior['original_url'],'title':prior['title']});after=load(label+'-after')
-  edit(before['database'],after['database'],identity,key_id,changes,request);non_database(before,after);bound_readback(label+'-readback',label+'-api-readback',after,identity);return after
+  edit(before['database'],after['database'],identity,key_id,changes,request);non_database(before,after,True);bound_readback(label+'-readback',label+'-api-readback',after,identity);return after
  cycles=load('control-cycles');require(cycles==[dict(label='cycle-'+str(i),field=f['pointer']) for i,f in enumerate(plan['fields'])],'complete_reset_schedule')
  for i,field in enumerate(plan['fields']):
   prefix='cycle-'+str(i);loaded=start(prefix);replaced=edited(prefix,prefix+'-replace',loaded,{field['pointer']:field['replacement']});reset_before=load(prefix+'-reset-before');unchanged(replaced,reset_before);edited(prefix,prefix+'-reset',reset_before,{field['pointer']:field['ordinary']})

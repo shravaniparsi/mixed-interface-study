@@ -78,6 +78,7 @@ def main(base):
     build(src,dockerfile,'fresh-shlink-backend:v1','backend-runtime')
     extract('fresh-shlink-backend:v1','backend-runtime',[('/etc/shlink/vendor/composer/installed.json','backend-installed.json'),('/etc/shlink/bin/rr','roadrunner')])
     installed=json.loads((out/'backend-installed.json').read_text());packages={p['name']:p for p in installed['packages']}
+    require(packages['cuyz/valinor']['source']['reference']=='473ba512c859a4441e382ca279778a67a302971d','reviewed_metadata_cache_library')
     for name,reference in DEPENDENCIES.items():reviewed_reference(packages[name]['source']['reference'],reference,json.loads(original_composer.read_text())['require'][name])
     for name,constraint in json.loads(original_composer.read_text())['require'].items():
      match=re.search(r'#([a-f0-9]{7,40})(?:\s|$)',constraint)

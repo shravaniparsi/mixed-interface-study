@@ -32,7 +32,7 @@ class Deployment:
   prefix='fresh-shlink-'+secrets.token_hex(5);key=secrets.token_urlsafe(32)
   self.info=dict(prefix=prefix,network=prefix+'-net',containers={},commands=[],images={k:build['images'][k]['id'] for k in ['backend-runtime','client-runtime','redis']},api_key=key,deadline_epoch=time.time()+1400,network_created=False);self.save()
   self.data.mkdir(mode=0o700);(self.data/'data').mkdir();(self.data/'config').mkdir();self.save()
-  self.command(['docker','network','create','--internal',self.info['network']],'network-create');self.info['network_created']=True;self.save()
+  self.command(['docker','network','create','--internal','--subnet','172.29.248.0/24',self.info['network']],'network-create');self.info['network_created']=True;self.save()
   self.command(['docker','network','inspect',self.info['network']],'network-identity')
   # Preserve the original image's config and data seed, before its entrypoint runs.
   name=prefix+'-extract';self.command(['docker','create','--name',name,'--label','study.owner='+prefix,self.info['images']['backend-runtime']],'seed-create');self.info['containers']['extract']=name;self.save()
