@@ -1,0 +1,106 @@
+{
+  "status": "fixed_pilot_completed_one_unresolved_client_observation",
+  "run_id": 44940198661,
+  "url": "https://github.com/shravaniparsi/mixed-interface-study/actions/runs/44940198661",
+  "head": "d584f5b700d6e4fa5742e5a347b2ad48e53c452c",
+  "runner_seconds": 376.0,
+  "verified_export_files": 123,
+  "export_sha256": "1e06ae492677ada69ee42dad9dfcf97cc06b9d7bacab9aab7f33e93f75d435db",
+  "classification_sha256": "0ffc8624adfd2e8dec16fa059cb8c6ff4207723268ae58c899cc96a6f256edc5",
+  "cases": [
+    {
+      "id": "ordinary-content",
+      "schema_conformant": true,
+      "producer": "accepted_readable",
+      "http_status": 200,
+      "producer_exception": null,
+      "probe": "native_request_emitted",
+      "probe_qualified": true,
+      "branches": {
+        "sham": "exact_intended_edit",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": false
+    },
+    {
+      "id": "ordinary-title",
+      "schema_conformant": true,
+      "producer": "accepted_readable",
+      "http_status": 200,
+      "producer_exception": null,
+      "probe": "native_request_emitted",
+      "probe_qualified": true,
+      "branches": {
+        "sham": "exact_intended_edit",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": false
+    },
+    {
+      "id": "content-omit",
+      "schema_conformant": false,
+      "producer": "producer_rejected",
+      "http_status": 500,
+      "producer_exception": "ValidationException",
+      "probe": "unknown",
+      "probe_qualified": false,
+      "branches": {},
+      "paired_comparison_qualified": false,
+      "repair_restores_exact_edit": null
+    },
+    {
+      "id": "content-null",
+      "schema_conformant": false,
+      "producer": "producer_rejected",
+      "http_status": 500,
+      "producer_exception": "ValidationException",
+      "probe": "unknown",
+      "probe_qualified": false,
+      "branches": {},
+      "paired_comparison_qualified": false,
+      "repair_restores_exact_edit": null
+    },
+    {
+      "id": "title-omit",
+      "schema_conformant": true,
+      "producer": "accepted_readable",
+      "http_status": 200,
+      "producer_exception": null,
+      "probe": "native_request_emitted",
+      "probe_qualified": true,
+      "branches": {
+        "sham": "exact_intended_edit",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": true,
+      "repair_restores_exact_edit": false
+    },
+    {
+      "id": "title-null",
+      "schema_conformant": false,
+      "producer": "accepted_readable",
+      "http_status": 200,
+      "producer_exception": null,
+      "probe": "unknown",
+      "probe_qualified": false,
+      "branches": {
+        "sham": "unavailable",
+        "repair": "exact_intended_edit"
+      },
+      "paired_comparison_qualified": false,
+      "repair_restores_exact_edit": null
+    }
+  ],
+  "qualified_altered_repair_effects": 0,
+  "independent_research_cases": 0,
+  "interpretation": [
+    "Content omission and null return HTTP 500 with explicit ValidationException and success=false; persistent state unchanged. Report response status as well as classifier rejection label.",
+    "Omitted title is accepted as empty string and remains exactly editable.",
+    "Null title is accepted and persisted as null; original readback omits the null title. Unrepaired editor did not become visible within 15 seconds. No JavaScript pageerror was captured; timeout remains unavailable, not a confirmed product failure.",
+    "Fixed title repair persists and enables exact native content editing, but the paired causal comparison remains unqualified because the unrepaired outcome is unavailable.",
+    "Original OpenAPI schema already excludes null titles. No incremental advantage over competent schema validation demonstrated."
+  ],
+  "next_step": "Prospectively add console-exception and DOM diagnostics for all cases, preserving this first run; repeat the entire fixed schedule only to resolve observation coverage, never count repetitions as independent evidence. Broader application selection remains fixed."
+}
