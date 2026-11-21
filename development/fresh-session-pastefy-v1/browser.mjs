@@ -18,12 +18,12 @@ export async function session(browser, origin, credentials, diagnostics={}) {
       const response=await route.fetch({timeout:15000,maxRedirects:0,maxRetries:0});
       const body=await response.body();
       receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:body.toString('utf8'),capture:'unchanged_request_forwarded_response_buffered_before_release'});
-      await route.fulfill({response,body});
+      await route.fulfill({response,body});pending.delete(req);
     } catch(error){errors.push({error:String(error),path:new URL(req.url()).pathname});await route.abort();}
   });
   page.on('response',response=>{
     const req=response.request();if(!isApi(req)||['POST','PUT'].includes(req.method()))return;
-    const task=(async()=>{receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:await response.text()});})();
+    const task=(async()=>{receipts.push({method:req.method(),path:new URL(req.url()).pathname,request:req.postData(),status:response.status(),body:await response.text()});pending.delete(req);})();
     tasks.add(task);task.catch(e=>errors.push({error:String(e)})).finally(()=>tasks.delete(task));
   });
   async function settled(){
@@ -33,7 +33,7 @@ export async function session(browser, origin, credentials, diagnostics={}) {
       else emptySince=0;
       await page.waitForTimeout(50);
     }
-    throw new Error('Outstanding API requests at checkpoint');
+    diagnostics.outstanding=[...pending].map(r=>({method:r.method(),path:new URL(r.url()).pathname}));diagnostics.captureTasks=tasks.size;throw new Error('Outstanding API requests at checkpoint');
   }
   try {
     const identity=page.waitForResponse(async r=>{
@@ -53,11 +53,12 @@ export async function session(browser, origin, credentials, diagnostics={}) {
     }
     async function submit(method,path){
       diagnostics.stage='submit-'+method;
+      const reloaded=method==='PUT'?page.waitForEvent('load',{timeout:15000}):null;
       await form().locator('button[type="submit"]').click();diagnostics.stage='capture-'+method;
       const deadline=Date.now()+15000;let response;
       while(Date.now()<deadline){response=receipts.find(r=>r.method===method&&r.path===path);if(response)break;await page.waitForTimeout(50);}
       requireValue(response&&response.status>=200&&response.status<300,'Native write HTTP failure or missing capture');
-      const body=JSON.parse(response.body);requireValue(body.success===true,'Native write rejected');await settled();return body;
+      const body=JSON.parse(response.body);requireValue(body.success===true,'Native write rejected');if(reloaded)await reloaded;await settled();return body;
     }
     return {page,context,receipts,settled,actor:{user_id:user.id,role:user.type,key_sha256:createHash('sha256').update(credentials.api_key).digest('hex')},
       async create(input){await fill('title',input.title);await fill('content',input.content);return submit('POST','/api/v2/paste');},
