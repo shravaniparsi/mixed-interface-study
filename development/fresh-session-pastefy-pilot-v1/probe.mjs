@@ -1,3 +1,4 @@
+import {observeConsole,observeDocument} from './client_diagnostics.mjs';
 // Original-client request-production prediction only. All writes blocked before navigation.
 import fs from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -14,7 +15,7 @@ const report={target:'native_request_production_before_transmission',prediction:
 try {
  browser=await chromium.launch({headless:true,timeout:30000,args:['--no-sandbox']});
  s=await session(browser,origin,credentials,diagnostics,{configureContext:(context,page)=>{
-   page.on('pageerror',error=>pageErrors.push(String(error)));
+   observeConsole(page,report,diagnostics);page.on('pageerror',error=>pageErrors.push(String(error)));
    return installWriteGuard(context,writes);
  }});
  report.actor=s.actor;
@@ -35,7 +36,7 @@ try {
  if(pageErrors.length&&report.prediction!=='native_request_emitted')report.prediction='unknown_client_runtime_error';
 } catch(error){report.error=String(error);report.prediction='unknown';}
 finally {
- if(s){report.url=s.page.url();report.receipts=s.receipts;}
+ if(s){report.url=s.page.url();report.receipts=s.receipts;await observeDocument(s.page,report);}
  // Closing aborts pending reads; no write can have escaped the context-wide guard.
  if(browser)await Promise.race([browser.close(),new Promise(resolve=>setTimeout(resolve,5000))]);
  await fs.writeFile(outputPath,JSON.stringify(report));

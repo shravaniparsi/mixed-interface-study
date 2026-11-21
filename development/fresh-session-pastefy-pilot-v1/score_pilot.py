@@ -1,5 +1,6 @@
 """Independent complete-schedule development-pilot classification, including null results."""
 import json,pathlib,sys
+from client_error_evidence import console_exceptions
 from outcomes import producer,continuation,accepted
 from state_frame import check_intervention
 from score_controls import score as score_controls,ROOT
@@ -29,7 +30,7 @@ def score(base):
     valid=valid and len(writes)==1 and writes[0]['method']=='PUT' and writes[0]['origin']=='http://127.0.0.1:1337' and writes[0]['path']=='/api/v2/paste/'+key and json.loads(writes[0]['request'])==probe['request']
    elif prediction=='client_blocks_submission':valid=valid and not writes and not probe.get('pageErrors') and (probe.get('control',{}).get('disabled') is True or probe.get('control',{}).get('invalid',0)>0)
    else:valid=False
-   result['D']=dict(prediction=prediction,qualified=bool(valid),persistent_state_unchanged=unchanged)
+   result['D']=dict(prediction=prediction,qualified=bool(valid),persistent_state_unchanged=unchanged,console_exceptions=console_exceptions(probe))
   for branch in record['branches']:
    arm=branch['arm'];require(arm in ['sham','repair'],'registered_arm');b=dict(arm=arm,intervention_qualified=False,continuation=dict(outcome='unavailable',available=False))
    try:

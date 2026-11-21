@@ -24,7 +24,7 @@ jobs:
           FREEZE: ${{ inputs.freeze }}
         run: |
           test "$(git rev-parse HEAD)" = "$FREEZE"
-          python3 -c 'import json,hashlib,pathlib; d=json.load(open("manifests/fresh-session-pastefy-pilot-dispatch-v1.json")); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==v for p,v in d["sha256"].items())'
+          python3 -c 'import json,hashlib,pathlib; d=json.load(open("manifests/fresh-session-pastefy-pilot-dispatch-v2.json")); assert all(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==v for p,v in d["sha256"].items())'
           mkdir -p "$RUNNER_TEMP/pastefy-fixed-pilot"
           printf 'STUDY_BASE=%s\n' "$RUNNER_TEMP/pastefy-fixed-pilot" >> "$GITHUB_ENV"
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1

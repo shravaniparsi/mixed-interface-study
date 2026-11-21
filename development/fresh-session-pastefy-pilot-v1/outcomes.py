@@ -1,5 +1,6 @@
 """Classify recorded outcomes. Timeouts never imply validation blocking or a defect."""
 import copy,hashlib,json
+from client_error_evidence import console_exceptions
 from state_frame import frame,row_for,typed,timestamp,TABLE
 
 def accepted(receipt):
@@ -38,8 +39,9 @@ def continuation(before,after,native,key,owner,edit,readback):
  writes=[r for r in native.get('receipts',[]) if r['method'] not in ['GET','HEAD','OPTIONS']]
  state_unchanged=before==after
  if not writes:
-  if native.get('status')=='positive_client_blocking' and not native.get('pageErrors') and (native.get('control',{}).get('disabled') is True or native.get('control',{}).get('invalid',0)>0) and state_unchanged:return dict(outcome='positive_client_blocking',available=True)
-  if native.get('pageErrors') and state_unchanged:return dict(outcome='client_runtime_error',available=True,errors=native['pageErrors'])
+  if native.get('status')=='positive_client_blocking' and not native.get('pageErrors') and not console_exceptions(native) and (native.get('control',{}).get('disabled') is True or native.get('control',{}).get('invalid',0)>0) and state_unchanged:return dict(outcome='positive_client_blocking',available=True)
+  exceptions=console_exceptions(native)
+  if (native.get('pageErrors') or exceptions) and state_unchanged:return dict(outcome='client_runtime_error',available=True,errors=native.get('pageErrors',[]),console_exceptions=exceptions)
   return dict(outcome='unavailable',available=False,persistent_state_unchanged=state_unchanged)
  if len(writes)!=1 or writes[0]['method']!='PUT' or writes[0]['path']!='/api/v2/paste/'+key:return dict(outcome='unexpected_native_writes',available=False)
  write=writes[0]
