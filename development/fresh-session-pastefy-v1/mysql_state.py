@@ -64,7 +64,7 @@ class MySQLState(State):
   require(pathlib.Path(root)==self.live,'mysql_observation_live_only');return dict(files=inventory(self.live),database_sha256=hashlib.sha256(canonical(self.snapshot())).hexdigest())
  def checkpoint(self,label='root'):
   require(label in ['root','native','api'],'registered_checkpoint_label');self.stopped();dest=self.base/('checkpoint-'+label);require(not dest.exists(),'single_checkpoint')
-  before=self.observe(self.live);dest.mkdir();shutil.copytree(self.live,dest/'files')
+  before=self.observe(self.live);dest.mkdir();(dest/'database.json').write_bytes(canonical(self.snapshot()));shutil.copytree(self.live,dest/'files')
   with (dest/'database.sql').open('wb') as out:
    subprocess.run(['mysqldump','--no-defaults','--socket='+self.socket,'--user=root','--single-transaction','--skip-comments','--skip-dump-date','--set-gtid-purged=OFF','--no-tablespaces','--routines','--events','--triggers','study'],stdout=out,check=True,timeout=30)
   require(before==self.observe(self.live),'checkpoint_source_unchanged');before['dump_sha256']=hashlib.sha256((dest/'database.sql').read_bytes()).hexdigest();(dest/'manifest.json').write_bytes(canonical(before));return before
@@ -77,4 +77,4 @@ class MySQLState(State):
   finally:con.close()
   with (dest/'database.sql').open('rb') as inp:subprocess.run(['mysql','--no-defaults','--socket='+self.socket,'--user=root','study'],stdin=inp,check=True,timeout=30)
   shutil.rmtree(self.live);shutil.copytree(dest/'files',self.live)
-  require(self.observe(self.live)=={k:v for k,v in saved.items() if k!='dump_sha256'},'mysql_restore_exact_logical_state');return saved
+  require(self.observe(self.live)=={k:v for k,v in saved.items() if k!='dump_sha256'},'mysql_restore_exact_logical_state',expected_database=json.loads((dest/'database.json').read_text()),actual_database=self.snapshot(),expected_files=saved['files'],actual_files=inventory(self.live));return saved
