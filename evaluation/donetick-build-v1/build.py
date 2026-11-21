@@ -7,6 +7,27 @@ _v=importlib.util.module_from_spec(_spec);_spec.loader.exec_module(_v)
 require=_v.require
 digest=_v.digest
 SOURCES=[('backend','donetick/donetick','e4f5f65a034bce330a58f3036c1b92021b494029','results/editability-repairability-repository-metadata-v1/19/3.json'),('frontend','donetick/frontend','ec024ce525243e41cc9a2997a11de0e58278093e','results/evaluation-source-19-native-tree/3.json')]
+def tree_identity(rows):
+ """Reconstruct Git root tree identity from frozen recursive entries."""
+ by_parent={}
+ seen=set()
+ for row in rows:
+  rel=pathlib.PurePosixPath(row['path'])
+  require(not rel.is_absolute() and '..' not in rel.parts and '.git' not in rel.parts and str(rel)==row['path'],'safe_tree_path',path=row['path'])
+  require(row['path'] not in seen,'unique_tree_path');seen.add(row['path'])
+  require(row['type'] in ('blob','tree'),'supported_tree_entry',path=row['path'])
+  require(row['mode'] in ('100644','100755','040000') and ((row['mode']=='040000')==(row['type']=='tree')),'tree_mode',path=row['path'])
+  by_parent.setdefault(str(rel.parent),[]).append(row)
+ def calculate(parent):
+  entries=by_parent.get(parent,[]);body=b''
+  for row in sorted(entries,key=lambda x:pathlib.PurePosixPath(x['path']).name.encode()+ (b'/' if x['type']=='tree' else b'')):
+   sha=row['sha'];name=pathlib.PurePosixPath(row['path']).name
+   if row['type']=='tree':require(calculate(row['path'])==sha,'subtree_identity',path=row['path'])
+   require(len(sha)==40,'sha_length')
+   body+=row['mode'].lstrip('0').encode()+b' '+name.encode()+b'\0'+bytes.fromhex(sha)
+  return hashlib.sha1(b'tree '+str(len(body)).encode()+b'\0'+body).hexdigest()
+ require(all(parent=='.' or parent in seen for parent in by_parent),'tree_parent_present')
+ return calculate('.')
 def verify(src,tree):
  for row in tree:
   p=pathlib.PurePosixPath(row['path'])
@@ -32,13 +53,13 @@ def main():
    size=sum(p.stat().st_size for p in (src/'.git').rglob('*') if p.is_file());require(size<=512*1024**2,'git_size_cap',source=name)
    run(git+['rev-parse','FETCH_HEAD'],name+'-commit.txt');require((out/(name+'-commit.txt')).read_text().strip()==rev,'exact_commit')
    run(git+['rev-parse','FETCH_HEAD^{tree}'],name+'-tree.txt')
-   tree=json.loads((ROOT/treefile).read_text());require((out/(name+'-tree.txt')).read_text().strip()==tree['sha'],'exact_tree')
+   tree=json.loads((ROOT/treefile).read_text());require((out/(name+'-tree.txt')).read_text().strip()==tree_identity(tree['tree']),'exact_tree')
    run(git+['checkout','--detach','--quiet','FETCH_HEAD'],name+'-checkout.log')
    v=verify(src,tree['tree']);(out/(name+'-source-verification.json')).write_text(json.dumps(v,indent=2)+'\n')
    archive=out/(name+'-source.tar.gz')
    with tarfile.open(archive,'w:gz',compresslevel=1) as tf:
     for rel in sorted(v['tree_files']):tf.add(src/rel,arcname=name+'/'+rel,recursive=False)
-   report['sources'][name]=dict(repository=repo,revision=rev,tree_sha=tree['sha'],files=v['files'],bytes=v['bytes'],archive_sha256=digest(archive),git_bytes=size)
+   report['sources'][name]=dict(repository=repo,revision=rev,tree_sha=tree_identity(tree['tree']),files=v['files'],bytes=v['bytes'],archive_sha256=digest(archive),git_bytes=size)
    save()
   front=base/'frontend';back=base/'backend';report['stage']='frontend';save()
   for tool in ['node','npm']:run([tool,'--version'],tool+'-version.txt')
