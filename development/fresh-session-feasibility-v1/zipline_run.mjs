@@ -49,11 +49,11 @@ async function openPage(){
  page=await context.newPage();page.setDefaultTimeout(10000);
  await context.route('**/*',async route=>{const u=new URL(route.request().url());assert.equal(u.origin,origin,'external browser request');await route.continue();});
  page.on('request',r=>{pendingRequests.add(r);trace.push({phase,channel:'browser-request',method:r.method(),url:r.url(),body:r.postData()});});
- page.on('requestfinished',r=>pendingRequests.delete(r));page.on('requestfailed',r=>{pendingRequests.delete(r);trace.push({phase,channel:'requestfailed',url:r.url(),error:r.failure()});});
+ page.on('requestfinished',r=>{pendingRequests.delete(r);trace.push({phase,channel:'browser-request-finished',url:r.url(),method:r.method()});});page.on('requestfailed',r=>{pendingRequests.delete(r);trace.push({phase,channel:'requestfailed',url:r.url(),error:r.failure()});});
  page.on('response',r=>{if(!r.url().includes('/api/'))return;const row={phase,channel:'browser-response',url:r.url(),status:r.status()};trace.push(row);capture.observe(row,()=>r.text());});
  page.on('pageerror',e=>trace.push({phase,channel:'pageerror',error:String(e)}));
 }
-async function settled(){const deadline=Date.now()+10000;while(pendingRequests.size){assert(Date.now()<deadline,'owned HTTP work incomplete');await pause(20);}await idle();}
+async function settled(){const deadline=Date.now()+10000;while(pendingRequests.size){if(Date.now()>=deadline){save('pending-http',{phase,requests:[...pendingRequests].map(r=>({url:r.url(),method:r.method(),resource_type:r.resourceType()}))});throw new Error('owned HTTP work incomplete');}await pause(20);}await idle();}
 const actorSummary=x=>({id:x.user.id,role:x.user.role});
 async function login(label){
  await page.goto(origin+'/auth/login?local=true');

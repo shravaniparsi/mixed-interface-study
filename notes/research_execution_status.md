@@ -386,3 +386,6 @@ Qualification44875736183 completed all12 native branches,2reset cycles and clean
 
 
 Shlink full-pipeline qualification44876464554 passed: all12 branches,2field-reset cycles, independent private raw scoring, runtime/isolation/worker verification, cleanup, sanitized export and checksum-verified log recovery. This is engineering qualification, not the new feasibility attempt or unseen evaluation evidence. Next authorized system: Zipline.
+
+
+Zipline qualification44876939621 verified runtime, completed native/API creation, then failed pending HTTP completion at checkpoint. PostgreSQL and application shutdown succeeded. Added request-finish and outstanding-request diagnostics; no wait-rule relaxation. Original version endpoint bypasses disabled feature flag for administrators and attempts upstream reads in isolated namespace, but current evidence does not identify it as the remaining request.
