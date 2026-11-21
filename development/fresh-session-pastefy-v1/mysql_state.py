@@ -17,7 +17,7 @@ class MySQLState(State):
   import pymysql
   return pymysql.connect(unix_socket=self.socket,user='root',database='study' if database else None,charset='utf8mb4',autocommit=False)
  def start_database(self):
-  data=self.base/'mysql';data.mkdir();self.db_log=(self.base/'mysql.log').open('wb')
+  data=self.base/'mysql';require(not data.exists(),'fresh_mysql_datadir');self.db_log=(self.base/'mysql.log').open('wb')
   args=['/usr/sbin/mysqld','--no-defaults','--user=root','--datadir='+str(data)]
   p=subprocess.run(args+['--initialize-insecure'],stdout=self.db_log,stderr=subprocess.STDOUT,timeout=90);require(p.returncode==0,'mysql_initialize')
   self.db_process=subprocess.Popen(args+['--socket='+self.socket,'--pid-file='+str(self.base/'mysql.pid'),'--bind-address=127.0.0.1','--port=3306','--mysqlx=OFF','--skip-log-bin','--innodb-buffer-pool-size=64M'],stdout=self.db_log,stderr=subprocess.STDOUT,start_new_session=True)
