@@ -14,6 +14,7 @@ class Lifecycle(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    jar=pathlib.Path(tmp)/'fake.jar';jar.write_bytes(b'fixture')
    r=Runtime(pathlib.Path(tmp)/'state',jar);r.command=lambda mode:[sys.executable,'-c','raise SystemExit(7)']
+   r.state.start_database=lambda:None
    with self.assertRaises(ValueError):r.initialize()
    self.assertFalse((r.state.base/'credentials.json').exists());self.assertIsNotNone(r.process.poll())
 if __name__=='__main__':unittest.main()

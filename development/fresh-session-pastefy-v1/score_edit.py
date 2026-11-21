@@ -10,6 +10,7 @@ def timestamp(v):
  if v['type']=='integer':return v['value']
  return datetime.datetime.fromisoformat(v['value'].replace('Z','+00:00')).timestamp()
 def score_edit(before,after,key,owner,field,replacement):
+ require(before.get('sequences')==after.get('sequences'),'edit_sequences_unchanged')
  require(field in ['title','content'],'ordinary_edit_field');require(before['schema']==after['schema'] and before['pragmas']==after['pragmas'],'schema_and_pragmas_unchanged')
  require(set(before['tables'])==set(after['tables']),'same_tables')
  table='pastefy_pastes';b=before['tables'][table];a=after['tables'][table]

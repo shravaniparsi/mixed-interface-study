@@ -11,8 +11,8 @@ for name,source in [('evidence',base/'execution/evidence'),('build-evidence',bas
  if source.exists():
   for p in source.iterdir():
    if p.is_file() and not p.is_symlink():shutil.copyfile(p,target/p.name)
-for p in (base/'execution/state').glob('jvm-*.log'):
+for p in list((base/'execution/state').glob('jvm-*.log'))+list((base/'execution/state').glob('mysql.log')):
  shutil.copyfile(p,dest/'evidence'/p.name)
-for name in ['run.log','unit-tests.log']:
+for name in ['run.log','unit-tests.log','database-packages.txt']:
  if (base/name).is_file():shutil.copyfile(base/name,dest/'evidence'/name)
 report=export(dest);print(json.dumps(dict(status=report['status'],files=len(report['files']),public_bytes=report['public_bytes'])))

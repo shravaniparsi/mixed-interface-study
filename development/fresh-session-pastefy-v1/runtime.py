@@ -1,16 +1,17 @@
-"""Own one original JVM and disposable SQLite state. Run inside isolated network namespace.
+"""Own one original JVM and disposable MySQL state. Run inside isolated network namespace.
 No application is launched merely by importing this module.
 """
 import json,os,pathlib,signal,subprocess,sys,time,urllib.request
 from checkpoint import State,inventory
-from fixture import seed
+from mysql_fixture import seed
+from mysql_state import MySQLState
 from shlink_sqlite import snapshot
 from source_check import require
 class Runtime:
  def __init__(self,base,jar,java='java'):
-  self.state=State(pathlib.Path(base).resolve());self.jar=pathlib.Path(jar).resolve();require(self.jar.is_file(),'built_jar_present');self.java=java;self.process=None;self.log=None;self.starts=0
+  self.state=MySQLState(pathlib.Path(base).resolve());self.jar=pathlib.Path(jar).resolve();require(self.jar.is_file(),'built_jar_present');self.java=java;self.process=None;self.log=None;self.starts=0
   live=self.state.live;(live/'tmp').mkdir()
-  env={'DATABASE_DRIVER':'sqlite','DATABASE_FILE':str(live/'study.sqlite'),'DATABASE_POOL_MIN':'1','DATABASE_POOL_MAX':'1','HTTP_SERVER_PORT':'1337','HTTP_SERVER_CORS':'*','SERVER_NAME':'http://127.0.0.1:1337','OAUTH2_OIDC_CLIENT_ID':'disposable-study','OAUTH2_OIDC_CLIENT_SECRET':'local-fixture-only','OAUTH2_OIDC_AUTH_ENDPOINT':'http://127.0.0.1:9/auth','OAUTH2_OIDC_TOKEN_ENDPOINT':'http://127.0.0.1:9/token','OAUTH2_OIDC_USERINFO_ENDPOINT':'http://127.0.0.1:9/user','AI_PROVIDER':''}
+  env={'DATABASE_DRIVER':'mysql','DATABASE_HOST':'127.0.0.1','DATABASE_PORT':'3306','DATABASE_NAME':'study','DATABASE_USER':'root','DATABASE_PASSWORD':'','DATABASE_POOL_MIN':'1','DATABASE_POOL_MAX':'1','HTTP_SERVER_PORT':'1337','HTTP_SERVER_CORS':'*','SERVER_NAME':'http://127.0.0.1:1337','OAUTH2_OIDC_CLIENT_ID':'disposable-study','OAUTH2_OIDC_CLIENT_SECRET':'local-fixture-only','OAUTH2_OIDC_AUTH_ENDPOINT':'http://127.0.0.1:9/auth','OAUTH2_OIDC_TOKEN_ENDPOINT':'http://127.0.0.1:9/token','OAUTH2_OIDC_USERINFO_ENDPOINT':'http://127.0.0.1:9/user','AI_PROVIDER':''}
   (live/'.env').write_text(''.join(k+'='+v+'\n' for k,v in env.items()));os.chmod(live/'.env',0o600)
  def command(self,mode):return [self.java,'-Xmx512m','-Djava.io.tmpdir='+str(self.state.live/'tmp'),'-jar',str(self.jar),mode]
  def launch(self,mode):
@@ -24,10 +25,11 @@ class Runtime:
   if self.log is not None:self.log.close();self.log=None
   self.state.stopped()
  def initialize(self):
+  self.state.start_database()
   self.launch('automigrate')
   try:require(self.process.wait(timeout=90)==0,'original_migration_exit')
   finally:self.stop()
-  return seed(self.state.live/'study.sqlite',self.state.base/'credentials.json')
+  return seed(self.state,self.state.base/'credentials.json')
  def start(self):
   self.launch('start');deadline=time.monotonic()+60
   while time.monotonic()<deadline:
@@ -39,7 +41,7 @@ class Runtime:
    time.sleep(.2)
   self.stop();raise ValueError('startup_deadline')
  def observe(self):
-  self.state.stopped();return dict(database=snapshot(self.state.live/'study.sqlite'),files=inventory(self.state.live))
+  self.state.stopped();return dict(database=self.state.snapshot(),files=inventory(self.state.live))
  def dispatch(self,action):
   if action=='initialize':return self.initialize()
   if action=='start':return self.start()
@@ -55,4 +57,4 @@ if __name__=='__main__':
    try:answer=dict(ok=True,result=runtime.dispatch(json.loads(line)['action']))
    except Exception as e:answer=dict(ok=False,error_type=type(e).__name__,error=str(e))
    print(json.dumps(answer),flush=True)
- finally:runtime.stop()
+ finally:runtime.stop();runtime.state.close_database()

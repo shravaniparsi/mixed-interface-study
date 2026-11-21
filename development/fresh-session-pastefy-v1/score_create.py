@@ -27,6 +27,9 @@ def score_create(before,after,key,owner,title,content):
    ls,rs=split(left),split(right);require([x for x in ls if x['name']!=typed(target)]==[x for x in rs if x['name']!=typed(target)],'other_sequences_unchanged')
    seq=[x for x in rs if x['name']==typed(target)];require(len(seq)==1 and seq[0]['seq']==row['id'],'target_sequence_matches_insert')
   else:require(before['tables'][name]==after['tables'][name],'other_creation_tables_unchanged',table=name)
+ if 'sequences' in before:
+  require({k:v for k,v in before['sequences'].items() if k!=target}=={k:v for k,v in after['sequences'].items() if k!=target},'other_mysql_sequences_unchanged')
+  require(row['id']['value']==before['sequences'][target] and after['sequences'][target]==row['id']['value']+1,'mysql_insert_sequence')
  return dict(status='ordinary_database_creation_verified',key=key,independent_cases=0)
 
 def score_files(before,after):

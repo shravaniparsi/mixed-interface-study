@@ -6,7 +6,7 @@ from source_check import require
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 def score(base):
  base=pathlib.Path(base);read=lambda name:json.loads((base/name).read_text());run=read('execution.json')
- require(run['status']=='ordinary_execution_completed_requires_independent_score' and run['jvm_stopped'],'complete_execution_and_shutdown')
+ require(run['status']=='ordinary_execution_completed_requires_independent_score' and run['jvm_stopped'] and run['database_stopped'],'complete_execution_and_shutdown')
  require(len(run['creations'])==2 and {x['arm'] for x in run['creations']}=={'native','api'},'complete_creation_schedule')
  require(len(run['branches'])==4 and {(x['arm'],x['field']) for x in run['branches']}=={(a,f) for a in ['native','api'] for f in ['title','content']},'complete_edit_schedule')
  require({x['ifname'] for x in run['network']['interfaces']}=={'lo'} and not run['network']['routes'],'isolated_network')

@@ -33,5 +33,5 @@ def main(base,jar):
     rt.state.restore(arm);name=arm+'-'+field;before=observe(name+'-before');rt.start();record,path=native(name,'edit',key=key,field=field,value=value);readback=api('GET','/api/v2/paste/'+key);after=observe(name+'-after')
     report['branches'].append(dict(arm=arm,field=field,value=value,key=key,before=before,after=after,browser=path,readback=readback));save()
   report['status']='ordinary_execution_completed_requires_independent_score'
- finally:rt.stop();report['jvm_stopped']=all(p.poll() is not None for p in rt.state.writers);save()
+ finally:rt.stop();report['jvm_stopped']=all(p.poll() is not None for p in rt.state.writers);rt.state.close_database();report['database_stopped']=rt.state.db_process is None or rt.state.db_process.poll() is not None;save()
 if __name__=='__main__':main(sys.argv[1],sys.argv[2])

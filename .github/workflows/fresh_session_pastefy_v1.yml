@@ -35,6 +35,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m unittest discover -s development/fresh-session-pastefy-v1 -p 'test_*.py' > "$STUDY_BASE/unit-tests.log" 2>&1
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends mysql-server-core-8.0 mysql-client-core-8.0 python3-pymysql
+          dpkg-query -W mysql-server-core-8.0 mysql-client-core-8.0 python3-pymysql > "$STUDY_BASE/database-packages.txt"
           test -x "$JAVA_HOME_17_X64/bin/java"
           printf 'JAVA_BIN=%s\n' "$JAVA_HOME_17_X64/bin/java" >> "$GITHUB_ENV"
           mkdir "$STUDY_BASE/tools"
@@ -51,7 +54,7 @@ jobs:
       - name: Execute isolated ordinary schedule
         run: |
           set -euo pipefail
-          timeout --signal=TERM --kill-after=20s 540s sudo env -i PATH="$PATH" HOME="$HOME" JAVA_BIN="$JAVA_BIN" NODE_BIN="$(command -v node)" PLAYWRIGHT_MODULE_PATH="$STUDY_BASE/tools/node_modules/playwright" PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright" STUDY_BASE="$STUDY_BASE" WORKSPACE="$GITHUB_WORKSPACE" unshare --net --pid --fork --mount-proc --kill-child /bin/bash -c 'set -e; ip link set lo up; exec python3 "$WORKSPACE/development/fresh-session-pastefy-v1/run.py" "$STUDY_BASE/execution" "$STUDY_BASE/build/backend.jar"' > "$STUDY_BASE/run.log" 2>&1
+          timeout --signal=TERM --kill-after=20s 540s sudo env -i PATH="$PATH" HOME="$HOME" JAVA_BIN="$JAVA_BIN" NODE_BIN="$(command -v node)" PLAYWRIGHT_MODULE_PATH="$STUDY_BASE/tools/node_modules/playwright" PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright" STUDY_BASE="$STUDY_BASE" WORKSPACE="$GITHUB_WORKSPACE" unshare --net --pid --fork --mount-proc --kill-child /bin/bash -c 'set -e; ip link set lo up; python3 "$WORKSPACE/development/fresh-session-pastefy-v1/mysql_smoke.py" "$STUDY_BASE/mysql-smoke"; exec python3 "$WORKSPACE/development/fresh-session-pastefy-v1/run.py" "$STUDY_BASE/execution" "$STUDY_BASE/build/backend.jar"' > "$STUDY_BASE/run.log" 2>&1
       - name: Independently score private evidence
         run: sudo python3 development/fresh-session-pastefy-v1/score_run.py "$STUDY_BASE/execution/evidence" "$STUDY_BASE/execution/evidence/independent-score.json"
       - name: Sanitize approved disposable evidence
